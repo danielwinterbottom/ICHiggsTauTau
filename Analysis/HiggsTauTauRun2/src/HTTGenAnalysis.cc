@@ -919,10 +919,6 @@ namespace ic {
 
     pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
     mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
-    mt_1_ = MT(&lep1, &met);
-    mt_2_ = MT(&lep2, &met);
-    double mt_lep = MT(&lep1, &lep1);
-    mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
 
 
     if(passed_){
@@ -940,6 +936,8 @@ namespace ic {
       if(!(channel_str_ == "zmm")){
         mt_1_ = MT(&lep1, &met);
         mt_2_ = MT(&lep2, &met);
+        double mt_lep = MT(&lep1, &lep1);
+        mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
       }
 
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
