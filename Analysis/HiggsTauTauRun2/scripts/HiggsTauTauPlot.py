@@ -4524,7 +4524,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         elif options.analysis == 'vlq':
             #GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt+"*wt_vlq_off_diag_0", sel, cat, not options.do_ss,doScales=True)
-            if add_name != "":
+            if add_name == "":
               GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=True)
             else:
               GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=False)
