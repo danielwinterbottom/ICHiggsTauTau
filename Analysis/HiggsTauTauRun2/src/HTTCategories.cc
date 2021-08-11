@@ -1254,12 +1254,16 @@ namespace ic {
         // 01: mu + rho/a1 (DP)
         synctree_->Branch("acotautau_00",      & aco_angle_6_, "acotautau_00/D");
         synctree_->Branch("acotautau_01",      & aco_angle_5_, "acotautau_01/D");
+        synctree_->Branch("gen_match_2_pt",      &gen_match_2_pt_);
       }
       else if (channel_ == channel::tt) {
         // 00: rho + pi (IP)
         // 01: rho + rho (DP)
         synctree_->Branch("acotautau_00",      & aco_angle_6_, "acotautau_00/D");
         synctree_->Branch("acotautau_01",      & aco_angle_1_, "acotautau_01/D");
+        synctree_->Branch("gen_match_1_pt",      &gen_match_1_pt_);
+        synctree_->Branch("gen_match_2_pt",      &gen_match_2_pt_);
+
       }
 
       // IP variables
@@ -1649,8 +1653,8 @@ namespace ic {
     wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
 
-    //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    //eventInfo->print_weights();
+    std::cout << (unsigned long long) eventInfo->event() << std::endl; 
+    eventInfo->print_weights();
     //eventInfo->print_all_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
