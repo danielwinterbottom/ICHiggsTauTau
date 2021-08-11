@@ -141,6 +141,7 @@ class HTTCategories : public ModuleBase {
   float eta_h_;
   float phi_h_;
   branch_var pt_tt_;
+  double pt_tt_inc_met_;
   branch_var pt_vis_;
   branch_var mt_1_;
   branch_var mt_lep_;
@@ -1105,6 +1106,15 @@ class HTTCategories : public ModuleBase {
   double gen_nu_eta_2_;
 
   double pf_met_;
+
+  double generatorWeight_;
+  double muonEffTrgWeight_;
+  double muonEffIDWeight_1_;
+  double muonEffIDWeight_2_;
+  double et_triggerweight_ic_;
+  double mt_triggerweight_ic_;
+  double tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_;
+  double tauIDScaleFactorWeight_highpt_deeptauid_2_;
 
  public:
   HTTCategories(std::string const& name);

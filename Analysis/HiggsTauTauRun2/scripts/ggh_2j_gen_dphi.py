@@ -95,7 +95,7 @@ CompareHists([h_sm,h_ps,h_mm],
          False,
          100, #ymax
          0, #ymin
-         '#Delta#varphi_{jj}',
+         '#Delta#phi_{jj}',
          "a.u.",
          0.06,
          True,

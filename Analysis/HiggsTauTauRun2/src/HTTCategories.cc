@@ -861,6 +861,7 @@ namespace ic {
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("eta_h",             &eta_h_);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
+      outtree_->Branch("pt_tt_inc_met",             pt_tt_inc_met_);
       outtree_->Branch("mt_tot",            &mt_tot_.var_double);
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
@@ -1409,7 +1410,8 @@ namespace ic {
       synctree_->Branch("jdphi", &jdphi_, "jdphi/F");
 
       // Number of b-tagging jets passing above selections
-      synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
+      //synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
+      synctree_->Branch("nbtag", &n_deepbjets_);
       synctree_->Branch("nloosebtag",     &n_loose_bjets_);
       synctree_->Branch("bpt_1", &bpt_1_.var_float, "bpt_1/F");
       synctree_->Branch("beta_1", &beta_1_.var_float, "beta_1/F");
@@ -1430,6 +1432,16 @@ namespace ic {
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
       synctree_->Branch("trg_etaucross", &trg_etaucross_);
+      
+      synctree_->Branch("generatorWeight", &generatorWeight_);
+      synctree_->Branch("muonEffTrgWeight", &muonEffTrgWeight_);
+      synctree_->Branch("muonEffIDWeight_1", &muonEffIDWeight_1_);
+      synctree_->Branch("muonEffIDWeight_2", &muonEffIDWeight_2_);
+      synctree_->Branch("et_triggerweight_ic", &et_triggerweight_ic_);
+      synctree_->Branch("mt_triggerweight_ic", &mt_triggerweight_ic_);
+      synctree_->Branch("idisoWeight_1", &idisoweight_1_);
+      synctree_->Branch("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2", &tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_);
+      synctree_->Branch("tauIDScaleFactorWeight_highpt_deeptauid_2", &tauIDScaleFactorWeight_highpt_deeptauid_2_);
 
 
     }
@@ -2435,6 +2447,16 @@ namespace ic {
     et_trg_or_= (event->Exists("et_trg_or")) ? event->Get<double>("et_trg_or") : 0;
 
 
+    if (eventInfo->weight_defined("wt_embedding")) generatorWeight_ = std::min(eventInfo->weight("wt_embedding"),1.0); else generatorWeight_ = 0.0;
+    if (eventInfo->weight_defined("muonEffTrgWeight")) muonEffTrgWeight_= eventInfo->weight("muonEffTrgWeight"); else muonEffTrgWeight_ = 0.0;
+    if (eventInfo->weight_defined("muonEffIDWeight_1")) muonEffIDWeight_1_ = eventInfo->weight("muonEffIDWeight_1"); else muonEffIDWeight_1_ = 0.0;
+    if (eventInfo->weight_defined("muonEffIDWeight_2")) muonEffIDWeight_2_ = eventInfo->weight("muonEffIDWeight_2"); else muonEffIDWeight_2_ = 0.0;
+    if (eventInfo->weight_defined("et_triggerweight_ic")) et_triggerweight_ic_ = eventInfo->weight("et_triggerweight_ic"); else et_triggerweight_ic_ = 0.0;
+    if (eventInfo->weight_defined("mt_triggerweight_ic")) mt_triggerweight_ic_ = eventInfo->weight("mt_triggerweight_ic"); else mt_triggerweight_ic_ = 0.0;
+    if (eventInfo->weight_defined("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2")) tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_ = eventInfo->weight("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2"); else tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_ = 0.0;
+    if (eventInfo->weight_defined("tauIDScaleFactorWeight_highpt_deeptauid_2")) tauIDScaleFactorWeight_highpt_deeptauid_2_ = eventInfo->weight("tauIDScaleFactorWeight_highpt_deeptauid_2"); else tauIDScaleFactorWeight_highpt_deeptauid_2_ = 0.0;
+
+
     mvadm_idiso_et_ =  (event->Exists("wt_tau_id_mvadm_sync")) ? event->Get<double>("wt_tau_id_mvadm_sync") : 1.0; 
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
@@ -2646,7 +2668,9 @@ namespace ic {
     event->Exists("fake_tau_met") ? fake_tau_met_ = event->Get<double>("fake_tau_met") : 0.;
     event->Exists("gen_tau_met") ? gen_tau_met_ = event->Get<double>("gen_tau_met") : 0.;
 
+    pt_tt_inc_met_=-9999;
     if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_ = (ditau->vector()).pt(); 
+    if(channel_ == channel::zmm || channel_ == channel::zee) pt_tt_inc_met_ = (ditau->vector()+mets->vector()).pt(); 
     m_vis_ = ditau->M();
     pt_vis_ = ditau->pt();
 

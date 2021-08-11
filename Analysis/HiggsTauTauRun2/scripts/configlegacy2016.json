@@ -4,7 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/mhassans/Jan24_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["tt","et","mt"],
+    //"channels":      ["mt","et","em","tt"],
+    "channels":      ["em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -61,11 +62,10 @@
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2016/",
     //"output_folder" : "/vols/cms/dw515/Offline/output/SM/et_2016_newSF/",
-    "output_folder" : "/vols/cms/dw515/Offline/output/SM/cpprod_2016_fixFF/",
+    "output_folder" : "/vols/cms/dw515/Offline/output/MSSM/em_lowmass_2016/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/SM/cpprod_2016_svfit/",
-    "svfit_folder"  : "/vols/cms/akd116/Offline/output/SM/2020/Jul06_2016_svfit/",
+    "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/em_lowmass_2016_svfit/",
     //"svfit_folder"  : "./output/",
     "svfit_override" : "",
     "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Jun22_MELA/",
@@ -74,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 1,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,
