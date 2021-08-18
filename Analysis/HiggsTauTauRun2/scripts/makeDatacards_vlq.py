@@ -118,6 +118,8 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
+                   "MTLt40",
+                   "MT40To70",
                    ]
 
   categories_mt = [
@@ -125,11 +127,14 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
+                   "MTLt40",
+                   "MT40To70",
                    ]
 
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
+                   "inclusive",
                    ]
 
   categories_em = [
@@ -195,7 +200,8 @@ for year in years:
     ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_e_scale="CMS_scale_e"', # Election energy scale
-    ' --do_ff_systs'
+    ' --do_ff_systs_1',
+    ' --do_ff_systs_2',
   ]
 
   mt_shape_systematics = [
@@ -205,7 +211,8 @@ for year in years:
   mt_sep_shape_systematics = [
     ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
-    ' --do_ff_systs'
+    ' --do_ff_systs_1',
+    ' --do_ff_systs_2',
   ]
 
   tt_shape_systematics = [
