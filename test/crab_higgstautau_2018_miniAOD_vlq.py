@@ -5,13 +5,13 @@ from multiprocessing import Process
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='Jun28_MC_102X_2018'
+config.General.workArea='Aug17_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
 config.JobType.maxMemoryMB = 4000
-cfgParams = ['isData=0', 'globalTag=102X_upgrade2018_realistic_v20','doHT=0']
+cfgParams = ['isData=0', 'globalTag=102X_upgrade2018_realistic_v20','doHT=0','LHEWeights=1']
 config.JobType.allowUndistributedCMSSW = True
 #config.Data.unitsPerJob = 1
 #config.Data.splitting = 'FileBased'
@@ -50,24 +50,21 @@ if __name__ == '__main__':
 
     tasks=list()
 
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU2_gU1', '/betaRd33_0_mU2_gU1_GENSIM_2018/guttley-betaRd33_0_mU2_gU1_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU2_gU2', '/betaRd33_0_mU2_gU2_GENSIM_2018/guttley-betaRd33_0_mU2_gU2_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU2_gU3', '/betaRd33_0_mU2_gU3_GENSIM_2018/guttley-betaRd33_0_mU2_gU3_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU3_gU1', '/betaRd33_0_mU3_gU1_GENSIM_2018/guttley-betaRd33_0_mU3_gU1_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU3_gU2', '/betaRd33_0_mU3_gU2_GENSIM_2018/guttley-betaRd33_0_mU3_gU2_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU3_gU3', '/betaRd33_0_mU3_gU3_GENSIM_2018/guttley-betaRd33_0_mU3_gU3_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU4_gU1', '/betaRd33_0_mU4_gU1_GENSIM_2018/guttley-betaRd33_0_mU4_gU1_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU4_gU2', '/betaRd33_0_mU4_gU2_GENSIM_2018/guttley-betaRd33_0_mU4_gU2_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_0_mU4_gU3', '/betaRd33_0_mU4_gU3_GENSIM_2018/guttley-betaRd33_0_mU4_gU3_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU2_gU1', '/betaRd33_minus1_mU2_gU1_GENSIM_2018/guttley-betaRd33_minus1_mU2_gU1_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU2_gU2', '/betaRd33_minus1_mU2_gU2_GENSIM_2018/guttley-betaRd33_minus1_mU2_gU2_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU2_gU3', '/betaRd33_minus1_mU2_gU3_GENSIM_2018/guttley-betaRd33_minus1_mU2_gU3_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU3_gU1', '/betaRd33_minus1_mU3_gU1_GENSIM_2018/guttley-betaRd33_minus1_mU3_gU1_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU3_gU2', '/betaRd33_minus1_mU3_gU2_GENSIM_2018/guttley-betaRd33_minus1_mU3_gU2_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU3_gU3', '/betaRd33_minus1_mU3_gU3_GENSIM_2018/guttley-betaRd33_minus1_mU3_gU3_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU4_gU1', '/betaRd33_minus1_mU4_gU1_GENSIM_2018/guttley-betaRd33_minus1_mU4_gU1_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU4_gU2', '/betaRd33_minus1_mU4_gU2_GENSIM_2018/guttley-betaRd33_minus1_mU4_gU2_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
-    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU4_gU3', '/betaRd33_minus1_mU4_gU3_GENSIM_2018/guttley-betaRd33_minus1_mU4_gU3_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched', '/betaRd33_0_mU1000_gU1_matched_GENSIM_2018/guttley-betaRd33_0_mU1000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_down', '/betaRd33_0_mU1000_gU1_matched_xqcut_down_GENSIM_2018/guttley-betaRd33_0_mU1000_gU1_matched_xqcut_down_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_up', '/betaRd33_0_mU1000_gU1_matched_xqcut_up_GENSIM_2018/guttley-betaRd33_0_mU1000_gU1_matched_xqcut_up_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU1000_gU1', '/betaRd33_0_mU1000_gU1_GENSIM_2018/guttley-betaRd33_0_mU1000_gU1_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU2000_gU1_matched', '/betaRd33_0_mU2000_gU1_matched_GENSIM_2018/guttley-betaRd33_0_mU2000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU3000_gU1_matched', '/betaRd33_0_mU3000_gU1_matched_GENSIM_2018/guttley-betaRd33_0_mU3000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU4000_gU1_matched', '/betaRd33_0_mU4000_gU1_matched_GENSIM_2018/guttley-betaRd33_0_mU4000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU5000_gU1_matched', '/betaRd33_0_mU5000_gU1_matched_GENSIM_2018/guttley-betaRd33_0_mU5000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_0_mU500_gU1_matched', '/betaRd33_0_mU500_gU1_matched_GENSIM_2018/guttley-betaRd33_0_mU500_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU1000_gU1_matched', '/betaRd33_minus1_mU1000_gU1_matched_GENSIM_2018/guttley-betaRd33_minus1_mU1000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU2000_gU1_matched', '/betaRd33_minus1_mU2000_gU1_matched_GENSIM_2018/guttley-betaRd33_minus1_mU2000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU3000_gU1_matched', '/betaRd33_minus1_mU3000_gU1_matched_GENSIM_2018/guttley-betaRd33_minus1_mU3000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU4000_gU1_matched', '/betaRd33_minus1_mU4000_gU1_matched_GENSIM_2018/guttley-betaRd33_minus1_mU4000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU5000_gU1_matched', '/betaRd33_minus1_mU5000_gU1_matched_GENSIM_2018/guttley-betaRd33_minus1_mU5000_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
+    tasks.append(('VectorLQToTauTau_betaRd33_minus1_mU500_gU1_matched', '/betaRd33_minus1_mU500_gU1_matched_GENSIM_2018/guttley-betaRd33_minus1_mU500_gU1_matched_2018_MINIAOD-0bd58594e6ade05f64e0c3a8301c3139/USER'))
 
     for task in tasks:
         print(task[0])

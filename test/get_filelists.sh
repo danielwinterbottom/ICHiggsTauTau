@@ -42,4 +42,4 @@ for i in "${targets[@]}"; do
   done
 done
 
-#tar -czf $output_prefix"_filelists .tgz" $output_prefix*.dat
+tar -czf $output_prefix"_filelists.tgz" $output_prefix*.dat
