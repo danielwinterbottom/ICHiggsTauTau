@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# python scripts/htt_vlq_2018.py --bkg --data --embed --sm --vlq --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e,scale_bfake,scale_b" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
+# python scripts/htt_vlq_2018.py --bkg --data --embed --sm --vlq_matched --vlq_interference --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e,scale_bfake,scale_b" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
 
 
 import sys
@@ -54,8 +54,14 @@ parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process signal SM mc samples")
 
-parser.add_option("--vlq", dest="proc_vlq", action='store_true', default=False,
-                  help="Process signal MSSM mc samples")
+parser.add_option("--vlq_old", dest="proc_vlq_old", action='store_true', default=False,
+                  help="Process signal VLQ old mc samples")
+
+parser.add_option("--vlq_matched", dest="proc_vlq_matched", action='store_true', default=False,
+                  help="Process signal VLQ matched mc samples")
+
+parser.add_option("--vlq_interference", dest="proc_vlq_interference", action='store_true', default=False,
+                  help="Process signal VLQ interference mc samples")
 
 parser.add_option("--all", dest="proc_all", action='store_true', default=False,
                   help="Process all samples")
@@ -82,6 +88,7 @@ parser.add_option("--condor", action='store_true', default=False,
                   help="Submit jobs to condor (for lxplus)")
 parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
                   help="Do JES, JER, and MET uncertainties")
+
 
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -209,7 +216,7 @@ if options.proc_sm or options.proc_all:
       'ttHToTauTau',
     ]
 
-if options.proc_vlq or options.proc_all:
+if options.proc_vlq_old or options.proc_all:
   signal_mc += [
     'VectorLQToTauTau_betaRd33_0_mU2_gU1','VectorLQToTauTau_betaRd33_0_mU2_gU2','VectorLQToTauTau_betaRd33_0_mU2_gU3',
     'VectorLQToTauTau_betaRd33_0_mU3_gU1','VectorLQToTauTau_betaRd33_0_mU3_gU2','VectorLQToTauTau_betaRd33_0_mU3_gU3',
@@ -218,6 +225,60 @@ if options.proc_vlq or options.proc_all:
     'VectorLQToTauTau_betaRd33_minus1_mU3_gU1','VectorLQToTauTau_betaRd33_minus1_mU3_gU2','VectorLQToTauTau_betaRd33_minus1_mU3_gU3',
     'VectorLQToTauTau_betaRd33_minus1_mU4_gU1','VectorLQToTauTau_betaRd33_minus1_mU4_gU2','VectorLQToTauTau_betaRd33_minus1_mU4_gU3',
   ]
+
+if options.proc_vlq_matched or options.proc_all:
+  signal_mc += [
+    'VectorLQToTauTau_betaRd33_0_mU500_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_mU2000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_mU3000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_mU4000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_mU5000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_mU500_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_mU1000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_mU2000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_mU3000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_mU4000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_mU5000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_mU1000_gU1',
+    'VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_up',
+    'VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_down',
+  ]
+
+if options.proc_vlq_interference or options.proc_all:
+  signal_mc += [
+    'VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_up',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_down',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_up',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down',
+  ]
+
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
     if not no_json:
@@ -475,13 +536,21 @@ if options.proc_bkg or options.proc_all:
             PARAJOBSUBMIT = getParaJobSubmit(job_num)
             os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
-if options.mg_signal or options.proc_sm or options.proc_vlq or options.proc_all:
+if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_vlq_matched or options.proc_vlq_interference or options.proc_all:
     SIG_FILELIST = FILELIST
     for sa in signal_mc:
         SIG_FILELIST = FILELIST
         SIG_DIR = 'Sep18_MC_102X_2018'
 
-        if 'VectorLQ' in sa:
+        if 'VectorLQ' in sa and 'matched' in sa:
+          SIG_DIR = 'Aug17_MC_102X_2018'
+          SIG_FILELIST ="./filelists/Aug17_2018_MC_102X"
+          user='guttley'
+        elif 'VectorLQ' in sa and 'interference' in sa:
+          SIG_DIR = 'Jul02_MC_102X_2018' # change when added
+          SIG_FILELIST ="./filelists/Jul02_2018_MC_102X" # change when added                  
+          user='guttley'
+        elif 'VectorLQ' in sa:
           SIG_DIR = 'Jul02_MC_102X_2018'
           SIG_FILELIST ="./filelists/Jul02_2018_MC_102X"                  
           user='guttley'
