@@ -157,6 +157,7 @@ namespace ic {
       outtree_->Branch("idisoweight_1", &idisoweight_1_, "idisoweight_1/F");
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       outtree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
+      outtree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_1/F");
       outtree_->Branch("effweight", &effweight_, "effweight/F");
       outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
