@@ -509,14 +509,13 @@ if options.proc_bkg or options.proc_all:
 if options.mg_signal or options.proc_sm or options.proc_vlq_matched or options.proc_vlq_interference or options.proc_all:
   SIG_FILELIST = FILELIST
   #PREFIX = FILELIST.split("/")[1]
-  PREFIX = 'Sep18_MC_102X_2017'
   for sa in signal_mc:
     if 'VectorLQ' in sa and 'matched' in sa:
-      SIG_DIR = 'Aug17_MC_102X_2017'
+      PREFIX = 'Aug17_MC_102X_2017'
       SIG_FILELIST ="./filelists/Aug17_2017_MC_102X"
       user='guttley'
     elif 'VectorLQ' in sa and 'interference' in sa:
-      SIG_DIR = 'Jul02_MC_102X_2017' # change when added
+      PREFIX = 'Jul02_MC_102X_2017' # change when added
       SIG_FILELIST ="./filelists/Jul02_2017_MC_102X" # change when added                  
       user='guttley'
     else:
