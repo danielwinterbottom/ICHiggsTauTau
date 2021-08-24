@@ -1666,8 +1666,8 @@ namespace ic {
     wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
 
-    std::cout << (unsigned long long) eventInfo->event() << std::endl; 
-    eventInfo->print_weights();
+    //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
+    //eventInfo->print_weights();
     //eventInfo->print_all_weights();
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;

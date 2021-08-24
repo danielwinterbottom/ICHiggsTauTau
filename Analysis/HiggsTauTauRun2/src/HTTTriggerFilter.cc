@@ -144,7 +144,7 @@ namespace ic {
           high_leg_pt = 26.;
         }
         if (run >= 278270 && run <= 284044){
-          trig_obj_label = "triggerObjectsEle24LooseTau20"; //should be triggerObjectsEle24LooseTau30 but its prescaled
+          trig_obj_label = "triggerObjectsEle24LooseTau30"; 
           leg1_filter = "hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter ";
           leg2_filter = "hltPFTau30TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30";
