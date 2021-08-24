@@ -1091,7 +1091,6 @@ process.icEle24LooseTau30ObjectProducer = producers.icTriggerObjectProducer.clon
       input   = cms.InputTag("patTriggerEvent"),
       branch = cms.string("triggerObjectsEle24LooseTau30"),
       hltPath = cms.string("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v"),
-  #    hltPath = cms.string("HLT_Ele22_eta2p1_WP75_Gsf_LooseIsoPFTau20_v"),
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
