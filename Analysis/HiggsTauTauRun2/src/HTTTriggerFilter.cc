@@ -136,7 +136,7 @@ namespace ic {
         }
         if (run >= 276215 && run < 278270){
           trig_obj_label = "triggerObjectsEle24LooseTau20";
-          leg1_filter = "hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter ";
+          leg1_filter = "hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
@@ -145,7 +145,7 @@ namespace ic {
         }
         if (run >= 278270 && run <= 284044){
           trig_obj_label = "triggerObjectsEle24LooseTau30"; 
-          leg1_filter = "hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter ";
+          leg1_filter = "hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau30TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30";
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
