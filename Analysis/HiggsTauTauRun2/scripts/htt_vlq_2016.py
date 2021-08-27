@@ -533,13 +533,13 @@ if options.proc_sm or options.proc_all or options.proc_vlq_matched or options.pr
     else:
         SIG_FILELIST = FILELIST
 
-    if 'VectorLQ' in sa and 'matched' in sa:
+    if 'VectorLQ' in sa and 'interference' in sa:
+      SIG_DIR = 'Aug25_MC_102X_2016' # change when added
+      SIG_FILELIST ="./filelists/Aug25_2016_MC_102X" # change when added                  
+      user='guttley'
+    elif 'VectorLQ' in sa and 'matched' in sa:
       SIG_DIR = 'Aug17_MC_102X_2016'
       SIG_FILELIST ="./filelists/Aug17_2016_MC_102X"
-      user='guttley'
-    elif 'VectorLQ' in sa and 'interference' in sa:
-      SIG_DIR = 'Jul02_MC_102X_2016' # change when added
-      SIG_FILELIST ="./filelists/Jul02_2016_MC_102X" # change when added                  
       user='guttley'
     else:
       PREFIX = 'Sep18_MC_102X_2016'

@@ -247,36 +247,36 @@ if options.proc_vlq_matched or options.proc_all:
 
 if options.proc_vlq_interference or options.proc_all:
   signal_mc += [
-    'VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_up',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_down',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_up',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_up_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_down_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_up_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down_interference',
   ]
 
 
@@ -542,13 +542,13 @@ if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_
         SIG_FILELIST = FILELIST
         SIG_DIR = 'Sep18_MC_102X_2018'
 
-        if 'VectorLQ' in sa and 'matched' in sa:
+        if 'VectorLQ' in sa and 'interference' in sa:
+          SIG_DIR = 'Aug25_MC_102X_2018'
+          SIG_FILELIST ="./filelists/Aug25_2018_MC_102X"
+          user='guttley'
+        elif 'VectorLQ' in sa and 'matched' in sa:
           SIG_DIR = 'Aug17_MC_102X_2018'
           SIG_FILELIST ="./filelists/Aug17_2018_MC_102X"
-          user='guttley'
-        elif 'VectorLQ' in sa and 'interference' in sa:
-          SIG_DIR = 'Jul02_MC_102X_2018' # change when added
-          SIG_FILELIST ="./filelists/Jul02_2018_MC_102X" # change when added                  
           user='guttley'
         elif 'VectorLQ' in sa:
           SIG_DIR = 'Jul02_MC_102X_2018'
