@@ -11,12 +11,12 @@ import os
 
 CHANNELS = ['et', 'mt','tt']
 
-config_files = {'2016':'scripts/plot_mssm_2016.cfg',
-                '2017':'scripts/plot_mssm_2017.cfg',
+config_files = {'2016':'scripts/plot_vlq_2016.cfg',
+                '2017':'scripts/plot_vlq_2017.cfg',
                 '2018':'scripts/plot_vlq_2018.cfg'
                }
-param_files = {'2016':'scripts/params_mssm_2016.json',
-               '2017':'scripts/params_mssm_2017.json',
+param_files = {'2016':'scripts/params_vlq_2016_gu4.json',
+               '2017':'scripts/params_vlq_2017_gu4.json',
                '2018':'scripts/params_vlq_2018_gu4.json',
               }
 
