@@ -123,6 +123,7 @@ class HTTCategories : public ModuleBase {
   float idisoweight_2_;
   float trackingweight_1_;
   float trackingweight_2_;
+  float wt_emb_sel_kit_;
   float wt_embedding_yield_;
   float isoweight_1_;
   float isoweight_2_;

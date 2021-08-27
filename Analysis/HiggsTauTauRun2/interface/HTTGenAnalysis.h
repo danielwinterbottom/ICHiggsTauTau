@@ -103,6 +103,7 @@ class HTTGenAnalysis : public ModuleBase {
   double mass_;
   double wt_;
   double gen_wt_;
+  bool hasTaus_;
   double wt_z_pol_;
   double wt_cp_sm_;
   double wt_cp_ps_;
@@ -191,6 +192,12 @@ class HTTGenAnalysis : public ModuleBase {
 
   double scale_vlq_1_;
   double scale_vlq_2_;
+  double scale_vlq_3_;
+  double scale_vlq_4_;
+  double scale_vlq_5_;
+  double scale_vlq_6_;
+  double scale_vlq_7_;
+  double scale_vlq_8_;
  
   double pdfweight_0_;
   double pdfweight_1_;

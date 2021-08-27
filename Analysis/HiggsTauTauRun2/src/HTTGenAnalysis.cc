@@ -95,6 +95,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("hasTaus"       , &hasTaus_       );
       outtree_->Branch("gen_wt"       , &gen_wt_       );
       outtree_->Branch("wt_nnlops"       , &wt_nnlops_       );
       outtree_->Branch("wt_z_pol", &wt_z_pol_);
@@ -136,8 +137,14 @@ namespace ic {
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
 
-      outtree_->Branch("wt_vlq_mur0p5_muf1",    &scale_vlq_1_); //1034
-      outtree_->Branch("wt_vlq_mur2_muf1",    &scale_vlq_2_); //1019
+      outtree_->Branch("wt_vlq_mur1_muf0p5",    &scale_vlq_1_); //1034
+      outtree_->Branch("wt_vlq_mur1_muf2",    &scale_vlq_2_); //1019
+      outtree_->Branch("wt_vlq_mur2_muf1",    &scale_vlq_3_);
+      outtree_->Branch("wt_vlq_mur0p5_muf1",    &scale_vlq_4_);
+      outtree_->Branch("wt_vlq_mur2_muf2",    &scale_vlq_5_);
+      outtree_->Branch("wt_vlq_mur0p5_muf2",    &scale_vlq_6_);
+      outtree_->Branch("wt_vlq_mur2_muf0p5",    &scale_vlq_7_);
+      outtree_->Branch("wt_vlq_mur0p5_muf0p5",    &scale_vlq_8_);
 
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
@@ -411,7 +418,7 @@ namespace ic {
 	    wt_ = 1;
 	    rand->SetSeed(event_);
 	    rand_ = rand->Uniform();   
-	 
+	    hasTaus_=false; 
 	    wt_ = eventInfo->total_weight();
     
             if (eventInfo->weight_defined("gen_weight")) gen_wt_ = eventInfo->weight("gen_weight");
@@ -459,8 +466,14 @@ namespace ic {
 	    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
 	    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
 
-           scale_vlq_1_ = eventInfo->weight_defined("1034") ? eventInfo->weight("1034") : 1.0;
-           scale_vlq_2_ = eventInfo->weight_defined("1019") ? eventInfo->weight("1019") : 1.0;
+           scale_vlq_1_ = eventInfo->weight_defined("1034") ? eventInfo->weight("1034") : 1.0; // 1 0.5
+           scale_vlq_2_ = eventInfo->weight_defined("1019") ? eventInfo->weight("1019") : 1.0; // 1 2
+           scale_vlq_3_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0; // 2 1
+           scale_vlq_4_ = eventInfo->weight_defined("1014") ? eventInfo->weight("1014") : 1.0; // 0.5 1
+           scale_vlq_5_ = eventInfo->weight_defined("1024") ? eventInfo->weight("1024") : 1.0; // 2 2
+           scale_vlq_6_ = eventInfo->weight_defined("1029") ? eventInfo->weight("1029") : 1.0; // 0.5 2
+           scale_vlq_7_ = eventInfo->weight_defined("1039") ? eventInfo->weight("1039") : 1.0; // 2 0.5
+           scale_vlq_8_ = eventInfo->weight_defined("1044") ? eventInfo->weight("1044") : 1.0; // 0.5 0.5
 
            wt_vlq_sm_ = eventInfo->weight_defined("sm") ? eventInfo->weight("sm") : 1.0;
            wt_vlq_full_ = eventInfo->weight_defined("full") ? eventInfo->weight("full") : 1.0;
@@ -728,6 +741,7 @@ namespace ic {
         }
       }
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      hasTaus_=true;
       gen_taus.push_back(part);
       std::vector<ic::GenParticle> family;
       unsigned outputID = 15;
@@ -933,7 +947,7 @@ namespace ic {
       //mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
       //wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
-      if(!(channel_str_ == "zmm")){
+      if(!(channel_str_ == "zmm") && !(channel_str_ == "zee")){
         mt_1_ = MT(&lep1, &met);
         mt_2_ = MT(&lep2, &met);
         double mt_lep = MT(&lep1, &lep1);

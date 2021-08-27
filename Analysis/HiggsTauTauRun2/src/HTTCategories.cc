@@ -158,6 +158,7 @@ namespace ic {
       outtree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       outtree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
       outtree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_1/F");
+      outtree_->Branch("wt_emb_sel_kit", &wt_emb_sel_kit_, "wt_emb_sel_kit/F");
       outtree_->Branch("effweight", &effweight_, "effweight/F");
       outtree_->Branch("wt_quarkmass", &wt_quarkmass_);
       outtree_->Branch("wt_fullquarkmass", & wt_fullquarkmass_);
@@ -2441,6 +2442,7 @@ namespace ic {
     if (event->Exists("idisoweight_2")) idisoweight_2_ = event->Get<double>("idisoweight_2"); else idisoweight_2_ = 1.0;
     if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 1.0;
     if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 1.0;
+    if (event->Exists("wt_emb_sel_kit")) wt_emb_sel_kit_ = event->Get<double>("wt_emb_sel_kit"); else wt_emb_sel_kit_ = 1.0;
     if (event->Exists("wt_embedding_yield")) wt_embedding_yield_ = event->Get<double>("wt_embedding_yield"); else wt_embedding_yield_ = 0.0;
     if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
     et_trg_= (event->Exists("et_trg_single")) ? event->Get<double>("et_trg_single") : 0;

@@ -587,6 +587,10 @@ int HTTWeights::PreAnalysis() {
          w_->function("m_sel_id_ic_ratio")->functor(w_->argSet("gt_eta,gt_pt")));
     fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
         w_->function("m_sel_trg_ic_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
+    fns_["m_sel_idEmb_kit_ratio"] = std::shared_ptr<RooFunctor>(
+         w_->function("m_sel_idEmb_ratio")->functor(w_->argSet("gt_eta,gt_pt")));
+    fns_["m_sel_trg_kit_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("m_sel_trg_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
 
     // tau id
     fns_["t_id_pt_tight"] = std::shared_ptr<RooFunctor>(
@@ -972,13 +976,17 @@ int HTTWeights::Execute(TreeEvent *event) {
     auto args_2 = std::vector<double>{gen_match_undecayed_2_eta,gen_match_undecayed_2_pt};
     auto args_4 = std::vector<double>{gen_match_undecayed_1_pt,gen_match_undecayed_1_eta,gen_match_undecayed_2_pt,gen_match_undecayed_2_eta};
     double wt_embedding_yield = fns_["m_sel_idEmb_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_ratio"]->eval(args_2.data())*fns_["m_sel_trg_ratio"]->eval(args_4.data());
+    double wt_embedding_yield_kit = fns_["m_sel_idEmb_kit_ratio"]->eval(args_1.data())*fns_["m_sel_idEmb_kit_ratio"]->eval(args_2.data())*fns_["m_sel_trg_kit_ratio"]->eval(args_4.data());
     eventInfo->set_weight("muonEffIDWeight_1", fns_["m_sel_idEmb_ratio"]->eval(args_1.data()), false);
     eventInfo->set_weight("muonEffIDWeight_2", fns_["m_sel_idEmb_ratio"]->eval(args_2.data()), false);
     eventInfo->set_weight("muonEffTrgWeight", fns_["m_sel_trg_ratio"]->eval(args_4.data()), false);
 
     if (eventInfo->weight("wt_embedding") > 1) wt_embedding_yield = 0.; // values > 1 are un-physical so set yield to 0
+    if (eventInfo->weight("wt_embedding") > 1) wt_embedding_yield_kit = 0.; // values > 1 are un-physical so set yield to 0
     eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     event->Add("wt_embedding_yield", wt_embedding_yield);
+    wt_embedding_yield_kit = wt_embedding_yield > 0 ? wt_embedding_yield_kit/wt_embedding_yield : 0.;
+    event->Add("wt_emb_sel_kit", wt_embedding_yield_kit);
   }
 
   if (do_topquark_weights_) {
