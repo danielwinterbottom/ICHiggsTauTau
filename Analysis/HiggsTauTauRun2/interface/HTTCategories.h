@@ -89,6 +89,7 @@ class HTTCategories : public ModuleBase {
   double wt_mfake_rate_down_;
 
   double wt_em_qcd_;
+  double wt_em_qcd_alt_;
   double wt_em_qcd_extrapdown_;
   double wt_em_qcd_extrapup_;
   double wt_em_qcd_njets0_unc1_up_;
@@ -123,6 +124,7 @@ class HTTCategories : public ModuleBase {
   float trackingweight_1_;
   float trackingweight_2_;
   float wt_embedding_yield_;
+  float mcweight_;
   float isoweight_1_;
   float isoweight_2_;
   float effweight_;
@@ -168,6 +170,7 @@ class HTTCategories : public ModuleBase {
   double newmet_dphi_1_;
   double newmet_dphi_2_;
   double newmet_;
+  double met_shift_;
   double qcd_frac_score_, w_frac_score_;
   double w_frac_, qcd_frac_, ttbar_frac_;
 
@@ -213,6 +216,16 @@ class HTTCategories : public ModuleBase {
 
   int tau_mva_decay_mode_1_;
   int tau_mva_decay_mode_2_;
+
+  float photon_ietaieta_;
+  float photon_pt_;
+  float photon_r9_;
+  float electron_pt_;
+  float electron_r9_;
+  float electron_ietaieta_;
+  float sc_ietaieta_;
+  float sc_pt_;
+  float sc_r9_;
 
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
@@ -649,6 +662,8 @@ class HTTCategories : public ModuleBase {
   bool trg_singleelectron_;
   bool trg_singlemuon_;
   bool trg_muonelectron_;
+  bool trg_ehigh_mulow_;
+  bool trg_muhigh_elow_;
   bool trg_doubletau_;
   bool trg_vbfdoubletau_;
   bool trg_singletau_1_;
@@ -752,8 +767,20 @@ class HTTCategories : public ModuleBase {
 
   double mt_1_nomu_, mu_pt_;
 
-  unsigned ngenjets_, ngenjets20_, gen_sjdphi_;
+  unsigned ngenjets_, ngenjets20_; 
+  double gen_sjdphi_, gen_jdeta_, gen_mjj_;
   double genjetpt_1_, genjetpt_2_, genjeteta_1_, genjeteta_2_;
+
+  double wt_vbf_pt_;
+  double wt_vbf_njets_;
+  double wt_vbf_pt_njets_;
+  double wt_vbf_deta_;
+  double wt_vbf_dphi_;
+  double wt_vbf_nlo_scale_up_;
+  double wt_vbf_nlo_scale_down_;
+  double wt_ggh_dphi_;
+
+
   double ip_mag_1_, ip_mag_2_, ip_sig_1_, ip_sig_2_;
   double ipx_1_;
   double ipy_1_;
@@ -860,6 +887,7 @@ class HTTCategories : public ModuleBase {
   bool a1_flag_2_;
 
   // additional variables needed for MVA training for CP master projects
+  double tau_px_1_, tau_py_1_, tau_pz_1_, tau_E_1_, tau_px_2_, tau_py_2_, tau_pz_2_, tau_E_2_; 
   double pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_; 
   double pi2_px_1_, pi2_py_1_, pi2_pz_1_, pi2_E_1_, pi2_px_2_, pi2_py_2_, pi2_pz_2_, pi2_E_2_; 
   double pi3_px_1_, pi3_py_1_, pi3_pz_1_, pi3_E_1_, pi3_px_2_, pi3_py_2_, pi3_pz_2_, pi3_E_2_; 
@@ -876,6 +904,19 @@ class HTTCategories : public ModuleBase {
   double svcov00_1_, svcov01_1_, svcov02_1_, svcov10_1_, svcov11_1_, svcov12_1_, svcov20_1_, svcov21_1_, svcov22_1_;
   double svcov00_2_, svcov01_2_, svcov02_2_, svcov10_2_, svcov11_2_, svcov12_2_, svcov20_2_, svcov21_2_, svcov22_2_;
 
+  double sc1_px_1_;
+  double sc1_py_1_;
+  double sc1_pz_1_;
+  double sc1_E_1_;
+  double sc1_r9_1_;
+  double sc1_ietaieta_1_;
+  double sc1_px_2_;
+  double sc1_py_2_;
+  double sc1_pz_2_;
+  double sc1_E_2_;
+  double sc1_r9_2_;
+  double sc1_ietaieta_2_;
+
   double gen_nu_p_1_;
   double gen_nu_p_2_;
   double gen_nu_phi_1_;
@@ -891,6 +932,15 @@ class HTTCategories : public ModuleBase {
   double gen_vis_phi_2_;
   double gen_vis_eta_1_;
   double gen_vis_eta_2_;
+
+  double gen_neutral_p_1_;
+  double gen_neutral_p_2_;
+  double gen_neutral_E_1_;
+  double gen_neutral_E_2_;
+  double gen_neutral_phi_1_;
+  double gen_neutral_phi_2_;
+  double gen_neutral_eta_1_;
+  double gen_neutral_eta_2_;
 
  public:
   HTTCategories(std::string const& name);

@@ -689,6 +689,8 @@ namespace ic {
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
+      outtree_->Branch("gen_mjj", &gen_mjj_);
+      outtree_->Branch("gen_jdeta", &gen_jdeta_);
       outtree_->Branch("ngenjets" , &ngenjets_);
       outtree_->Branch("ngenjets20" , &ngenjets20_);
       outtree_->Branch("genjetpt_1" , &genjetpt_1_);
@@ -697,6 +699,16 @@ namespace ic {
       outtree_->Branch("genjeteta_2" , &genjeteta_2_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
+
+      outtree_->Branch("wt_vbf_pt", &wt_vbf_pt_);
+      outtree_->Branch("wt_vbf_njets", &wt_vbf_njets_);
+      outtree_->Branch("wt_vbf_pt_njets", &wt_vbf_pt_njets_);
+      outtree_->Branch("wt_vbf_deta", &wt_vbf_deta_);
+      outtree_->Branch("wt_vbf_dphi", &wt_vbf_dphi_);
+      outtree_->Branch("wt_vbf_nlo_scale_up", &wt_vbf_nlo_scale_up_);
+      outtree_->Branch("wt_vbf_nlo_scale_down", &wt_vbf_nlo_scale_down_);
+      outtree_->Branch("wt_ggh_dphi", &wt_ggh_dphi_);
+
       outtree_->Branch("m_1", &m_1_, "m_1/F");
       outtree_->Branch("m_2", &m_2_, "m_2/F");
 
@@ -716,6 +728,16 @@ namespace ic {
 
       outtree_->Branch("mva_dm_1", &tau_mva_decay_mode_1_);
       outtree_->Branch("mva_dm_2", &tau_mva_decay_mode_2_);
+
+      outtree_->Branch("photon_pt", &photon_pt_);
+      outtree_->Branch("photon_r9", &photon_r9_);
+      outtree_->Branch("photon_ietaieta", &photon_ietaieta_);
+      outtree_->Branch("electron_pt", &electron_pt_);
+      outtree_->Branch("electron_r9", &electron_r9_);
+      outtree_->Branch("electron_ietaieta", &electron_ietaieta_);
+      outtree_->Branch("sc_pt", &sc_pt_);
+      outtree_->Branch("sc_r9", &sc_r9_);
+      outtree_->Branch("sc_ietaieta", &sc_ietaieta_);
 
       outtree_->Branch("a1_flag", &a1_flag_);
       outtree_->Branch("a1_flag_2", &a1_flag_2_);
@@ -777,6 +799,7 @@ namespace ic {
       outtree_->Branch("newmet_dphi_1",             &newmet_dphi_1_);
       outtree_->Branch("newmet_dphi_2",             &newmet_dphi_2_);
       outtree_->Branch("newmet",             &newmet_);
+      outtree_->Branch("met_shift",             &met_shift_);
       outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
       outtree_->Branch("w_frac_score",             &w_frac_score_);
 
@@ -843,6 +866,8 @@ namespace ic {
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
       outtree_->Branch("trg_vbfdoubletau",    &trg_vbfdoubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      outtree_->Branch("trg_ehigh_mulow",    &trg_ehigh_mulow_);
+      outtree_->Branch("trg_muhigh_elow",    &trg_muhigh_elow_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
@@ -857,6 +882,7 @@ namespace ic {
 
       if (channel_ == channel::em) {
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
+        outtree_->Branch("wt_em_qcd_alt",         &wt_em_qcd_alt_);
         if(!systematic_shift_) {
           outtree_->Branch("wt_em_qcd_extrapup",      &wt_em_qcd_extrapup_);
           outtree_->Branch("wt_em_qcd_extrapdown",    &wt_em_qcd_extrapdown_);
@@ -937,6 +963,7 @@ namespace ic {
 
      if(channel_==channel::et) synctree_->Branch("trigweight_1", &et_trg_);
      else synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+     if(channel_==channel::em) synctree_->Branch("trigweightEMu", &trigweight_1_);
 
       synctree_->Branch("trigweight_2", &et_trg_cross_);
       synctree_->Branch("trigweight", &et_trg_or_);
@@ -944,6 +971,7 @@ namespace ic {
       if(channel_==channel::et) synctree_->Branch("idisoweight_2", &mvadm_idiso_et_);
       else synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       synctree_->Branch("embweight", &wt_embedding_yield_);
+      synctree_->Branch("mcweight", &mcweight_);
       synctree_->Branch("trkeffweight", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
@@ -1174,6 +1202,8 @@ namespace ic {
       synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       synctree_->Branch("trg_doubletau",    &trg_doubletau_);
       synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      synctree_->Branch("trg_ehigh_mulow",    &trg_ehigh_mulow_);
+      synctree_->Branch("trg_muhigh_elow",    &trg_muhigh_elow_);
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
@@ -1205,6 +1235,18 @@ namespace ic {
       mvatree_->Branch("gen_vis_phi_2", &gen_vis_phi_2_);
       mvatree_->Branch("gen_vis_eta_1", &gen_vis_eta_1_);
       mvatree_->Branch("gen_vis_eta_2", &gen_vis_eta_2_);
+
+      mvatree_->Branch("gen_neutral_p_1",   &gen_neutral_p_1_);
+      mvatree_->Branch("gen_neutral_p_2",   &gen_neutral_p_2_);
+      mvatree_->Branch("gen_neutral_E_1",   &gen_neutral_E_1_);
+      mvatree_->Branch("gen_neutral_E_2",   &gen_neutral_E_2_);
+      mvatree_->Branch("gen_neutral_phi_1", &gen_neutral_phi_1_);
+      mvatree_->Branch("gen_neutral_phi_2", &gen_neutral_phi_2_);
+      mvatree_->Branch("gen_neutral_eta_1", &gen_neutral_eta_1_);
+      mvatree_->Branch("gen_neutral_eta_2", &gen_neutral_eta_2_);
+
+      mvatree_->Branch("gen_match_1", &gen_match_1_);
+      mvatree_->Branch("gen_match_2", &gen_match_2_);
 
       mvatree_->Branch("pt_2",              &pt_2_.var_double);
       mvatree_->Branch("pt_1",              &pt_1_.var_double);
@@ -1283,6 +1325,15 @@ namespace ic {
       mvatree_->Branch("pi3_py_2", &pi3_py_2_);
       mvatree_->Branch("pi3_pz_2", &pi3_pz_2_);
       mvatree_->Branch("pi3_E_2", &pi3_E_2_);
+
+      mvatree_->Branch("tau_px_1", &tau_px_1_);
+      mvatree_->Branch("tau_py_1", &tau_py_1_);
+      mvatree_->Branch("tau_pz_1", &tau_pz_1_);
+      mvatree_->Branch("tau_E_1",  &tau_E_1_);
+      mvatree_->Branch("tau_px_2", &tau_px_2_);
+      mvatree_->Branch("tau_py_2", &tau_py_2_);
+      mvatree_->Branch("tau_pz_2", &tau_pz_2_);
+      mvatree_->Branch("tau_E_2",  &tau_E_2_);
 
       mvatree_->Branch("pi0_px_1", &pi0_px_1_);
       mvatree_->Branch("pi0_py_1", &pi0_py_1_);
@@ -1390,6 +1441,19 @@ namespace ic {
       mvatree_->Branch("event",             &event_);
       mvatree_->Branch("run",               &run_);
       mvatree_->Branch("lumi",               &lumi_);
+
+      mvatree_->Branch("sc1_px_1", &sc1_px_1_);
+      mvatree_->Branch("sc1_py_1", &sc1_py_1_);
+      mvatree_->Branch("sc1_pz_1", &sc1_pz_1_);
+      mvatree_->Branch("sc1_E_1", &sc1_E_1_);
+      mvatree_->Branch("sc1_r9_1", &sc1_r9_1_);
+      mvatree_->Branch("sc1_ietaieta_1", &sc1_ietaieta_1_);
+      mvatree_->Branch("sc1_px_2", &sc1_px_2_);
+      mvatree_->Branch("sc1_py_2", &sc1_py_2_);
+      mvatree_->Branch("sc1_pz_2", &sc1_pz_2_);
+      mvatree_->Branch("sc1_E_2", &sc1_E_2_);
+      mvatree_->Branch("sc1_r9_2", &sc1_r9_2_);
+      mvatree_->Branch("sc1_ietaieta_2", &sc1_ietaieta_2_);
     }
     return 0;
   }
@@ -1401,6 +1465,8 @@ namespace ic {
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
     if (event->Exists("trg_vbfdoubletau"))   trg_vbfdoubletau_   = event->Get<bool>("trg_vbfdoubletau");
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
+    if (event->Exists("trg_ehigh_mulow"))   trg_ehigh_mulow_   = event->Get<bool>("trg_ehigh_mulow");
+    if (event->Exists("trg_muhigh_elow"))   trg_muhigh_elow_   = event->Get<bool>("trg_muhigh_elow");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
@@ -1416,7 +1482,11 @@ namespace ic {
       trg_singletau_2_      = true; 
       trg_mutaucross_ = true;
       trg_etaucross_ = true;
+      trg_ehigh_mulow_ = true;
+      trg_muhigh_elow_ = true;
     } 
+
+    met_shift_ = event->Exists("MET_shift_UnclusteredEnUp") ? fabs(1.-event->Get<double>("MET_shift_UnclusteredEnUp")) : -1; 
 
     w_frac_score_ = event->Exists("w_frac_score") ? event->Get<double>("w_frac_score") : -1.; 
     qcd_frac_score_ = event->Exists("qcd_frac_score") ? event->Get<double>("qcd_frac_score") : -1.;
@@ -1937,9 +2007,22 @@ namespace ic {
     if(event->Exists("genjeteta_1")) genjeteta_1_ = event->Get<double>("genjeteta_1");
     if(event->Exists("genjeteta_2")) genjeteta_2_ = event->Get<double>("genjeteta_2");
     if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
+    if(event->Exists("gen_mjj")) gen_mjj_ = event->Get<double>("gen_mjj");
+    if(event->Exists("gen_jdeta")) gen_jdeta_ = event->Get<double>("gen_jdeta");
     if(event->Exists("tauFlag1")) tauFlag_1_ = event->Get<int>("tauFlag1");
     if(event->Exists("tauFlag2")) tauFlag_2_ = event->Get<int>("tauFlag2");
-   
+ 
+ 
+    wt_vbf_pt_ = (event->Exists("wt_vbf_pt")) ? event->Get<double>("wt_vbf_pt") : 1.0;
+    wt_vbf_njets_ = (event->Exists("wt_vbf_njets")) ? event->Get<double>("wt_vbf_njets") : 1.0;
+    wt_vbf_pt_njets_ = (event->Exists("wt_vbf_pt_njets")) ? event->Get<double>("wt_vbf_pt_njets") : 1.0;
+    wt_vbf_deta_ = (event->Exists("wt_vbf_deta")) ? event->Get<double>("wt_vbf_deta") : 1.0;
+    wt_vbf_dphi_ = (event->Exists("wt_vbf_dphi")) ? event->Get<double>("wt_vbf_dphi") : 1.0;
+    wt_vbf_nlo_scale_up_ = (event->Exists("wt_vbf_nlo_scale_up")) ? event->Get<double>("wt_vbf_nlo_scale_up") : 1.0;
+    wt_vbf_nlo_scale_down_ = (event->Exists("wt_vbf_nlo_scale_down")) ? event->Get<double>("wt_vbf_nlo_scale_down") : 1.0;
+    wt_ggh_dphi_ = (event->Exists("wt_ggh_dphi")) ? event->Get<double>("wt_ggh_dphi") : 1.0;
+
+ 
     wt_tau_fake_up_ = 1.0;
     wt_tau_fake_down_ = 1.0;
     wt_tquark_up_ = 1.0;
@@ -1947,6 +2030,7 @@ namespace ic {
     wt_zpt_up_ = 1.0;
     wt_zpt_down_ = 1.0;
     wt_em_qcd_ = 1.0;
+    wt_em_qcd_alt_ = 1.0;
     wt_efake_rate_up_ = 1.0;
     wt_efake_rate_down_ = 1.0;
     wt_mfake_rate_up_ = 1.0;
@@ -1962,6 +2046,7 @@ namespace ic {
     if (event->Exists("wt_mfake_rate_up"))  wt_mfake_rate_up_   = event->Get<double>("wt_mfake_rate_up");
     if (event->Exists("wt_mfake_rate_down")) wt_mfake_rate_down_ = event->Get<double>("wt_mfake_rate_down");
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
+    if (event->Exists("wt_em_qcd_alt"))         wt_em_qcd_alt_ = event->Get<double>("wt_em_qcd_alt");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
 
@@ -1991,6 +2076,7 @@ namespace ic {
     if (event->Exists("trackingweight_1")) trackingweight_1_ = event->Get<double>("trackingweight_1"); else trackingweight_1_ = 0.0;
     if (event->Exists("trackingweight_2")) trackingweight_2_ = event->Get<double>("trackingweight_2"); else trackingweight_2_ = 0.0;
     if (event->Exists("wt_embedding_yield")) wt_embedding_yield_ = event->Get<double>("wt_embedding_yield"); else wt_embedding_yield_ = 0.0;
+    if (eventInfo->weight_defined("wt_embedding")) mcweight_ = eventInfo->weight("wt_embedding"); else mcweight_ = 0.0;
     if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
     et_trg_= (event->Exists("et_trg_single")) ? event->Get<double>("et_trg_single") : 0;
     et_trg_cross_= (event->Exists("et_trg_cross")) ? event->Get<double>("et_trg_cross") : 0;
@@ -2212,6 +2298,15 @@ namespace ic {
     gen_vis_eta_1_=-9999.;
     gen_vis_eta_2_=-9999.;
 
+    gen_neutral_p_1_=-9999.;
+    gen_neutral_p_2_=-9999.;
+    gen_neutral_E_1_=-9999.;
+    gen_neutral_E_2_=-9999.;
+    gen_neutral_phi_1_=-9999.;
+    gen_neutral_phi_2_=-9999.;
+    gen_neutral_eta_1_=-9999.;
+    gen_neutral_eta_2_=-9999.;
+
     event->Exists("gen_nu_p_1")   ? gen_nu_p_1_   = event->Get<double>("gen_nu_p_1")   : -9999.;  
     event->Exists("gen_nu_p_2")   ? gen_nu_p_2_   = event->Get<double>("gen_nu_p_2")   : -9999.; 
     event->Exists("gen_nu_phi_1") ? gen_nu_phi_1_ = event->Get<double>("gen_nu_phi_1") : -9999.; 
@@ -2227,6 +2322,16 @@ namespace ic {
     event->Exists("gen_vis_phi_2") ? gen_vis_phi_2_ = event->Get<double>("gen_vis_phi_2") : -9999.;
     event->Exists("gen_vis_eta_1") ? gen_vis_eta_1_ = event->Get<double>("gen_vis_eta_1") : -9999.;
     event->Exists("gen_vis_eta_2") ? gen_vis_eta_2_ = event->Get<double>("gen_vis_eta_2") : -9999.;
+
+
+    event->Exists("gen_neutral_p_1")   ? gen_neutral_p_1_   = event->Get<double>("gen_neutral_p_1")   : -9999.;
+    event->Exists("gen_neutral_p_2")   ? gen_neutral_p_2_   = event->Get<double>("gen_neutral_p_2")   : -9999.;
+    event->Exists("gen_neutral_E_1")   ? gen_neutral_E_1_   = event->Get<double>("gen_neutral_E_1")   : -9999.;
+    event->Exists("gen_neutral_E_2")   ? gen_neutral_E_2_   = event->Get<double>("gen_neutral_E_2")   : -9999.;
+    event->Exists("gen_neutral_phi_1") ? gen_neutral_phi_1_ = event->Get<double>("gen_neutral_phi_1") : -9999.;
+    event->Exists("gen_neutral_phi_2") ? gen_neutral_phi_2_ = event->Get<double>("gen_neutral_phi_2") : -9999.;
+    event->Exists("gen_neutral_eta_1") ? gen_neutral_eta_1_ = event->Get<double>("gen_neutral_eta_1") : -9999.;
+    event->Exists("gen_neutral_eta_2") ? gen_neutral_eta_2_ = event->Get<double>("gen_neutral_eta_2") : -9999.;
 
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
@@ -2749,6 +2854,16 @@ namespace ic {
     y_3_2_=-9999.;
     y_4_2_=-9999.;
 
+
+    tau_px_1_=0.;
+    tau_py_1_=0.;
+    tau_pz_1_=0.;
+    tau_E_1_=0.;
+    tau_px_2_=0.;
+    tau_py_2_=0.;
+    tau_pz_2_=0.;
+    tau_E_2_=0.;
+
     pi_px_1_=0.;
     pi_py_1_=0.;
     pi_pz_1_=0.;
@@ -2814,6 +2929,21 @@ namespace ic {
     gam4_py_2_=0.;
     gam4_pz_2_=0.;
     gam4_E_2_=0.;
+
+
+    sc1_px_1_=0.;
+    sc1_py_1_=0.;
+    sc1_pz_1_=0.;
+    sc1_E_1_=0.;
+    sc1_r9_1_=-9999;
+    sc1_ietaieta_1_=-9999;
+    sc1_px_2_=0.;
+    sc1_py_2_=0.;
+    sc1_pz_2_=0.;
+    sc1_E_2_=0.;
+    sc1_r9_2_=-9999;
+    sc1_ietaieta_2_=-9999;
+
     metx_= mets->vector().Px();
     mety_= mets->vector().Py();
     ip_x_1_=0.;
@@ -2876,11 +3006,51 @@ namespace ic {
     if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
     if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
 
+    std::vector<SuperCluster *> superclusters;
+    if (event->ExistsInTree("superClusters"))
+      superclusters = event->GetPtrVec<SuperCluster>("superClusters");
+
+
     a1_flag_ = false;
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
 
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+
+      //find matched stand alone photons
+      std::vector<Photon *> photons;
+      if (event->ExistsInTree("photons"))
+        photons = event->GetPtrVec<Photon>("photons");
+      std::vector<Electron*> electrons = event->GetPtrVec<Electron>("electrons");
+
+      std::vector<std::pair<Photon *, Candidate *>> photon_matches = MatchByDR(photons, leading_lepton, 0.1, false, true);
+      std::vector<std::pair<Electron *, Candidate *>> electron_matches = MatchByDR(electrons, leading_lepton, 0.1, false, true);
+      std::vector<std::pair<SuperCluster *, Candidate *>> sc_matches = MatchByDR(superclusters, leading_lepton, 0.1, false, true);
+      photon_pt_=-9999;
+      photon_ietaieta_=-9999;
+      photon_r9_=-9999;
+      electron_pt_=-9999;
+      electron_ietaieta_=-9999;
+      electron_r9_=-9999;
+      sc_pt_=-9999;
+      sc_ietaieta_=-9999;
+      sc_r9_=-9999;
+      if(photon_matches.size()>0) {
+        photon_pt_=photon_matches[0].first->pt();
+        photon_r9_=photon_matches[0].first->r9();
+        photon_ietaieta_=photon_matches[0].first->sigma_IetaIeta();
+        //std::cout << photon_pt_ << "    " << photon_ietaieta_ << std::endl;
+      }
+      if(electron_matches.size()>0) {
+        electron_pt_=electron_matches[0].first->pt();
+        electron_r9_=electron_matches[0].first->r9();
+        electron_ietaieta_=electron_matches[0].first->sigma_IetaIeta();
+      }
+      if(sc_matches.size()>0) {
+        sc_pt_=sc_matches[0].first->pt();
+        sc_r9_=sc_matches[0].first->r9();
+        sc_ietaieta_=sc_matches[0].first->sigmaIetaIeta();
+      }
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
       //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
@@ -4418,6 +4588,37 @@ namespace ic {
       pvz_ = primary_vtx->vz();
 
     }
+
+    std::vector<std::pair<SuperCluster *, Candidate *>> sc_leading_matches = MatchByDR(superclusters, leading_lepton, 0.1, false, true);
+    std::vector<std::pair<SuperCluster *, Candidate *>> sc_subleading_matches = MatchByDR(superclusters, subleading_lepton, 0.1, false, true);
+
+    if(sc_subleading_matches.size()>0) {
+      sc1_px_2_= sc_subleading_matches[0].first->vector().Px();
+      sc1_py_2_= sc_subleading_matches[0].first->vector().Py();
+      sc1_pz_2_= sc_subleading_matches[0].first->vector().Pz();
+      sc1_E_2_= sc_subleading_matches[0].first->vector().E();
+      sc1_r9_2_= sc_subleading_matches[0].first->r9();
+      sc1_ietaieta_2_= sc_subleading_matches[0].first->sigmaIetaIeta();
+    }
+
+    if(sc_leading_matches.size()>0 && channel_ == channel::tt) {
+      sc1_px_1_= sc_leading_matches[0].first->vector().Px();
+      sc1_py_1_= sc_leading_matches[0].first->vector().Py();
+      sc1_pz_1_= sc_leading_matches[0].first->vector().Pz();
+      sc1_E_1_= sc_leading_matches[0].first->vector().E();
+      sc1_r9_1_= sc_leading_matches[0].first->r9();
+      sc1_ietaieta_1_= sc_leading_matches[0].first->sigmaIetaIeta();
+    }
+
+    tau_px_1_= lep1->vector().Px();
+    tau_py_1_= lep1->vector().Py();
+    tau_pz_1_= lep1->vector().Pz();
+    tau_E_1_= lep1->vector().E();
+
+    tau_px_2_= lep2->vector().Px();
+    tau_py_2_= lep2->vector().Py();
+    tau_pz_2_= lep2->vector().Pz();
+    tau_E_2_= lep2->vector().E();
       
     // signal background event classification
     IC_BDT_max_score_ = event->Exists("IC_BDT_max_score") ? event->Get<float>("IC_BDT_max_score") : -999.0;
