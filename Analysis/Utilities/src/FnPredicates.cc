@@ -2055,6 +2055,37 @@ namespace ic {
     return gammas;
   }
 
+  std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> GetTauGammasFlat(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+ 
+    std::vector<ic::PFCandidate*> gammas = {};
+    if (tau->decay_mode()<=2 || tau->decay_mode()>10) { 
+      gammas = GetTauGammas(tau, pfcands, 0.5, 0);
+    } else {
+      // need to modify isolation collection to exclude these gammas!
+      gammas = GetTauGammas(tau, pfcands, 0.5, 0);//signal gammas
+      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau, pfcands, 0.5, 0);//iso gammas 
+      gammas.insert(gammas.end(), iso_gammas.begin(), iso_gammas.end()  ); 
+      std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+    }
+
+    unsigned n_gammas = gammas.size();
+    std::vector<double> gam_px = {};
+    std::vector<double> gam_py = {};
+    std::vector<double> gam_pz = {};
+
+    for (auto g : gammas) {
+      double x = g->vector().Px();
+      double y = g->vector().Py();
+      double z = g->vector().Pz();
+
+      gam_px.push_back(x);
+      gam_py.push_back(y);
+      gam_pz.push_back(z);
+    }
+   
+    return std::make_tuple(n_gammas, gam_px, gam_py, gam_pz);
+
+  }
 
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int gammas_shift) {
     std::vector<ic::PFCandidate*> gammas = {};
@@ -2619,6 +2650,29 @@ namespace ic {
     return angle;
   }
 
+
+//  std::vector<ic::PFCandidate*> GetGammaSC(ic::Photon *gammas,
+//    std::vector<ic::PFCandidate*> hads = {};
+//    std::vector<std::size_t> hads_ids = tau->sig_charged_cands();
+//    for(auto id : hads_ids){
+//      for(auto p : pfcands) {
+//        std::size_t pfid = p->id();
+//        if(pfid == id) {
+//          ic::PFCandidate *pi = new ic::PFCandidate(*p);
+//          if(pi_shift!=0) {
+//            double uncert = sqrt(pow(0.00009*pi->pt(),2)+pow(0.0085/sqrt(sin(2*atan(exp(-pi->eta())))),2));
+//            double shift=1.;
+//            if(pi_shift==1)      shift-=uncert;
+//            else if(pi_shift==2) shift+=uncert;
+//            p->set_pt(pi->pt()*shift);
+//            p->set_energy(pi->energy()*shift);
+//          }
+//
+//          hads.push_back(pi);
+//          break;
+//        }
+//      }
+//  }
 
   std::vector<ic::PFCandidate*> GetTauGammaCands(ic::Tau const* tau, 
       std::map<std::size_t, ic::PFCandidate*> pfcands) {

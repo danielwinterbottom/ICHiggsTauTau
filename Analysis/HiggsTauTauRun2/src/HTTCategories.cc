@@ -1378,6 +1378,14 @@ namespace ic {
       mvatree_->Branch("gam4_py_2", &gam4_py_2_);
       mvatree_->Branch("gam4_pz_2", &gam4_pz_2_);
       mvatree_->Branch("gam4_E_2", &gam4_E_2_);
+      mvatree_->Branch("gam_px_1", &gam_px_1_);
+      mvatree_->Branch("gam_py_1", &gam_py_1_);
+      mvatree_->Branch("gam_pz_1", &gam_pz_1_);
+      mvatree_->Branch("n_gammas_1", &n_gammas_1_);
+      mvatree_->Branch("gam_px_2", &gam_px_2_);
+      mvatree_->Branch("gam_py_2", &gam_py_2_);
+      mvatree_->Branch("gam_pz_2", &gam_pz_2_);
+      mvatree_->Branch("n_gammas_2", &n_gammas_2_);
       mvatree_->Branch("metx", &metx_);
       mvatree_->Branch("mety", &mety_);
       mvatree_->Branch("ip_x_1", &ip_x_1_);
@@ -2935,6 +2943,15 @@ namespace ic {
     gam4_E_2_=0.;
 
 
+    gam_px_1_ = {};
+    gam_py_1_ = {};
+    gam_pz_1_ = {};
+    gam_px_2_ = {};
+    gam_py_2_ = {};
+    gam_pz_2_ = {};
+    n_gammas_1_=0;
+    n_gammas_2_=0;
+
     sc1_px_1_=0.;
     sc1_py_1_=0.;
     sc1_pz_1_=0.;
@@ -3014,6 +3031,7 @@ namespace ic {
     if (event->ExistsInTree("superClusters"))
       superclusters = event->GetPtrVec<SuperCluster>("superClusters");
 
+    std::vector<ic::PFCandidate*> pfcands = {};
 
     a1_flag_ = false;
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
@@ -3075,7 +3093,7 @@ namespace ic {
       tau_mva_decay_mode_1_ = tau1->HasTauID("MVADM2017v1") ? tau1->GetTauID("MVADM2017v1") : 0.0;
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
-      std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+      pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(tau1, pfcands);
       ic::Candidate *pi_tau1 = rho1.first;
       ic::Candidate *pi0_tau1 = rho1.second;
@@ -3173,7 +3191,7 @@ namespace ic {
           svcov22_2_ = sv_cov(2,2);
         }
       }
-      if(gammas1.size()>0 && tau_decay_mode_1_<2){
+      if(gammas1.size()>0 && tau_decay_mode_1_<=2){
         pi0_px_1_=pi0_tau1->vector().Px();
         pi0_py_1_=pi0_tau1->vector().Py();
         pi0_pz_1_=pi0_tau1->vector().Pz();
@@ -3195,7 +3213,7 @@ namespace ic {
         if(gammas1.size()>3) gam4_pz_1_= gammas1[3]->vector().Pz();
         if(gammas1.size()>3) gam4_E_1_= gammas1[3]->vector().E();
       }
-      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+      if(gammas2.size()>0 && tau_decay_mode_2_<=2) {
         pi0_px_2_=pi0_tau2->vector().Px();
         pi0_py_2_=pi0_tau2->vector().Py();
         pi0_pz_2_=pi0_tau2->vector().Pz();
@@ -3907,7 +3925,7 @@ namespace ic {
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
 
-      std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+      pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;
       ic::Candidate *pi0_tau2 = rho.second;
@@ -3960,7 +3978,7 @@ namespace ic {
         }
       }
 
-      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+      if(gammas2.size()>0 && tau_decay_mode_2_<=2) {
         pi0_px_2_=pi0_tau2->vector().Px();
         pi0_py_2_=pi0_tau2->vector().Py();
         pi0_pz_2_=pi0_tau2->vector().Pz();
@@ -4288,7 +4306,7 @@ namespace ic {
 
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
-      std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+      pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;
       ic::Candidate *pi0_tau2 = rho.second;
@@ -4342,7 +4360,7 @@ namespace ic {
         }
       }
 
-      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+      if(gammas2.size()>0 && tau_decay_mode_2_<=2) {
         pi0_px_2_=pi0_tau2->vector().Px();
         pi0_py_2_=pi0_tau2->vector().Py();
         pi0_pz_2_=pi0_tau2->vector().Pz();
@@ -4620,6 +4638,21 @@ namespace ic {
 
     std::vector<std::pair<SuperCluster *, Candidate *>> sc_leading_matches = MatchByDR(superclusters, leading_lepton, 0.1, false, true);
     std::vector<std::pair<SuperCluster *, Candidate *>> sc_subleading_matches = MatchByDR(superclusters, subleading_lepton, 0.1, false, true);
+
+    if(channel_ == channel::tt || channel_ == channel::mt || channel_ == channel::et) {
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_gammas_2 = GetTauGammasFlat(tau2, pfcands);
+      n_gammas_2_ = std::get<0>(flat_gammas_2);
+      gam_px_2_ = std::get<1>(flat_gammas_2);
+      gam_py_2_ = std::get<2>(flat_gammas_2);
+      gam_pz_2_ = std::get<3>(flat_gammas_2);
+    }
+    if(channel_ == channel::tt) {
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_gammas_1 = GetTauGammasFlat(tau1, pfcands);
+      n_gammas_1_ = std::get<0>(flat_gammas_1);
+      gam_px_1_ = std::get<1>(flat_gammas_1);
+      gam_py_1_ = std::get<2>(flat_gammas_1);
+      gam_pz_1_ = std::get<3>(flat_gammas_1);
+    }
 
     if(sc_subleading_matches.size()>0) {
       sc1_px_2_= sc_subleading_matches[0].first->vector().Px();

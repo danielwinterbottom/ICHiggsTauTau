@@ -897,6 +897,18 @@ class HTTCategories : public ModuleBase {
   double gam2_px_1_, gam2_py_1_, gam2_pz_1_, gam2_E_1_, gam2_px_2_, gam2_py_2_, gam2_pz_2_, gam2_E_2_; 
   double gam3_px_1_, gam3_py_1_, gam3_pz_1_, gam3_E_1_, gam3_px_2_, gam3_py_2_, gam3_pz_2_, gam3_E_2_; 
   double gam4_px_1_, gam4_py_1_, gam4_pz_1_, gam4_E_1_, gam4_px_2_, gam4_py_2_, gam4_pz_2_, gam4_E_2_; 
+
+  vector<double> gam_px_1_;
+  vector<double> gam_py_1_;
+  vector<double> gam_pz_1_;
+  unsigned n_gammas_1_;
+
+  vector<double> gam_px_2_;
+  vector<double> gam_py_2_;
+  vector<double> gam_pz_2_;
+  unsigned n_gammas_2_;
+
+
   double metx_, mety_; 
   double ip_x_1_, ip_y_1_, ip_z_1_, ip_x_2_, ip_y_2_, ip_z_2_; 
   double sv_x_1_, sv_y_1_, sv_z_1_, sv_x_2_, sv_y_2_, sv_z_2_; 
