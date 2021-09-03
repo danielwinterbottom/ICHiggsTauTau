@@ -986,7 +986,9 @@ int HTTWeights::Execute(TreeEvent *event) {
     eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     event->Add("wt_embedding_yield", wt_embedding_yield);
     wt_embedding_yield_kit = wt_embedding_yield > 0 ? wt_embedding_yield_kit/wt_embedding_yield : 0.;
+    double wt_embedding_yield_trg_kit = wt_embedding_yield > 0 ? fns_["m_sel_trg_kit_ratio"]->eval(args_4.data())/fns_["m_sel_trg_ratio"]->eval(args_4.data()) : 0.;
     event->Add("wt_emb_sel_kit", wt_embedding_yield_kit);
+    event->Add("wt_emb_sel_trg_kit", wt_embedding_yield_trg_kit);
   }
 
   if (do_topquark_weights_) {
