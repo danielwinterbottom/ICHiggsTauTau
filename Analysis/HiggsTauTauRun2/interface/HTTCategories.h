@@ -908,6 +908,23 @@ class HTTCategories : public ModuleBase {
   vector<double> gam_pz_2_;
   unsigned n_gammas_2_;
 
+  vector<double> cl_px_2_;
+  vector<double> cl_py_2_;
+  vector<double> cl_pz_2_;
+  vector<double> cl_px_1_;
+  vector<double> cl_py_1_;
+  vector<double> cl_pz_1_;
+
+  vector<double> isogam_px_1_;
+  vector<double> isogam_py_1_;
+  vector<double> isogam_pz_1_;
+  unsigned n_isogammas_1_;
+
+  vector<double> isogam_px_2_;
+  vector<double> isogam_py_2_;
+  vector<double> isogam_pz_2_;
+  unsigned n_isogammas_2_;
+
 
   double metx_, mety_; 
   double ip_x_1_, ip_y_1_, ip_z_1_, ip_x_2_, ip_y_2_, ip_z_2_; 
@@ -929,6 +946,23 @@ class HTTCategories : public ModuleBase {
   double sc1_E_2_;
   double sc1_r9_2_;
   double sc1_ietaieta_2_;
+
+  double sc1_r9_5x5_1_;
+  double sc1_ietaieta_5x5_1_;
+  double sc1_Nclusters_1_;
+  double sc1_seed_E_1_;
+  double sc1_cl1_E_1_;
+  double sc1_cl2_E_1_;
+  double sc1_etawidth_1_;
+  double sc1_phiwidth_1_;
+  double sc1_r9_5x5_2_;
+  double sc1_ietaieta_5x5_2_;
+  double sc1_Nclusters_2_;
+  double sc1_seed_E_2_;
+  double sc1_cl1_E_2_;
+  double sc1_cl2_E_2_;
+  double sc1_etawidth_2_;
+  double sc1_phiwidth_2_;
 
   double gen_nu_p_1_;
   double gen_nu_p_2_;

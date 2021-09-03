@@ -1386,6 +1386,20 @@ namespace ic {
       mvatree_->Branch("gam_py_2", &gam_py_2_);
       mvatree_->Branch("gam_pz_2", &gam_pz_2_);
       mvatree_->Branch("n_gammas_2", &n_gammas_2_);
+      mvatree_->Branch("isogam_px_1", &isogam_px_1_);
+      mvatree_->Branch("isogam_py_1", &isogam_py_1_);
+      mvatree_->Branch("isogam_pz_1", &isogam_pz_1_);
+      mvatree_->Branch("n_isogammas_1", &n_isogammas_1_);
+      mvatree_->Branch("isogam_px_2", &isogam_px_2_);
+      mvatree_->Branch("isogam_py_2", &isogam_py_2_);
+      mvatree_->Branch("isogam_pz_2", &isogam_pz_2_);
+      mvatree_->Branch("n_isogammas_2", &n_isogammas_2_);
+      mvatree_->Branch("cl_px_1", &cl_px_1_);
+      mvatree_->Branch("cl_py_1", &cl_py_1_);
+      mvatree_->Branch("cl_pz_1", &cl_pz_1_);
+      mvatree_->Branch("cl_px_2", &cl_px_2_);
+      mvatree_->Branch("cl_py_2", &cl_py_2_);
+      mvatree_->Branch("cl_pz_2", &cl_pz_2_);
       mvatree_->Branch("metx", &metx_);
       mvatree_->Branch("mety", &mety_);
       mvatree_->Branch("ip_x_1", &ip_x_1_);
@@ -1465,6 +1479,28 @@ namespace ic {
       mvatree_->Branch("sc1_E_2", &sc1_E_2_);
       mvatree_->Branch("sc1_r9_2", &sc1_r9_2_);
       mvatree_->Branch("sc1_ietaieta_2", &sc1_ietaieta_2_);
+
+      mvatree_->Branch("sc1_r9_5x5_1", &sc1_r9_5x5_1_);
+      mvatree_->Branch("sc1_ietaieta_5x5_1", &sc1_ietaieta_5x5_1_);
+      mvatree_->Branch("sc1_Nclusters_1", &sc1_Nclusters_1_);
+      mvatree_->Branch("sc1_seed_E_1", &sc1_seed_E_1_);
+      mvatree_->Branch("sc1_cl1_E_1", &sc1_cl1_E_1_);
+      mvatree_->Branch("sc1_cl2_E_1", &sc1_cl2_E_1_);
+      mvatree_->Branch("sc1_etawidth_1", &sc1_etawidth_1_);
+      mvatree_->Branch("sc1_phiwidth_1", &sc1_phiwidth_1_);
+
+      mvatree_->Branch("sc1_r9_5x5_2", &sc1_r9_5x5_2_);
+      mvatree_->Branch("sc1_ietaieta_5x5_2", &sc1_ietaieta_5x5_2_);
+      mvatree_->Branch("sc1_Nclusters_2", &sc1_Nclusters_2_);
+      mvatree_->Branch("sc1_seed_E_2", &sc1_seed_E_2_);
+      mvatree_->Branch("sc1_cl1_E_2", &sc1_cl1_E_2_);
+      mvatree_->Branch("sc1_cl2_E_2", &sc1_cl2_E_2_);
+      mvatree_->Branch("sc1_etawidth_2", &sc1_etawidth_2_);
+      mvatree_->Branch("sc1_phiwidth_2", &sc1_phiwidth_2_);
+
+      mvatree_->Branch("npv", &n_vtx_, "n_vtx/I");
+      mvatree_->Branch("rho",               &rho_, "rho/F");
+
     }
     return 0;
   }
@@ -2952,6 +2988,22 @@ namespace ic {
     n_gammas_1_=0;
     n_gammas_2_=0;
 
+    isogam_px_1_ = {};
+    isogam_py_1_ = {};
+    isogam_pz_1_ = {};
+    isogam_px_2_ = {};
+    isogam_py_2_ = {};
+    isogam_pz_2_ = {};
+    n_isogammas_1_=0;
+    n_isogammas_2_=0;
+
+    cl_px_1_ = {};
+    cl_py_1_ = {};
+    cl_pz_1_ = {};
+    cl_px_2_ = {};
+    cl_py_2_ = {};
+    cl_pz_2_ = {};
+
     sc1_px_1_=0.;
     sc1_py_1_=0.;
     sc1_pz_1_=0.;
@@ -2965,6 +3017,23 @@ namespace ic {
     sc1_r9_2_=-9999;
     sc1_ietaieta_2_=-9999;
 
+    sc1_r9_5x5_1_=-9999;
+    sc1_ietaieta_5x5_1_=-9999;
+    sc1_Nclusters_1_=-9999;
+    sc1_seed_E_1_=-9999;
+    sc1_cl1_E_1_=-9999;
+    sc1_cl2_E_1_=-9999;
+    sc1_etawidth_1_=-9999;
+    sc1_phiwidth_1_=-9999;
+    sc1_r9_5x5_2_=-9999;
+    sc1_ietaieta_5x5_2_=-9999;
+    sc1_Nclusters_2_=-9999;
+    sc1_seed_E_2_=-9999;
+    sc1_cl1_E_2_=-9999;
+    sc1_cl2_E_2_=-9999;
+    sc1_etawidth_2_=-9999;
+    sc1_phiwidth_2_=-9999;
+    
     metx_= mets->vector().Px();
     mety_= mets->vector().Py();
     ip_x_1_=0.;
@@ -4645,6 +4714,12 @@ namespace ic {
       gam_px_2_ = std::get<1>(flat_gammas_2);
       gam_py_2_ = std::get<2>(flat_gammas_2);
       gam_pz_2_ = std::get<3>(flat_gammas_2);
+
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_isogammas_2 = GetTauIsoGammasFlat(tau2, pfcands);
+      n_isogammas_2_ = std::get<0>(flat_isogammas_2);
+      isogam_px_2_ = std::get<1>(flat_isogammas_2);
+      isogam_py_2_ = std::get<2>(flat_isogammas_2);
+      isogam_pz_2_ = std::get<3>(flat_isogammas_2);
     }
     if(channel_ == channel::tt) {
       std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_gammas_1 = GetTauGammasFlat(tau1, pfcands);
@@ -4652,6 +4727,12 @@ namespace ic {
       gam_px_1_ = std::get<1>(flat_gammas_1);
       gam_py_1_ = std::get<2>(flat_gammas_1);
       gam_pz_1_ = std::get<3>(flat_gammas_1);
+
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_isogammas_1 = GetTauIsoGammasFlat(tau1, pfcands);
+      n_isogammas_1_ = std::get<0>(flat_isogammas_1);
+      isogam_px_1_ = std::get<1>(flat_isogammas_1);
+      isogam_py_1_ = std::get<2>(flat_isogammas_1);
+      isogam_pz_1_ = std::get<3>(flat_isogammas_1);
     }
 
     if(sc_subleading_matches.size()>0) {
@@ -4661,6 +4742,26 @@ namespace ic {
       sc1_E_2_= sc_subleading_matches[0].first->vector().E();
       sc1_r9_2_= sc_subleading_matches[0].first->r9();
       sc1_ietaieta_2_= sc_subleading_matches[0].first->sigmaIetaIeta();
+
+      sc1_r9_5x5_2_ = sc_subleading_matches[0].first->r9_full5x5();
+      sc1_ietaieta_5x5_2_= sc_subleading_matches[0].first->sigmaIetaIeta_full5x5();
+      sc1_Nclusters_2_ = sc_subleading_matches[0].first->Nclusters();
+      sc1_etawidth_2_ = sc_subleading_matches[0].first->etaWidth();
+      sc1_phiwidth_2_ = sc_subleading_matches[0].first->phiWidth();
+
+      ic::Candidate seed = sc_subleading_matches[0].first->seed_cluster();
+      std::vector<ic::Candidate> clusters = sc_subleading_matches[0].first->clusters();
+
+      sc1_seed_E_2_ = seed.energy();
+      if(clusters.size()>0) sc1_cl1_E_2_ = clusters[0].energy();
+      if(clusters.size()>1) sc1_cl2_E_2_ = clusters[1].energy();
+
+      for (auto c : clusters) {
+        cl_px_2_.push_back(c.vector().Px());
+        cl_py_2_.push_back(c.vector().Py());
+        cl_pz_2_.push_back(c.vector().Pz());
+      }
+
     }
 
     if(sc_leading_matches.size()>0 && channel_ == channel::tt) {
@@ -4670,6 +4771,25 @@ namespace ic {
       sc1_E_1_= sc_leading_matches[0].first->vector().E();
       sc1_r9_1_= sc_leading_matches[0].first->r9();
       sc1_ietaieta_1_= sc_leading_matches[0].first->sigmaIetaIeta();
+
+      sc1_r9_5x5_1_ = sc_leading_matches[0].first->r9_full5x5();
+      sc1_ietaieta_5x5_1_= sc_leading_matches[0].first->sigmaIetaIeta_full5x5();
+      sc1_Nclusters_1_ = sc_leading_matches[0].first->Nclusters();
+      sc1_etawidth_1_ = sc_leading_matches[0].first->etaWidth();
+      sc1_phiwidth_1_ = sc_leading_matches[0].first->phiWidth();
+  
+      ic::Candidate seed = sc_leading_matches[0].first->seed_cluster();
+      std::vector<ic::Candidate> clusters = sc_leading_matches[0].first->clusters();
+  
+      sc1_seed_E_1_ = seed.energy();
+      if(clusters.size()>0) sc1_cl1_E_1_ = clusters[0].energy();
+      if(clusters.size()>1) sc1_cl2_E_1_ = clusters[1].energy();
+
+      for (auto c : clusters) {
+        cl_px_1_.push_back(c.vector().Px());
+        cl_py_1_.push_back(c.vector().Py());
+        cl_pz_1_.push_back(c.vector().Pz());
+      }
     }
 
     tau_px_1_= lep1->vector().Px();
