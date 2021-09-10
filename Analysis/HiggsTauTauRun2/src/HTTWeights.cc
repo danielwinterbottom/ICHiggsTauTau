@@ -2180,7 +2180,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       std::vector<std::string> systs = {"_crosslep_up","_crosslep_down","_singlelep_up","_singlelep_down","_singletau_up","_singletau_down","_dm0_up","_dm0_down","_dm1_up","_dm1_down","_dm10_up","_dm10_down","_dm11_up","_dm11_down"};
 
       double wt_tau_trg_mssm = fns_["mt_trg"+extra+"_ratio"]->eval(args_mutau.data());
-      eventInfo->set_weight("et_triggerweight_ic", wt_tau_trg_mssm, false);
+      eventInfo->set_weight("mt_triggerweight_ic", wt_tau_trg_mssm, false);
       event->Add("wt_tau_trg_mssm", xtrg_OR_sf > 0. ? wt_tau_trg_mssm/xtrg_OR_sf : 0.);
       for (auto s: systs) {
         double wt_tau_trg_mssm_syst = fns_["mt_trg"+extra+"_ratio"+s]->eval(args_mutau.data());

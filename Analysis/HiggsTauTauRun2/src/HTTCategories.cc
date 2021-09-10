@@ -1446,6 +1446,16 @@ namespace ic {
       synctree_->Branch("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2", &tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_);
       synctree_->Branch("tauIDScaleFactorWeight_highpt_deeptauid_2", &tauIDScaleFactorWeight_highpt_deeptauid_2_);
 
+      synctree_->Branch("wt_ggh_t", &wt_ggh_t_);
+      synctree_->Branch("wt_ggh_b", &wt_ggh_b_);
+      synctree_->Branch("wt_ggh_i", &wt_ggh_i_);
+      synctree_->Branch("wt_ggH_t", &wt_ggH_t_);
+      synctree_->Branch("wt_ggH_b", &wt_ggH_b_);
+      synctree_->Branch("wt_ggH_i", &wt_ggH_i_);
+      synctree_->Branch("wt_ggA_t", &wt_ggA_t_);
+      synctree_->Branch("wt_ggA_b", &wt_ggA_b_);
+      synctree_->Branch("wt_ggA_i", &wt_ggA_i_);
+
 
     }
 
@@ -2452,7 +2462,7 @@ namespace ic {
     et_trg_or_= (event->Exists("et_trg_or")) ? event->Get<double>("et_trg_or") : 0;
 
 
-    if (eventInfo->weight_defined("wt_embedding")) generatorWeight_ = std::min(eventInfo->weight("wt_embedding"),1.0); else generatorWeight_ = 0.0;
+    if (eventInfo->weight_defined("wt_embedding")) generatorWeight_ = std::min(eventInfo->weight("wt_embedding"),1.0); else generatorWeight_ = wt_.var_double/fabs(wt_.var_double);
     if (eventInfo->weight_defined("muonEffTrgWeight")) muonEffTrgWeight_= eventInfo->weight("muonEffTrgWeight"); else muonEffTrgWeight_ = 0.0;
     if (eventInfo->weight_defined("muonEffIDWeight_1")) muonEffIDWeight_1_ = eventInfo->weight("muonEffIDWeight_1"); else muonEffIDWeight_1_ = 0.0;
     if (eventInfo->weight_defined("muonEffIDWeight_2")) muonEffIDWeight_2_ = eventInfo->weight("muonEffIDWeight_2"); else muonEffIDWeight_2_ = 0.0;

@@ -3671,7 +3671,6 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
         OSSS = 'os'
     else:
         OSSS = '!os'
-    full_selection = BuildCutString(wt, sel, cat, OSSS)
     if masses is not None:
         for mass in masses:  
             if sm_bkg != '':
@@ -3679,6 +3678,9 @@ def GenerateSMSignal(ana, add_name='', plot='', masses=['125'], wt='', sel='', c
             else:
                 add_str = mass
             for key in sm_samples:
+                if 'ggH' in key: 
+                  full_selection = BuildCutString(wt+'*wt_ph_nnlops', sel, cat, OSSS)
+                else: full_selection = BuildCutString(wt, sel, cat, OSSS)
                 if True not in [proc in key for proc in processes]: continue
                 sample_names=[]
                 if isinstance(sm_samples[key], (list,)):

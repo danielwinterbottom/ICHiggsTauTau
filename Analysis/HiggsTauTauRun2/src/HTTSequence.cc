@@ -697,7 +697,7 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_jets_label(jets_label)
  .set_do_quarkmass_higgspt(output_name.find("JJH")!=output_name.npos)
  .set_do_ps_weights(output_name.find("JJH")!=output_name.npos)
- .set_do_nnlops_weights(output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos);
+ .set_do_nnlops_weights(output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos||(output_name.find("GluGlu") != output_name.npos && output_name.find("125") != output_name.npos && output_name.find("SUSY") == output_name.npos));
 httWeights.set_strategy(strategy_type);
 httWeights.set_scalefactor_file_ggh(scalefactor_file_ggh);
 httWeights.set_scalefactor_file(scalefactor_file);
