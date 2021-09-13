@@ -731,6 +731,7 @@ namespace ic {
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   std::vector<ic::PFCandidate*> GetTauIsoGammas(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int gammas_shift);
   std::vector<ic::PFCandidate*> GetTauHads(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, int pi_shift);
+  std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> GetTauGammasFlat(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);
   ic::Candidate* GetPi0 (std::vector<ic::PFCandidate*> gammas, bool leadEtaPhi);
   std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands, double pt_cut, int uncert_mode);
   std::pair<ic::Candidate*,ic::Candidate*> GetRho (ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands);

@@ -71,6 +71,7 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
 
     std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
     std::vector<GenParticle *> sel_particles;
+    std::vector<GenParticle *> sel_particles_noptcut;
     std::vector<GenParticle *> undecayed_taus;
     
     double gen_match_undecayed_1_pt = -1;
@@ -85,11 +86,16 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     GenParticle *h = new GenParticle();
 
     ROOT::Math::PtEtaPhiEVector neutrinos; 
+    ROOT::Math::PtEtaPhiEVector gen_neutral_1; 
+    ROOT::Math::PtEtaPhiEVector gen_neutral_2; 
  
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags_start = particles[i]->statusFlags();
       if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13 /*&& particles[i]->status()==1*/)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
         sel_particles.push_back(particles[i]);
+      }
+      if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13)) && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct])){
+        sel_particles_noptcut.push_back(particles[i]);
       }
       if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14 /*&& particles[i]->status()==1*/)||(abs(particles[i]->pdgid()) == 16)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)) neutrinos+=particles[i]->vector();
       if(channel_!=channel::zmm&&status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
@@ -121,7 +127,9 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     
     std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
+    std::vector<GenJet *> gen_taus_ptr_noptcut;
     for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+    for (auto & x : gen_taus) gen_taus_ptr_noptcut.push_back(&x);
     ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
  
  
@@ -148,6 +156,15 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    double gen_vis_E_1=-9999.;
    double gen_vis_E_2=-9999.;
 
+   double gen_neutral_p_1=-9999.;
+   double gen_neutral_p_2=-9999.;
+   double gen_neutral_phi_1=-9999.;
+   double gen_neutral_phi_2=-9999.;
+   double gen_neutral_eta_1=-9999.;
+   double gen_neutral_eta_2=-9999.;
+   double gen_neutral_E_1=-9999.;
+   double gen_neutral_E_2=-9999.;
+
    mcorigin gen_match_1 = mcorigin::fake;
    mcorigin gen_match_2 = mcorigin::fake;
    int leptonsize = leading_lepton_match.size();
@@ -159,7 +176,7 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
      DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second) < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) ? tausize=0 : leptonsize = 0;
    }
 
-   // get gen IP for candidate 1
+   // get gen IP and neutral component for candidate 1
    if ((leptonsize==0&&tausize==0) && !foundboson) {
      gen_ip_1.SetXYZ(0.,0.,0.);
    } else if(leptonsize!=0  && foundboson) {
@@ -170,13 +187,16 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
      bool found=false;
      for (auto id: daughter_ids) {
        for(auto p: particles) {
-         if(p->id() == id && p->charge()!=0) {
+         if(p->id() == id && p->charge()!=0 && !found) {
            gen_ip_1 = GenIP(h,p);
            found=true;
-           break; 
+           break;
+         }
+         if(p->id() == id && p->charge()==0 && fabs(p->pdgid())==22) {
+           gen_neutral_1 += p->vector();
+           break;
          }
        }
-       if (found) break;
      } 
    }
 
@@ -221,6 +241,11 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        gen_vis_E_1=leading_tau_match.at(0).second->vector().E();
        gen_vis_phi_1=leading_tau_match.at(0).second->vector().Phi();
        gen_vis_eta_1=leading_tau_match.at(0).second->vector().Rapidity();
+
+       gen_neutral_p_1=gen_neutral_1.P();
+       gen_neutral_E_1=gen_neutral_1.E();
+       gen_neutral_phi_1=gen_neutral_1.Phi();
+       gen_neutral_eta_1=gen_neutral_1.Rapidity();
       }
    
 //Now for subleading lepton:
@@ -242,13 +267,16 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
      bool found=false;
      for (auto id: daughter_ids) {
        for(auto p: particles) {
-         if(p->id() == id && p->charge()!=0) {
+         if(p->id() == id && p->charge()!=0 && !found) {
            gen_ip_2 = GenIP(h,p);
            found=true;
            break;
          }
+         if(p->id() == id && p->charge()==0 && fabs(p->pdgid())==22) {
+           gen_neutral_2 += p->vector();
+           break;
+         }
        }
-       if (found) break;
      }
    }
 
@@ -293,6 +321,11 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        gen_vis_E_2=subleading_tau_match.at(0).second->vector().E();
        gen_vis_phi_2=subleading_tau_match.at(0).second->vector().Phi();
        gen_vis_eta_2=subleading_tau_match.at(0).second->vector().Rapidity();
+
+       gen_neutral_p_2=gen_neutral_2.P();
+       gen_neutral_E_2=gen_neutral_2.E();
+       gen_neutral_phi_2=gen_neutral_2.Phi();
+       gen_neutral_eta_2=gen_neutral_2.Rapidity();
       }
 
    if(gen_match_1 == mcorigin::tauHad) event->Add("leading_gen_tau", new ic::GenJet(*(leading_tau_match.at(0).second)));
@@ -331,6 +364,15 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    event->Add("gen_vis_phi_2",gen_vis_phi_2);
    event->Add("gen_vis_eta_2",gen_vis_eta_2);
 
+   event->Add("gen_neutral_p_1",  gen_neutral_p_1);
+   event->Add("gen_neutral_E_1",  gen_neutral_E_1);
+   event->Add("gen_neutral_phi_1",gen_neutral_phi_1);
+   event->Add("gen_neutral_eta_1",gen_neutral_eta_1);
+   event->Add("gen_neutral_p_2",  gen_neutral_p_2);
+   event->Add("gen_neutral_E_2",  gen_neutral_E_2);
+   event->Add("gen_neutral_phi_2",gen_neutral_phi_2);
+   event->Add("gen_neutral_eta_2",gen_neutral_eta_2);
+
     if(ngenjets_){
       //Get gen-jets collection, filter Higgs decay products and add Njets variable to event
       std::vector<ic::GenJet*> gen_jets = event->GetPtrVec<ic::GenJet>("genJets");
@@ -339,11 +381,11 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
       for(unsigned i=0; i<gen_jets.size(); ++i){
         ic::GenJet *genjet = gen_jets[i];
         bool MatchedToPrompt = false;
-        for(unsigned j=0; j<sel_particles.size(); ++j){
-         if(DRLessThan(std::make_pair(genjet, sel_particles[j]),0.5)) MatchedToPrompt = true;
+        for(unsigned j=0; j<sel_particles_noptcut.size(); ++j){
+         if(DRLessThan(std::make_pair(genjet, sel_particles_noptcut[j]),0.5)) MatchedToPrompt = true;
         }
-        for(unsigned j=0; j<gen_taus_ptr.size(); ++j){
-         if(DRLessThan(std::make_pair(genjet, gen_taus_ptr[j]),0.5)) MatchedToPrompt = true;
+        for(unsigned j=0; j<gen_taus_ptr_noptcut.size(); ++j){
+         if(DRLessThan(std::make_pair(genjet, gen_taus_ptr_noptcut[j]),0.5)) MatchedToPrompt = true;
         }
         //remove jets that are matched to Higgs decay products
         if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
@@ -367,10 +409,13 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
       ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 5.0));
       unsigned ngenjets20 = gen_jets.size();
       event->Add("ngenjets20", ngenjets20);   
-      double gen_sjdphi_ = -999; 
+      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      double gen_sjdphi_ = -9999; 
       double gen_mjj_=-9999;
+      double gen_deta_=-9999;
       if (gen_jets.size() >= 2) {
         gen_mjj_ = (gen_jets[0]->vector()+gen_jets[1]->vector()).M();
+        gen_deta_ = fabs(gen_jets[0]->eta() - gen_jets[1]->eta());
         if(gen_jets[0]->eta() > gen_jets[1]->eta())
           gen_sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(gen_jets[0]->vector(), gen_jets[1]->vector());
         
@@ -378,11 +423,12 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
           gen_sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(gen_jets[1]->vector(), gen_jets[0]->vector());
         
       }
-      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
       unsigned ngenjets = gen_jets.size();
       event->Add("ngenjets", ngenjets);
       event->Add("gen_sjdphi", gen_sjdphi_);
       event->Add("gen_mjj", gen_mjj_);
+      event->Add("gen_jdeta", gen_deta_);
+ 
     }
 
     return 0;
