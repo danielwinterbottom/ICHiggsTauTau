@@ -121,6 +121,60 @@ namespace ic {
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       
+      outtree_->Branch("genM", &gen_m_);
+      outtree_->Branch("genpT", &gen_pt_);
+
+      outtree_->Branch("gen_nu_p_1",   &gen_nu_p_1_);
+      outtree_->Branch("gen_nu_p_2",   &gen_nu_p_2_);
+      outtree_->Branch("gen_nu_phi_1", &gen_nu_phi_1_);
+      outtree_->Branch("gen_nu_phi_2", &gen_nu_phi_2_);
+      outtree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
+      outtree_->Branch("gen_nu_eta_2", &gen_nu_eta_2_);
+
+      outtree_->Branch("gen_vis_p_1",   &gen_vis_p_1_);
+      outtree_->Branch("gen_vis_p_2",   &gen_vis_p_2_);
+      outtree_->Branch("gen_vis_E_1",   &gen_vis_E_1_);
+      outtree_->Branch("gen_vis_E_2",   &gen_vis_E_2_);
+      outtree_->Branch("gen_vis_phi_1", &gen_vis_phi_1_);
+      outtree_->Branch("gen_vis_phi_2", &gen_vis_phi_2_);
+      outtree_->Branch("gen_vis_eta_1", &gen_vis_eta_1_);
+      outtree_->Branch("gen_vis_eta_2", &gen_vis_eta_2_);
+      
+      outtree_->Branch("pi_px_1", &pi_px_1_);
+      outtree_->Branch("pi_py_1", &pi_py_1_);
+      outtree_->Branch("pi_pz_1", &pi_pz_1_);
+      outtree_->Branch("pi_E_1", &pi_E_1_);
+      outtree_->Branch("pi2_px_1", &pi2_px_1_);
+      outtree_->Branch("pi2_py_1", &pi2_py_1_);
+      outtree_->Branch("pi2_pz_1", &pi2_pz_1_);
+      outtree_->Branch("pi2_E_1", &pi2_E_1_);
+      outtree_->Branch("pi3_px_1", &pi3_px_1_);
+      outtree_->Branch("pi3_py_1", &pi3_py_1_);
+      outtree_->Branch("pi3_pz_1", &pi3_pz_1_);
+      outtree_->Branch("pi3_E_1", &pi3_E_1_);
+      outtree_->Branch("pi_px_2", &pi_px_2_);
+      outtree_->Branch("pi_py_2", &pi_py_2_);
+      outtree_->Branch("pi_pz_2", &pi_pz_2_);
+      outtree_->Branch("pi_E_2", &pi_E_2_);
+      outtree_->Branch("pi2_px_2", &pi2_px_2_);
+      outtree_->Branch("pi2_py_2", &pi2_py_2_);
+      outtree_->Branch("pi2_pz_2", &pi2_pz_2_);
+      outtree_->Branch("pi2_E_2", &pi2_E_2_);
+      outtree_->Branch("pi3_px_2", &pi3_px_2_);
+      outtree_->Branch("pi3_py_2", &pi3_py_2_);
+      outtree_->Branch("pi3_pz_2", &pi3_pz_2_);
+      outtree_->Branch("pi3_E_2", &pi3_E_2_);
+
+      outtree_->Branch("pi0_px_1", &pi0_px_1_);
+      outtree_->Branch("pi0_py_1", &pi0_py_1_);
+      outtree_->Branch("pi0_pz_1", &pi0_pz_1_);
+      outtree_->Branch("pi0_E_1", &pi0_E_1_);
+      outtree_->Branch("pi0_px_2", &pi0_px_2_);
+      outtree_->Branch("pi0_py_2", &pi0_py_2_);
+      outtree_->Branch("pi0_pz_2", &pi0_pz_2_);
+      outtree_->Branch("pi0_E_2", &pi0_E_2_);
+
+      
       outtree_->Branch("event",             &event_);
       outtree_->Branch("run",               &run_);
       outtree_->Branch("lumi",               &lumi_);
