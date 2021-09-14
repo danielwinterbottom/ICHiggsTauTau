@@ -1687,7 +1687,7 @@ if options.analysis in ['cpdecay']:
 
   if options.era == 'cp18':
     sm_samples = {
-        # test CP in decay samples
+        # test CP in decay samples - Alie, remove ph, no root file
         'ggH_ph_htt*' : 'GluGluHToTauTau_M-125',
         'qqH_ph_htt*' : 'VBFHToTauTau_M-125-ext1',
         "qqH_sm_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered",
