@@ -125,6 +125,9 @@ namespace ic {
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
       outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
 
+      outtree_->Branch("wt_vlq_sm",&wt_vlq_sm_);
+      outtree_->Branch("wt_vlq_full",&wt_vlq_full_);
+
       outtree_->Branch("Ediff_1"       , &Ediff_1_);
       outtree_->Branch("Ediff_2"       , &Ediff_2_);
 
@@ -132,6 +135,9 @@ namespace ic {
       outtree_->Branch("rho_dR", &rho_dR_);
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
+
+      outtree_->Branch("wt_vlq_mur0p5_muf1",    &scale_vlq_1_); //1034
+      outtree_->Branch("wt_vlq_mur2_muf1",    &scale_vlq_2_); //1019
 
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
@@ -219,6 +225,7 @@ namespace ic {
       outtree_->Branch("met"         , &met_         );
       outtree_->Branch("m_vis"       , &m_vis_       );
       outtree_->Branch("pt_tt"       , &pt_tt_       );
+      outtree_->Branch("mt_tot"       , &mt_tot_       );
       outtree_->Branch("mass"       , &mass_       );
       outtree_->Branch("wtzpt"       , &wtzpt_       );
       outtree_->Branch("mt_1"        , &mt_1_        );
@@ -229,12 +236,14 @@ namespace ic {
       outtree_->Branch("n_bjets_eta2p5"     , &n_bjets_eta2p5_     );
       outtree_->Branch("n_bjets_noscale"     , &n_bjets_noscale_);
       outtree_->Branch("n_bjets_eta2p5_noscale"     , &n_bjets_eta2p5_noscale_);
+      outtree_->Branch("n_bpartons"     , &n_bpartons_     );
       outtree_->Branch("n_jets"      , &n_jets_      );
       outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_);
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
       outtree_->Branch("jpt_2"       , &jpt_2_       );
       outtree_->Branch("jpt_3"       , &jpt_3_       );
+      outtree_->Branch("bpt_1"       , &bpt_1_       );
       outtree_->Branch("jeta_1"      , &jeta_1_      );
       outtree_->Branch("jeta_2"      , &jeta_2_      );
       outtree_->Branch("jphi_1"      , &jphi_1_      );
@@ -256,6 +265,7 @@ namespace ic {
       outtree_->Branch("parton_pt_3"     , &parton_pt_3_);
       outtree_->Branch("parton_mjj",    &parton_mjj_);
       outtree_->Branch("parton_HpT", &parton_HpT_);
+      outtree_->Branch("parton_Zmass", &parton_Zmass_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
@@ -449,6 +459,12 @@ namespace ic {
 	    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
 	    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
 
+           scale_vlq_1_ = eventInfo->weight_defined("1034") ? eventInfo->weight("1034") : 1.0;
+           scale_vlq_2_ = eventInfo->weight_defined("1019") ? eventInfo->weight("1019") : 1.0;
+
+           wt_vlq_sm_ = eventInfo->weight_defined("sm") ? eventInfo->weight("sm") : 1.0;
+           wt_vlq_full_ = eventInfo->weight_defined("full") ? eventInfo->weight("full") : 1.0;
+
 	    if(do_theory_uncert_){
 	      // note some of these labels may be generator dependent so need to make sure you check before using them
 	      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
@@ -572,10 +588,12 @@ namespace ic {
     partons_=0;
     parton_mjj_=-9999;
     parton_HpT_=-9999;
+    parton_Zmass_=-9999;
     //double higgs_eta = 0;
     std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
     std::vector<GenParticle*> outparts;
+    ROOT::Math::PtEtaPhiEVector gen_boson_lhe;
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
       parton_pt_=-9999;
@@ -590,6 +608,7 @@ namespace ic {
              lead_b_eta=lhe_parts[i]->eta();
            }
            if(id==25) parton_HpT_ = lhe_parts[i]->pt();
+           if(id==11 ||id==13 || id==15) gen_boson_lhe+=lhe_parts[i]->vector();
            if ((id >= 1 && id <=6) || id == 21){ 
              outparts.push_back(lhe_parts[i]);
              partons_++;
@@ -638,6 +657,8 @@ namespace ic {
     if(npNLO_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
     else wt_stitch_=1.;
     
+    ROOT::Math::PtEtaPhiEVector gen_boson;
+
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
@@ -649,12 +670,12 @@ namespace ic {
       
       ic::GenParticle part = *gen_particles[i];
       ic::GenParticle higgs_product;
-      
       unsigned genID = std::fabs(part.pdgid());
       bool status_flag_t = part.statusFlags().at(0);
       bool status_flag_tlc = part.statusFlags().at(13);
       bool status_hard_process = part.statusFlags().at(7);
       
+      if ( (genID >= 11 && genID <= 16 && part.statusFlags()[FromHardProcess] && abs(part.status())==1) || part.statusFlags()[IsDirectHardProcessTauDecayProduct]) gen_boson+=part.vector();
       if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 ) partons_++;
 
       //if(genID==25 || genID==36 || genID==35 ) std::cout << genID << std::endl;
@@ -663,7 +684,7 @@ namespace ic {
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
-      if((genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
+      if((genID==23||genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
@@ -730,6 +751,9 @@ namespace ic {
         higgs_products.push_back(had_tau);
       }
     }
+
+    mass_=gen_boson.M();
+    parton_Zmass_=gen_boson_lhe.M();
 
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
     std::sort(gen_taus.begin(),gen_taus.end(),PtComparator());
@@ -893,6 +917,10 @@ namespace ic {
     Pfrac_1_=-9999.; 
     Pfrac_2_=-9999.;
 
+    pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
+    mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
+
+
     if(passed_){
       pt_1_  = lep1.vector().Pt();
       pt_2_  = lep2.vector().Pt();
@@ -902,12 +930,14 @@ namespace ic {
       phi_2_ = lep2.vector().Phi();
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
-      mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
+      //mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
       //wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
       if(!(channel_str_ == "zmm")){
         mt_1_ = MT(&lep1, &met);
         mt_2_ = MT(&lep2, &met);
+        double mt_lep = MT(&lep1, &lep1);
+        mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
       }
 
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
@@ -922,8 +952,7 @@ namespace ic {
       phi_1_ = -9999;
       phi_2_ = -9999;
       met_   = -9999;
-      pt_tt_ = -9999;
-      mass_= -9999;
+      //mass_= -9999;
       m_vis_ = -9999;
       mt_1_ = -9999;
       mt_2_ = -9999;
@@ -932,12 +961,16 @@ namespace ic {
     
     std::vector<ic::GenJet*> filtered_jets;
     std::vector<ic::GenJet*> bjets;
-    
+   
+    n_bpartons_=0;
+ 
     std::vector<GenParticle *> sel_bquarks;
     for (unsigned i=0; i < gen_particles.size(); ++i){
       std::vector<bool> status_flags = gen_particles[i]->statusFlags();
       unsigned id = abs(gen_particles[i]->pdgid());  
-      if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>0){
+      //if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>0){
+      if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>0) n_bpartons_++;
+      if(id == 5 && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>5){
         sel_bquarks.push_back(gen_particles[i]);
       }
     }
@@ -973,6 +1006,8 @@ namespace ic {
     n_bjets_pt25_ = bjets_25.size();
     n_bjets_eta2p5_noscale_ = bjets.size();
     n_bjets_noscale_ = bjets_eta2p4.size();
+    bpt_1_=-9999.;
+    if(n_bjets_noscale_>0) bpt_1_ = bjets_eta2p4[0]->pt();
 
     if(bbtag_eff_ != nullptr) {
       for(unsigned i=0; i<bjets.size(); ++i){

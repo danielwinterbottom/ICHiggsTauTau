@@ -62,7 +62,7 @@ defaults = {
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
-    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":""
+    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"","gU":"1"
 
 }
 
@@ -383,6 +383,8 @@ parser.add_argument("--vlq_sig", dest="vlq_sig", type=str,
     help="Comma separated list of signal parameter names i.e. vlq_betaRd33_minus1_mU4_gU1,vlq_betaRd33_minus1_mU4_gU2,vlq_betaRd33_minus1_mU4_gU3")
 parser.add_argument("--plot_signals", dest="plot_signals", type=str,
     help="Comma separated list of what signals to plot")
+parser.add_argument("--gU", dest="gU", type=str,
+    help="If vlq and using combined matched and matched interference samples, use this to scale samples correctly.")
 
 
 
@@ -1974,7 +1976,7 @@ if options.analysis == "vlq":
     "VLQ_betaRd33_minus1_M_2000":["VectorLQToTauTau_betaRd33_minus1_mU2_gU1","VectorLQToTauTau_betaRd33_minus1_mU2_gU2","VectorLQToTauTau_betaRd33_minus1_mU2_gU3"],
     "VLQ_betaRd33_minus1_M_3000":["VectorLQToTauTau_betaRd33_minus1_mU3_gU1","VectorLQToTauTau_betaRd33_minus1_mU3_gU2","VectorLQToTauTau_betaRd33_minus1_mU3_gU3"],
     "VLQ_betaRd33_minus1_M_4000":["VectorLQToTauTau_betaRd33_minus1_mU4_gU1","VectorLQToTauTau_betaRd33_minus1_mU4_gU2","VectorLQToTauTau_betaRd33_minus1_mU4_gU3"],
-    "VLQ_betaRd33_0_matched_M_500":"VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched",
+    "VLQ_betaRd33_0_matched_M_500":"VectorLQToTauTau_betaRd33_0_mU500_gU1_matched",
     "VLQ_betaRd33_0_matched_M_1000":"VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched",
     "VLQ_betaRd33_0_matched_M_2000":"VectorLQToTauTau_betaRd33_0_mU2000_gU1_matched",
     "VLQ_betaRd33_0_matched_M_3000":"VectorLQToTauTau_betaRd33_0_mU3000_gU1_matched",
@@ -1990,7 +1992,7 @@ if options.analysis == "vlq":
     "VLQ_betaRd33_0_matched_interference_M_1000":["VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_interference"],
     "VLQ_betaRd33_0_matched_interference_M_2000":["VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched_interference"],
     "VLQ_betaRd33_0_matched_interference_M_3000":["VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched_interference"],
-    "VLQ_betaRd33_0_matched_interference_M_4000":["VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference"]
+    "VLQ_betaRd33_0_matched_interference_M_4000":["VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference"],
     "VLQ_betaRd33_0_matched_interference_M_5000":["VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched_interference"],
     "VLQ_betaRd33_minus1_matched_interference_M_500":["VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched_interference"],
     "VLQ_betaRd33_minus1_matched_interference_M_1000":["VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched_interference"],
@@ -1998,6 +2000,43 @@ if options.analysis == "vlq":
     "VLQ_betaRd33_minus1_matched_interference_M_3000":["VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched_interference"],
     "VLQ_betaRd33_minus1_matched_interference_M_4000":["VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched_interference"],
     "VLQ_betaRd33_minus1_matched_interference_M_5000":["VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched_interference"],
+    "VLQ_betaRd33_0_lowM_matched_interference_M_500":"VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched_interference",
+    "VLQ_betaRd33_0_lowM_matched_interference_M_1000":"VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_interference",
+    "VLQ_betaRd33_0_lowM_matched_interference_M_2000":"VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched_interference",
+    "VLQ_betaRd33_0_lowM_matched_interference_M_3000":"VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched_interference",
+    "VLQ_betaRd33_0_lowM_matched_interference_M_4000":"VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference",
+    "VLQ_betaRd33_0_lowM_matched_interference_M_5000":"VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_lowM_matched_interference_M_500":"VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_lowM_matched_interference_M_1000":"VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_lowM_matched_interference_M_2000":"VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_lowM_matched_interference_M_3000":"VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_lowM_matched_interference_M_4000":"VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_lowM_matched_interference_M_5000":"VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched_interference",
+    "VLQ_betaRd33_0_highM_matched_interference_M_500":"VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched_interference",
+    "VLQ_betaRd33_0_highM_matched_interference_M_1000":"VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_interference",
+    "VLQ_betaRd33_0_highM_matched_interference_M_2000":"VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched_interference",
+    "VLQ_betaRd33_0_highM_matched_interference_M_3000":"VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched_interference",
+    "VLQ_betaRd33_0_highM_matched_interference_M_4000":"VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference",
+    "VLQ_betaRd33_0_highM_matched_interference_M_5000":"VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_highM_matched_interference_M_500":"VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_highM_matched_interference_M_1000":"VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_highM_matched_interference_M_2000":"VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_highM_matched_interference_M_3000":"VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_highM_matched_interference_M_4000":"VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched_interference",
+    "VLQ_betaRd33_minus1_highM_matched_interference_M_5000":"VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched_interference",
+    "VLQ_betaRd33_0_matched_combined_M_500":["VectorLQToTauTau_betaRd33_0_mU500_gU1_matched","VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched_interference"],
+    "VLQ_betaRd33_0_matched_combined_M_1000":["VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched","VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_interference"],
+    "VLQ_betaRd33_0_matched_combined_M_2000":["VectorLQToTauTau_betaRd33_0_mU2000_gU1_matched","VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched_interference"],
+    "VLQ_betaRd33_0_matched_combined_M_3000":["VectorLQToTauTau_betaRd33_0_mU3000_gU1_matched","VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched_interference"],
+    "VLQ_betaRd33_0_matched_combined_M_4000":["VectorLQToTauTau_betaRd33_0_mU4000_gU1_matched","VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference"],
+    "VLQ_betaRd33_0_matched_combined_M_5000":["VectorLQToTauTau_betaRd33_0_mU5000_gU1_matched","VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched_interference","VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched_interference"],
+    "VLQ_betaRd33_minus1_matched_combined_M_500":["VectorLQToTauTau_betaRd33_minus1_mU500_gU1_matched","VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched_interference"],
+    "VLQ_betaRd33_minus1_matched_combined_M_1000":["VectorLQToTauTau_betaRd33_minus1_mU1000_gU1_matched","VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched_interference"],
+    "VLQ_betaRd33_minus1_matched_combined_M_2000":["VectorLQToTauTau_betaRd33_minus1_mU2000_gU1_matched","VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched_interference"],
+    "VLQ_betaRd33_minus1_matched_combined_M_3000":["VectorLQToTauTau_betaRd33_minus1_mU3000_gU1_matched","VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched_interference"],
+    "VLQ_betaRd33_minus1_matched_combined_M_4000":["VectorLQToTauTau_betaRd33_minus1_mU4000_gU1_matched","VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched_interference"],
+    "VLQ_betaRd33_minus1_matched_combined_M_5000":["VectorLQToTauTau_betaRd33_minus1_mU5000_gU1_matched","VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched_interference","VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched_interference"],
+
   }
 
 
@@ -2918,6 +2957,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
         if options.year == "2016": wt_+='*1.008'
         else: wt_+='*1.01'
       if options.channel in ['et','mt']: wt_+='*(pt_2/gen_match_2_pt<1.5)*1.005'
+      wt_+='*wt_emb_sel_kit/trackingweight_1'
     if options.channel == 'em':
       #for em channel there are non-closures wrt data and MC which are corrected here with these additional correction factors
       if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.106'
@@ -3922,7 +3962,7 @@ def GenerateVLQSignal(ana, add_name='', plot='', vlq_sig= [] ,wt='', sel='', cat
         OSSS = 'os'
     else:
         OSSS = '!os'
-    if doScales: weights = {'':'1','_muR1muF2':'wt_mur1_muf2','_muR1muF0p5':'wt_mur1_muf0p5','_muR2muF1':'wt_mur2_muf1','_muR2muF2':'wt_mur2_muf2','_muR0p5muF1':'wt_mur0p5_muf1','_muR0p5muF0p5':'wt_mur0p5_muf0p5','_muR2muF0p5':'wt_mur2_muf0p5','_muR0p5muF2':'wt_mur0p5_muf2','_QCDScaleUp':'wt_mur1_muf2','_QCDScaleDown':'wt_mur1_muf0p5'}
+    if doScales: weights = {'':'1','_QCDScaleUp':'wt_mur1_muf2','_QCDScaleDown':'wt_mur1_muf0p5'}
     else: weights = {'':'1'}
     for name,weight in weights.items():
       full_selection = BuildCutString(wt+"*"+weight, sel, cat, OSSS)
@@ -3933,7 +3973,14 @@ def GenerateVLQSignal(ana, add_name='', plot='', vlq_sig= [] ,wt='', sel='', cat
             for i in vlq_samples[key]:
               sample_names.append(i)
           else: sample_names = [vlq_samples[key]]
-          ana.nodes[nodename].AddNode(ana.SummedFactory(key+name+add_name, sample_names, plot, full_selection))
+          if "combined" not in key and "interference" not in key:
+            selection_and_scale = "({}**4)*({})".format(options.gU,full_selection)
+          elif "interference" in key:
+            selection_and_scale = "({}**2)*({})".format(options.gU,full_selection)
+          else:
+            selection_and_scale = ["({}**4)*({})".format(options.gU,full_selection),"({}**2)*({})".format(options.gU,full_selection),"({}**2)*({})".format(options.gU,full_selection)]
+          ana.nodes[nodename].AddNode(ana.SummedFactory(key+name+add_name, sample_names, plot, selection_and_scale))
+
 
  
 def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
@@ -4548,7 +4595,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateHhhSignal(ana, add_name, plot, ggh_masses, wt, sel, cat, not options.do_ss)
         elif options.analysis == 'vlq':
             #GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt+"*wt_vlq_off_diag_0", sel, cat, not options.do_ss,doScales=True)
-            if add_name == "":
+            if add_name == "" and False:
               GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=True)
             else:
               GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=False)
@@ -5524,6 +5571,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
       hist.SetName(hist_name.replace('minus',''))
       hists_to_add.append(hist)
   for hist in hists_to_add: hist.Write()
+
 
 if options.analysis in ['mssmrun2','vlq']:
   RenameMSSMrun2Datacards(outfile)

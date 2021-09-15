@@ -75,12 +75,14 @@ class HTTGenAnalysis : public ModuleBase {
   double n_bjets_noscale_;
   double n_bjets_eta2p5_noscale_;
   double n_bjets_pt25_;
+  int n_bpartons_;
   unsigned n_jets_nofilter_;
   unsigned n_jets_;
   unsigned n_jetsingap_;
   double jpt_1_;  
   double jpt_2_;  
   double jpt_3_;
+  double bpt_1_;  
   double jeta_1_; 
   double jeta_2_; 
   double jphi_1_;
@@ -96,6 +98,7 @@ class HTTGenAnalysis : public ModuleBase {
   double jdeta_;
   double m_vis_;
   double pt_tt_;
+  double mt_tot_;
   double wtzpt_;
   double mass_;
   double wt_;
@@ -107,6 +110,8 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_cp_sm_alt_;
   double wt_cp_ps_alt_;
   double wt_cp_mm_alt_;
+  double wt_vlq_sm_;
+  double wt_vlq_full_;
   double WTm_, WTp_;
   double wt_cp_prod_sm_;
   double wt_cp_prod_ps_;
@@ -137,6 +142,7 @@ class HTTGenAnalysis : public ModuleBase {
   double parton_pt_3_;
   double parton_mjj_;
   double parton_HpT_;
+  double parton_Zmass_;
   float D0_;
   float DCP_;
   float D0star_;
@@ -182,6 +188,9 @@ class HTTGenAnalysis : public ModuleBase {
   double scale7_;
   double scale8_;
   double scale9_;
+
+  double scale_vlq_1_;
+  double scale_vlq_2_;
  
   double pdfweight_0_;
   double pdfweight_1_;

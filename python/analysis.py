@@ -695,6 +695,9 @@ class Analysis(object):
     def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True,add_name=None):
         res = SummedNode(name)
         for sa in samples:
-            res.AddNode(self.BasicFactory(sa, sa, var, sel, factors, scaleToLumi,add_name))
+            if not isinstance(sel,list):
+              res.AddNode(self.BasicFactory(sa, sa, var, sel, factors, scaleToLumi,add_name))
+            else:
+              res.AddNode(self.BasicFactory(sa, sa, var, sel[samples.index(sa)], factors, scaleToLumi,add_name))
         return res
 
