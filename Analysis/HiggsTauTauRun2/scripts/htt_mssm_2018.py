@@ -224,11 +224,11 @@ if options.proc_mssm or options.proc_all:
 #		signal_mc += ['SUSYGluGluToHToTauTau_M-'+mass]
 #    	
     masses_ph     = [60, 80, 95, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
-    masses_ph     = [95]
+    #masses_ph     = [95]
     # note not all samples exists currently for every mass
     for mass in masses_ph:
       signal_mc += ['SUSYGluGluToHToTauTau_M-%s_powheg' % mass]
-    #  signal_mc += ['SUSYGluGluToBBHToTauTau_M-%s_powheg' % mass]
+      signal_mc += ['SUSYGluGluToBBHToTauTau_M-%s_powheg' % mass]
 
     signal_mc += ['VBFHToTauTau_M-95']
 
@@ -325,7 +325,6 @@ if options.proc_embed or options.proc_all:
 
     embed_samples = []
     data_eras = ['A','B','C','D']
-    #data_eras = ['D']
     for chn in channels:
         for era in data_eras:
             if 'em' in chn:
@@ -437,6 +436,7 @@ if options.proc_bkg or options.proc_all:
          'ZZTo2L2Q',
          'ZZTo4L',
          'ZZTo4L-ext',
+         "VVTo2L2Nu",
     ]
 
 

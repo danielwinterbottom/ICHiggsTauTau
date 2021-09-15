@@ -94,6 +94,7 @@ sample_list = [
     'ZZTo2L2Q',
     'ZZTo4L',
     'ZZTo4L-ext',
+    'VVTo2L2Nu',
     'EmbeddingElElB',
     'EmbeddingElElC',
     'EmbeddingElElD',
