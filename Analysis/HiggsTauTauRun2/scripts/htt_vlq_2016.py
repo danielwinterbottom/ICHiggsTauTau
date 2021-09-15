@@ -232,9 +232,9 @@ if options.proc_vlq_matched or options.proc_all:
     'VectorLQToTauTau_betaRd33_minus1_mU3000_gU1_matched',
     'VectorLQToTauTau_betaRd33_minus1_mU4000_gU1_matched',
     'VectorLQToTauTau_betaRd33_minus1_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_mU1000_gU1',
-    'VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_up',
-    'VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_down',
+    #'VectorLQToTauTau_betaRd33_0_mU1000_gU1',
+    #'VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_up',
+    #'VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_down',
   ]
 
 if options.proc_vlq_interference or options.proc_all:
@@ -534,11 +534,11 @@ if options.proc_sm or options.proc_all or options.proc_vlq_matched or options.pr
         SIG_FILELIST = FILELIST
 
     if 'VectorLQ' in sa and 'interference' in sa:
-      SIG_DIR = 'Aug25_MC_102X_2016' # change when added
+      PREFIX = 'Aug25_MC_102X_2016' # change when added
       SIG_FILELIST ="./filelists/Aug25_2016_MC_102X" # change when added                  
       user='guttley'
     elif 'VectorLQ' in sa and 'matched' in sa:
-      SIG_DIR = 'Aug17_MC_102X_2016'
+      PREFIX = 'Aug17_MC_102X_2016'
       SIG_FILELIST ="./filelists/Aug17_2016_MC_102X"
       user='guttley'
     else:
