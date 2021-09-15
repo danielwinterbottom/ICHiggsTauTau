@@ -58,7 +58,7 @@
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "do_pdf_wts": false,
-    "do_qcd_scale_wts": false,
+    "do_qcd_scale_wts": true,
     "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2016_matched/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt","tt","et"],
-    //"channels":     ["mt"],
+    //"channels":     ["mt","tt","et"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -21,7 +21,7 @@
     // "do_mssm_higgspt" : true,
     // "mssm_higgspt_file" : "/vols/build/cms/gu18/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau2/input/mssm_higgspt/higgs_pt_v2_mssm_mode.root",
     "usePFMET" : false,
-    "do_gen_analysis" : false,
+    "do_gen_analysis" : true,
     "mc"            : "mc2018",
     "era"           : "data_2018",
     "strategy"      : "cpdecays18",
@@ -35,7 +35,7 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : false,
+    "get_effective" : true,
     "do_btag_eff": false,
     "trg_in_mc" : true,
     "do_vbftrg" : false,
@@ -65,7 +65,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": true,
     //"output_folder" : "./",
-    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2018_matched/",
+    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2018_matched_gen/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/mssm_2018_embed_v2_svfit/",
