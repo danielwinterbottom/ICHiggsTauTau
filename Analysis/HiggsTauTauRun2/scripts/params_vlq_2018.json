@@ -1063,6 +1063,150 @@
     "xs": 1.781e-02,
     "evt": 199500
   },
+  "VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_interference": {
+    "xs": -0.00311290312554,
+    "evt": -115983
+  },
+  "VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched_interference": {
+    "xs": -0.0011121343307,
+    "evt": -113307
+  },
+  "VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched_interference": {
+    "xs": -0.000321019602421,
+    "evt": -115137
+  },
+  "VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference": {
+    "xs": -0.000159107871975,
+    "evt": -115451
+  },
+  "VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched_interference": {
+    "xs": -0.000146603394337,
+    "evt": -115117
+  },
+  "VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched_interference": {
+    "xs": -0.00906113179562,
+    "evt": -108354
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_interference": {
+    "xs": -0.0209263389825,
+    "evt": -42440
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched_interference": {
+    "xs": -0.0048021288773,
+    "evt": -41667
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched_interference": {
+    "xs": -0.00210839145658,
+    "evt": -39412
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference": {
+    "xs": -0.00111892094382,
+    "evt": -37257
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched_interference": {
+    "xs": -0.000578916812863,
+    "evt": -35771
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched_interference": {
+    "xs": -0.0795095976444,
+    "evt": -41208
+  },
+  "VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched": {
+    "xs": 0.007978075,
+    "evt": 127298
+  },
+  "VectorLQToTauTau_betaRd33_0_mU2000_gU1_matched": {
+    "xs": 0.000537999,
+    "evt": 126195
+  },
+  "VectorLQToTauTau_betaRd33_0_mU3000_gU1_matched": {
+    "xs": 0.0001080735,
+    "evt": 124626
+  },
+  "VectorLQToTauTau_betaRd33_0_mU4000_gU1_matched": {
+    "xs": 3.42809e-05,
+    "evt": 121463
+  },
+  "VectorLQToTauTau_betaRd33_0_mU5000_gU1_matched": {
+    "xs": 1.397625e-05,
+    "evt": 125351
+  },
+  "VectorLQToTauTau_betaRd33_0_mU500_gU1_matched": {
+    "xs": 0.1066495,
+    "evt": 146650
+  },
+  "VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched_interference": {
+    "xs": -0.00800894159139,
+    "evt": -121169
+  },
+  "VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched_interference": {
+    "xs": -0.00254388873888,
+    "evt": -119500
+  },
+  "VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched_interference": {
+    "xs": -0.00117903277463,
+    "evt": -120497
+  },
+  "VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched_interference": {
+    "xs": -0.000559964890491,
+    "evt": -119323
+  },
+  "VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched_interference": {
+    "xs": -0.000440670052702,
+    "evt": -120634
+  },
+  "VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched_interference": {
+    "xs": -0.0466908251251,
+    "evt": -115560
+  },
+  "VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched_interference": {
+    "xs": -0.0507298957086,
+    "evt": -57928
+  },
+  "VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched_interference": {
+    "xs": -0.0118652353231,
+    "evt": -57251
+  },
+  "VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched_interference": {
+    "xs": -0.00505926632337,
+    "evt": -56426
+  },
+  "VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched_interference": {
+    "xs": -0.00276876604091,
+    "evt": -54466
+  },
+  "VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched_interference": {
+    "xs": -0.0015375647401,
+    "evt": -53378
+  },
+  "VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched_interference": {
+    "xs": -0.178624660435,
+    "evt": -57425
+  },
+  "VectorLQToTauTau_betaRd33_minus1_mU1000_gU1_matched": {
+    "xs": 0.0568561,
+    "evt": 129577
+  },
+  "VectorLQToTauTau_betaRd33_minus1_mU2000_gU1_matched": {
+    "xs": 0.00392941,
+    "evt": 124832
+  },
+  "VectorLQToTauTau_betaRd33_minus1_mU3000_gU1_matched": {
+    "xs": 0.0007940225,
+    "evt": 124291
+  },
+  "VectorLQToTauTau_betaRd33_minus1_mU4000_gU1_matched": {
+    "xs": 0.000252129,
+    "evt": 121000
+  },
+  "VectorLQToTauTau_betaRd33_minus1_mU5000_gU1_matched": {
+    "xs": 0.0001032265,
+    "evt": 120450
+  },
+  "VectorLQToTauTau_betaRd33_minus1_mU500_gU1_matched": {
+    "xs": 0.725367,
+    "evt": 145094
+  },
   "EGamma": {
     "lumi": 59740
   },
