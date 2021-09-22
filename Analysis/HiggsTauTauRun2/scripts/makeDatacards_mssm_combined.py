@@ -348,7 +348,7 @@ for year in years:
             if not options.dry_run:
               #if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
               if ch in ["mt","et"] and 'do_ff_syst' in syst:
-                SubmitBatchJob(job_file,time=600,memory=24,cores=1)
+                SubmitBatchJob(job_file,time=600,memory=12,cores=1)
               else:
                 SubmitBatchJob(job_file,time=180,memory=24,cores=1)    
         num+=1
