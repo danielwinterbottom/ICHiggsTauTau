@@ -66,6 +66,10 @@ class Photon : public Candidate {
 
   inline std::size_t supercluster() const { return supercluster_; }
 
+  /// The ratio of the energy in the 3x3 crystal array centred on the seed
+  /// over the energy of the complete supercluster
+  inline float r9() const { return r9_; }
+
   /**@}*/
 
   /// @name Setters
@@ -139,6 +143,9 @@ class Photon : public Candidate {
     supercluster_ = supercluster;
   }
 
+  /// @copybrief r9()
+  inline void set_r9(float const& r9) { r9_ = r9; }
+
 
 //supercluster_
   /**@}*/
@@ -157,6 +164,7 @@ class Photon : public Candidate {
 
   float had_tower_over_em_;
   float sigma_IetaIeta_;
+  float r9_;
 
   bool pass_electron_veto_;
   std::size_t supercluster_;

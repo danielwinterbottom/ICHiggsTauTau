@@ -2057,16 +2057,8 @@ namespace ic {
 
   std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> GetTauGammasFlat(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
  
-    std::vector<ic::PFCandidate*> gammas = {};
-    if (tau->decay_mode()<=2 || tau->decay_mode()>10) { 
-      gammas = GetTauGammas(tau, pfcands, 0.5, 0);
-    } else {
-      // need to modify isolation collection to exclude these gammas!
-      gammas = GetTauGammas(tau, pfcands, 0.5, 0);//signal gammas
-      std::vector<ic::PFCandidate*> iso_gammas = GetTauIsoGammas(tau, pfcands, 0.5, 0);//iso gammas 
-      gammas.insert(gammas.end(), iso_gammas.begin(), iso_gammas.end()  ); 
-      std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
-    }
+    std::vector<ic::PFCandidate*> gammas = GetTauGammas(tau, pfcands, 0.5, 0);
+    std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
 
     unsigned n_gammas = gammas.size();
     std::vector<double> gam_px = {};
@@ -2083,6 +2075,30 @@ namespace ic {
       gam_pz.push_back(z);
     }
    
+    return std::make_tuple(n_gammas, gam_px, gam_py, gam_pz);
+
+  }
+
+  std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> GetTauIsoGammasFlat(ic::Tau const* tau, std::vector<ic::PFCandidate*> pfcands) {
+
+    std::vector<ic::PFCandidate*> gammas = GetTauIsoGammas(tau, pfcands, 0.5, 0);
+    std::sort(gammas.begin(), gammas.end(), bind(&PFCandidate::pt, _1) > bind(&PFCandidate::pt, _2));
+
+    unsigned n_gammas = gammas.size();
+    std::vector<double> gam_px = {};
+    std::vector<double> gam_py = {};
+    std::vector<double> gam_pz = {};
+
+    for (auto g : gammas) {
+      double x = g->vector().Px();
+      double y = g->vector().Py();
+      double z = g->vector().Pz();
+
+      gam_px.push_back(x);
+      gam_py.push_back(y);
+      gam_pz.push_back(z);
+    }
+
     return std::make_tuple(n_gammas, gam_px, gam_py, gam_pz);
 
   }

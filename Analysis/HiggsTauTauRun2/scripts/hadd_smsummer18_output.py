@@ -82,6 +82,7 @@ sample_list = [
     'WGToLNuG',
     'WJetsToLNu-LO',
     'WWTo1L1Nu2Q',
+    'WZTo1L1Nu2Q',
     'WWTo2L2Nu',#new
     'WWTo4Q',#new
     'WWToLNuQQ',#new
@@ -136,7 +137,7 @@ sample_list = [
     'JJH0MToTauTauPlusTwoJets_Filtered',
     'JJH0MToTauTauPlusZeroJets',
     'JJH0MToTauTauPlusZeroJets_Filtered',
-    'JJH0Mf05ph0ToTauTauPlusOneJets.dat',
+    'JJH0Mf05ph0ToTauTauPlusOneJets',
     'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
     'JJH0Mf05ph0ToTauTauPlusTwoJets',
     'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
@@ -173,7 +174,7 @@ sample_list = [
     'WHiggs0Mf05ph0ToTauTau',
     'WHiggs0PHToTauTau',
     'WHiggs0PHf05ph0ToTauTau',
-    'WHiggs0PMToTauTau.dat',
+    'WHiggs0PMToTauTau',
     'WminusHToTauTauUncorrelatedDecay',
     'WminusHToTauTauUncorrelatedDecay_Filtered',
     'WplusHToTauTauUncorrelatedDecay',
