@@ -290,20 +290,20 @@ for year in years:
       run_cmd_alt3 = ''
       rename_cmd_alt3 = ''
 
-      #if cat.startswith("Nbtag0") or True: # do seperate svfit and pt_tt vs svfit, and more bins at low mt_tot 
-      #  bins = BINS_VFINE
-      #  run_cmd_alt1 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_vfine --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
-      #  rename_cmd_alt1 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_vfine_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_vfine.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      # do seperate svfit and pt_tt vs svfit, and more bins at low mt_tot 
+      #bins = BINS_VFINE
+      #run_cmd_alt1 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_vfine --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
+      #rename_cmd_alt1 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_vfine_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_vfine.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
-      #  bins = BINS_SVFIT
-      #  var_alt = 'svfit_mass'
-      #  run_cmd_alt2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_svfit --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
-      #  rename_cmd_alt2 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_svfit.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      bins = BINS_SVFIT
+      var_alt = 'svfit_mass'
+      run_cmd_alt2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_svfit --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
+      rename_cmd_alt2 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_svfit.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
-      #  bins = BINS_2D
-      #  var_alt = 'pt_tt,svfit_mass'
-      #  run_cmd_alt3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_pt_tt_vs_svfit --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
-      #  rename_cmd_alt3 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_pt_tt_vs_svfit_%(cat)s_pt_tt_vs_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_pt_tt_vs_svfit.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      bins = BINS_2D
+      var_alt = 'pt_tt,svfit_mass'
+      run_cmd_alt3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_pt_tt_vs_svfit --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
+      rename_cmd_alt3 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_pt_tt_vs_svfit_%(cat)s_pt_tt_vs_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_pt_tt_vs_svfit.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
       commands = [(run_cmd,rename_cmd)]
       if run_cmd_alt1 != '': commands.append((run_cmd_alt1, rename_cmd_alt1)) 

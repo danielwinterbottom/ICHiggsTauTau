@@ -18,7 +18,7 @@ source /vols/grid/cms/setup.sh' $job
     if [[ $1 != "" ]]; then
       qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=24G -cwd $job
       #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=12G -cwd $job
-      #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -l h_vmem=24G -pe hep.pe 2 -cwd $job
+      #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=$1:0:0 -l h_vmem=24G -pe hep.pe 2 -cwd $job
       #qsub -e /dev/null -o /dev/null -V -q hep.q -l h_rt=0:$1:0 -cwd $job
     fi
   fi; 

@@ -206,7 +206,7 @@ if options.proc_sm or options.proc_all:
       'WplusHToTauTau_M-125',
       'WminusHToTauTau_M-125',
       'ZHToTauTau_M-125',
-      'ttHToTauTau',
+      #'ttHToTauTau',
     ]
 
 if options.proc_mssm or options.proc_all:
@@ -224,7 +224,6 @@ if options.proc_mssm or options.proc_all:
 #		signal_mc += ['SUSYGluGluToHToTauTau_M-'+mass]
 #    	
     masses_ph     = [60, 80, 95, 100, 120, 125, 130, 140, 160, 180, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1200, 1400, 1600, 1800, 2000, 2300, 2600, 2900, 3200, 3500]
-    #masses_ph     = [95]
     # note not all samples exists currently for every mass
     for mass in masses_ph:
       signal_mc += ['SUSYGluGluToHToTauTau_M-%s_powheg' % mass]
@@ -518,10 +517,10 @@ if options.mg_signal or options.proc_sm or options.proc_mssm or options.proc_all
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
                 nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-                nperjob = 20
+                nperjob = 5
                 n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-                if n_scales*n_channels>=24: nperjob = 10
-                if n_scales*n_channels>=48: nperjob=5
+                if n_scales*n_channels>=24: nperjob = 2
+                if n_scales*n_channels>=48: nperjob=1
 
                 if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
                   nperjob = int(math.ceil(float(nperjob)/5)) 
