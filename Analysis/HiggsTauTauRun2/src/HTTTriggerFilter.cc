@@ -551,7 +551,8 @@ namespace ic {
     }
 
     std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
-    std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
+    std::vector<TriggerObject *> objs;
+    if(event->ExistsInTree(trig_obj_label)) objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
 
     std::vector<CompositeCandidate *> dileptons_pass;
     
@@ -642,7 +643,8 @@ namespace ic {
     
     bool passed_etaucross = false;
     if (channel_ == channel::et){
-      std::vector<TriggerObject *> const& cross_objs = event->GetPtrVec<TriggerObject>(trig_obj_label);  
+      std::vector<TriggerObject *> cross_objs;  
+      if(event->ExistsInTree(trig_obj_label)) cross_objs = event->GetPtrVec<TriggerObject>(trig_obj_label);  
       for(unsigned i = 0; i < dileptons.size(); ++i){  
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, leg1_filter, 0.5).first;
         if(extra_leg2_filter!="") leg1_match = leg1_match&&IsFilterMatchedWithIndex(dileptons[i]->At(0), cross_objs, extra_leg2_filter,0.5).first; 

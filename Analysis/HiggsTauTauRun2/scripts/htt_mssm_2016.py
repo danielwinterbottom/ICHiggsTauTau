@@ -454,7 +454,7 @@ if options.proc_bkg or options.proc_all:
       job_num=0
       for FLATJSONPATCH in flatjsons: 
         nperjob = 20
-        if sa == 'TT': nperjob = 10
+        if 'TT' in sa or 'VVTo2L2Nu' in sa: nperjob = 10
   
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
@@ -463,8 +463,8 @@ if options.proc_bkg or options.proc_all:
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
         if n_scales*n_channels>=24: nperjob = 10
         if n_scales*n_channels>=48: nperjob=5
-        if sa == 'TT':
-          nperjob = 15 
+        if 'TT' in sa or 'VVTo2L2Nu' in sa:
+          nperjob = 10 
           if n_scales*n_channels>24: nperjob = 5
           if n_scales*n_channels>48: nperjob = 2
         if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
