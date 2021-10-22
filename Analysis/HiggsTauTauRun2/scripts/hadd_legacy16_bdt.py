@@ -13,7 +13,7 @@ parser.add_option("--folder", dest = "folder",
                   help="Specify folder that contains the output to be hadded")
 parser.add_option("--ignore_nfiles", dest= "ignore", default=False, action='store_true',
                   help="Ignore number of files per sample")
-parser.add_option("--sample_list", dest = "samplelist", default="./jobs/files_per_sample.txt",
+parser.add_option("--sample_list", dest = "samplelist", default="./jobs/files_per_sample_2016.txt",
                   help="list of files per sample you want to use for hadding")
 parser.add_option("--batch", dest= "batch", default=False, action='store_true',
                   help="Submit as batch jobs")
@@ -225,7 +225,18 @@ sample_list = [
      'ttHiggs0MToTauTau',
      'ttHiggs0Mf05ph0ToTauTau',
      'ttHiggs0PMToTauTau',
-
+     'WHiggs0MfWH05ph0',
+     'WHiggs0PH',
+     'WHiggs0PM',
+     'WHiggs0PHfWH05ph0',
+     'WHiggs0M',
+     'WHiggs0L1fWH05ph0',
+     'ZHiggs0PH',
+     'ZHiggs0L1',
+     'ZHiggs0PHfZH05ph0',
+     'ZHiggs0MfZH05ph0',
+     'ZHiggs0PM',
+     'ZHiggs0M',
 	]
 
 

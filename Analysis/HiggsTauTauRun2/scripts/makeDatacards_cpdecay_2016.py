@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_leg2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding  --output_folder datacards --batch
+#./scripts/makeDatacards_cpdecay_2016.py -c 'tt' -s 'cpdecay' --embedding  --output_folder datacards --batch
 
 import sys
 from optparse import OptionParser

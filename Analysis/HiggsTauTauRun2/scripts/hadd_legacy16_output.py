@@ -384,6 +384,18 @@ sample_list = [
     'SUSYGluGluToHToTauTau_M-800_powheg',
     'SUSYGluGluToHToTauTau_M-80_powheg',
     'SUSYGluGluToHToTauTau_M-900_powheg',
+    'WHiggs0MfWH05ph0',
+    'WHiggs0PH',
+    'WHiggs0PM',
+    'WHiggs0PHfWH05ph0',
+    'WHiggs0M',
+    'WHiggs0L1fWH05ph0',
+    'ZHiggs0PH',
+    'ZHiggs0L1',
+    'ZHiggs0PHfZH05ph0',
+    'ZHiggs0MfZH05ph0',
+    'ZHiggs0PM',
+    'ZHiggs0M',
     ]
 
 sample_list = list(set(sample_list))
