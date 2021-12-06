@@ -27,6 +27,7 @@ class JetEnergyUncertainty : public ModuleBase {
   CLASS_MEMBER(JetEnergyUncertainty, std::vector<double>, correlations)
   CLASS_MEMBER(JetEnergyUncertainty, unsigned, jes_corr_mode)
   CLASS_MEMBER(JetEnergyUncertainty, bool, EENoiseFix)
+  CLASS_MEMBER(JetEnergyUncertainty, bool, HEMFix)
   CLASS_MEMBER(JetEnergyUncertainty, bool, shift_met)
   CLASS_MEMBER(JetEnergyUncertainty, std::string, met_label)
   JetCorrectionUncertainty *uncert_;
@@ -70,9 +71,12 @@ int JetEnergyUncertainty<T>::PreAnalysis() {
   std::cout << boost::format(param_fmt()) % "uncert_file"         % uncert_file_;
   std::cout << boost::format(param_fmt()) % "uncert_set"          % uncert_set_;
   std::cout << boost::format(param_fmt()) % "shift_met"          % shift_met_;
-  params_ = new JetCorrectorParameters(uncert_file_, uncert_set_);
-  uncert_ = new JetCorrectionUncertainty(*params_);
-  
+
+  if(uncert_set_!=""){
+    params_ = new JetCorrectorParameters(uncert_file_, uncert_set_);
+    uncert_ = new JetCorrectionUncertainty(*params_);
+  }  
+
   if(sum_uncerts_){
     for (unsigned j=0; j<uncert_sets_.size(); ++j){
       std::cout << "uncert sets[j]: " << uncert_sets_[j] << std::endl;
@@ -87,68 +91,96 @@ int JetEnergyUncertainty<T>::PreAnalysis() {
 template <class T>
 int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
   std::vector<T *> & vec = event->GetPtrVec<T>(input_label_);
-  if(!sum_uncerts_){
-    ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
-    ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);  
-    for (unsigned i = 0; i < vec.size(); ++i) {
-      double pt = vec[i]->pt() * (vec[i]->uncorrected_energy()/vec[i]->energy());
-      bool skipJet = (EENoiseFix_ && pt<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
-      if(!skipJet) before+=vec[i]->vector();
-      uncert_->setJetPt(vec[i]->pt());
-      uncert_->setJetEta(vec[i]->eta());
-      if (jes_shift_mode_ == 1) {
-        double shift = uncert_->getUncertainty(false); //down
-        vec[i]->set_vector(vec[i]->vector() * (1.0-shift));
+  if(uncert_set_!="") {
+    if(!sum_uncerts_){
+      ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
+      ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);  
+      for (unsigned i = 0; i < vec.size(); ++i) {
+        double pt = vec[i]->pt() * (vec[i]->uncorrected_energy()/vec[i]->energy());
+        bool skipJet = (EENoiseFix_ && pt<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139);  
+        if(!skipJet) before+=vec[i]->vector();
+        uncert_->setJetPt(vec[i]->pt());
+        uncert_->setJetEta(vec[i]->eta());
+        if (jes_shift_mode_ == 1) {
+          double shift = uncert_->getUncertainty(false); //down
+          vec[i]->set_vector(vec[i]->vector() * (1.0-shift));
+        }
+        if (jes_shift_mode_ == 2) {
+          double shift = uncert_->getUncertainty(true); //up
+          vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
+        }
+        if(!skipJet) after+=vec[i]->vector();
+  
       }
-      if (jes_shift_mode_ == 2) {
-        double shift = uncert_->getUncertainty(true); //up
-        vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
+      if (shift_met_) {
+        Met * met = event->GetPtr<Met>(met_label_);
+        this->CorrectMETForShift(met, after-before);
       }
-      if(!skipJet) after+=vec[i]->vector();
+    } else if (sum_uncerts_){
+      ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
+      ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);
+      for (unsigned i = 0; i < vec.size(); ++i) {
+        double pt = vec[i]->pt() * (vec[i]->uncorrected_energy()/vec[i]->energy());
+        bool skipJet = (EENoiseFix_ && pt<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139); 
+        if(!skipJet) before+=vec[i]->vector();  
+        double shift=0;
+        double factor = 1.; //for correlations
+        for (unsigned j=0; j<uncerts_.size(); ++j){
+          uncerts_[j]->setJetPt(vec[i]->pt());
+          uncerts_[j]->setJetEta(vec[i]->eta());
+          if (jes_corr_mode_ == 1) {
+            factor = correlations_[j];
+          } else if (jes_corr_mode_ == 2){
+              factor = 1. - correlations_[j];
+          }
+  
+          if (jes_shift_mode_ == 1) {
+            shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(false),2)); //down
+          }
+          if (jes_shift_mode_ == 2) {
+            shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(true),2)); //up
+          }
+        }
+        if (jes_shift_mode_ == 1) {
+          vec[i]->set_vector(vec[i]->vector() * (1.0-shift));
+        }
+        if (jes_shift_mode_ == 2) {
+          vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
+        }
+        if(!skipJet) after+=vec[i]->vector();
+      }
+      if (shift_met_) {
+        Met * met = event->GetPtr<Met>(met_label_);
+        this->CorrectMETForShift(met, after-before);
+      }
+    }
+  }
 
-    }
-    if (shift_met_) {
-      Met * met = event->GetPtr<Met>(met_label_);
-      this->CorrectMETForShift(met, after-before);
-    }
-  } else if (sum_uncerts_){
+  // code to apply jet scaling for HEM issue in 2018
+  if(HEMFix_){
     ROOT::Math::PxPyPzEVector before(0.,0.,0.,0.);
     ROOT::Math::PxPyPzEVector after(0.,0.,0.,0.);
     for (unsigned i = 0; i < vec.size(); ++i) {
       double pt = vec[i]->pt() * (vec[i]->uncorrected_energy()/vec[i]->energy());
-      bool skipJet = (EENoiseFix_ && pt<50 && fabs(vec[i]->eta())>2.65 && fabs(vec[i]->eta())<3.139); 
-      if(!skipJet) before+=vec[i]->vector();  
-      double shift=0;
-      double factor = 1.; //for correlations
-      for (unsigned j=0; j<uncerts_.size(); ++j){
-        uncerts_[j]->setJetPt(vec[i]->pt());
-        uncerts_[j]->setJetEta(vec[i]->eta());
-        if (jes_corr_mode_ == 1) {
-          factor = correlations_[j];
-        } else if (jes_corr_mode_ == 2){
-            factor = 1. - correlations_[j];
-        }
+      before+=vec[i]->vector();
+      bool region1 = pt>15 && vec[i]->phi()>-1.57 && vec[i]->phi() < -0.87 && vec[i]->eta()>-2.5 && vec[i]->eta()<-1.3;
+      bool region2 = pt>15 && vec[i]->phi()>-1.57 && vec[i]->phi() < -0.87 && vec[i]->eta()>-3.0 && vec[i]->eta()<-2.5; 
+      if (region1) {
+        vec[i]->set_vector(vec[i]->vector() * 0.8);
+      }
+      if (region2) {
+        vec[i]->set_vector(vec[i]->vector() * 0.65);
+      }
+      after+=vec[i]->vector();
 
-        if (jes_shift_mode_ == 1) {
-          shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(false),2)); //down
-        }
-        if (jes_shift_mode_ == 2) {
-          shift = sqrt(shift*shift + factor*pow(uncerts_[j]->getUncertainty(true),2)); //up
-        }
-      }
-      if (jes_shift_mode_ == 1) {
-        vec[i]->set_vector(vec[i]->vector() * (1.0-shift));
-      }
-      if (jes_shift_mode_ == 2) {
-        vec[i]->set_vector(vec[i]->vector() * (1.0+shift));
-      }
-      if(!skipJet) after+=vec[i]->vector();
     }
     if (shift_met_) {
       Met * met = event->GetPtr<Met>(met_label_);
       this->CorrectMETForShift(met, after-before);
     }
   }
+
+
   return 0;
 }
 

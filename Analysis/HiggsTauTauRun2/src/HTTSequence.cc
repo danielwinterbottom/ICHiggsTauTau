@@ -907,6 +907,20 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      );
    
   }
+
+  bool hem_fix=false;
+  if (hem_fix && !is_data && !is_embedded && era_type == era::data_2018) {
+    BuildModule(JetEnergyUncertainty<PFJet>("HEMFix")
+      .set_input_label(shift_jets_label)
+      .set_met_label(shift_met_label)
+      .set_jes_shift_mode(0)
+      .set_uncert_file("")
+      .set_uncert_set("")
+      .set_EENoiseFix(false)
+      .set_HEMFix(true)
+      .set_shift_met(!do_recoil)
+     );
+  } 
   
   if(js["do_btag_eff"].asBool()){
      BuildModule(BTagCheck("BTagCheck")

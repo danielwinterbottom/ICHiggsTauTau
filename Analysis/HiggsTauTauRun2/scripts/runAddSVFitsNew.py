@@ -78,7 +78,7 @@ def main(args):
             #if sample not in [
             # 'TTTo2L2Nu',
             #]: continue
-
+            if not sample.startswith('Tau'): continue
             print sample
 
             for subdir in subdirs:
