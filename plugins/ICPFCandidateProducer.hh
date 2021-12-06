@@ -196,14 +196,6 @@ void ICPFCandidateProducer<pat::PackedCandidate>::constructSpecific(
 
   for (unsigned i = 0; i < cands_handle->size(); ++i) {
     pat::PackedCandidate const& src = cands_handle->at(i);
-
-    std::cout << "--------" << std::endl;
-
-    std::cout << src.pdgId() << std::endl; 
-    std::cout << src.hcalFraction() << std::endl; 
-    std::cout << src.rawCaloFraction() << std::endl; 
-    //std::cout << src.normalizedChi2_ << std::endl; 
-
     ic::PFCandidate& dest = cands_->at(i);
     // PackedCandidates don't store the same set of flags as PFCandidates, but
     // they do store their own set of flags that we can get via the status()
