@@ -10,18 +10,16 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
 # 'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/1/merged_0.root_'
-'root://xrootd.unl.edu//store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/110000/64A0A8F7-3198-B742-BDC7-865A854C1F0C.root',
-# 'root://xrootd.unl.edu//store/data/Run2018B/SingleMuon/MINIAOD/17Sep2018-v1/100000/7FA66CD1-3158-F94A-A1E0-27BECABAC34A.root',
-# 'root://xrootd-cms.infn.it//store/mc/RunIIAutumn18MiniAOD/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/270000/A41BB8E7-AA12-D548-840E-F3624835B564.root',
-# 'root://xrootd.unl.edu//store/data/Run2018C/Tau/MINIAOD/17Sep2018-v1/120000/B21AD337-DD07-0943-9683-93FC5C1215DB.root',
-#'root://xrootd.unl.edu//store/user/jbechtel/gc_storage/MuTau_data_2018ABC_CMSSW1020/TauEmbedding_MuTau_data_2018ABC_CMSSW1020_Run2018A/11/merged_10.root',
+# 'root://xrootd.unl.edu//store/user/sbrommer/gc_storage/ElTau_data_2017_CMSSW944/TauEmbedding_ElTau_data_2017_CMSSW944_Run2017B/25/merged_1524.root_',
+'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/280000/E2C688CA-1F1C-E911-9847-0CC47AD98BC2.root',
+# 'root://xrootd.unl.edu//store/mc/RunIIFall17MiniAODv2/SUSYGluGluToHToTauTau_M-120_TuneCP5_13TeV-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/C4C4D050-DE41-E811-A2A6-0025905B85B6.root'
+#'root://xrootd.unl.edu///store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/248C8431-B838-E811-B418-0025905B85D2.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '102X_upgrade2018_realistic_v20', parser.VarParsing.multiplicity.singleton,
-#102X_upgrade2018_realistic_v18
-#102X_dataRun2_Sep2018ABC_v2
+opts.register('globalTag', '102X_dataRun2_v12', parser.VarParsing.multiplicity.singleton,
+# opts.register('globalTag', '102X_mc2017_realistic_v6', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
@@ -73,7 +71,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(1000) 
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -118,8 +116,7 @@ tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     toKeep = [
                             "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
                             "deepTau2017v2p1",
-                            ])
-
+                               ])
 tauIdEmbedder.runTauID()
 
 process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
@@ -217,6 +214,7 @@ process.icGenVertexProducer = producers.icGenVertexProducer.clone(
 
 ### refit PV excluding tau decay products tracks
 
+import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
 import VertexRefit.TauRefit.MiniAODRefitVertexProducer_cfi as vertexfit
 
 process.refitOfflineSlimmedPrimaryVerticesBSWithAllTracks = vertexfit.MiniAODRefitVertexBSProducer.clone()
@@ -226,7 +224,6 @@ process.icBSVertexProducer = producers.icVertexProducer.clone(
     firstVertexOnly = cms.bool(True)
 )
 
-import VertexRefit.TauRefit.AdvancedRefitVertexProducer_cfi as vertexrefit
 process.refitOfflineSlimmedPrimaryVertices = vertexrefit.AdvancedRefitVertexNoBSProducer.clone()
 process.refitOfflineSlimmedPrimaryVertices.storeAsMap = cms.bool(True)
 process.refitOfflineSlimmedPrimaryVertices.srcLeptons = cms.VInputTag("slimmedElectrons", "slimmedMuons", updatedTauName)
@@ -288,11 +285,11 @@ from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runEnergyCorrections=True,
                        runVID=False, #saves CPU time by not needlessly re-running VID, if you want the Fall17V2 IDs, set this to True or remove (default is True)
-                       era='2018-UL')  
+                       era='2017-UL')
 
 process.icElectronSequence += cms.Sequence(
     process.egammaPostRecoSeq
-)
+    )
 
 process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
     input       = electronLabel,
@@ -307,7 +304,6 @@ process.electronMVAValueMapProducer.srcMiniAOD = electronLabel
 process.icElectronSequence+=cms.Sequence(
     process.electronMVAValueMapProducer
 )
-
 
 #Electron PF iso sequence:
 process.load("CommonTools.ParticleFlow.Isolation.pfElectronIsolation_cff")
@@ -400,6 +396,11 @@ process.electronPFIsolationValuesSequence +=cms.Sequence(
     process.elHcalPFClusterIso
 )
 
+import RecoEgamma.EgammaTools.calibratedEgammas_cff
+calibratedPatElectrons94Xv1 = RecoEgamma.EgammaTools.calibratedEgammas_cff.calibratedPatElectrons.clone(
+    produceCalibratedObjs = False
+    )
+
 process.icElectronProducer = producers.icElectronProducer.clone(
     branch                    = cms.string("electrons"),
     input                     = cms.InputTag("selectedElectrons"),
@@ -418,12 +419,12 @@ process.icElectronProducer = producers.icElectronProducer.clone(
     inputSigmaUp              = cms.string("energySigmaUp"),
     inputSigmaDown            = cms.string("energySigmaDown"),
     includeFloats = cms.PSet(
-        generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
-        mvaRun2Fall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-        mvaRun2IsoFall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
-        mvaRun2Fall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2RawValues"), # need raw values for v2
-        mvaRun2IsoFall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2RawValues"),
-  ),
+       generalPurposeMVASpring16  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+       mvaRun2Fall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+       mvaRun2IsoFall17  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
+       mvaRun2Fall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2RawValues"), # need raw values for v2
+       mvaRun2IsoFall17V2  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2RawValues"),
+    ),
     includeClusterIso        = cms.bool(True),
     includePFIso03           = cms.bool(True),
     includePFIso04           = cms.bool(True),
@@ -522,7 +523,7 @@ process.icMuonSequence += cms.Sequence(
     process.muPFIsoDepositNeutral+
     process.muPFIsoDepositGamma+
     process.muonPFIsolationValuesSequence
-    )
+)
 
 process.icMuonProducer = producers.icMuonProducer.clone(
     branch                    = cms.string("muons"),
@@ -612,6 +613,7 @@ process.icPhotonSequence = cms.Sequence(
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
+
 #rebuild ak4 chs jets as in  https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Jets
 process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 
@@ -659,7 +661,6 @@ process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
  # Jet energy corrections
  # ----------------------
 process.ak4PFL1FastjetCHS = cms.EDProducer("L1FastjetCorrectorProducer",
-#    srcRho = cms.InputTag("kt6PFJets", "rho"),
     srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
     algorithm = cms.string('AK4PFchs'),
     level = cms.string('L1FastJet')
@@ -743,12 +744,33 @@ process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
 process.slimmedJetsSmearedDown = process.slimmedJetsSmeared.clone(variation=cms.int32(-1))
 process.slimmedJetsSmearedUp = process.slimmedJetsSmeared.clone(variation=cms.int32(1))
 
+# process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
+#     branch                    = cms.string("ak4PFJetsCHS"),
+#     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
+#     srcConfig = cms.PSet(
+#         isSlimmed               = cms.bool(True),
+#         slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
+#         includeJetFlavour       = cms.bool(True),
+#         includeJECs             = cms.bool(True),
+#         inputSVInfo             = cms.InputTag(""),
+#         requestSVInfo           = cms.bool(False)
+#     ),
+#    destConfig = cms.PSet(
+#         includePileupID         = cms.bool(True),
+#         inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+#         includeTrackBasedVars   = cms.bool(False),
+#         inputTracks             = cms.InputTag("unpackedTracksAndVertices"),
+#         inputVertices           = cms.InputTag("unpackedTracksAndVertices"),
+#         requestTracks           = cms.bool(False)
+#     )
+# )
+
 process.icPFJetProducerFromPatNew = producers.icPFJetFromPatNewProducer.clone(
     branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("selectedSlimmedJetsAK4"),
     inputSmear                = cms.InputTag("slimmedJetsSmeared"),
-    inputSmearDown            = cms.InputTag("slimmedJetsSmearedDown"),
-    inputSmearUp              = cms.InputTag("slimmedJetsSmearedUp"),
+    inputSmearDown            = cms.InputTag("slimmedJetsSmearedUp"),
+    inputSmearUp              = cms.InputTag("slimmedJetsSmearedDown"),
     srcConfig = cms.PSet(
       isSlimmed               = cms.bool(True),
       slimmedPileupIDLabel    = cms.string('pileupJetId:fullDiscriminant'),
@@ -771,9 +793,7 @@ if isData or isEmbed:
 else:
     process.icPFJetProducerFromPatNew.doSmear = cms.bool(True)
 
-
 process.icPFJetSequence = cms.Sequence()
-
 
 process.icPFJetSequence += cms.Sequence(
     process.patJetCorrFactorsUpdatedJEC+
@@ -787,13 +807,12 @@ process.icPFJetSequence += cms.Sequence(
     process.updatedPatJetsTransientCorrectedUpdatedJEC+
     process.selectedUpdatedPatJetsUpdatedJEC+
     process.selectedSlimmedJetsAK4+
+    # process.icPFJetProducerFromPat +
     process.slimmedJetsSmeared+
     process.slimmedJetsSmearedDown+
     process.slimmedJetsSmearedUp+
     process.icPFJetProducerFromPatNew
     )
-
-
 
 ################################################################
 # PF MET
@@ -802,33 +821,35 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
 from RecoMET.METProducers.PFMET_cfi import pfMet
-
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-
-runMetCorAndUncFromMiniAOD(process,
-                           isData=bool(isData) or bool(isEmbed),
-                           postfix="ModifiedMET",
-                           )
-
+runMetCorAndUncFromMiniAOD (
+        process,
+        isData = (bool(isData) or bool(isEmbed)),
+        fixEE2017 = True,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+        postfix = "ModifiedMET"
+)
 
 from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
 makePuppiesFromMiniAOD( process, True );
-
 runMetCorAndUncFromMiniAOD(process,
                            isData=(bool(isData) or bool(isEmbed)),
                            metType="Puppi",
                            postfix="PuppiModifiedMET",
                            jetFlavor="AK4PFPuppi",
+                           fixEE2017 = False, 
                            )
-
 
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
-                         input = cms.InputTag("slimmedMETsModifiedMET"),
+                         input = cms.InputTag("slimmedMETsModifiedMET"), # for 2017 apply re-correction
                          getUncorrectedMet=cms.bool(False),
                          includeMetUncertainties=cms.bool(True)
                          )
 
+################################################################
+# Puppi MET
+################################################################
 
 process.icPuppiMetProducer = producers.icMetFromPatProducer.clone(
                          input=cms.InputTag("slimmedMETsPuppiModifiedMET"),
@@ -844,7 +865,6 @@ process.icMetSequence = cms.Sequence(
   process.icPfMetProducer *
   process.icPuppiMetProducer
 )
-
 
 
 ################################################################
@@ -1008,30 +1028,6 @@ process.icIsoMu20Tau27ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icIsoMu20Tau27TightIDObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu20Tau27TightID"),
-    hltPath = cms.string("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_TightID_CrossL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu20TauHPS27ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu20TauHPS27"),
-    hltPath = cms.string("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu20TauHPS27TightIDObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu20TauHPS27TightID"),
-    hltPath = cms.string("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
 # mt monitoring paths
 
 process.icDoubleEl24ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1050,14 +1046,6 @@ process.icDoubleMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icDoubleMu178ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsDoubleMu178"),
-    hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
 
 # et paths
 
@@ -1065,14 +1053,6 @@ process.icEle27ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsEle27"),
     hltPath = cms.string("HLT_Ele27_WPTight_Gsf_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icEle28ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsEle28"),
-    hltPath = cms.string("HLT_Ele28_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
@@ -1109,22 +1089,6 @@ process.icEle24Tau30ObjectProducer = producers.icTriggerObjectProducer.clone(
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icEle24TauHPS30ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsEle24TauHPS30"),
-    hltPath = cms.string("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icEle24TauHPS30TightIDObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsEle24TauHPS30TightID"),
-    hltPath = cms.string("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_TightID_CrossL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
 # tt paths
 
 process.icDoubleTightIsoTau35ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1135,9 +1099,9 @@ process.icDoubleTightIsoTau35ObjectProducer = producers.icTriggerObjectProducer.
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icDoubleMediumIsoTau40TightIDObjectProducer = producers.icTriggerObjectProducer.clone(
+process.icDoubleMediumIsoTau40ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsDoubleMediumIsoTau40TightID"),
+    branch = cms.string("triggerObjectsDoubleMediumIsoTau40"),
     hltPath = cms.string("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
@@ -1147,30 +1111,6 @@ process.icDoubleTightIsoTau40ObjectProducer = producers.icTriggerObjectProducer.
     input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsDoubleTightIsoTau40"),
     hltPath = cms.string("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icDoubleTightIsoTau40TightIDObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsDoubleTightIsoTau40TightID"),
-    hltPath = cms.string("HLT_DoubleTightChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icDoubleMediumIsoTauHPS35ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsDoubleMediumIsoTauHPS35"),
-    hltPath = cms.string("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icDoubleMediumIsoTauHPS35TightIDObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsDoubleMediumIsoTauHPS35TightID"),
-    hltPath = cms.string("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
@@ -1217,28 +1157,12 @@ process.icMu24TightIsoTau35ObjectProducer = producers.icTriggerObjectProducer.cl
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icMu24MediumIsoTauHPS35ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsMu24MediumIsoTauHPS35"),
-    hltPath = cms.string("HLT_IsoMu24_eta2p1_MediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_CrossL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
 # vbf paths
 
 process.icVBFDoubleLooseChargedIsoPFTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("selectedPatTrigger"),
       branch = cms.string("triggerObjectsVBFDoubleLooseChargedIsoPFTau20"),
-      hltPath = cms.string("HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v"),
-      inputIsStandAlone = cms.bool(True),
-      storeOnlyIfFired = cms.bool(False)
-      )
-
-process.icVBFDoubleLooseChargedIsoPFTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
-      input   = cms.InputTag("selectedPatTrigger"),
-      branch = cms.string("triggerObjectsVBFDoubleLooseChargedIsoPFTauHPS20"),
-      hltPath = cms.string("HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v"),
+      hltPath = cms.string("HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_Reg_v"),
       inputIsStandAlone = cms.bool(True),
       storeOnlyIfFired = cms.bool(False)
       )
@@ -1246,15 +1170,7 @@ process.icVBFDoubleLooseChargedIsoPFTauHPS20ObjectProducer = producers.icTrigger
 process.icVBFDoubleMediumChargedIsoPFTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("selectedPatTrigger"),
       branch = cms.string("triggerObjectsVBFDoubleMediumChargedIsoPFTau20"),
-      hltPath = cms.string("HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_v"),
-      inputIsStandAlone = cms.bool(True),
-      storeOnlyIfFired = cms.bool(False)
-      )
-
-process.icVBFDoubleMediumChargedIsoPFTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
-      input   = cms.InputTag("selectedPatTrigger"),
-      branch = cms.string("triggerObjectsVBFDoubleMediumChargedIsoPFTauHPS20"),
-      hltPath = cms.string("HLT_VBF_DoubleMediumChargedIsoPFTauHPS20_Trk1_eta2p1_v"),
+      hltPath = cms.string("HLT_VBF_DoubleMediumChargedIsoPFTau20_Trk1_eta2p1_Reg_v"),
       inputIsStandAlone = cms.bool(True),
       storeOnlyIfFired = cms.bool(False)
       )
@@ -1262,15 +1178,7 @@ process.icVBFDoubleMediumChargedIsoPFTauHPS20ObjectProducer = producers.icTrigge
 process.icVBFDoubleTightChargedIsoPFTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("selectedPatTrigger"),
       branch = cms.string("triggerObjectsVBFDoubleTightChargedIsoPFTau20"),
-      hltPath = cms.string("HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_v"),
-      inputIsStandAlone = cms.bool(True),
-      storeOnlyIfFired = cms.bool(False)
-)
-
-process.icVBFDoubleTightChargedIsoPFTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
-      input   = cms.InputTag("selectedPatTrigger"),
-      branch = cms.string("triggerObjectsVBFDoubleTightChargedIsoPFTauHPS20"),
-      hltPath = cms.string("HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v"),
+      hltPath = cms.string("HLT_VBF_DoubleTightChargedIsoPFTau20_Trk1_eta2p1_Reg_v"),
       inputIsStandAlone = cms.bool(True),
       storeOnlyIfFired = cms.bool(False)
 )
@@ -1297,54 +1205,6 @@ process.icIsoMu24TightIsoTau20ObjectProducer = producers.icTriggerObjectProducer
     input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsIsoMu24TightIsoTau20"),
     hltPath = cms.string("HLT_IsoMu24_eta2p1_TightChargedIsoPFTau20_SingleL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu27LooseIsoTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu27LooseIsoTau20"),
-    hltPath = cms.string("HLT_IsoMu27_LooseChargedIsoPFTau20_Trk1_eta2p1_SingleL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu27LooseIsoTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu27LooseIsoTauHPS20"),
-    hltPath = cms.string("HLT_IsoMu27_LooseChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu27MediumIsoTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu27MediumIsoTau20"),
-    hltPath = cms.string("HLT_IsoMu27_MediumChargedIsoPFTau20_Trk1_eta2p1_SingleL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu27MediumIsoTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu27MediumIsoTauHPS20"),
-    hltPath = cms.string("HLT_IsoMu27_MediumChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu27TightIsoTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu27TightIsoTau20"),
-    hltPath = cms.string("HLT_IsoMu27_TightChargedIsoPFTau20_Trk1_eta2p1_SingleL1_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
-
-process.icIsoMu27TightIsoTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu27TightIsoTauHPS20"),
-    hltPath = cms.string("HLT_IsoMu27_TightChargedIsoPFTauHPS20_Trk1_eta2p1_SingleL1_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
@@ -1449,47 +1309,27 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icIsoMu24erObjectProducer+
     process.icIsoMu27ObjectProducer+
     process.icIsoMu20Tau27ObjectProducer+
-    process.icIsoMu20Tau27TightIDObjectProducer+
-    process.icIsoMu20TauHPS27ObjectProducer+
-    process.icIsoMu20TauHPS27TightIDObjectProducer+
     process.icDoubleEl24ObjectProducer+
     process.icDoubleMu20ObjectProducer+
-    process.icDoubleMu178ObjectProducer+
     process.icEle27ObjectProducer+
-    process.icEle28ObjectProducer+
     process.icEle32ObjectProducer+
     process.icEle32L1DoubleEGObjectProducer+
     process.icEle35ObjectProducer+
     process.icEle24Tau30ObjectProducer+
-    process.icEle24TauHPS30ObjectProducer+
-    process.icEle24TauHPS30TightIDObjectProducer+
     process.icDoubleTightIsoTau35ObjectProducer+
-    process.icDoubleMediumIsoTau40TightIDObjectProducer+
+    process.icDoubleMediumIsoTau40ObjectProducer+
     process.icDoubleTightIsoTau40ObjectProducer+
-    process.icDoubleTightIsoTau40TightIDObjectProducer+
-    process.icDoubleMediumIsoTauHPS35ObjectProducer+
-    process.icDoubleMediumIsoTauHPS35TightIDObjectProducer+
     process.icMediumChargedIsoPFTau180HighPtRelaxedIsoProducer+
     process.icMediumChargedIsoPFTau180HighPtRelaxedIso1prProducer+
     process.icMu24TightIsoTightIDTau35ObjectProducer+
     process.icMu24MediumIsoTau35ObjectProducer+
-    process.icMu24MediumIsoTauHPS35ObjectProducer+
     process.icMu24TightIsoTau35ObjectProducer+
     process.icVBFDoubleLooseChargedIsoPFTau20ObjectProducer+
-    process.icVBFDoubleLooseChargedIsoPFTauHPS20ObjectProducer+
     process.icVBFDoubleMediumChargedIsoPFTau20ObjectProducer+
-    process.icVBFDoubleMediumChargedIsoPFTauHPS20ObjectProducer+
     process.icVBFDoubleTightChargedIsoPFTau20ObjectProducer+
-    process.icVBFDoubleTightChargedIsoPFTauHPS20ObjectProducer+
     process.icIsoMu24LooseIsoTau20ObjectProducer+
     process.icIsoMu24MediumIsoTau20ObjectProducer+
     process.icIsoMu24TightIsoTau20ObjectProducer+
-    process.icIsoMu27LooseIsoTau20ObjectProducer+
-    process.icIsoMu27LooseIsoTauHPS20ObjectProducer+
-    process.icIsoMu27MediumIsoTau20ObjectProducer+
-    process.icIsoMu27MediumIsoTauHPS20ObjectProducer+
-    process.icIsoMu27TightIsoTau20ObjectProducer+
-    process.icIsoMu27TightIsoTauHPS20ObjectProducer+
     process.icMu23Ele12ObjectProducer+
     process.icMu23Ele12DZObjectProducer+
     process.icMu8Ele23ObjectProducer+
@@ -1505,19 +1345,17 @@ process.icTriggerObjectSequence += cms.Sequence(
 
 for name in process.icTriggerObjectSequence.moduleNames():
     mod = getattr(process, name)
-    if isEmbed:
-        mod.inputTriggerResults = cms.InputTag("TriggerResults", "","SIMembedding")
+    if isEmbed: mod.inputTriggerResults = cms.InputTag("TriggerResults", "","SIMembedding")
 
 
 ## Need to unpack filterLabels on slimmedPatTrigger then make selectedPatTrigger
 process.patTriggerUnpacker = cms.EDProducer("PATTriggerObjectStandAloneUnpacker",
-   patTriggerObjectsStandAlone = cms.InputTag("slimmedPatTrigger"),
-   triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
-   unpackFilterLabels = cms.bool(True)
+    patTriggerObjectsStandAlone = cms.InputTag("slimmedPatTrigger"),
+    triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
+    unpackFilterLabels = cms.bool(True)
 )
 
-if isEmbed:
-    process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
+if isEmbed: process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
 
 process.selectedPatTrigger = cms.EDFilter(
     'PATTriggerObjectStandAloneSelector',
@@ -1552,7 +1390,16 @@ if isData: data_type = "RECO"
 elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
+## add prefiring weights
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+    includePrefireWeights = cms.bool(not bool(isData) and not bool(isEmbed)),
     includeJetRho       = cms.bool(True),
     includeLHEWeights   = cms.bool(doLHEWeights),
     includeGenWeights   = cms.bool(doLHEWeights),
@@ -1581,8 +1428,10 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 
 process.icEventInfoSequence = cms.Sequence(
     process.BadPFMuonFilterUpdateDz+
+    process.prefiringweight+
     process.icEventInfoProducer
 )
+
 
 ################################################################
 # TauSpinner
@@ -1599,7 +1448,6 @@ if opts.tauSpinner:
         process.icTauSpinnerProducer
     )
 else: process.icTauSpinnerSequence = cms.Sequence()
-
 
 ################################################################
 # HTXS NNLOPS
