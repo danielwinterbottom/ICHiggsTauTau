@@ -15,8 +15,8 @@ if args.year == "all": yl = ["2016-preVFP","2016-postVFP","2017","2018"]
 else: yl = [args.year]
 
 cfg = {
-       "2016-preVFP":"higgstautau_cfg_106X_Nov21_2016-preVFP.py",
-       "2016-postVFP":"higgstautau_cfg_106X_Nov21_2016-postVFP.py",
+       "2016-preVFP":"higgstautau_cfg_106X_Nov21_2016_preVFP.py",
+       "2016-postVFP":"higgstautau_cfg_106X_Nov21_2016_postVFP.py",
        "2017":"higgstautau_cfg_106X_Nov21_2017.py",
        "2018":"higgstautau_cfg_106X_Nov21_2018.py"
        }
@@ -546,6 +546,6 @@ for dm in dml:
     
             print(config)
     
-            #p = Process(target=submit, args=(config,))
-            #p.start()
-            #p.join()
+            p = Process(target=submit, args=(config,))
+            p.start()
+            p.join()
