@@ -56,6 +56,7 @@
 #include "Modules/interface/OneCollCompositeProducer.h"
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/EnergyShifter.h"
+#include "Modules/interface/EnergyResShifter.h"
 #include "Modules/interface/PileupWeight.h"
 #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/GenericModule.h"
@@ -237,6 +238,11 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  fakeE_tau_shift_1pi_endcap = 1.0;
  fakeMu_tau_shift_0pi = 1.0;
  fakeMu_tau_shift_1pi = 1.0;
+
+ muon_res_shift = 0.;
+ elec_res_shift = 0.;
+ tau_res_shift = 0.;
+
  if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
@@ -253,6 +259,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      tau_shift_3prong0pi0 = json["baseline"]["embedtau_3prong0pi0_es_shift"].asDouble();
      tau_shift_3prong1pi0 = json["baseline"]["embedtau_3prong1pi0_es_shift"].asDouble();
    }
+   muon_res_shift = json["baseline"]["muon_res_shift"].asDouble();
+   elec_res_shift = json["baseline"]["elec_res_shift"].asDouble();
+   tau_res_shift = json["baseline"]["tau_res_shift"].asDouble();
  }
  if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
@@ -686,6 +695,18 @@ if(era_type == era::data_2018) {
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
 
+TH2F embed_pt_weights;
+
+if(era_type == era::data_2016) embed_pt_weights = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v3.root","/","shifts_2016_btag");
+if(era_type == era::data_2017) embed_pt_weights = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v3.root","/","shifts_2017_btag");
+if(era_type == era::data_2018) embed_pt_weights = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v3.root","/","shifts_2018_btag");
+
+TH2F embed_pt_weights_ic;
+
+if(era_type == era::data_2016) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2016");
+if(era_type == era::data_2017) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2017");
+if(era_type == era::data_2018) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
+
 HTTWeights httWeights = HTTWeights("HTTWeights")   
  .set_channel(channel)
  .set_era(era_type)
@@ -697,6 +718,8 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_jets_label(jets_label)
  .set_do_quarkmass_higgspt(output_name.find("JJH")!=output_name.npos)
  .set_do_ps_weights(output_name.find("JJH")!=output_name.npos)
+ .set_embed_pt_weights_hist(new TH2F(embed_pt_weights))
+ .set_embed_pt_weights_ic_hist(new TH2F(embed_pt_weights_ic))
  .set_do_nnlops_weights(output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos||(output_name.find("GluGlu") != output_name.npos && output_name.find("125") != output_name.npos && output_name.find("SUSY") == output_name.npos));
 httWeights.set_strategy(strategy_type);
 httWeights.set_scalefactor_file_ggh(scalefactor_file_ggh);
@@ -1650,6 +1673,24 @@ void HTTSequence::BuildETPairs() {
         .set_moriond_corrections(moriond_tau_scale));
   }
 
+  if (!is_data){
+    if(elec_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Electron>("HTTElectronGenMatchSelector")
+      .set_input_vec_label(js["electrons"].asString())
+      .set_output_vec_label("genmatched_elecs")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauE));
+
+      BuildModule(EnergyResShifter<Electron>("ElecEnergyResShifter")
+      .set_input_label("genmatched_elecs")
+      .set_input_label_gen("genmatched_elecs_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_elecs")
+      .set_shift(elec_res_shift));
+    }
+  }
+
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
@@ -1683,9 +1724,27 @@ void HTTSequence::BuildMTPairs() {
        .set_barrel(muon_shift_barrel)
        );
   }
-   
+
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
        js["muons"].asString(), "sel_muons"));
+
+  if (!is_data){
+    if(muon_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Muon>("HTTMuonGenMatchSelector")
+      .set_input_vec_label("sel_muons")
+      .set_output_vec_label("genmatched_muons")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauMu));
+
+      BuildModule(EnergyResShifter<Muon>("MuonEnergyResShifter")
+      .set_input_label("genmatched_muons")
+      .set_input_label_gen("genmatched_muons_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_muons")
+      .set_shift(muon_res_shift));
+    }
+  }
 
   std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
 
@@ -1735,6 +1794,24 @@ void HTTSequence::BuildEMPairs() {
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
 
+  if (!is_data){
+    if(muon_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Muon>("HTTMuonGenMatchSelector")
+      .set_input_vec_label("sel_muons")
+      .set_output_vec_label("genmatched_muons")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauMu));
+
+      BuildModule(EnergyResShifter<Muon>("MuonEnergyResShifter")
+      .set_input_label("genmatched_muons")
+      .set_input_label_gen("genmatched_muons_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_muons")
+      .set_shift(muon_res_shift));
+    }
+  }
+
   std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
@@ -1777,6 +1854,24 @@ void HTTSequence::BuildEMPairs() {
         .set_moriond_corrections(moriond_tau_scale));
   }
 
+  if (!is_data){
+    if(elec_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Electron>("HTTElectronGenMatchSelector")
+      .set_input_vec_label("sel_electrons")
+      .set_output_vec_label("genmatched_elecs")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauE));
+
+      BuildModule(EnergyResShifter<Electron>("ElecEnergyResShifter")
+      .set_input_label("genmatched_elecs")
+      .set_input_label_gen("genmatched_elecs_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_elecs")
+      .set_shift(elec_res_shift));
+    }
+  }
+
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
@@ -1805,6 +1900,7 @@ void HTTSequence::BuildEMPairs() {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildZEEPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
+
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
@@ -1859,6 +1955,43 @@ void HTTSequence::BuildZEEPairs() {
                 fabs(e->dz_vertex())    < elec_dz ;
 
       }));
+
+  BuildModule(CopyCollection<Electron>("CopyToFSRElectrons",
+      js["electrons"].asString(), "fsr_electrons"));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronIDFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 10.        &&
+                fabs(e->eta())          < 2.4        &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+
+      }));
+
+  BuildModule(CopyCollection<Muon>("CopyToFSRMuons",
+      js["muons"].asString(), "fsr_muons"));
+
+  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
+
+  BuildModule(SimpleFilter<Muon>("FSRMuonFilter")
+      .set_input_label("fsr_muons").set_min(0)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 5.        &&
+                fabs(m->eta())          < 2.4   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
+      }));
+
+
 
      
   BuildModule(CompositeProducer<Electron, Electron>("ZEEPairProducer")
@@ -1929,7 +2062,8 @@ void HTTSequence::BuildZMMPairs() {
                 MuonID(m);
 
       }));
-  
+ 
+ 
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       "sel_muons", "sel_lead_muons"));
   
@@ -1941,6 +2075,42 @@ void HTTSequence::BuildZMMPairs() {
                 fabs(m->dxy_vertex())   < muon_dxy   &&
                 fabs(m->dz_vertex())    < muon_dz   &&
                 MuonID(m);
+      }));
+
+  BuildModule(CopyCollection<Electron>("CopyToFSRElectrons",
+      js["electrons"].asString(), "fsr_electrons"));
+  
+  std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronIDFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 10.        &&
+                fabs(e->eta())          < 2.4        &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+
+      }));
+
+  BuildModule(CopyCollection<Muon>("CopyToFSRMuons",
+      js["muons"].asString(), "fsr_muons"));
+
+
+  BuildModule(SimpleFilter<Muon>("FSRMuonFilter")
+      .set_input_label("fsr_muons").set_min(0)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 5.        &&
+                fabs(m->eta())          < 2.4   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
       }));
   
   BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
@@ -1996,6 +2166,27 @@ void HTTSequence::BuildTPZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
+
+  std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
+
+  BuildModule(CopyCollection<Electron>("CopyToFSRElectrons",
+      js["electrons"].asString(), "fsr_electrons"));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronIDFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 10.        &&
+                fabs(e->eta())          < 2.5        &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+
+      }));
 }
 
 
@@ -2023,6 +2214,7 @@ void HTTSequence::BuildTauSelection(){
     BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("genmatched_taus")
+      .set_add_gen(true)
       .set_gen_match(mcorigin::tauHad));
 
     BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
@@ -2088,6 +2280,17 @@ void HTTSequence::BuildTauSelection(){
     .set_shift_label("scales_taues_3prong1pi0")
     .set_shift(tau_shift_3prong1pi0)
     .set_shift_func(tau_shift_func_3prong1pi0));
+  }
+  // energy resolutions shifting
+  if (!is_data){
+    if(tau_res_shift!=0.) {
+      BuildModule(EnergyResShifter<Tau>("TauEnergyResShifter")
+      .set_input_label("genmatched_taus")
+      .set_input_label_gen("genmatched_taus_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_taus")
+      .set_shift(tau_res_shift));
+    }
  }
  if (!is_data){
    BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
@@ -2293,7 +2496,7 @@ void HTTSequence::BuildTauSelection(){
         ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3)); //lepton_rho
         return 0;
    }));
-  
+ 
    HTTFilter<Electron> extraElecFilter = HTTFilter<Electron>("ExtraElecFilter")
        .set_input_label("extra_elecs")
        .set_veto_name("extra_elec_veto")

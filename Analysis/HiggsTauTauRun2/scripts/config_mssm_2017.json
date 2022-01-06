@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep18_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["et","mt","tt"],
-    //"channels":     ["mt"],
+    //"channels":     ["et","mt","tt","em"],
+    "channels":     ["mt","em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -60,10 +60,10 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "./",
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/mssm_2017/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/mssm_2017_muscale0p15/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
-    "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/m95_2017_btag/",
+    "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2017_tres1_v2_svfit/",
     // "svfit_folder"  : "./output/",
     //"output_folder" : "./output/",
     "svfit_from_grid" : true,
@@ -114,6 +114,9 @@
       "elec_es_shift"     : 1.0,
       "elec_es_shift_barrel": 0.9995,
       "elec_es_shift_endcap": 0.9887,
+      "muon_res_shift": 0.0,
+      "elec_res_shift": 0.0,
+      "tau_res_shift": 0.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
       "metcl_mode"        : 0,
@@ -382,20 +385,64 @@
       "baseline": {
         "addit_output_folder" : "MUSCALE_DOWN",
         "mu_scale_mode": true,
-        "muon_es_shift": 0.99,
-        "muon_es_shift_barrel": 0.996,
-        "muon_es_shift_nearendcap": 0.991,
-        "muon_es_shift_farendcap": 0.983
+        //"muon_es_shift": 0.99,
+        //"muon_es_shift_barrel": 0.996,
+        //"muon_es_shift_nearendcap": 0.991,
+        //"muon_es_shift_farendcap": 0.983
+        "muon_es_shift": 0.9985,
+        "muon_es_shift_barrel": 0.9985,
+        "muon_es_shift_nearendcap": 0.9985,
+        "muon_es_shift_farendcap": 0.9985
       }
     },
     "scale_mu_hi": {
       "baseline": {
         "addit_output_folder" : "MUSCALE_UP",
         "mu_scale_mode": true,
-        "muon_es_shift": 1.01,
-        "muon_es_shift_barrel": 1.004,
-        "muon_es_shift_nearendcap": 1.009,
-        "muon_es_shift_farendcap": 1.017
+        //"muon_es_shift": 1.01,
+        //"muon_es_shift_barrel": 1.004,
+        //"muon_es_shift_nearendcap": 1.009,
+        //"muon_es_shift_farendcap": 1.017
+        "muon_es_shift": 1.0015,
+        "muon_es_shift_barrel": 1.0015,
+        "muon_es_shift_nearendcap": 1.0015,
+        "muon_es_shift_farendcap": 1.0015
+      }
+    },
+    "res_mu_hi": {
+      "baseline": {
+        "addit_output_folder" : "MURES_UP",
+        "muon_res_shift": 0.1
+      }
+    },
+    "res_mu_lo": {
+      "baseline": {
+        "addit_output_folder" : "MURES_DOWN",
+        "muon_res_shift": -0.1
+      }
+    },
+    "res_e_hi": {
+      "baseline": {
+        "addit_output_folder" : "ERES_UP",
+        "elec_res_shift": 0.1
+      }
+    },
+    "res_e_lo": {
+      "baseline": {
+        "addit_output_folder" : "ERES_DOWN",
+        "elec_res_shift": -0.1
+      }
+    },
+    "res_t_hi": {
+      "baseline": {
+        "addit_output_folder" : "TRES_UP",
+        "tau_res_shift": 0.01
+      }
+    },
+    "res_t_lo": {
+      "baseline": {
+        "addit_output_folder" : "TRES_DOWN",
+        "tau_res_shift": -0.01
       }
     },
     "res_j_lo": {

@@ -19,6 +19,7 @@ class HTTGenMatchSelector : public ModuleBase {
   CLASS_MEMBER(HTTGenMatchSelector<T>, std::string, input_vec_label)
   CLASS_MEMBER(HTTGenMatchSelector<T>, std::string, output_vec_label)
   CLASS_MEMBER(HTTGenMatchSelector<T>, ic::mcorigin, gen_match)
+  CLASS_MEMBER(HTTGenMatchSelector<T>, bool, add_gen)
  public:
   HTTGenMatchSelector(std::string const& name);
   virtual ~HTTGenMatchSelector();
@@ -33,6 +34,7 @@ template <class T>
 HTTGenMatchSelector<T>::HTTGenMatchSelector(std::string const& name) : ModuleBase(name), gen_match_(mcorigin::tauHad) {
   input_vec_label_  = "taus";
   output_vec_label_ = "genmatched_taus";
+  add_gen_ = false;
 }
 
 template <class T>
@@ -43,6 +45,7 @@ template <class T>
 int HTTGenMatchSelector<T>::Execute(TreeEvent *event) {
   std::vector<T*> input_vec = event->GetPtrVec<T>(input_vec_label_);
   std::vector<T*> output_vec;
+  std::vector<ROOT::Math::PtEtaPhiEVector> output_vec_gen;
   
   std::vector<GenJet *> gen_taus_ptr;
   std::vector<GenParticle *> sel_particles;
@@ -68,17 +71,19 @@ int HTTGenMatchSelector<T>::Execute(TreeEvent *event) {
     event->Add("genHadTaus", gen_taus_ptr);
     event->Add("genLeps", sel_particles);
   }
+
   
   for(unsigned i=0; i<input_vec.size(); ++i){
     std::vector<T *> lepton;
     lepton.push_back(input_vec[i]);
     std::vector<std::pair<T*, GenParticle*> > lepton_match = MatchByDR(lepton, sel_particles, 0.2, true, true);
     std::vector<std::pair<T*, GenJet*> > tau_match  = MatchByDR(lepton, gen_taus_ptr, 0.2, true, true);
-    
+ 
     mcorigin gen_match_1 = mcorigin::fake;
     int leptonsize = lepton_match.size();
     int tausize = tau_match.size();
     
+
     if(leptonsize!=0&&tausize!=0){
       DR(lepton_match.at(0).first,lepton_match.at(0).second) < DR(tau_match.at(0).first,tau_match.at(0).second) ? tausize=0 : leptonsize = 0;
     }
@@ -110,9 +115,14 @@ int HTTGenMatchSelector<T>::Execute(TreeEvent *event) {
 
     if(gen_match_1 == gen_match_){
       output_vec.push_back(input_vec[i]);
+      if (add_gen_) {
+        if(tausize!=0) output_vec_gen.push_back(tau_match.at(0).second->vector()); 
+        else if(leptonsize!=0) output_vec_gen.push_back(lepton_match.at(0).second->vector()); 
+      } 
     }
   }
   event->Add(output_vec_label_, output_vec);
+  if (add_gen_) event->Add(output_vec_label_+"_gen", output_vec_gen);
 
   return 0;
 }
