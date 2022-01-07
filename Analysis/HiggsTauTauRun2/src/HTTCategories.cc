@@ -917,10 +917,6 @@ namespace ic {
       outtree_->Branch("gen_match_2", &gen_match_2_);
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
       outtree_->Branch("gen_match_2_pt", &gen_match_2_pt_);
-      outtree_->Branch("gen_match_1_mother", &gen_match_1_mother_);
-      outtree_->Branch("gen_match_2_mother", &gen_match_2_mother_);
-      outtree_->Branch("gen_match_1_q", &gen_match_1_q_);
-      outtree_->Branch("gen_match_2_q", &gen_match_2_q_);
       outtree_->Branch("gen_match_undecayed_1_pt", &gen_match_undecayed_1_pt_);
       outtree_->Branch("gen_match_undecayed_2_pt", &gen_match_undecayed_2_pt_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
@@ -1146,7 +1142,6 @@ namespace ic {
       outtree_->Branch("q_1", &q_1_);
       outtree_->Branch("q_2", &q_2_);
       outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
-      outtree_->Branch("wt_zpt_embed",       &wt_zpt_embed_);
       outtree_->Branch("wt_zpt_embed_ic",       &wt_zpt_embed_ic_);
         
       outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
@@ -2406,17 +2401,6 @@ namespace ic {
     if(event->Exists("gen_match_1_pt")) gen_match_1_pt_ = event->Get<double>("gen_match_1_pt");
     if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");
 
-    gen_match_1_mother_ =-9999;
-    gen_match_2_mother_ =-9999;
-    if(event->Exists("gen_match_1_mother")) gen_match_1_mother_ = event->Get<int>("gen_match_1_mother");
-    if(event->Exists("gen_match_2_mother")) gen_match_2_mother_ = event->Get<int>("gen_match_2_mother");
-
-
-    gen_match_1_q_ =-9999;
-    gen_match_2_q_ =-9999;
-    if(event->Exists("gen_match_1_q")) gen_match_1_q_ = event->Get<int>("gen_match_1_q");
-    if(event->Exists("gen_match_2_q")) gen_match_2_q_ = event->Get<int>("gen_match_2_q");
-
     if(event->Exists("gen_match_undecayed_1_pt")) gen_match_undecayed_1_pt_ = event->Get<double>("gen_match_undecayed_1_pt");
     if(event->Exists("gen_match_undecayed_2_pt")) gen_match_undecayed_2_pt_ = event->Get<double>("gen_match_undecayed_2_pt");
 
@@ -2437,7 +2421,6 @@ namespace ic {
     wt_tquark_alt_ = 1.0;
     wt_zpt_up_ = 1.0;
     wt_zpt_down_ = 1.0;
-    wt_zpt_embed_ = 1.0;
     wt_zpt_embed_ic_ = 1.0;
     wt_em_qcd_ = 1.0;
     wt_efake_rate_up_ = 1.0;
@@ -2451,7 +2434,6 @@ namespace ic {
     if (event->Exists("wt_tquark_alt"))      wt_tquark_alt_   = event->Get<double>("wt_tquark_alt");
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
-    if (event->Exists("wt_zpt_embed"))      wt_zpt_embed_ = event->Get<double>("wt_zpt_embed");
     if (event->Exists("wt_zpt_embed_ic"))      wt_zpt_embed_ic_ = event->Get<double>("wt_zpt_embed_ic");
     if (event->Exists("wt_efake_rate_up"))  wt_efake_rate_up_   = event->Get<double>("wt_efake_rate_up");
     if (event->Exists("wt_efake_rate_down")) wt_efake_rate_down_ = event->Get<double>("wt_efake_rate_down");
@@ -3013,25 +2995,6 @@ namespace ic {
       dz_1_ = muon1->dz_vertex();
       d0_2_ = muon2->dxy_vertex();
       dz_2_ = muon2->dz_vertex();
-
-//      // get fsr tag for events with additional electrons and muons
-//      std::vector<Electron*> fsr_elecs = event->GetPtrVec<Electron>("fsr_electrons");
-//      std::vector<Muon const*> muon1_vec = {muon1};
-//      std::vector<Muon const*> muon2_vec = {muon2};
-//      std::vector<std::pair<Muon const*, Electron*>> matched1 = MatchByDR(muon1_vec,fsr_elecs,0.5,false,false);
-//      std::vector<Electron*> fsr_elecs_matched_1 = {};
-//      if(matched1.size()>0) std::cout << "----------  " << matched1.size() << "  " << gen_match_1_ << std::endl; 
-//      for(auto x : matched1) {
-//        std::cout << muon1->pt() << "  " <<x.second->pt() << "   " << fabs(x.second->pt()/muon1->pt()-1) << "    " << std::fabs(ROOT::Math::VectorUtil::DeltaR(muon1->vector(),x.second->vector())) << std::endl;
-//        fsr_elecs_matched_1.push_back(x.second);
-//      }
-//      std::vector<std::pair<Muon const*, Electron*>> matched2 = MatchByDR(muon2_vec,fsr_elecs,0.5,false,false);
-//      std::vector<Electron*> fsr_elecs_matched_2 = {};
-//      if(matched2.size()>0) std::cout << "----------  " << matched2.size() << "  " << gen_match_2_ <<  std::endl;
-//      for(auto x : matched2) {
-//        std::cout << muon2->pt() << "  " <<x.second->pt() << "   " << fabs(x.second->pt()/muon2->pt()-1) << "    " << std::fabs(ROOT::Math::VectorUtil::DeltaR(muon2->vector(),x.second->vector())) << std::endl;
-//        fsr_elecs_matched_2.push_back(x.second);
-//      }
     }
 
     Tau const* tau1 = dynamic_cast<Tau const*>(lep1);

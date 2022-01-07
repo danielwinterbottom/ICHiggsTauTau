@@ -191,10 +191,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
           trg_pt_bins = '[10,12,14,16,18,20,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
           # trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
       if options.charge_flip:
-        #trg_eta_bins='[0,2.5]'
-        #trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
         trg_eta_bins = '[0, 2.5]'
-        #trg_pt_bins='[10,30,50,70,100,200]'
         trg_pt_bins='[10,200]'
           
     trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
@@ -206,8 +203,6 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     iso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+iso_pt_bins+','+mass_bins
 
     if options.charge_flip:
-      #trg_plot_probe_1 = 'abs(eta_1),(pt_1+pt_2)/2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
-      #trg_plot_probe_2 = 'abs(eta_2),(pt_2+pt_1)/2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
 
       trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
       trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
@@ -1237,9 +1232,8 @@ for name in wsnames:
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   if options.mutoele:  
     sig_model='DoubleVUncorr'
-#    sig_model='BWDoubleCBConvCorr'
 
-  sig_model='BWCBConvUncorr'
+  #sig_model='BWCBConvUncorr'
   if (not (options.embed_dz or options.charge_flip) or 'trg' in name or not options.trg_only):
     FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,True)#'data' in name)
 

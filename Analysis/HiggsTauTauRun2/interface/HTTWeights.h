@@ -47,7 +47,6 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, std::string, mssm_mass)
   CLASS_MEMBER(HTTWeights, bool, is_embedded)
   CLASS_MEMBER(HTTWeights, bool, do_nnlops_weights)
-  CLASS_MEMBER(HTTWeights, TH2F*, embed_pt_weights_hist)
   CLASS_MEMBER(HTTWeights, TH2F*, embed_pt_weights_ic_hist)
 
   TFile *ggh_weights_;

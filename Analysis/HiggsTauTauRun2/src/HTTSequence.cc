@@ -695,12 +695,6 @@ if(era_type == era::data_2018) {
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
 
-TH2F embed_pt_weights;
-
-if(era_type == era::data_2016) embed_pt_weights = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v3.root","/","shifts_2016_btag");
-if(era_type == era::data_2017) embed_pt_weights = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v3.root","/","shifts_2017_btag");
-if(era_type == era::data_2018) embed_pt_weights = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v3.root","/","shifts_2018_btag");
-
 TH2F embed_pt_weights_ic;
 
 if(era_type == era::data_2016) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2016");
@@ -718,7 +712,6 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_jets_label(jets_label)
  .set_do_quarkmass_higgspt(output_name.find("JJH")!=output_name.npos)
  .set_do_ps_weights(output_name.find("JJH")!=output_name.npos)
- .set_embed_pt_weights_hist(new TH2F(embed_pt_weights))
  .set_embed_pt_weights_ic_hist(new TH2F(embed_pt_weights_ic))
  .set_do_nnlops_weights(output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos||(output_name.find("GluGlu") != output_name.npos && output_name.find("125") != output_name.npos && output_name.find("SUSY") == output_name.npos));
 httWeights.set_strategy(strategy_type);
@@ -931,7 +924,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
    
   }
 
-  bool hem_fix=false;
+  bool hem_fix=false; // disable this "fix" for HEM issue (this is really only used to check impact of HEM problem rather than actually fix it)
   if (hem_fix && !is_data && !is_embedded && era_type == era::data_2018) {
     BuildModule(JetEnergyUncertainty<PFJet>("HEMFix")
       .set_input_label(shift_jets_label)

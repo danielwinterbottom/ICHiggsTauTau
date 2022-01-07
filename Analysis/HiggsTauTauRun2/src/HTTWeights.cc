@@ -43,7 +43,6 @@ namespace ic {
     do_quarkmass_higgspt_       = false;
     do_ps_weights_              = false;
     do_nnlops_weights_          = false;
-    embed_pt_weights_hist_             = nullptr;
     embed_pt_weights_ic_hist_             = nullptr;
     }
 HTTWeights::~HTTWeights() {
@@ -1664,9 +1663,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
    }
 
-   double wtzpt_embed = embed_pt_weights_hist_->GetBinContent(embed_pt_weights_hist_->FindBin(zmass,zpt));
    double wtzpt_embed_ic = embed_pt_weights_ic_hist_->GetBinContent(embed_pt_weights_ic_hist_->FindBin(zmass,zpt));
-   event->Add("wt_zpt_embed",wtzpt_embed);
    event->Add("wt_zpt_embed_ic",wtzpt_embed_ic);
  }
 

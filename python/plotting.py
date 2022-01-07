@@ -2270,7 +2270,7 @@ def HTTPlot(nodename,
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
 
-    if "sm" in signal_scheme and "mssm" not in signal_scheme:
+    if ("sm" in signal_scheme and "mssm" not in signal_scheme) or True:
         background_schemes = {
             'mt':[
                 backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),

@@ -84,7 +84,6 @@ class HTTCategories : public ModuleBase {
   double wt_tquark_alt_;
   double wt_zpt_up_;
   double wt_zpt_down_;
-  double wt_zpt_embed_;
   double wt_zpt_embed_ic_;
   double wt_efake_rate_up_;
   double wt_efake_rate_down_;
@@ -1128,11 +1127,6 @@ class HTTCategories : public ModuleBase {
   double mt_triggerweight_ic_;
   double tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_;
   double tauIDScaleFactorWeight_highpt_deeptauid_2_;
-
-  int gen_match_1_mother_;
-  int gen_match_2_mother_;
-  int gen_match_1_q_;
-  int gen_match_2_q_;
 
  public:
   HTTCategories(std::string const& name);
