@@ -32,6 +32,7 @@ defaults = {
     "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
     "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"",
     "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
+    "syst_e_res":"", "syst_mu_res":"", "syst_tau_res":"", 
     "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_tau_scale_3prong1pi0":"", "syst_eff_t":"", "syst_tquark":"",
     "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_res_j":"", "syst_scale_j_rbal":"",
     "syst_scale_j_rsamp":"", "syst_scale_j_full":"", "syst_scale_j_cent":"", "syst_scale_j_hf":"", 
@@ -54,7 +55,7 @@ defaults = {
     "doMSSMReWeighting":False, "do_unrolling":1, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"",
     "syst_tau_id_dm10":"", "syst_lfake_dm0":"","syst_lfake_dm1":"","syst_qcd_shape_wsf":"",
     "syst_scale_met_unclustered":"","syst_scale_met_clustered":"",
-    "extra_name":"", "no_default":False, "no_systs":False, "embedding":False,"syst_embedding_tt":"",
+    "extra_name":"", "no_default":False, "no_systs":False, "embedding":False,"syst_embedding_tt":"", "syst_embed_pt":"",
     "vbf_background":False, "syst_em_qcd":"", "syst_prefire":"",
     "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
     "ggh_scheme": "powheg", "symmetrise":False, "mergeXbins":False, 'em_qcd_weight':"",
@@ -143,6 +144,12 @@ parser.add_argument("--syst_tau_scale_3prong1pi0", dest="syst_tau_scale_3prong1p
     help="If this string is set then the systematic shift due to 3 prong + 1 pi0 tau energy scale is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tau_scale_grouped", type=str,
     help="If this string is set then the systematic shift due to tau energy scale is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_e_res", dest="syst_e_res", type=str,
+    help="If this string is set then the systematic shift due to electron energy resolution is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_mu_res", dest="syst_mu_res", type=str,
+    help="If this string is set then the systematic shift due to muon energy resolution is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_tau_res", dest="syst_tau_res", type=str,
+    help="If this string is set then the systematic shift due to tau energy resolution is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_eff_t", dest="syst_eff_t", type=str, default='',
     help="If this string is set then the systematic shift due to tau ID is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_tquark", dest="syst_tquark", type=str,
@@ -327,6 +334,8 @@ parser.add_argument("--embedding", dest="embedding", action='store_true',
     help="If option is speficied then use embedded samples for ZTT templates.")
 parser.add_argument("--syst_embedding_tt", dest="syst_embedding_tt", type=str,
     help="If set, adds systematic templates for embedding corresponding to TTbar shift of +/-10\% ")
+parser.add_argument("--syst_embed_pt", dest="syst_embed_pt", type=str,
+    help="If set, adds systematic templates for embedding corresponding to Z->mumu non-closures ")
 parser.add_argument("--vbf_background", dest="vbf_background", action='store_true',
     help="Add VBF to total background template")
 parser.add_argument("--syst_em_qcd", dest="syst_em_qcd", type=str,
@@ -711,6 +720,10 @@ cats['NbtagGt1_DZetaGt30'] ='(n_deepbjets>0 && pzeta>30)'
 cats['NbtagGt1_DZetam10To30'] ='(n_deepbjets>0 && pzeta<=30 && pzeta>-10)'
 cats['NbtagGt1_DZetam35Tom10'] ='(n_deepbjets>0 && pzeta<=-10 && pzeta>-35)'
 cats['NbtagGt1_DZetaLtm35'] = '(n_deepbjets>0 && pzeta<=-35)'
+
+cats['Nbtag0_DZetaGt30_MHGt250'] = '(n_deepbjets==0 && pzeta>30 && svfit_mass>250)'
+cats['Nbtag0_DZetam10To30_MHGt250'] = '(n_deepbjets==0 && pzeta<=30 && pzeta>-10 && svfit_mass>250)'
+cats['Nbtag0_DZetam35Tom10_MHGt250'] = '(n_deepbjets==0 && pzeta<=-10 && pzeta>-35 && svfit_mass>250)'
 
 cats['DZetaGtm35'] = '(pzeta>-35)'
 
@@ -1688,7 +1701,7 @@ if options.era in ['cp18']:
       vv_samples = [
               'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','T-t',
               'WZTo3LNu','WZTo3LNu-ext1','WZTo2L2Q',
-              'ZZTo2L2Q','ZZTo4L-ext','ZZTo4L', 'VVTo2L2Nu'
+              'ZZTo2L2Q','ZZTo4L-ext','ZZTo4L', 'VVTo2L2Nu',
               ]
 
     wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
@@ -1992,13 +2005,19 @@ Hhh_samples = { 'ggH' : 'GluGluToRadionToHHTo2B2Tau_M-*' }
 systematics = OrderedDict()
 if not options.no_default: systematics['default'] = ('','', 'wt', [], False)
 
+if options.syst_e_res != '':
+    systematics['res_e_up'] = ('ERES_UP' , '_'+options.syst_e_res+'Up', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
+    systematics['res_e_down'] = ('ERES_DOWN' , '_'+options.syst_e_res+'Down', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
+if options.syst_mu_res != '':
+    systematics['res_mu_up'] = ('MURES_UP' , '_'+options.syst_mu_res+'Up', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
+    systematics['res_mu_down'] = ('MURES_DOWN' , '_'+options.syst_mu_res+'Down', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
+if options.syst_tau_res != '':
+    systematics['res_tau_up'] = ('TRES_UP' , '_'+options.syst_tau_res+'Up', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
+    systematics['res_tau_down'] = ('TRES_DOWN' , '_'+options.syst_tau_res+'Down', 'wt', ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','ZLL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
 if options.syst_e_scale != '':
     systematics['scale_e_up'] = ('ESCALE_UP' , '_'+options.syst_e_scale+'Up', 'wt', ['QCD','jetFakes'], False)
     systematics['scale_e_down'] = ('ESCALE_DOWN' , '_'+options.syst_e_scale+'Down', 'wt', ['QCD','jetFakes'], False)
 if options.syst_mu_scale != '':
-    # systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',['jetFakes','ZTT','ZJ','ZLL','ZL','VVT','VVJ','VV','TTT','TTJ','TT','QCD','W','signal','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EWKZ'], False)
-    # systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', ['jetFakes','ZLL','ZL','ZTT','ZLL','VVT','VVJ','VV','TTT','TTJ','TT','QCD','W','signal','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EWKZ'], False)    
-
     systematics['scale_mu_up'] = ('MUSCALE_UP' , '_'+options.syst_mu_scale+'Up', 'wt',['QCD','jetFakes'], False)
     systematics['scale_mu_down'] = ('MUSCALE_DOWN' , '_'+options.syst_mu_scale+'Down', 'wt', ['QCD','jetFakes'], False)
 
@@ -2500,7 +2519,10 @@ if options.syst_tau_trg_diff != '':
         systematics['syst_tau_trg_diff_mvadm%(i)i_up' % vars()] = ('' , '_'+hist_name_bini+'Up', 'wt*wt_tau_trg_mvadm%(i)i_up' % vars(), ['QCD','jetFakes'], False)
         systematics['syst_tau_trg_diff_mvadm%(i)i_down' % vars()] = ('' , '_'+hist_name_bini+'Down', 'wt*wt_tau_trg_mvadm%(i)i_down'% vars(), ['QCD','jetFakes'], False)
 
-
+if options.syst_embed_pt != '':
+    hist_name = options.syst_embed_pt
+    systematics['syst_embed_pt_up' % vars()] = ('' , '_'+hist_name+'Up', 'wt*wt_zpt_embed_ic' % vars(), ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
+    systematics['syst_embed_pt_down' % vars()] = ('' , '_'+hist_name+'Down', 'wt*(2-wt_zpt_embed_ic)'% vars(), ['QCD','jetFakes','EWKZ','ZTT','ZJ','ZL','VVT','VVJ','TTT','TTJ','QCD','W','signal'], False)
 
 if options.method in [17,18] and options.do_ff_systs and options.channel in ['et','mt','tt'] and options.era == 'mssmsummer16':
     processes = ['tt','w','qcd']
@@ -2877,7 +2899,8 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
         if options.year == "2016": wt_+='*1.008'
         else: wt_+='*1.01'
       if options.channel in ['et','mt']: wt_+='*(pt_2/gen_match_2_pt<1.5)*1.005'
-      wt_+='*wt_emb_sel_kit/trackingweight_1'
+      #wt_+='*wt_emb_sel_kit/trackingweight_1'
+      wt_+='*1/trackingweight_1'
     if options.channel == 'em':
       #for em channel there are non-closures wrt data and MC which are corrected here with these additional correction factors
       if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.106'
@@ -2902,7 +2925,12 @@ def GetZLNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_se
 def GetZLEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
-    full_selection = BuildCutString(wt, sel, cat, OSSS, '1')
+    wt_=wt
+    if options.analysis in ['mssmrun2','vlq']:
+      #wt_+='*wt_emb_sel_kit/(trackingweight_1*trackingweight_2)'
+      #wt_+='*wt_zpt_embed_ic/(trackingweight_1*trackingweight_2)'
+      wt_+='*1/(trackingweight_1*trackingweight_2)'
+    full_selection = BuildCutString(wt_, sel, cat, OSSS, '1')
     return ana.SummedFactory('EmbedZL'+add_name, samples, plot, full_selection)
 
 def GetZJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', z_sels={}, get_os=True):
@@ -3230,8 +3258,8 @@ def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', plo
   w_node_name = 'W'  
   if options.channel == 'em':
       w_total_node = SummedNode('W'+add_name)
-      w_total_node.AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
-      ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
+      w_total_node.AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat, get_os))
+      ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat, get_os))
       w_node_name+='J'
   ana.nodes[nodename].AddNode(GetWNode(ana, w_node_name+add_name, samples, data, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_factor, get_os))
   if options.channel == 'em':
@@ -4375,7 +4403,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if options.channel == "tt": add_fake_factor_selection = "gen_match_1<6 && gen_match_2<6"
         residual_cat=cat+"&&"+add_fake_factor_selection
         if 'EmbedZTT' not in samples_to_skip and options.embedding:
-            GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
+           GenerateEmbedded(ana, add_name, embed_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)  
             #if do_data: GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, residual_cat, z_sels, not options.do_ss)
         #if 'ZTT' not in samples_to_skip and not options.embedding:
         if 'ZTT' not in samples_to_skip:

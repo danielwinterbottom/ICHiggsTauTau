@@ -48,6 +48,8 @@ class TagAndProbe : public ModuleBase {
   unsigned long long event_;
   double pt_1_;
   double pt_2_;
+  double q_1_;
+  double q_2_;
   double online_pt_1_;
   double online_pt_2_;
   double eta_1_;
@@ -72,6 +74,20 @@ class TagAndProbe : public ModuleBase {
   bool trg_probe_2_;
   bool id_probe_1_;
   bool id_probe_2_;
+  bool elec_id_1_;
+  bool elec_id_2_;
+  double elec_id_pt_1_;
+  double elec_id_pt_2_;
+  double elec_id_dR_1_;
+  double elec_id_dR_2_;
+  double elec_id_M_1_;
+  double elec_id_M_2_;
+  int elec_id_q_1_;
+  int elec_id_q_2_;
+  double E_over_p_1_;
+  double E_over_p_2_;
+  double dphi_sc_tk_at_vtx_1_;
+  double dphi_sc_tk_at_vtx_2_;
   bool id_tag_1_;
   bool id_tag_2_;
   bool iso_vloose_;
@@ -87,6 +103,10 @@ class TagAndProbe : public ModuleBase {
   double pzeta_;
   unsigned gen_match_1_;
   unsigned gen_match_2_;
+  int gen_match_1_mother_;
+  int gen_match_2_mother_;
+  int gen_match_1_q_;
+  int gen_match_2_q_;
   bool pass_dz_;
   bool pass_mass8_;
   bool pass_dimu_;
@@ -155,12 +175,28 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("wt"    , &wt_    );
     outtree_->Branch("pt_1"  , &pt_1_  );
     outtree_->Branch("pt_2"  , &pt_2_  );
+    outtree_->Branch("q_1"  , &q_1_  );
+    outtree_->Branch("q_2"  , &q_2_  );
     outtree_->Branch("online_pt_1"  , &online_pt_1_  );
     outtree_->Branch("online_pt_2"  , &online_pt_2_  );
     outtree_->Branch("iso_1"  , &iso_1_ );
     outtree_->Branch("iso_2"  , &iso_2_ );
     outtree_->Branch("id_probe_1"  , &id_probe_1_  );
     outtree_->Branch("id_probe_2"  , &id_probe_2_  );
+    outtree_->Branch("elec_id_1",   &elec_id_1_);
+    outtree_->Branch("elec_id_2",   &elec_id_2_);
+    outtree_->Branch("elec_id_pt_1",   &elec_id_pt_1_);
+    outtree_->Branch("elec_id_pt_2",   &elec_id_pt_2_);
+    outtree_->Branch("elec_id_dR_1",   &elec_id_dR_1_);
+    outtree_->Branch("elec_id_dR_2",   &elec_id_dR_2_);
+    outtree_->Branch("elec_id_M_1",   &elec_id_M_1_);
+    outtree_->Branch("elec_id_M_2",   &elec_id_M_2_);
+    outtree_->Branch("elec_id_q_1",   &elec_id_q_1_);
+    outtree_->Branch("elec_id_q_2",   &elec_id_q_2_);
+    outtree_->Branch("E_over_p_1",   &E_over_p_1_);
+    outtree_->Branch("E_over_p_2",   &E_over_p_2_);
+    outtree_->Branch("dphi_sc_tk_at_vtx_1",   &dphi_sc_tk_at_vtx_1_);
+    outtree_->Branch("dphi_sc_tk_at_vtx_2",   &dphi_sc_tk_at_vtx_2_);
     outtree_->Branch("id_tag_1"  , &id_tag_1_  );
     outtree_->Branch("id_tag_2"  , &id_tag_2_  );
     outtree_->Branch("eta_1" , &eta_1_ );
@@ -187,6 +223,10 @@ int TagAndProbe<T>::PreAnalysis() {
     outtree_->Branch("match_tau_pt_2" , &match_tau_pt_2_    );
     outtree_->Branch("gen_match_1", &gen_match_1_);
     outtree_->Branch("gen_match_2", &gen_match_2_);
+    outtree_->Branch("gen_match_1_mother", &gen_match_1_mother_);
+    outtree_->Branch("gen_match_2_mother", &gen_match_2_mother_);
+    outtree_->Branch("gen_match_1_q", &gen_match_1_q_);
+    outtree_->Branch("gen_match_2_q", &gen_match_2_q_);
     outtree_->Branch("m_gamma_leptons", &m_gamma_leptons_);
     outtree_->Branch("pass_FSR_condition",&pass_FSR_condition_);
     outtree_->Branch("lepton_veto"  , &lepton_veto_ );
@@ -232,6 +272,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
   m_vis_ = ditau->M();
   pt_1_ = lep1->pt();
   pt_2_ = lep2->pt();
+  q_1_ = lep1->charge();
+  q_2_ = lep2->charge();
   eta_1_ = lep1->eta();
   eta_2_ = lep2->eta();
   phi_1_ = lep1->phi();
@@ -243,7 +285,15 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
  
   if(event->Exists("gen_match_1")) gen_match_1_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
   if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
-  
+
+  gen_match_1_mother_ =-9999; 
+  gen_match_2_mother_ =-9999; 
+  if(event->Exists("gen_match_1_mother")) gen_match_1_mother_ = event->Get<int>("gen_match_1_mother");
+  if(event->Exists("gen_match_2_mother")) gen_match_2_mother_ = event->Get<int>("gen_match_2_mother");
+
+  if(event->Exists("gen_match_1_q")) gen_match_1_q_ = event->Get<int>("gen_match_1_q");
+  if(event->Exists("gen_match_2_q")) gen_match_2_q_ = event->Get<int>("gen_match_2_q");
+ 
   trg_tag_1_ = false;
   trg_tag_2_ = false;
   trg_probe_1_ = false;
@@ -347,13 +397,46 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
       if(loose_iso_trgprobe_){
         trg_probe_1_ = trg_probe_1_ && MuonTkIsoVal(dynamic_cast<Muon const*>(lep1)) < 0.4;   
-        trg_probe_2_ = trg_probe_2_ && MuonTkIsoVal(dynamic_cast<Muon const*>(lep1)) < 0.4;
+        trg_probe_2_ = trg_probe_2_ && MuonTkIsoVal(dynamic_cast<Muon const*>(lep2)) < 0.4;
       }
       id_tag_1_ = tag_id_(muon1);
       id_tag_2_ = tag_id_(muon2);
       id_probe_1_ = probe_id_(muon1);
       id_probe_2_ = probe_id_(muon2);
-   
+  
+      // get fsr tag for events with additional electrons and muons
+      std::vector<Electron*> fsr_elecs = event->GetPtrVec<Electron>("fsr_electrons");
+      std::vector<T> muon1_vec = {muon1};
+      std::vector<T> muon2_vec = {muon1};
+      std::vector<std::pair<T, Electron*>> matched1 = MatchByDR(muon1_vec,fsr_elecs,0.5,true,true);
+      std::vector<std::pair<T, Electron*>> matched2 = MatchByDR(muon2_vec,fsr_elecs,0.5,true,true);
+
+      elec_id_1_=false;
+      elec_id_2_=false;
+      elec_id_pt_1_=-9999;
+      elec_id_pt_2_=-9999;
+      elec_id_dR_1_=9999;
+      elec_id_dR_2_=9999;
+      elec_id_M_1_=m_vis_;
+      elec_id_M_2_=m_vis_;
+      elec_id_q_1_=-9999;
+      elec_id_q_2_=-9999;
+
+      if(matched1.size()>0) {
+        elec_id_1_=true;
+        elec_id_pt_1_=matched1[0].second->pt();
+        elec_id_q_1_=matched1[0].second->charge();
+        elec_id_M_1_=(muon1->vector()+muon2->vector()+matched1[0].second->vector()).M();
+        elec_id_dR_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(muon1->vector(),matched1[0].second->vector()));
+      }
+      if(matched2.size()>0) {
+        elec_id_2_=true;
+        elec_id_pt_2_=matched2[0].second->pt();
+        elec_id_q_2_=matched2[0].second->charge();
+        elec_id_M_2_=(muon1->vector()+muon2->vector()+matched2[0].second->vector()).M();
+        elec_id_dR_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(muon2->vector(),matched2[0].second->vector()));
+      }
+ 
       if(do_extra_){
         //put any extra condition your require the events to pass here
         std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
@@ -455,6 +538,14 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
       T elec1 = dynamic_cast<T>(lep1);
       T elec2 = dynamic_cast<T>(lep2);
+
+      // for charge ID measurments - see https://indico.cern.ch/event/258315/contributions/572945/attachments/454846/630468/ChargeStudy.pdf
+      E_over_p_1_ = dynamic_cast<Electron const*>(lep1)->sc_e_over_p();
+      E_over_p_2_ = dynamic_cast<Electron const*>(lep2)->sc_e_over_p();
+
+      dphi_sc_tk_at_vtx_1_ = dynamic_cast<Electron const*>(lep1)->dphi_sc_tk_at_vtx();
+      dphi_sc_tk_at_vtx_2_ = dynamic_cast<Electron const*>(lep2)->dphi_sc_tk_at_vtx();
+
       if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) {
         iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
         iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());

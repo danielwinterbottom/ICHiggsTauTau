@@ -430,6 +430,23 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    if(gen_match_1 == mcorigin::tauHad) event->Add("leading_gen_tau", new ic::GenJet(*(leading_tau_match.at(0).second)));
    if(gen_match_2 == mcorigin::tauHad) event->Add("subleading_gen_tau", new ic::GenJet(*(subleading_tau_match.at(0).second)));
 
+   int gen_match_1_mother=-9999;
+   int gen_match_2_mother=-9999;
+
+   if(leading_lepton_match.size()>0 && leading_lepton_match.at(0).second->mothers().size()>0) gen_match_1_mother = particles[leading_lepton_match.at(0).second->mothers()[0]]->pdgid();
+   if(subleading_lepton_match.size()>0 && subleading_lepton_match.at(0).second->mothers().size()>0) gen_match_2_mother = particles[subleading_lepton_match.at(0).second->mothers()[0]]->pdgid();
+
+   int gen_match_1_q=-9999;
+   int gen_match_2_q=-9999;
+
+   if(leading_lepton_match.size()>0) gen_match_1_q = leading_lepton_match.at(0).second->charge();
+   if(subleading_lepton_match.size()>0) gen_match_2_q = subleading_lepton_match.at(0).second->charge();
+
+   event->Add("gen_match_1_q",gen_match_1_q);
+   event->Add("gen_match_2_q",gen_match_2_q);
+
+   event->Add("gen_match_1_mother",gen_match_1_mother);
+   event->Add("gen_match_2_mother",gen_match_2_mother);
 
    event->Add("gen_match_1",gen_match_1);
    event->Add("gen_match_2",gen_match_2);

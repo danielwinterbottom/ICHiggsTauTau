@@ -84,6 +84,7 @@ class HTTCategories : public ModuleBase {
   double wt_tquark_alt_;
   double wt_zpt_up_;
   double wt_zpt_down_;
+  double wt_zpt_embed_ic_;
   double wt_efake_rate_up_;
   double wt_efake_rate_down_;
   double wt_mfake_rate_up_;
@@ -243,6 +244,15 @@ class HTTCategories : public ModuleBase {
   unsigned n_loose_bjets_;
   unsigned n_btag_;
   unsigned n_loose_btag_;
+
+  double deepbpt_1_;
+  double deepbeta_1_;
+  double deep_probb_1_;
+  double deep_probbb_1_;
+  double deep_problepb_1_;
+  double deepcsv_probb_1_;
+  double deepcsv_probbb_1_;
+
   branch_var jpt_1_;     // Defined if n_jets >= 1
   branch_var jpt_2_;     // Defined if n_jets >= 2
   branch_var jeta_1_;    // Defined if n_jets >= 1

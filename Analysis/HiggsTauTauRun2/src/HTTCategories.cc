@@ -881,6 +881,14 @@ namespace ic {
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("n_deepbjets",       &n_deepbjets_);
+      outtree_->Branch("deepbpt_1",       &deepbpt_1_);
+      outtree_->Branch("deepbeta_1",       &deepbeta_1_);
+      outtree_->Branch("deep_probb_1",       &deep_probb_1_);
+      outtree_->Branch("deep_probbb_1",       &deep_probbb_1_);
+      outtree_->Branch("deep_problepb_1",       &deep_problepb_1_);
+      outtree_->Branch("deepcsv_probb_1",       &deepcsv_probb_1_);
+      outtree_->Branch("deepcsv_probbb_1",       &deepcsv_probbb_1_);
+
       outtree_->Branch("n_prebjets",        &n_prebjets_);
       outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
       outtree_->Branch("n_btag",            &n_btag_);
@@ -1134,6 +1142,7 @@ namespace ic {
       outtree_->Branch("q_1", &q_1_);
       outtree_->Branch("q_2", &q_2_);
       outtree_->Branch("wt_zpt_down",       &wt_zpt_down_);
+      outtree_->Branch("wt_zpt_embed_ic",       &wt_zpt_embed_ic_);
         
       outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
       outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
@@ -1152,7 +1161,10 @@ namespace ic {
         outtree_->Branch("met_phi",           &met_phi_.var_double);
         outtree_->Branch("wt_qcdscale_up"   , &wt_qcdscale_up_    );
         outtree_->Branch("wt_qcdscale_down" , &wt_qcdscale_down_ );
-
+        outtree_->Branch("metcov00", &metCov00_, "metCov00/F");
+        outtree_->Branch("metcov01", &metCov01_, "metCov01/F");
+        outtree_->Branch("metcov10", &metCov10_, "metCov10/F");
+        outtree_->Branch("metcov11", &metCov11_, "metCov11/F");
         outtree_->Branch("wt_ps_isr_up" , &wt_ps_isr_up_ );
         outtree_->Branch("wt_ps_isr_down" , &wt_ps_isr_down_ );
         outtree_->Branch("wt_ps_fsr_up" , &wt_ps_fsr_up_ );
@@ -2388,6 +2400,7 @@ namespace ic {
     if(event->Exists("gen_match_2")) gen_match_2_ = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2"));
     if(event->Exists("gen_match_1_pt")) gen_match_1_pt_ = event->Get<double>("gen_match_1_pt");
     if(event->Exists("gen_match_2_pt")) gen_match_2_pt_ = event->Get<double>("gen_match_2_pt");
+
     if(event->Exists("gen_match_undecayed_1_pt")) gen_match_undecayed_1_pt_ = event->Get<double>("gen_match_undecayed_1_pt");
     if(event->Exists("gen_match_undecayed_2_pt")) gen_match_undecayed_2_pt_ = event->Get<double>("gen_match_undecayed_2_pt");
 
@@ -2408,6 +2421,7 @@ namespace ic {
     wt_tquark_alt_ = 1.0;
     wt_zpt_up_ = 1.0;
     wt_zpt_down_ = 1.0;
+    wt_zpt_embed_ic_ = 1.0;
     wt_em_qcd_ = 1.0;
     wt_efake_rate_up_ = 1.0;
     wt_efake_rate_down_ = 1.0;
@@ -2420,6 +2434,7 @@ namespace ic {
     if (event->Exists("wt_tquark_alt"))      wt_tquark_alt_   = event->Get<double>("wt_tquark_alt");
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
+    if (event->Exists("wt_zpt_embed_ic"))      wt_zpt_embed_ic_ = event->Get<double>("wt_zpt_embed_ic");
     if (event->Exists("wt_efake_rate_up"))  wt_efake_rate_up_   = event->Get<double>("wt_efake_rate_up");
     if (event->Exists("wt_efake_rate_down")) wt_efake_rate_down_ = event->Get<double>("wt_efake_rate_down");
     if (event->Exists("wt_mfake_rate_up"))  wt_mfake_rate_up_   = event->Get<double>("wt_mfake_rate_up");
@@ -2537,6 +2552,7 @@ namespace ic {
       return s1->GetBDiscriminator(deepjet_label_1) + s1->GetBDiscriminator(deepjet_label_2) + s1->GetBDiscriminator(deepjet_label_3) > deepjet_wp;
     };
 
+
     auto sortRuleBTagSum = [btag_label, btag_label_extra] (PFJet* s1, PFJet* s2) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > 
         s2->GetBDiscriminator(btag_label) + s2->GetBDiscriminator(btag_label_extra);
@@ -2568,6 +2584,26 @@ namespace ic {
     } 
 
     n_deepbjets_ = deepbjets.size();
+    deepbpt_1_=-9999;
+    deepbeta_1_=-9999;
+    deep_probb_1_=-9999;
+    deep_probbb_1_=-9999;
+    deep_problepb_1_=-9999;
+    deepcsv_probb_1_=-9999;
+    deepcsv_probbb_1_=-9999;
+    if(prebjets.size()>0) {
+      if(n_deepbjets_>0){
+        deepbpt_1_=prebjets[0]->pt();
+        deepbeta_1_=prebjets[0]->eta();
+      }
+      deep_probb_1_ = prebjets[0]->GetBDiscriminator(deepjet_label_1);
+      deep_probbb_1_ = prebjets[0]->GetBDiscriminator(deepjet_label_2);
+      deep_problepb_1_ = prebjets[0]->GetBDiscriminator(deepjet_label_3);
+
+      deepcsv_probb_1_ = prebjets[0]->GetBDiscriminator("pfDeepCSVJetTags:probb");
+      deepcsv_probbb_1_ = prebjets[0]->GetBDiscriminator("pfDeepCSVJetTags:probbb");
+    }
+
 
     // Btag weights
     wt_btag_           = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;
@@ -2609,6 +2645,11 @@ namespace ic {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
     }
+    if(channel_ == channel::zee || channel_ == channel::zmm) {
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+    }  
+
     lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
     
     if((strategy_==strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) && !make_sync_ntuple_) dilepton_veto_ = dilep_veto_ || dilepton_veto_;

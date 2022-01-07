@@ -115,6 +115,7 @@ for year in years:
   BINS_FINE="[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
   BINS_VFINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
   BINS_SVFIT="[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200,205,210,215,220,225,230,235,240,245,250,255,260,265,270,275,280,285,290,295,300]"
+  BINS_MVIS="[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200]"
   BINS_2D='[0,50,100,200],[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]'
 
   # for btag category bins merge mt_tot<60 for same reason as above
@@ -151,14 +152,18 @@ for year in years:
                    ]
 
   categories_em = [
-                   "inclusive",
-                   "nobtag_highdzeta",
-                   "nobtag_mediumdzeta",
-                   "nobtag_lowdzeta",
-                   "btag_highdzeta",
-                   "btag_mediumdzeta",
-                   "btag_lowdzeta",
-                   "ttbar_control",
+                   #"inclusive",
+                   "Nbtag0_DZetaGt30",
+                   "Nbtag0_DZetam10To30",
+                   "Nbtag0_DZetam35Tom10",
+                   "NbtagGt1_DZetaGt30",
+                   "NbtagGt1_DZetam10To30",
+                   "NbtagGt1_DZetam35Tom10",
+                   "NbtagGt1_DZetaLtm35",
+
+                   "Nbtag0_DZetaGt30_MHGt250",
+                   "Nbtag0_DZetam10To30_MHGt250",
+                   "Nbtag0_DZetam35Tom10_MHGt250",
                    ]
  
   ANA = 'mssm-vs-sm-Run%(year)s' % vars()
@@ -177,6 +182,7 @@ for year in years:
       ' --syst_tau_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Tau Trigger efficiency
       ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
       ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
+      ' --syst_embed_pt="embed_zpt_mass_shape"' % vars(), # ttbar contamination in embedding
       ' --syst_mssm_ggh ' # ggH theory uncertainties,
 #      ' --syst_eff_b=CMS_htt_eff_b_%(year)s' % vars(),
 #      ' --syst_fake_b=CMS_htt_mistag_b_%(year)s'% vars(),
@@ -209,11 +215,14 @@ for year in years:
     ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
   ]
 
+ 
   et_sep_shape_systematics = [
     ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_e_scale="CMS_scale_e"', # Election energy scale
-    ' --do_ff_systs'
+    ' --do_ff_systs',
+    #'--syst_e_res="CMS_res_e"',
+    #'--syst_tau_res="CMS_res_t"'
   ]
 
   mt_shape_systematics = [
@@ -223,7 +232,10 @@ for year in years:
   mt_sep_shape_systematics = [
     ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
-    ' --do_ff_systs'
+    ' --do_ff_systs',
+    #'--syst_mu_res="CMS_res_mu"',
+   # '--syst_tau_res="CMS_res_t"',
+    #'--syst_mu_scale="CMS_scale_mu"',
   ]
 
   tt_shape_systematics = [
@@ -231,10 +243,15 @@ for year in years:
   
   tt_sep_shape_systematics = [
     ' --do_ff_systs'
+    #'--syst_tau_res="CMS_res_t"',
   ]
  
   em_shape_systematics = ['']
-  em_sep_shape_systematics = ['']
+  em_sep_shape_systematics = [
+    #'--syst_mu_res="CMS_res_mu"',
+    #'--syst_e_res="CMS_res_e"',
+    #'--syst_mu_scale="CMS_scale_mu"',
+  ]
 
   extra_channel = {
       "em" : common_shape_systematics+em_shape_systematics,
@@ -253,6 +270,9 @@ for year in years:
 
   var     = 'mt_tot'
   dc_app  = '-mt_tot_puppi'
+  #var     = 'm_vis'
+  #dc_app  = '-m_vis'
+
 
   for ch in channels:
 
@@ -262,11 +282,14 @@ for year in years:
     categories = cat_schemes[ch]
 
     for cat in categories:
+
       add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
       if ch == "em": method = '19'
       else: method = '17'
 
-      if cat.startswith("btag") or cat.startswith("NbtagGt1"): bins = BINS
+   
+      if var == 'm_vis': bins = BINS_MVIS
+      elif cat.startswith("btag") or cat.startswith("NbtagGt1"): bins = BINS
       else: bins = BINS_FINE
 
       if old_sig:
@@ -277,7 +300,7 @@ for year in years:
       add_cond_nosysts = add_cond
 
       if not no_syst:
-        for i in extra_channel[ch]:   
+        for i in extra_channel[ch]:  
           add_cond += i
 
       run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
@@ -306,9 +329,10 @@ for year in years:
       rename_cmd_alt3 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_pt_tt_vs_svfit_%(cat)s_pt_tt_vs_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_pt_tt_vs_svfit.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
       commands = [(run_cmd,rename_cmd)]
-      if run_cmd_alt1 != '': commands.append((run_cmd_alt1, rename_cmd_alt1)) 
-      if run_cmd_alt2 != '': commands.append((run_cmd_alt2, rename_cmd_alt2)) 
-      if run_cmd_alt3 != '': commands.append((run_cmd_alt3, rename_cmd_alt3)) 
+      if not var == 'm_vis':
+        if run_cmd_alt1 != '': commands.append((run_cmd_alt1, rename_cmd_alt1)) 
+        if run_cmd_alt2 != '': commands.append((run_cmd_alt2, rename_cmd_alt2)) 
+        if run_cmd_alt3 != '': commands.append((run_cmd_alt3, rename_cmd_alt3)) 
 
       num = 0
       for run_cmd_, rename_cmd_ in commands:
@@ -322,8 +346,10 @@ for year in years:
           job_file = '%(output_folder)s/jobs/mssm_datacard_%(cat)s_%(ch)s_%(YEAR)s_%(num)s.sh' % vars()
           CreateBatchJob(job_file,cmssw_base,[run_cmd_,rename_cmd_])
           if not options.dry_run:
-            if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
-              SubmitBatchJob(job_file,time=600,memory=24,cores=1)
+            #if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
+            if ch in ["mt","et"] and not options.no_syst:
+              #SubmitBatchJob(job_file,time=600,memory=24,cores=1) 
+              SubmitBatchJob(job_file,time=600,memory=12,cores=1) 
             else:
               SubmitBatchJob(job_file,time=180,memory=24,cores=1)
     
@@ -332,9 +358,7 @@ for year in years:
         for syst in sep_systs_channel[ch]:
           syst_name=syst.split('=')[0].split('--')[1]
           dc='%(cat)s_%(syst_name)s' % vars()
-          #run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s --no_default %(syst)s' % vars()
           run_cmd_syst_ = run_cmd_.replace(add_cond, add_cond_nosysts)+' --extra_name=%(syst_name)s --no_default %(syst)s ' % vars()
-#          rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(dc)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(dc)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
           rename_cmd_syst_ = rename_cmd_.replace('%(ch)s_%(YEAR)s.root' % vars(), '%(syst_name)s_%(ch)s_%(YEAR)s.root' % vars() ).replace('.inputs' % vars(), '_%(syst_name)s.inputs' % vars())
     
           if not options.batch:

@@ -43,6 +43,7 @@ namespace ic {
     do_quarkmass_higgspt_       = false;
     do_ps_weights_              = false;
     do_nnlops_weights_          = false;
+    embed_pt_weights_ic_hist_             = nullptr;
     }
 HTTWeights::~HTTWeights() {
   ;
@@ -1634,6 +1635,36 @@ int HTTWeights::Execute(TreeEvent *event) {
 
      event->Add("wt_em_qcd",qcd_weight);
    }
+ }
+
+ if(is_embedded_) {
+   double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
+   double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
+
+   if(!event->Exists("genpT") || !event->Exists("genM")) {
+
+     std::vector<GenParticle *> sel_gen_parts;
+     std::vector<GenParticle *> parts;
+     if(event->ExistsInTree("genParticles")) parts = event->GetPtrVec<GenParticle>("genParticles");
+
+     for(unsigned i = 0; i < parts.size(); ++i){
+       std::vector<bool> status_flags = parts[i]->statusFlags();
+       unsigned id = abs(parts[i]->pdgid());
+       unsigned status = abs(parts[i]->status());
+       if ( (id >= 11 && id <= 16 && status_flags[FromHardProcess] && status==1) || status_flags[IsDirectHardProcessTauDecayProduct]) sel_gen_parts.push_back(parts[i]);
+     }
+
+     ROOT::Math::PtEtaPhiEVector gen_boson;
+     for( unsigned i = 0; i < sel_gen_parts.size() ; ++i){
+       gen_boson += sel_gen_parts[i]->vector();
+     }
+     zpt = gen_boson.pt();
+     zmass = gen_boson.M();
+
+   }
+
+   double wtzpt_embed_ic = embed_pt_weights_ic_hist_->GetBinContent(embed_pt_weights_ic_hist_->FindBin(zmass,zpt));
+   event->Add("wt_zpt_embed_ic",wtzpt_embed_ic);
  }
 
   if (do_zpt_weight_){

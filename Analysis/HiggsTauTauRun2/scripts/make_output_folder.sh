@@ -155,4 +155,10 @@ mkdir -p -v $1/METCL_DOWN
 # mkdir -p -v $1/JESEE2_UNCORR_UP
 # mkdir -p -v $1/JESEE2_CORR_DOWN
 # mkdir -p -v $1/JESEE2_CORR_UP
+mkdir -p -v $1/TRES_UP
+mkdir -p -v $1/TRES_DOWN
+mkdir -p -v $1/ERES_UP
+mkdir -p -v $1/ERES_DOWN
+mkdir -p -v $1/MURES_UP
+mkdir -p -v $1/MURES_DOWN
 
