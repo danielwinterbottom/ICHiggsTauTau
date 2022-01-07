@@ -176,8 +176,6 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       if options.em_iso: 
         trg_pt_bins = '[10,12,14,16,18,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
         #trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # high pt leg
-      trg_pt_bins='[25,200]'
-      trg_eta_bins='[0,2.4]'
     if options.channel == 'tpzee':
       gen_cuts='gen_match_1==1&&gen_match_2==1'  
       idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
