@@ -138,6 +138,7 @@ namespace ic {
       mvatree_->Branch("pi0_py_2", &pi0_py_2_);
       mvatree_->Branch("pi0_pz_2", &pi0_pz_2_);
       mvatree_->Branch("pi0_E_2", &pi0_E_2_);
+      mvatree_->Branch("mass", &mass_);
 
       mvatree_->Branch("nu_px_1", &nu_px_1_);
       mvatree_->Branch("nu_py_1", &nu_py_1_);
@@ -165,6 +166,7 @@ namespace ic {
 
       mvatree_->Branch("dm_1", &tauFlag_1_);
       mvatree_->Branch("dm_2", &tauFlag_2_);
+
 
       mvatree_->Branch("metx"         , &metx_         );
       mvatree_->Branch("mety"         , &mety_         );
