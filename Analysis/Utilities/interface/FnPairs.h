@@ -49,6 +49,29 @@ namespace ic {
       return pairVec;
     }
 
+  template <class T, class U, class V, class W>
+    std::vector< std::tuple<T,U,V,W> > MakeFourParticles(std::vector<T> const& collection1,
+                                                         std::vector<U> const& collection2,
+                                                         std::vector<V> const& collection3,
+                                                         std::vector<W> const& collection4){
+      unsigned n = collection1.size();
+      unsigned m = collection2.size();
+      unsigned o = collection3.size();
+      unsigned p = collection4.size();
+      std::vector< std::tuple<T,U,V,W> > fourVec;
+      fourVec.resize(n*m*o*p);
+      unsigned vecIndex = 0;
+      for (unsigned i1 = 0; i1 < n; ++i1) {
+        for (unsigned i2 = 0; i2 < m; ++i2) {
+          for (unsigned i3 = 0; i3 < o; ++i3) {
+            for (unsigned i4 = 0; i4 < p; ++i4, ++vecIndex) {
+              fourVec[vecIndex] = (std::tuple<T,U,V,W>(collection1[i1],collection2[i2],collection3[i3],collection4[i4]));
+            }
+          }
+        }
+      }
+      return fourVec;
+    }
 
 
   template<class T, class U>

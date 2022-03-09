@@ -1,10 +1,14 @@
 import argparse
+import os
+
+#python crab_4tau.py --year=2016-postVFP --data --output_folder=Jan06
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Nov22')
-parser.add_argument('--year','-y', help= 'Name of input year', choices=["2016","2017","2018","all"], default='all')
+parser.add_argument('--year','-y', help= 'Name of input year', choices=["2016-preVFP","2016-postVFP","2017","2018","all"], default='all')
 parser.add_argument('--data', help= 'Run data samples',  action='store_true')
 parser.add_argument('--mc', help= 'Run mc samples',  action='store_true')
+parser.add_argument('--recovery', help= 'Do recovery jobs, make sure you run crab report on the samples you want to recover first',  action='store_true')
 args = parser.parse_args()
 
 dml = []
@@ -46,22 +50,24 @@ for dm in dml:
     config = config()
     
     config.General.transferOutputs = True
-    config.General.workArea='{}_{}_106X_{}'.format(args.output_folder,dm,yr)
-    
+    if not args.recovery:
+      config.General.workArea='{}_{}_106X_{}'.format(args.output_folder,dm,yr)
+    else:
+      config.General.workArea='{}_{}_106X_{}_recovery'.format(args.output_folder,dm,yr)
+
     config.JobType.psetName = cfg[yr]
     config.JobType.pluginName = 'Analysis'
     config.JobType.outputFiles = ['EventTree.root']
     config.JobType.maxMemoryMB = 4000
     cfgParams = ['globalTag={}'.format(gt[dm][yr])]
-    if dm == "Data": cfgParams.append('isData=1')
-    else: cfgParams.append('isData=0')
-    
+    if dm == "Data": 
+      cfgParams.append('isData=1')
+    else: 
+      cfgParams.append('isData=0')
+
+
     config.JobType.allowUndistributedCMSSW = True
-    #config.Data.unitsPerJob = 1
-    #config.Data.splitting = 'FileBased'
     config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
-    config.Data.unitsPerJob = 50000
-    config.Data.splitting = 'EventAwareLumiBased'
     config.Data.publication = False
     config.Data.allowNonValidInputDataset = True
     config.Data.ignoreLocality = True
@@ -80,7 +86,7 @@ for dm in dml:
     
         def submit(config):
             try:
-                crabCommand('submit', config = config)
+                crabCommand('submit', config = config, dryrun = False)
             except HTTPException as hte:
                 print(hte.headers)
             except ClientException as cle:
@@ -102,7 +108,7 @@ for dm in dml:
             tasks.append(('SingleMuonE', '/SingleMuon/Run2016E-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleMuonF', '/SingleMuon/Run2016F-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
 
-            # SingleElectron
+            ## SingleElectron
             tasks.append(('SingleElectronB', '/SingleElectron/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
@@ -123,6 +129,13 @@ for dm in dml:
             tasks.append(('MuonEGE', '/MuonEG/Run2016E-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('MuonEGF', '/MuonEG/Run2016F-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
           
+            # DoubleMuon
+            tasks.append(('DoubleMuonB', '/DoubleMuon/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonC', '/DoubleMuon/Run2016C-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonD', '/DoubleMuon/Run2016D-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonE', '/DoubleMuon/Run2016E-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonF', '/DoubleMuon/Run2016F-UL2016_MiniAODv2-v1/MINIAOD'))
+
           elif yr == "2016-postVFP":
             # HIP problem fixed in 2016 runs G and H
             # SingleMuon
@@ -141,16 +154,18 @@ for dm in dml:
             tasks.append(('MuonEGG', '/MuonEG/Run2016G-UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('MuonEGH', '/MuonEG/Run2016H-UL2016_MiniAODv2-v2/MINIAOD'))
 
+            # DoubleMuon
+            tasks.append(('DoubleMuonG', '/DoubleMuon/Run2016G-UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonH', '/DoubleMuon/Run2016H-UL2016_MiniAODv2-v2/MINIAOD'))
+
           elif yr == "2017":
             # Runs B to F in 2017
-            # SingleMuon - why runs G and H?
+            # SingleMuon
             tasks.append(('SingleMuonB', '/SingleMuon/Run2017B-UL2017_MiniAODv2-v1/MINIAOD'))
             tasks.append(('SingleMuonC', '/SingleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD'))
             tasks.append(('SingleMuonD', '/SingleMuon/Run2017D-UL2017_MiniAODv2-v1/MINIAOD'))
             tasks.append(('SingleMuonE', '/SingleMuon/Run2017E-UL2017_MiniAODv2-v1/MINIAOD'))
             tasks.append(('SingleMuonF', '/SingleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD'))
-            #tasks.append(('SingleMuonG', '/SingleMuon/Run2017G-UL2017_MiniAODv2-v1/MINIAOD'))
-            #tasks.append(('SingleMuonH', '/SingleMuon/Run2017H-UL2017_MiniAODv2-v1/MINIAOD'))
 
             # SingleElectron
             tasks.append(('SingleElectronB', '/SingleElectron/Run2017B-UL2017_MiniAODv2-v1/MINIAOD'))
@@ -173,8 +188,15 @@ for dm in dml:
             tasks.append(('MuonEGE', '/MuonEG/Run2017E-UL2017_MiniAODv2-v1/MINIAOD'))
             tasks.append(('MuonEGF', '/MuonEG/Run2017F-UL2017_MiniAODv2-v1/MINIAOD'))
 
+            # DoubleMuon
+            tasks.append(('DoubleMuonB', '/DoubleMuon/Run2017B-UL2017_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonC', '/DoubleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonD', '/DoubleMuon/Run2017D-UL2017_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonE', '/DoubleMuon/Run2017E-UL2017_MiniAODv2-v2/MINIAOD'))
+            tasks.append(('DoubleMuonF', '/DoubleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD'))
+
           elif yr == "2018":
-            # Runs A to D in 2018
+            ## Runs A to D in 2018
             # SingleMuon
             tasks.append(('SingleMuonA', '/SingleMuon/Run2018A-UL2018_MiniAODv2-v3/MINIAOD'))
             tasks.append(('SingleMuonB', '/SingleMuon/Run2018B-UL2018_MiniAODv2-v2/MINIAOD'))
@@ -199,15 +221,21 @@ for dm in dml:
             tasks.append(('MuonEGC', '/MuonEG/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
             tasks.append(('MuonEGD', '/MuonEG/Run2018D-UL2018_MiniAODv2-v1/MINIAOD'))
 
+            # DoubleMuon
+            tasks.append(('DoubleMuonA', '/DoubleMuon/Run2018A-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonB', '/DoubleMuon/Run2018B-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonC', '/DoubleMuon/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonD', '/DoubleMuon/Run2018D-UL2018_MiniAODv2-v1/MINIAOD'))
+
         if dm == "MC":
           if yr == "2016-preVFP":
             # Spit MC into preVFP and postVFP (HIP fix)
             # Drell-Yan LO
-            tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM')
-            tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM')
-            tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM')
-            tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM')
-            tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM')
+            tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
             # Low mass Drell-Yan LO
             tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
@@ -537,13 +565,26 @@ for dm in dml:
             print(task[0])
             config.General.requestName = task[0]
             config.Data.inputDataset = task[1]
-    
-            config.Data.splitting = 'FileBased'
-            config.Data.unitsPerJob = 1
+
+            if args.recovery:
+              os.system("crab kill {}_{}_106X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
+              os.system("crab report {}_{}_106X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
+              config.Data.lumiMask = "{}_{}_106X_{}/crab_{}/results/notFinishedLumis.json".format(args.output_folder,dm,yr,task[0])    
             config.JobType.pyCfgParams = cfgParams
     
             config.Data.userInputFiles = None
-    
+            if task[0] == 'DYJetsToLL-LO' and yr == "2017":
+              config.Data.splitting = 'FileBased'
+              config.Data.unitsPerJob = 4
+            elif task[0] == 'EGammaD' and yr == "2018":
+              config.Data.splitting = 'EventAwareLumiBased'
+              config.Data.unitsPerJob = 100000
+            else:
+              config.Data.splitting = 'EventAwareLumiBased'
+              config.Data.unitsPerJob = 50000
+
+            if args.recovery: config.Data.unitsPerJob = 10000
+
             print(config)
     
             p = Process(target=submit, args=(config,))

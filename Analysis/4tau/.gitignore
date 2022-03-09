@@ -1,0 +1,10 @@
+collected
+output
+filelists
+docs
+*.txt
+*.log
+*.json
+*.xml
+*.dat
+*.tar

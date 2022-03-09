@@ -1303,6 +1303,65 @@ process.icMu17Mu8DZmass8ObjectProducer = producers.icTriggerObjectProducer.clone
       storeOnlyIfFired = cms.bool(False)
 )
 
+# Additional triggers for 4tau analysis
+
+process.icMu17Mu8DZmass3p8ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("selectedPatTrigger"),
+      branch = cms.string("triggerObjectsMu17Mu8DZmass3p8"),
+      hltPath = cms.string("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"),
+      inputIsStandAlone = cms.bool(True),
+      storeOnlyIfFired = cms.bool(False)
+)
+
+process.icTripleMuObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("selectedPatTrigger"),
+      branch = cms.string("triggerObjectsTripleMu"),
+      hltPath = cms.string("HLT_TripleMu_12_10_5_v"),
+      inputIsStandAlone = cms.bool(True),
+      storeOnlyIfFired = cms.bool(False)
+)
+
+process.icTripleMuDZObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("selectedPatTrigger"),
+      branch = cms.string("triggerObjectsTripleMuDZ"),
+      hltPath = cms.string("HLT_TripleMu_10_5_5_DZ_v"),
+      inputIsStandAlone = cms.bool(True),
+      storeOnlyIfFired = cms.bool(False)
+)
+
+process.icDiMu9Ele9DZ = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("selectedPatTrigger"),
+      branch = cms.string("triggerObjectsDiMu9Ele9DZ"),
+      hltPath = cms.string("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_DZ_v"),
+      inputIsStandAlone = cms.bool(True),
+      storeOnlyIfFired = cms.bool(False)
+)
+
+process.icMu8DiEle12DZ = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("selectedPatTrigger"),
+      branch = cms.string("triggerObjectsMu8DiEle12DZ"),
+      hltPath = cms.string("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_DZ_v"),
+      inputIsStandAlone = cms.bool(True),
+      storeOnlyIfFired = cms.bool(False)
+)
+
+process.icMu8DiEle12 = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("selectedPatTrigger"),
+      branch = cms.string("triggerObjectsMu8DiEle12"),
+      hltPath = cms.string("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v"),
+      inputIsStandAlone = cms.bool(True),
+      storeOnlyIfFired = cms.bool(False)
+)
+
+
+process.icEle16Ele12Ele8 = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("selectedPatTrigger"),
+      branch = cms.string("triggerObjectsEle16Ele12Ele8"),
+      hltPath = cms.string("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v"),
+      inputIsStandAlone = cms.bool(True),
+      storeOnlyIfFired = cms.bool(False)
+)
+
 
 process.icTriggerObjectSequence += cms.Sequence(
     process.icIsoMu24ObjectProducer+
@@ -1340,7 +1399,14 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icEle24Ele12DZObjectProducer+
     process.icMu17Mu8ObjectProducer+
     process.icMu17Mu8DZObjectProducer+
-    process.icMu17Mu8DZmass8ObjectProducer
+    process.icMu17Mu8DZmass8ObjectProducer+
+    process.icMu17Mu8DZmass3p8ObjectProducer+
+    process.icTripleMuObjectProducer+
+    process.icTripleMuDZObjectProducer+
+    process.icDiMu9Ele9DZ+
+    process.icMu8DiEle12DZ+
+    process.icMu8DiEle12+
+    process.icEle16Ele12Ele8
     )
 
 for name in process.icTriggerObjectSequence.moduleNames():

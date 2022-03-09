@@ -1736,6 +1736,16 @@ namespace ic {
     return (charge == 1 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1);
   }
 
+  bool TotalZeroChargeFourParticles(CompositeCandidate const* cand) {
+    int charge = (cand->At(0)->charge() + cand->At(1)->charge() + cand->At(2)->charge() + cand->At(3)->charge());
+    return (charge == 0 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1 && abs(cand->At(2)->charge()) == 1 && abs(cand->At(3)->charge()) == 1);
+  }
+
+  bool TotalNonZeroChargeFourParticles(CompositeCandidate const* cand) {
+    int charge = (cand->At(0)->charge() + cand->At(1)->charge() + cand->At(2)->charge() + cand->At(3)->charge());
+    return (charge != 0 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1 && abs(cand->At(2)->charge()) == 1 && abs(cand->At(3)->charge()) == 1);
+  }
+
   bool MuonTight(Muon const* muon) {
     bool tightCut = ( 
         muon->is_global() &&
