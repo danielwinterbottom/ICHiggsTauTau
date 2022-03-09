@@ -451,23 +451,24 @@ if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 
 
 if (channel == channel::ettt) BuildETTTProducts();
 if (channel == channel::mttt) BuildMTTTProducts();
-//if (channel == channel::emtt) BuildEMTTProducts();
+if (channel == channel::emtt) BuildEMTTProducts();
 if (channel == channel::tttt) BuildTTTTProducts();
-//if (channel == channel::eett) BuildEETTProducts();
-//if (channel == channel::mmtt) BuildMMTTProducts();
+if (channel == channel::eett) BuildEETTProducts();
+if (channel == channel::mmtt) BuildMMTTProducts();
 
 // TO DO: Change pair filter to 4tau filter
 // Pair DeltaR filtering
-BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
-      .set_input_label("ditau").set_min(1)
-      .set_predicate([=](CompositeCandidate const* c) {
-        return DeltaR(c->at(0)->vector(), c->at(1)->vector())
-            > pair_dr;
-      }));
+//BuildModule(SimpleFilter<CompositeCandidate>("FourTauFilter")
+//      .set_input_label("4tau").set_min(1)
+//      .set_predicate([=](CompositeCandidate const* c) {
+//        return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+//            > pair_dr;
+//      }));
 
 bool usePFMET = false;
 usePFMET = js["usePFMET"].asBool();
 
+// TO DO: Remove redundant options
 HTTFourTauSelector httFourTauSelector = HTTFourTauSelector("HTTFourTauSelector")
   .set_channel(channel)
   .set_fs(fs.get())
@@ -1129,6 +1130,197 @@ void HTTSequence::BuildMTTTProducts() {
       .set_output_label("4tau"));
 }
 
+// --------------------------------------------------------------------------
+// EMTT Product Sequence
+// --------------------------------------------------------------------------
+
+void HTTSequence::BuildEMTTProducts() {
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
+
+  if (mu_scale_mode > 0){
+    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
+       .set_input_label("muons")
+       .set_far_endcap(muon_shift_farendcap)
+       .set_near_endcap(muon_shift_nearendcap)
+       .set_barrel(muon_shift_barrel)
+       );
+  }
+
+  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+      js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+      .set_input_label("sel_muons").set_min(1)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > muon_pt    &&
+                fabs(m->eta())          < muon_eta   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                PF04IsolationVal(m, 0.5,0) < 0.5  &&
+                MuonID(m);
+
+      }));
+
+  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
+      js["electrons"].asString(), "sel_electrons"));
+
+
+  std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; 
+
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(1) 
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  if (!is_embedded) {
+    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
+        .set_input_label("sel_electrons")
+        .set_e_unc_mode(e_unc_mode)
+    );
+  }
+  if(!is_data && is_embedded){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label("sel_electrons")
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > elec_pt    &&
+                fabs(e->eta())          < elec_eta   &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+      }));
+
+  // TO DO: May need to rewrite - will comment for now
+  //BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
+  //    .set_input_label("ditau").set_min(1)
+  //    .set_predicate([=](CompositeCandidate const* c) {
+  //    return PairOneWithPt(c, 24.0);
+  //    }));
+
+  BuildTauSelection();
+
+  BuildModule(FourParticleCompositeProducer<Electron, Muon, Tau, Tau>("EMTTProducer")
+      .set_input_label_first("sel_electrons")
+      .set_input_label_second("sel_muons")
+      .set_input_label_third(js["taus"].asString())
+      .set_input_label_fourth(js["taus"].asString())
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_candidate_name_third("lepton3")
+      .set_candidate_name_fourth("lepton4")
+      .set_output_label("4tau"));
+
+}
+
+// --------------------------------------------------------------------------
+// EETT Product Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildEETTProducts() {
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
+
+  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
+      js["electrons"].asString(), "sel_electrons"));
+
+  std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
+
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  if (!is_embedded) {
+    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_e_unc_mode(e_unc_mode)
+    );
+  }
+  if(!is_data && is_embedded){
+    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
+        .set_input_label(js["electrons"].asString())
+        .set_shift(elec_shift_barrel)
+        .set_shift_endcap(elec_shift_endcap)
+        .set_strategy(strategy_type)
+        .set_channel(channel::em)
+        .set_moriond_corrections(moriond_tau_scale));
+  }
+
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > elec_pt    &&
+                fabs(e->eta())          < elec_eta   &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+
+      }));
+
+  BuildTauSelection();
+
+  BuildModule(FourParticleCompositeProducer<Electron, Electron, Tau, Tau>("EETTProducer")
+      .set_input_label_first("sel_electrons")
+      .set_input_label_second("sel_eletrons")
+      .set_input_label_third(js["taus"].asString())
+      .set_input_label_fourth(js["taus"].asString())
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_candidate_name_third("lepton3")
+      .set_candidate_name_fourth("lepton4")
+      .set_output_label("4tau"));
+}
+
+// --------------------------------------------------------------------------
+// MMTT Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildMMTTProducts() {
+
+  if (mu_scale_mode > 0){
+    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
+       .set_input_label("muons")
+       .set_far_endcap(muon_shift_farendcap)
+       .set_near_endcap(muon_shift_nearendcap)
+       .set_barrel(muon_shift_barrel)
+       );
+  }
+   
+  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+       js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+    .set_input_label("sel_muons").set_min(1)
+    .set_predicate([=](Muon const* m) {
+      return  m->pt()                 > muon_pt    &&
+              fabs(m->eta())          < muon_eta   &&
+              fabs(m->dxy_vertex())   < muon_dxy   &&
+              fabs(m->dz_vertex())    < muon_dz   &&
+              MuonID(m);
+    }));
+
+  BuildTauSelection();
+
+  BuildModule(FourParticleCompositeProducer<Muon, Muon, Tau, Tau>("MMTTProducer")
+      .set_input_label_first("sel_muons")
+      .set_input_label_second("sel_muons")
+      .set_input_label_third(js["taus"].asString())
+      .set_input_label_fourth(js["taus"].asString())
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_candidate_name_third("lepton3")
+      .set_candidate_name_fourth("lepton4")
+      .set_output_label("4tau"));
+}
 
 // --------------------------------------------------------------------------
 // EM Pair Sequence

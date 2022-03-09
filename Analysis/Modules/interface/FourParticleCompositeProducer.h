@@ -96,8 +96,8 @@ template <class T, class U, class V, class W>
 int FourParticleCompositeProducer<T, U, V, W>::Execute(TreeEvent *event) {
   std::vector<T *> const& vec_first = event->GetPtrVec<T>(input_label_first_);
   std::vector<U *> const& vec_second = event->GetPtrVec<U>(input_label_second_);
-  std::vector<V *> const& vec_third = event->GetPtrVec<U>(input_label_third_);
-  std::vector<W *> const& vec_fourth = event->GetPtrVec<U>(input_label_fourth_);
+  std::vector<V *> const& vec_third = event->GetPtrVec<V>(input_label_third_);
+  std::vector<W *> const& vec_fourth = event->GetPtrVec<W>(input_label_fourth_);
   std::vector< std::tuple<T*,U*,V*,W*> > products = MakeFourParticles(vec_first, vec_second, vec_third, vec_fourth);
   std::vector<CompositeCandidate> vec_out;
   std::vector<CompositeCandidate *> ptr_vec_out;

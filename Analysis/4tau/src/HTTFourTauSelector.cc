@@ -441,7 +441,7 @@ namespace ic {
     return ScalarPtSum(c1->AsVector()) > ScalarPtSum(c2->AsVector());
   }
 
-  bool SortBySumPt(Candidate const* c1,
+  bool SortByPt(Candidate const* c1,
                                        Candidate const* c2) {
     return c1->pt() > c2->pt();
   }
