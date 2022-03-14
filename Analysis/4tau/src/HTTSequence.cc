@@ -112,7 +112,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(js["strategy"].asString()==""){std::cout<<"ERROR: strategy not set"<<std::endl; exit(1);}
   strategy_str = js["strategy"].asString();
   ic::strategy strategy_type  = String2Strategy(strategy_str);
-  ic::era  era_type  = String2Era(era_str);
+  //ic::era  era_type  = String2Era(era_str);
   veto_elec_pt = 10;
   veto_elec_eta = 2.5;
   veto_elec_dxy = 0.045;
@@ -129,74 +129,42 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   veto_dimuon_eta = 2.4;
   veto_dimuon_dxy = 0.045;
   veto_dimuon_dz = 0.2;
-  lead_tau_pt=0;
-  lead_min_taus=0;
 
+  // TO DO: Check these and try changing them
   elec_dz = 0.2;
   elec_dxy = 0.045;
   muon_dxy = 0.045;
   muon_dz = 0.2;
   tau_dz = 0.2;
-  pair_dr = 0.5;
+  pair_dr = 0.3;
+  tau_pt = 20.;
+  tau_eta = 2.3;
+  elec_pt = 15.;
+  elec_eta = 2.5;
+  muon_pt = 15.;
+  muon_eta = 2.4;
 
-  if(channel_str == "em"){
-    pair_dr = 0.3;
-    elec_pt = 15.;
-    elec_eta = 2.5;
-    muon_pt = 15;
-    muon_eta = 2.4;
+
+  if(channel_str == "emtt"){
+    min_taus = 2;
   }
-  if (channel_str == "et"){
-    min_taus = 1;
-    elec_pt = 25;
-    elec_eta = 2.1;
-    tau_pt  = 20;
-    tau_eta = 2.3;
+  if(channel_str == "eett"){
+    min_taus = 2;
+  }
+  if(channel_str == "mmtt"){
+    min_taus = 2;
+  }
+  if (channel_str == "ettt"){
+    min_taus = 3;
   } 
-  if (channel_str == "mt"){
-   muon_eta = 2.1;
-   tau_pt = 20;
-   tau_eta = 2.3;
-   min_taus = 1;
-   if(era_type == era::data_2016) muon_pt = 20.0; 
-   else  muon_pt = 21.0;
+  if (channel_str == "mttt"){
+   min_taus = 3;
   }
-  if (channel_str == "tt"){
-   tau_pt=40;
-   lead_tau_pt=40;
-   if(js["do_vbftrg"].asBool()) {
-     tau_pt = 20.;
-     lead_tau_pt = 20;
-   }
-   tau_eta = 2.1;
-   min_taus = 2;
-   lead_min_taus = 1;
+  if (channel_str == "tttt"){
+   min_taus = 4;
   }
-  if(channel_str == "zee"){
-    if(era_type == era::data_2017) elec_pt = 28.;
-    if(era_type == era::data_2018) elec_pt = 33.;
-    else elec_pt = 25.;
-    elec_eta = 2.1;
-  }
-  if(channel_str == "zmm"){
-    if(era_type == era::data_2018 || era_type == era::data_2017) muon_pt = 25.;
-    else muon_pt = 23.;
-    muon_eta = 2.1;
-  }
-  if(channel_str == "tpzmm"){
-    muon_pt = 10;
-  }
-  if(channel_str == "tpzee"){
-    elec_pt = 10;
-    elec_eta = 2.5;
-  }
-  if(channel_str == "tpmt"){
-    muon_pt = 23;
-    muon_eta = 2.1;
-    min_taus = 1;
-    tau_pt = 10; 
-    tau_eta = 2.3;
-  }
+
+
  do_qcd_scale_wts_=false;
  do_qcd_scale_wts_ = js["do_qcd_scale_wts"].asBool();
  if (output_name.find("SUSYGluGluToBBHToTauTau_M") != output_name.npos && output_name.find("NLO") != output_name.npos) do_qcd_scale_wts_=true;
@@ -285,7 +253,7 @@ void HTTSequence::BuildSequence(){
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   std::cout << "-------------------------------------" << std::endl;
-  std::cout << "HiggsToTauTau Analysis" << std::endl;
+  std::cout << "Four Tau Analysis" << std::endl;
   std::cout << "-------------------------------------" << std::endl;      std::string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "output" % (output_folder+output_name);
   std::cout << boost::format(param_fmt) % "strategy" % Strategy2String(strategy_type);
@@ -313,7 +281,6 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "muon_dxy" % muon_dxy;
   std::cout << boost::format(param_fmt) % "muon_dz" % muon_dz;
   std::cout << boost::format(param_fmt) % "tau_pt" % tau_pt;
-  std::cout << boost::format(param_fmt) % "lead_tau_pt" % lead_tau_pt;
   std::cout << boost::format(param_fmt) % "tau_eta" % tau_eta;
   std::cout << boost::format(param_fmt) % "tau_dz" % tau_dz;
   std::cout << boost::format(param_fmt) % "veto_elec_pt" % veto_elec_pt;
@@ -332,6 +299,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "veto_dimuon_eta" % veto_dimuon_eta;
   std::cout << boost::format(param_fmt) % "veto_dimuon_dxy" % veto_dimuon_dxy;
   std::cout << boost::format(param_fmt) % "veto_dimuon_dz" % veto_dimuon_dz;
+  std::cout << boost::format(param_fmt) % "min_taus" % min_taus;
 
   auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
@@ -438,16 +406,16 @@ if(!is_data && js["do_gen_analysis"].asBool()){
  }
 
 // TO DO: Ask what this does
-if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && output_name.find("WGToLNuG")!=output_name.npos){
-  SimpleCounter<GenParticle> wgammaStarFilter = SimpleCounter<GenParticle>("WgammaStarSelector")
-    .set_input_label("genParticles")
-    .set_predicate(
-      (bind(&GenParticle::status,_1) == 44) &&
-      (bind(&GenParticle::pdgid, _1) == 22))
-    .set_min(0).set_max(0);
- 
-  BuildModule(wgammaStarFilter);
-}
+//if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && output_name.find("WGToLNuG")!=output_name.npos){
+//  SimpleCounter<GenParticle> wgammaStarFilter = SimpleCounter<GenParticle>("WgammaStarSelector")
+//    .set_input_label("genParticles")
+//    .set_predicate(
+//      (bind(&GenParticle::status,_1) == 44) &&
+//      (bind(&GenParticle::pdgid, _1) == 22))
+//    .set_min(0).set_max(0);
+// 
+//  BuildModule(wgammaStarFilter);
+//}
 
 if (channel == channel::ettt) BuildETTTProducts();
 if (channel == channel::mttt) BuildMTTTProducts();
@@ -472,7 +440,7 @@ usePFMET = js["usePFMET"].asBool();
 HTTFourTauSelector httFourTauSelector = HTTFourTauSelector("HTTFourTauSelector")
   .set_channel(channel)
   .set_fs(fs.get())
-  .set_pair_label("ditau")
+  .set_pair_label("4tau")
   .set_met_label(met_label)
   .set_strategy(strategy_type)
   .set_mva_met_from_vector(mva_met_mode==1)
@@ -506,22 +474,22 @@ if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_i
       .set_is_embedded(is_embedded)
       .set_do_singletau(js["do_singletau"].asBool())
       .set_do_filter(false)
-      .set_pair_label("ditau"));
+      .set_pair_label("4tau"));
 }
 
 // TO DO: Ask how to implement vetos
 // Lepton Vetoes
-if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
-if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
-if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
-if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
+//if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
+//if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
+//if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
+//if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 
 
 if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
   BuildModule(PreselectionFilter("PreselectionFilter")
    .set_channel(channel)
    .set_do_preselection(true)
-   .set_dilepton_label("ditau"));
+   .set_dilepton_label("4tau"));
 }
 
 
@@ -617,7 +585,7 @@ if (!is_data && !is_embedded) {
 
 BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
   .set_input_label(jets_label)
-  .set_reference_label("ditau")
+  .set_reference_label("4tau")
   .set_min_dr(0.5));
 
 if(!is_data) {
@@ -625,7 +593,7 @@ if(!is_data) {
   BuildModule(HTTPairGenInfo("HTTPairGenInfo")
     .set_fs(fs.get())
     .set_write_plots(false)
-    .set_ditau_label("ditau")
+    .set_ditau_label("4tau")
     .set_channel(channel)
     .set_ngenjets((do_ngenjets||true) && !is_data && !is_embedded));
 }
@@ -654,7 +622,7 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_do_tau_id_weights(!is_data)
  .set_do_tau_id_sf(!is_data)
  .set_do_em_qcd_weights(true)
- .set_ditau_label("ditau")
+ .set_ditau_label("4tau")
  .set_jets_label(jets_label)
  .set_do_quarkmass_higgspt(output_name.find("JJH")!=output_name.npos)
  .set_do_ps_weights(output_name.find("JJH")!=output_name.npos)
@@ -962,7 +930,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   
   int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;
   
-  // TO DO: Will have to pick a pair from the 4 to do this on. May be useful. Possibly to do later
+  //                                          // TO DO: Will have to pick a pair from the 4 to do this on. May be useful. Possibly to do later
   SVFitTest svFitTest  = SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_strategy(strategy_type)
@@ -972,7 +940,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     .set_fail_mode(0)
     .set_require_inputs_match(false)
     .set_split(40000)
-    .set_dilepton_label("ditau")
+    .set_dilepton_label("4tau")
     .set_met_label(shift_met_label)
     .set_fullpath(svfit_folder_)
     .set_legacy_svfit(true)
@@ -989,7 +957,33 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
    svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
   
   BuildModule(svFitTest);
-  
+ 
+  bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
+  BuildModule(HTTCategories("HTTCategories")
+      .set_fs(fs_vec[i].get())
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_ditau_label("4tau")
+      .set_met_label(shift_met_label)
+      .set_jets_label(shift_jets_label)
+      .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
+      .set_make_mva_ntuple(js["make_mva_ntuple"].asBool())
+      .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
+      .set_mva_output_name(js["output_folder"].asString()+"/MVAFILE_"+output_name)
+      .set_is_embedded(is_embedded)
+      .set_is_data(is_data)
+      .set_systematic_shift(addit_output_folder!="" && i==0)
+      //Good to avoid accidentally overwriting existing output files when syncing
+      .set_write_tree(!js["make_sync_ntuple"].asBool())
+      .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
+      .set_do_ff_systematics(i==0 && js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
+      .set_do_qcd_scale_wts(do_qcd_scale_wts_)
+      .set_do_mssm_higgspt(do_mssm_higgspt)
+      .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
+      .set_trg_applied_in_mc(js["trg_in_mc"].asBool()));
+
+ 
   // now we need to delete the deep copies of the jet and met collections
   BuildModule(GenericModule("DeleteCopiedJetMET")
     .set_function([=](ic::TreeEvent *event){
@@ -1018,15 +1012,16 @@ void HTTSequence::BuildTTTTProducts(){
  BuildTauSelection();
 
  BuildModule(FourParticleCompositeProducer<Tau, Tau, Tau, Tau>("TTTTProducer")
-      .set_input_label_first(js["taus"].asString())
-      .set_input_label_second(js["taus"].asString())
-      .set_input_label_third(js["taus"].asString())
-      .set_input_label_fourth(js["taus"].asString())
-      .set_candidate_name_first("lepton1")
-      .set_candidate_name_second("lepton2")
-      .set_candidate_name_third("lepton3")
-      .set_candidate_name_fourth("lepton4")
-      .set_output_label("4tau"));
+     .set_input_label_first(js["taus"].asString())
+     .set_input_label_second(js["taus"].asString())
+     .set_input_label_third(js["taus"].asString())
+     .set_input_label_fourth(js["taus"].asString())
+     .set_candidate_name_first("lepton1")
+     .set_candidate_name_second("lepton2")
+     .set_candidate_name_third("lepton3")
+     .set_candidate_name_fourth("lepton4")
+     .set_output_label("4tau"));
+
 }
 
 
@@ -1234,7 +1229,7 @@ void HTTSequence::BuildEETTProducts() {
   std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
-      .set_input_label("sel_electrons").set_min(1)
+      .set_input_label("sel_electrons").set_min(2)
       .set_predicate([=](Electron const* e) {
         return ElecID(e);
       }));
@@ -1256,7 +1251,7 @@ void HTTSequence::BuildEETTProducts() {
   }
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
-      .set_input_label("sel_electrons").set_min(1)
+      .set_input_label("sel_electrons").set_min(2)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
@@ -1299,7 +1294,7 @@ void HTTSequence::BuildMMTTProducts() {
   std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
-    .set_input_label("sel_muons").set_min(1)
+    .set_input_label("sel_muons").set_min(2)
     .set_predicate([=](Muon const* m) {
       return  m->pt()                 > muon_pt    &&
               fabs(m->eta())          < muon_eta   &&
@@ -1322,90 +1317,6 @@ void HTTSequence::BuildMMTTProducts() {
       .set_output_label("4tau"));
 }
 
-// --------------------------------------------------------------------------
-// EM Pair Sequence
-// --------------------------------------------------------------------------
-//void HTTSequence::BuildEMPairs() {
-//  ic::strategy strategy_type  = String2Strategy(strategy_str);
-//
-//  if (mu_scale_mode > 0){
-//    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
-//       .set_input_label("muons")
-//       .set_far_endcap(muon_shift_farendcap)
-//       .set_near_endcap(muon_shift_nearendcap)
-//       .set_barrel(muon_shift_barrel)
-//       );
-//  }
-//
-//  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
-//      js["muons"].asString(), "sel_muons"));
-//
-//  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
-//
-//  BuildModule(SimpleFilter<Muon>("MuonFilter")
-//      .set_input_label("sel_muons").set_min(1)
-//      .set_predicate([=](Muon const* m) {
-//        return  m->pt()                 > muon_pt    &&
-//                fabs(m->eta())          < muon_eta   &&
-//                fabs(m->dxy_vertex())   < muon_dxy   &&
-//                fabs(m->dz_vertex())    < muon_dz   &&
-//                PF04IsolationVal(m, 0.5,0) < 0.5  &&
-//                MuonID(m);
-//
-//      }));
-//
-//  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
-//      js["electrons"].asString(), "sel_electrons"));
-//
-//
-//  std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); }; 
-//
-//  BuildModule(SimpleFilter<Electron>("ElectronFilter")
-//      .set_input_label("sel_electrons").set_min(1) 
-//      .set_predicate([=](Electron const* e) {
-//        return ElecID(e);
-//      }));
-//
-//  if (!is_embedded) {
-//    BuildModule(HTTSmearScale("ElectronSmearScaleCorrection")
-//        .set_input_label("sel_electrons")
-//        .set_e_unc_mode(e_unc_mode)
-//    );
-//  }
-//  if(!is_data && is_embedded){
-//    BuildModule(HTTEnergyScale("ElectronEnergyScaleCorrection")
-//        .set_input_label("sel_electrons")
-//        .set_shift(elec_shift_barrel)
-//        .set_shift_endcap(elec_shift_endcap)
-//        .set_strategy(strategy_type)
-//        .set_channel(channel::em)
-//        .set_moriond_corrections(moriond_tau_scale));
-//  }
-//
-//  BuildModule(SimpleFilter<Electron>("ElectronFilter")
-//      .set_input_label("sel_electrons").set_min(1)
-//      .set_predicate([=](Electron const* e) {
-//        return  e->pt()                 > elec_pt    &&
-//                fabs(e->eta())          < elec_eta   &&
-//                fabs(e->dxy_vertex())   < elec_dxy   &&
-//                fabs(e->dz_vertex())    < elec_dz ;
-//      }));
-//  
-//  BuildModule(CompositeProducer<Electron, Muon>("EMPairProducer")
-//      .set_input_label_first("sel_electrons")
-//      .set_input_label_second("sel_muons")
-//      .set_candidate_name_first("lepton1")
-//      .set_candidate_name_second("lepton2")
-//      .set_output_label("ditau"));
-//
-//  BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
-//      .set_input_label("ditau").set_min(1)
-//      .set_predicate([=](CompositeCandidate const* c) {
-//        return PairOneWithPt(c, 24.0);
-//      }));
-//}
-
-
 
 // --------------------------------------------------------------------------
 // Tau Selection Sequence
@@ -1414,6 +1325,7 @@ void HTTSequence::BuildTauSelection(){
   
   // filter taus first with loose pT cut - this avoids running more time consuming parts of the code for events with taus that just wont pass the offline cuts anyway 
   double loose_tau_pt = tau_pt*0.8;
+
   BuildModule(SimpleFilter<Tau>("TauFilterNewDMLoosePT")
      .set_input_label(js["taus"].asString()).set_min(min_taus)
      .set_predicate([=](Tau const* t) {

@@ -97,65 +97,112 @@ namespace ic {
 
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
-    // The first pair should have the highest "scalar sum pt" 
-    std::sort(multilepton.begin(),multilepton.end(), SortBySumPt);
-    
-    // Or alternatively sort by isolation
-    if (use_most_isolated_) {
-      if(channel_ ==  channel::ettt) { 
-         std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoETTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
-         std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoETTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+    // initiate variables
+    Candidate * lep1 = all_multilepton[0]->GetCandidate("lepton1");
+    Candidate * lep2 = all_multilepton[0]->GetCandidate("lepton2");
+    Candidate * lep3 = all_multilepton[0]->GetCandidate("lepton3");
+    Candidate * lep4 = all_multilepton[0]->GetCandidate("lepton4");
+    std::vector<Candidate *> pt_sorted_collection = {lep1, lep2, lep3, lep4};
+    std::vector<Candidate *> sort_collection = {lep1, lep2, lep3, lep4};
+    std::vector<Candidate *> sort_collection_1 = {lep1, lep2, lep3, lep4};
+    std::vector<Candidate *> sort_collection_2 = {lep1, lep2, lep3, lep4};
+
+    if(use_os_preference_) {    
+
+      // The first pair should have the highest "scalar sum pt"
+      std::sort(zero_charge.begin(),zero_charge.end(), SortBySumPt); 
+      std::sort(non_zero_charge.begin(),non_zero_charge.end(), SortBySumPt);
+      
+      // Or alternatively sort by isolation
+      if (use_most_isolated_) {
+        if(channel_ ==  channel::ettt) { 
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoETTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoETTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::mttt) { 
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMTTT,_1,_2,strategy_,tau_idiso_name_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMTTT,_1,_2,strategy_,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::eett) {
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoEETT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoEETT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::mmtt) {                            
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::emtt) { 
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::tttt) { 
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoTTTT,_1,_2,tau_idiso_name_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoTTTT,_1,_2,tau_idiso_name_)) ;
+        }
       }
-      if(channel_ ==  channel::mttt) { 
-         std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMTTT,_1,_2,strategy_,tau_idiso_name_)) ;
-         std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMTTT,_1,_2,strategy_,tau_idiso_name_)) ;
+
+      if (zero_charge.size() > 0) { // Take zero total charge as preference
+        lep1 = zero_charge[0]->GetCandidate("lepton1");
+        lep2 = zero_charge[0]->GetCandidate("lepton2");
+        lep3 = zero_charge[0]->GetCandidate("lepton3");
+        lep4 = zero_charge[0]->GetCandidate("lepton4");
+      } else if (non_zero_charge.size() > 0) {
+        lep1 = non_zero_charge[0]->GetCandidate("lepton1");
+        lep2 = non_zero_charge[0]->GetCandidate("lepton2");
+        lep3 = non_zero_charge[0]->GetCandidate("lepton3");
+        lep4 = non_zero_charge[0]->GetCandidate("lepton4");
       }
-      if(channel_ ==  channel::eett) {
-         std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoEETT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
-         std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoEETT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+    } else {
+        std::sort(all_multilepton.begin(),all_multilepton.end(), SortBySumPt);
+        if(channel_ ==  channel::ettt) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoETTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::mttt) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoMTTT,_1,_2,strategy_,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::eett) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoEETT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::mmtt) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::emtt) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
+        }
+        if(channel_ ==  channel::tttt) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoTTTT,_1,_2,tau_idiso_name_)) ;
+        }
+        if (all_multilepton.size() > 0) { // Take zero total charge as preference
+          lep1 = all_multilepton[0]->GetCandidate("lepton1");
+          lep2 = all_multilepton[0]->GetCandidate("lepton2");
+          lep3 = all_multilepton[0]->GetCandidate("lepton3");
+          lep4 = all_multilepton[0]->GetCandidate("lepton4");
+        }
       }
-      if(channel_ ==  channel::mmtt) {                            
-         std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
-         std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
-      }
-      if(channel_ ==  channel::emtt) { 
-         std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
-         std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
-      }
-      if(channel_ ==  channel::tttt) { 
-         std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoTTTT,_1,_2,tau_idiso_name_)) ;
-         std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoTTTT,_1,_2,tau_idiso_name_)) ;
-      }
-    }
-    if (zero_charge.size() > 0) { // Take zero total charge as preference
-      Candidate * lep1 = zero_charge[0]->GetCandidate("lepton1");
-      Candidate * lep2 = zero_charge[0]->GetCandidate("lepton2");
-      Candidate * lep3 = zero_charge[0]->GetCandidate("lepton3");
-      Candidate * lep4 = zero_charge[0]->GetCandidate("lepton4");
-      std::vector<Candidate *> pt_sorted_collection;
+    if ((!use_most_isolated_ && all_multilepton.size() > 0) || (use_most_isolated_ && (zero_charge.size() > 0 || non_zero_charge.size() > 0))) {
       if (channel_ == channel::tttt) {
-        std::vector<Candidate *> sort_collection = {lep1, lep2, lep3, lep4};
+        sort_collection = {lep1, lep2, lep3, lep4};
         std::sort(sort_collection.begin(),sort_collection.end(), SortByPt);
-        std::vector<Candidate *> pt_sorted_collection = sort_collection;
+        pt_sorted_collection = sort_collection;
       }
       if (channel_ == channel::mttt || channel_ == channel::ettt) {
-        std::vector<Candidate *> sort_collection = {lep2, lep3, lep4};
+        sort_collection = {lep2, lep3, lep4};
         std::sort(sort_collection.begin(),sort_collection.end(), SortByPt);
-        std::vector<Candidate *> pt_sorted_collection = {lep1};
+        pt_sorted_collection = {lep1};
         pt_sorted_collection.insert(pt_sorted_collection.end(), sort_collection.begin(), sort_collection.end());
       }
       if (channel_ == channel::mmtt || channel_ == channel::eett) {
-        std::vector<Candidate *> sort_collection_1 = {lep1, lep2};
-        std::vector<Candidate *> sort_collection_2 = {lep3, lep4};
+        sort_collection_1 = {lep1, lep2};
+        sort_collection_2 = {lep3, lep4};
         std::sort(sort_collection_1.begin(),sort_collection_1.end(), SortByPt);
         std::sort(sort_collection_2.begin(),sort_collection_2.end(), SortByPt);
-        std::vector<Candidate *> pt_sorted_collection = sort_collection_1;
+        pt_sorted_collection = sort_collection_1;
         pt_sorted_collection.insert(pt_sorted_collection.end(), sort_collection_2.begin(), sort_collection_2.end());
       }
       if (channel_ == channel::emtt) {
-        std::vector<Candidate *> sort_collection = {lep3, lep4};
+        sort_collection = {lep3, lep4};
         std::sort(sort_collection.begin(),sort_collection.end(), SortByPt);
-        std::vector<Candidate *> pt_sorted_collection = {lep1, lep2};
+        pt_sorted_collection = {lep1, lep2};
         pt_sorted_collection.insert(pt_sorted_collection.end(), sort_collection.begin(), sort_collection.end());
       }
 
@@ -165,24 +212,7 @@ namespace ic {
       pt_sorted_pair->AddCandidate("lepton3",pt_sorted_collection[2]);
       pt_sorted_pair->AddCandidate("lepton4",pt_sorted_collection[3]);
       result.push_back(pt_sorted_pair);
-    } // Remove when you uncomment
-    //} else if (non_zero_charge.size() > 0) {
-    //  if(!(channel_ ==  channel::tt)) { 
-    //      result.push_back(ss_dilepton[0]);
-    //  } else {
-    //      CompositeCandidate *pt_sorted_pair = new CompositeCandidate();
-    //      Candidate * lep1 = os_dilepton[0]->GetCandidate("lepton1"); 
-    //      Candidate * lep2 = os_dilepton[0]->GetCandidate("lepton2");
-    //      if(lep2->pt()>=lep1->pt()) {
-    //          pt_sorted_pair->AddCandidate("lepton1",lep2); 
-    //          pt_sorted_pair->AddCandidate("lepton2",lep1); 
-    //      } else {
-    //          pt_sorted_pair->AddCandidate("lepton1",lep1); 
-    //          pt_sorted_pair->AddCandidate("lepton2",lep2); 
-    //      }
-    //      result.push_back(pt_sorted_pair);
-    //  }
-    //}
+    }
 
     if (result.size() == 0) return 1;  //Require at least one 4 tau collection
 

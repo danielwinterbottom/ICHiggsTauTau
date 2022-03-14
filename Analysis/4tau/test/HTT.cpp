@@ -123,6 +123,7 @@ int main(int argc, char* argv[]) {
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     std::string channel_str = js["job"]["channels"][i].asString();
 
+    // TO DO: Change this for 4tau
     if(is_data &&  ( (channel_str.find("em") != channel_str.npos &&
                     output_name.find("MuonEG")==output_name.npos &&
                     channel_str.find("tpem") == channel_str.npos)||

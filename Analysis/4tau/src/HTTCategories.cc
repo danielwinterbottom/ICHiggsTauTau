@@ -50,7 +50,7 @@ namespace ic {
 
   int HTTCategories::PreAnalysis() {
     std::cout << "-------------------------------------" << std::endl;
-    std::cout << "HTTCategories" << std::endl;
+    std::cout << "HTTCategories Four Tau" << std::endl;
     std::cout << "-------------------------------------" << std::endl;    
       std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
       std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
@@ -120,6 +120,8 @@ namespace ic {
     //f_smear.Close();
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
+      std::cout << "In this loop " << std::endl;
+     
       
       outtree_->Branch("event",             &event_);
       outtree_->Branch("run",               &run_);
