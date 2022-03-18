@@ -61,7 +61,8 @@ def SetAxisTitles(plot, channel):
       
   titles = {}
   titles['iso_1'] = ['I^{'+lep1_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep1_label+'}_{rel}']
-  titles['iso_2'] = ['I^{'+lep2_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep2_label+'}_{rel}']
+#  titles['iso_2'] = ['I^{'+lep2_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep2_label+'}_{rel}']
+  titles['iso_2'] = ['rawDeepTau2017v2p1VSjet','Events / '+bin_width+' GeV', 'rawDeepTau2017v2p1VSjet']
   titles['pt_1'] = ['p_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['p_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep2_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
@@ -114,6 +115,7 @@ def SetAxisTitles(plot, channel):
   titles['IC_keras_sm6_max_score'] = ['NN Score','Events', 'dN/d(NN Score)']
   titles['IC_Nov25_tauspinner_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)']
   titles['tau_decay_mode_2'] = ['#tau decay mode','Events', 'Events']
+  titles['chi'] = ['#chi','Events / '+bin_width, 'dN/d#chi','']
   # hacky for now
   titles['(dphi_jtt<0.)*(dphi_jtt+2*3.14159265359)+(dphi_jtt>0)*(dphi_jtt)-3.14159265359)'] = ['#Delta#phi_{jet, Z} - #pi','Events', 'Events']
   if channel == 'tt':
@@ -192,6 +194,8 @@ def SetAxisTitles2D(plot, channel):
   titles['dphi'] = ['#Delta#phi(lep1,lep2)','Events / '+bin_width, 'dN/d#Delta#phi','']
   titles['met_dphi_1'] = ['#Delta#phi(lep1,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi','']
   titles['met_dphi_2'] = ['#Delta#phi(lep2,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi','']
+  titles['chi'] = ['#chi','Events / '+bin_width, 'dN/d#chi','']
+
 
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events','']
@@ -2264,7 +2268,6 @@ def HTTPlot(nodename,
         "vlq_betaRd33_minus1_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=1 (XS)",
         "vlq_betaRd33_minus1_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=2 (XS)",
         "vlq_betaRd33_minus1_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=3 (XS)",
-
     }
 
     ModTDRStyle(r=0.04, l=0.14)
@@ -2331,47 +2334,27 @@ def HTTPlot(nodename,
             'qcd_shape':[backgroundComp("QCD loosened shape",["QCD_shape"],R.TColor.GetColor(250,202,255))]}
     else:
       background_schemes = {
-            'mt':[
-               backgroundComp("TTT",["TTT"],R.TColor.GetColor(155,152,204)),
-               backgroundComp("TTJ",["TTJ"],R.TColor.GetColor(59,49,196)),
-               backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-               backgroundComp("VVT",["VVT"],R.TColor.GetColor(255,178,102)),
-               backgroundComp("VVJ",["VVJ"],R.TColor.GetColor(203,124,19)),
-               backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
-               backgroundComp("ZL",["ZL"],R.TColor.GetColor(100,192,232)),
-               backgroundComp("ZJ",["ZJ"],R.TColor.GetColor(14,97,132)),
-               backgroundComp("ZTT",["ZTT"],R.TColor.GetColor(248,206,104))
-               ],
-            'et':[
-               backgroundComp("TTT",["TTT"],R.TColor.GetColor(155,152,204)),
-               backgroundComp("TTJ",["TTJ"],R.TColor.GetColor(59,49,196)),
-               backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-               backgroundComp("VVT",["VVT"],R.TColor.GetColor(255,178,102)),
-               backgroundComp("VVJ",["VVJ"],R.TColor.GetColor(203,124,19)),
-               backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
-               backgroundComp("ZL",["ZL"],R.TColor.GetColor(100,192,232)),
-               backgroundComp("ZJ",["ZJ"],R.TColor.GetColor(14,97,132)),
-               backgroundComp("ZTT",["ZTT"],R.TColor.GetColor(248,206,104))
-               ],
-            'tt':[
-               backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
-               backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-               backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),
-               backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
-               ],
             #'mt':[
-            #   backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+            #   backgroundComp("TTT",["TTT"],R.TColor.GetColor(155,152,204)),
+            #   backgroundComp("TTJ",["TTJ"],R.TColor.GetColor(59,49,196)),
             #   backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-            #   backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
-            #   backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
-            #   backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+            #   backgroundComp("VVT",["VVT"],R.TColor.GetColor(255,178,102)),
+            #   backgroundComp("VVJ",["VVJ"],R.TColor.GetColor(203,124,19)),
+            #   backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+            #   backgroundComp("ZL",["ZL"],R.TColor.GetColor(100,192,232)),
+            #   backgroundComp("ZJ",["ZJ"],R.TColor.GetColor(14,97,132)),
+            #   backgroundComp("ZTT",["ZTT"],R.TColor.GetColor(248,206,104))
             #   ],
             #'et':[
-            #   backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+            #   backgroundComp("TTT",["TTT"],R.TColor.GetColor(155,152,204)),
+            #   backgroundComp("TTJ",["TTJ"],R.TColor.GetColor(59,49,196)),
             #   backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-            #   backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
-            #   backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
-            #   backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+            #   backgroundComp("VVT",["VVT"],R.TColor.GetColor(255,178,102)),
+            #   backgroundComp("VVJ",["VVJ"],R.TColor.GetColor(203,124,19)),
+            #   backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+            #   backgroundComp("ZL",["ZL"],R.TColor.GetColor(100,192,232)),
+            #   backgroundComp("ZJ",["ZJ"],R.TColor.GetColor(14,97,132)),
+            #   backgroundComp("ZTT",["ZTT"],R.TColor.GetColor(248,206,104))
             #   ],
             #'tt':[
             #   backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
@@ -2379,6 +2362,26 @@ def HTTPlot(nodename,
             #   backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),
             #   backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
             #   ],
+            'mt':[
+               backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+               backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+               backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
+               backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
+               backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+               ],
+            'et':[
+               backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+               backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+               backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
+               backgroundComp("Z#rightarrowee",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
+               backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+               ],
+            'tt':[
+               backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+               backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+               backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),
+               backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+               ],
             'em':[
                backgroundComp("t#bar{t}",["TTT", "TTJ"],R.TColor.GetColor(155,152,204)),
                backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
@@ -2754,6 +2757,7 @@ def HTTPlot(nodename,
        
     colours = [2,3,4,5,6,7,8]
     h = []
+    h_hist = []
     h_ratio = []
     pads[0].cd()
     if plot_signals != [""]:
@@ -2764,7 +2768,12 @@ def HTTPlot(nodename,
         h[i].SetLineColor(colours[i])
         h[i].SetLineWidth(2)
         h[i].Scale(signal_scale)
-        h[i].Draw("histsame")
+        h_hist.append(h[i].Clone())
+        h[i].SetMarkerSize(0)
+        #h[i].SetFillColorAlpha(colours[i],0.3)
+        #h[i].Draw("e2 same")
+        h_hist[i].Draw("hist same")
+        h[i].Print("all")
 
  
     # separate out signal into powheg ggH and qqH,
@@ -2894,11 +2903,11 @@ def HTTPlot(nodename,
 
     
     #Setup legend
-    #legend = PositionedLegend(0.37,0.3,3,0.05) 
-    legend = PositionedLegend(0.4,0.37,3,0.03) # when showing plots of signal
+    legend = PositionedLegend(0.37,0.3,3,0.05) 
+    #legend = PositionedLegend(0.5,0.2,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
-    #legend.SetTextSize(0.03)
-    legend.SetTextSize(0.018) # when showing plots of signal
+    legend.SetTextSize(0.03)
+    #legend.SetTextSize(0.018) # when showing plots of signal
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
@@ -3072,7 +3081,7 @@ def HTTPlot(nodename,
             h_ratio[i].Divide(bkghist)
             h_ratio[i].SetLineColor(colours[i])
             h_ratio[i].SetLineWidth(2)
-            h_ratio[i].Draw("histsame")
+            h_ratio[i].Draw("hist same")
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         if ratio_range == "auto":

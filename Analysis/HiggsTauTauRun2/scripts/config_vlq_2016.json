@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2016/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["et","mt","tt"],
-    //"channels":      ["tt"],
+    "channels":      ["et","mt","tt","em"],
+    //"channels":      ["em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -59,7 +59,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": true,
-    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2016_matched/",
+    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2016_split_weights/",
+    //"output_folder": "output/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/mssm_2016_embed_v2_svfit/",
@@ -73,7 +74,7 @@
     //"event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 1,
+    "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 1,

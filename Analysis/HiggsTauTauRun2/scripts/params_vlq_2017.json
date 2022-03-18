@@ -804,51 +804,51 @@
     "evt": 1894446
   },
   "VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_interference": {
-    "xs": -0.00311290312554,
+    "xs": -0.00349288545763,
     "evt": -115929
   },
   "VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched_interference": {
-    "xs": -0.0011121343307,
+    "xs": -0.000892770641387,
     "evt": -114367
   },
   "VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched_interference": {
-    "xs": -0.000321019602421,
+    "xs": -0.000383998978893,
     "evt": -115227
   },
   "VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference": {
-    "xs": -0.000159107871975,
+    "xs": -0.000232342072886,
     "evt": -114157
   },
   "VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched_interference": {
-    "xs": -0.000146603394337,
+    "xs": -0.00014519880643,
     "evt": -115490
   },
   "VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched_interference": {
-    "xs": -0.00906113179562,
+    "xs": -0.0122028779751,
     "evt": -108790
   },
   "VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_interference": {
-    "xs": -0.0209263389825,
+    "xs": -0.0795984805424,
     "evt": -42231
   },
   "VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched_interference": {
-    "xs": -0.0048021288773,
+    "xs": -0.0196275163586,
     "evt": -41589
   },
   "VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched_interference": {
-    "xs": -0.00210839145658,
+    "xs": -0.00839774982111,
     "evt": -40051
   },
   "VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference": {
-    "xs": -0.00111892094382,
+    "xs": -0.00445550092711,
     "evt": -37985
   },
   "VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched_interference": {
-    "xs": -0.000578916812863,
+    "xs": -0.00264798979357,
     "evt": -35760
   },
   "VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched_interference": {
-    "xs": -0.0795095976444,
+    "xs": -0.310972242025,
     "evt": -41776
   },
   "VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched": {
@@ -876,51 +876,51 @@
     "evt": 147496
   },
   "VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched_interference": {
-    "xs": -0.00800894159139,
+    "xs": -0.00978350322394,
     "evt": -121359
   },
   "VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched_interference": {
-    "xs": -0.00254388873888,
+    "xs": -0.00264803955876,
     "evt": -120670
   },
   "VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched_interference": {
-    "xs": -0.00117903277463,
+    "xs": -0.00113332687356,
     "evt": -120300
   },
   "VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched_interference": {
-    "xs": -0.000559964890491,
+    "xs": -0.0006789539212,
     "evt": -120199
   },
   "VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched_interference": {
-    "xs": -0.000440670052702,
+    "xs": -0.000440058784008,
     "evt": -120481
   },
   "VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched_interference": {
-    "xs": -0.0466908251251,
+    "xs": -0.0366027824209,
     "evt": -115876
   },
   "VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched_interference": {
-    "xs": -0.0507298957086,
+    "xs": -0.138003136776,
     "evt": -57182
   },
   "VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched_interference": {
-    "xs": -0.0118652353231,
+    "xs": -0.0339229984412,
     "evt": -57019
   },
   "VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched_interference": {
-    "xs": -0.00505926632337,
+    "xs": -0.0148446411264,
     "evt": -55983
   },
   "VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched_interference": {
-    "xs": -0.00276876604091,
+    "xs": -0.0080335346788,
     "evt": -54053
   },
   "VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched_interference": {
-    "xs": -0.0015375647401,
+    "xs": -0.00492757181599,
     "evt": -52791
   },
   "VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched_interference": {
-    "xs": -0.178624660435,
+    "xs": -0.538610937579,
     "evt": -58189
   },
   "VectorLQToTauTau_betaRd33_minus1_mU1000_gU1_matched": {
@@ -946,6 +946,30 @@
   "VectorLQToTauTau_betaRd33_minus1_mU500_gU1_matched": {
     "xs": 0.725367,
     "evt": 143039
+  },
+  "VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down_interference": {
+    "xs": -0.003085432999,
+    "evt": -72817
+  },
+  "VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_up_interference": {
+    "xs": -0.00347555401984,
+    "evt": -147604
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_down_interference": {
+    "xs": -0.080005933001,
+    "evt": -26338
+  },
+  "VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_up_interference": {
+    "xs": -0.0796158119802,
+    "evt": -48680
+  },
+  "VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_up": {
+    "xs": 0.007978075,
+    "evt": 160354
+  },
+  "VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched_xqcut_down": {
+    "xs": 0.007978075,
+    "evt": 80682
   },
   "SingleElectron": {
     "lumi": 41530

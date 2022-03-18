@@ -78,6 +78,8 @@ class HTTGenAnalysis : public ModuleBase {
   int n_bpartons_;
   unsigned n_jets_nofilter_;
   unsigned n_jets_;
+  unsigned unfiltered_njets_;
+  unsigned semi_unfiltered_njets_;
   unsigned n_jetsingap_;
   double jpt_1_;  
   double jpt_2_;  
@@ -101,6 +103,7 @@ class HTTGenAnalysis : public ModuleBase {
   double mt_tot_;
   double wtzpt_;
   double mass_;
+  double mtt_mass_;
   double wt_;
   double gen_wt_;
   double wt_z_pol_;

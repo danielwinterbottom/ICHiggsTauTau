@@ -57,6 +57,9 @@ parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
 parser.add_option("--vlq_old", dest="proc_vlq_old", action='store_true', default=False,
                   help="Process signal VLQ old mc samples")
 
+parser.add_option("--vlq_exo", dest="proc_vlq_exo", action='store_true', default=False,
+                  help="Process exo signal samples")
+
 parser.add_option("--vlq_matched", dest="proc_vlq_matched", action='store_true', default=False,
                   help="Process signal VLQ matched mc samples")
 
@@ -279,6 +282,12 @@ if options.proc_vlq_interference or options.proc_all:
     'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down_interference',
   ]
 
+
+if options.proc_vlq_exo or options.proc_all:
+  signal_mc += [
+    #'exo_vlq_sample',
+    'exo_slq_sample'
+  ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
     if not no_json:
@@ -536,7 +545,7 @@ if options.proc_bkg or options.proc_all:
             PARAJOBSUBMIT = getParaJobSubmit(job_num)
             os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
 
-if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_vlq_matched or options.proc_vlq_interference or options.proc_all:
+if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_vlq_matched or options.proc_vlq_interference or options.proc_vlq_exo or options.proc_all:
     SIG_FILELIST = FILELIST
     for sa in signal_mc:
         SIG_FILELIST = FILELIST
@@ -546,7 +555,7 @@ if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_
           SIG_DIR = 'Aug25_MC_102X_2018'
           SIG_FILELIST ="./filelists/Aug25_2018_MC_102X"
           user='guttley'
-        elif 'VectorLQ' in sa and 'matched' in sa:
+        elif 'VectorLQ' in sa and 'matched' in sa or sa.endswith("mU1000_gU1"):
           SIG_DIR = 'Aug17_MC_102X_2018'
           SIG_FILELIST ="./filelists/Aug17_2018_MC_102X"
           user='guttley'
@@ -554,6 +563,14 @@ if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_
           SIG_DIR = 'Jul02_MC_102X_2018'
           SIG_FILELIST ="./filelists/Jul02_2018_MC_102X"                  
           user='guttley'
+        elif 'exo_vlq' in sa:
+          SIG_DIR = 'exo_vlq_sample' 
+          SIG_FILELIST ="./filelists/" 
+          user = 'guttley'
+        elif 'exo_slq' in sa:
+          SIG_DIR = 'scalarLQ_ntuple'
+          SIG_FILELIST ="./filelists/"
+          user = 'guttley'
         else:
           SIG_DIR = 'Sep18_MC_102X_2018'
           SIG_FILELIST = FILELIST
@@ -570,7 +587,8 @@ if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_
         job_num=0
         for FLATJSONPATCH in flatjsons:
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-            FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
+            #FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
+            print sa
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
                 nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
@@ -581,7 +599,8 @@ if options.mg_signal or options.proc_sm or options.proc_vlq_old or options.proc_
 
                 if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa: 
                   nperjob = int(math.ceil(float(nperjob)/5)) 
-
+                if "exo" in JOB: nperjob=80
+                if "VectorLQ" in JOB: nperjob=50
                 if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
  
                 #if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10

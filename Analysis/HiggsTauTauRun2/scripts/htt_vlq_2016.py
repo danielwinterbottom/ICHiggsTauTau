@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# python scripts/htt_vlq_2016.py --bkg --data --embed --sm --vlq_matched --vlq_interference --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e,scale_bfake,scale_b" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"'
+# python scripts/htt_vlq_2016.py --bkg --data --embed --sm --vlq_matched --vlq_interference --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e,scale_bfake,scale_b" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
 
 import sys
 from optparse import OptionParser
@@ -239,36 +239,36 @@ if options.proc_vlq_matched or options.proc_all:
 
 if options.proc_vlq_interference or options.proc_all:
   signal_mc += [
-    'VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_up',
-    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_down',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_up',
-    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_lowM_mU5000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_lowM_mU5000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_0_highM_mU5000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU500_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU1000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU2000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU3000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU4000_gU1_matched_interference',
+    'VectorLQToTauTau_betaRd33_minus1_highM_mU5000_gU1_matched_interference',
+    #'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_interference',
+    #'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_up_interference',
+    #'VectorLQToTauTau_betaRd33_0_lowM_mU1000_gU1_matched_xqcut_down_interference',
+    #'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_interference',
+    #'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_up_interference',
+    #'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down_interference',
   ]
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
@@ -384,6 +384,7 @@ if options.proc_embed or options.proc_all:
       #if n_scales*n_channels>64: nperjob=2
       if n_scales*n_channels>=24: nperjob = 10
       if n_scales*n_channels>=48: nperjob=5
+
 
       #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales-8)*float(n_channels)/10.)))
       if 'EmbeddingMuMu' in sa: nfiles = sum(1 for line in open('%(EMBEDFILELISTZMM)s_%(sa)s.dat' % vars()))
@@ -526,6 +527,7 @@ if options.proc_sm or options.proc_all or options.proc_vlq_matched or options.pr
   user = "guttley"
 
   for sa in signal_mc:
+    print sa
     JOB='%s_2016' % (sa)
     if sa == "JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered":
         SIG_FILELIST="filelists/Sep18_MC_102X_2016"
@@ -534,8 +536,8 @@ if options.proc_sm or options.proc_all or options.proc_vlq_matched or options.pr
         SIG_FILELIST = FILELIST
 
     if 'VectorLQ' in sa and 'interference' in sa:
-      PREFIX = 'Aug25_MC_102X_2016' # change when added
-      SIG_FILELIST ="./filelists/Aug25_2016_MC_102X" # change when added                  
+      PREFIX = 'Aug17_MC_102X_2016' # change when added
+      SIG_FILELIST ="./filelists/Aug17_2016_MC_102X" # change when added                  
       user='guttley'
     elif 'VectorLQ' in sa and 'matched' in sa:
       PREFIX = 'Aug17_MC_102X_2016'
@@ -564,8 +566,10 @@ if options.proc_sm or options.proc_all or options.proc_vlq_matched or options.pr
         if ('JJH' in sa and 'ToTauTau' in sa) or 'Filtered' in sa:
           nperjob = int(math.ceil(float(nperjob)/5))
 
-        nperjob = min(2,nperjob)
+        #nperjob = min(2,nperjob)
         if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
+
+        if "VectorLQ" in JOB: nperjob = 100
 
         #if 'filter' in sa: nperjob = 2
         for i in range(0,int(math.ceil(float(nfiles)/float(nperjob)))):

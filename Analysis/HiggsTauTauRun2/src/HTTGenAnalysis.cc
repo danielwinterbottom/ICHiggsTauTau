@@ -227,6 +227,7 @@ namespace ic {
       outtree_->Branch("pt_tt"       , &pt_tt_       );
       outtree_->Branch("mt_tot"       , &mt_tot_       );
       outtree_->Branch("mass"       , &mass_       );
+      outtree_->Branch("mtt_mass"       , &mtt_mass_       );
       outtree_->Branch("wtzpt"       , &wtzpt_       );
       outtree_->Branch("mt_1"        , &mt_1_        );
       outtree_->Branch("mt_2"        , &mt_2_        );
@@ -238,6 +239,8 @@ namespace ic {
       outtree_->Branch("n_bjets_eta2p5_noscale"     , &n_bjets_eta2p5_noscale_);
       outtree_->Branch("n_bpartons"     , &n_bpartons_     );
       outtree_->Branch("n_jets"      , &n_jets_      );
+      outtree_->Branch("n_jets_unfiltered"      , &unfiltered_njets_      );
+      outtree_->Branch("n_jets_semi_unfiltered"      , &semi_unfiltered_njets_      );
       outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_);
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
@@ -620,11 +623,15 @@ namespace ic {
     lead_b_eta_ = lead_b_eta; 
     } else {
         partons_=0;
+        std::vector<double> tau_vec = {};
         for (unsigned i = 0; i < gen_particles.size(); ++i) {
+          unsigned id = abs(gen_particles[i]->pdgid());
+          if (id == 15 && gen_particles[i]->statusFlags()[IsFirstCopy] && i == 4) {
+            mtt_mass_ = (gen_particles[4]->vector()+gen_particles[5]->vector()).M();
+          }
           if (!(gen_particles[i]->statusFlags()[IsHardProcess])) continue;
           if (gen_particles[i]->status()!=23) continue;
           if(gen_particles[gen_particles[i]->mothers()[0]]->pdgid() == 2212) continue;
-          unsigned id = abs(gen_particles[i]->pdgid());
           if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21 ) {
             partons_++;
             parton_pt_vec.push_back(gen_particles[i]->pt());
@@ -974,7 +981,8 @@ namespace ic {
         sel_bquarks.push_back(gen_particles[i]);
       }
     }
-     
+    
+    unfiltered_njets_ = gen_jets.size(); 
     for(unsigned i=0; i<gen_jets.size(); ++i){
       ic::GenJet *jet = gen_jets[i];
       double jetPt = jet->vector().Pt();
@@ -1032,11 +1040,14 @@ namespace ic {
     n_bjets_eta2p5_ = bjets.size();
    
  
+    semi_unfiltered_njets_ = filtered_jets.size();
     for(unsigned i=0; i<filtered_jets.size(); ++i){
       ic::GenJet *jet = filtered_jets[i];
       bool MatchedToPrompt = false;
       for(unsigned j=0; j<higgs_products.size(); ++j){
-        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) MatchedToPrompt = true;
+        if(DRLessThan(std::make_pair(jet, &higgs_products[j]),0.5)) {
+          MatchedToPrompt = true;
+        }
       }
       //remove jets that are matched to Higgs decay products
       if(MatchedToPrompt) filtered_jets.erase (filtered_jets.begin()+i);

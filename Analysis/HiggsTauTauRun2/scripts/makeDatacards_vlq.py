@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
-# python scripts/makeDatacards_vlq.py --years='2018' --channels='tt,mt,et' --output_folder='vlq_dc' --batch
+# python scripts/makeDatacards_vlq.py --years='2016,2017,2018' --channels='tt,mt,et,em' --output_folder='vlq_dc' --batch
 
 # after running all jobs hadd them using this commnd inside the output folder:
-#for ch in tt et mt; do year=2018; eval "hadd -f ${year}/${ch}/htt_all.inputs-mssm-vs-sm-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done
+#for ch in tt et mt em; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done; done
+
+# to copy them to the right combine directory
+#for ch in tt et mt em; do for year in 2016 2017 2018; do cp ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-mt_tot_puppi.root /vols/cms/gu18/CH_unblinding/CMSSW_10_2_25/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes/${year}/${ch}/; done; done
 
 import sys
 from optparse import OptionParser
@@ -59,6 +62,8 @@ parser.add_option("--years", dest="years", type='string', default='2016,2017,201
                   help="Year input")
 parser.add_option("--no_syst",dest="no_syst", action='store_true', default=False,
                   help="Run without systematics")
+parser.add_option("--add_options",dest="add_options", type='string', default="",
+                  help="comma separated list of options to add")
 
 
 (options, args) = parser.parse_args()
@@ -118,8 +123,8 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
-                   "MTLt40",
-                   "MT40To70",
+   #                "MTLt40",
+   #                "MT40To70",
                    ]
 
   categories_mt = [
@@ -127,25 +132,24 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
-                   "MTLt40",
-                   "MT40To70",
+  #                 "MTLt40",
+  #                 "MT40To70",
                    ]
 
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
-                   "inclusive",
+ #                  "inclusive",
                    ]
 
   categories_em = [
-                   "inclusive",
-                   "nobtag_highdzeta",
-                   "nobtag_mediumdzeta",
-                   "nobtag_lowdzeta",
-                   "btag_highdzeta",
-                   "btag_mediumdzeta",
-                   "btag_lowdzeta",
-                   "ttbar_control",
+#                   "inclusive",
+                   "Nbtag0_DZetaGt30",
+                   "Nbtag0_DZetam10To30",
+                   "Nbtag0_DZetam35Tom10",
+                   "NbtagGt1_DZetaGt30",
+                   "NbtagGt1_DZetam10To30",
+                   "NbtagGt1_DZetam35Tom10",
                    ]
  
   ANA = 'vlq-Run%(year)s' % vars()
@@ -170,7 +174,6 @@ for year in years:
     ]
 
   common_sep_shape_systematics = [
-      ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars(), # Tau energy scale
       ' --syst_res_j="CMS_res_j_%(year)s"' % vars(), # Jet energy resolution
       ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s"' % vars(), # MET unclustered energy uncertainty
       ' --syst_scale_met="CMS_htt_boson_scale_met_%(year)s"' % vars(), # MET recoil correction uncertainty
@@ -197,6 +200,7 @@ for year in years:
   ]
 
   et_sep_shape_systematics = [
+    ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars(), # Tau energy scale
     ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_e_scale="CMS_scale_e"', # Election energy scale
@@ -209,6 +213,7 @@ for year in years:
   ]
 
   mt_sep_shape_systematics = [
+    ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars(), # Tau energy scale
     ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
     ' --do_ff_systs_1',
@@ -219,11 +224,17 @@ for year in years:
   ]
   
   tt_sep_shape_systematics = [
+    ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars(), # Tau energy scale
     ' --do_ff_systs'
   ]
  
-  em_shape_systematics = ['']
-  em_sep_shape_systematics = ['']
+  em_shape_systematics = [
+   ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency
+  ]
+
+  em_sep_shape_systematics = [
+   ' --syst_e_scale="CMS_scale_e"', # Election energy scale
+  ]
 
   extra_channel = {
       "em" : common_shape_systematics+em_shape_systematics,
@@ -265,7 +276,10 @@ for year in years:
         for i in extra_channel[ch]:   
           add_cond += i
 
-      run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond)s' % vars()
+      for j in options.add_options.split(","):
+        add_cond += " --"+j
+
+      run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond)s --only_sig' % vars()
       rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
       if not options.batch:
@@ -277,10 +291,7 @@ for year in years:
         job_file = '%(output_folder)s/jobs/vlq_datacard_%(cat)s_%(ch)s_%(YEAR)s.sh' % vars()
         CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
         if not options.dry_run:
-          if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
-            SubmitBatchJob(job_file,time=600,memory=24,cores=1)
-          else:
-            SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+          SubmitBatchJob(job_file,time=180,memory=24,cores=1)
   
       
       # run systematics that involve drawing from different trees in parallel     
@@ -288,7 +299,7 @@ for year in years:
         for syst in sep_systs_channel[ch]:
           syst_name=syst.split('=')[0].split('--')[1]
           dc='%(cat)s_%(syst_name)s' % vars()
-          run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond_nosysts)s --no_default %(syst)s' % vars()
+          run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond_nosysts)s --no_default %(syst)s --only_sig' % vars()
           rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(dc)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(dc)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
   
           if not options.batch:
@@ -300,11 +311,7 @@ for year in years:
             job_file = '%(output_folder)s/jobs/vlq_datacard_%(dc)s_%(ch)s_%(YEAR)s.sh' % vars()
             CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
             if not options.dry_run:
-              #if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
-              if ch in ["mt","et"] and YEAR == "2018" and 'do_ff_syst' in syst:
-                SubmitBatchJob(job_file,time=600,memory=24,cores=1)
-              else:
-                SubmitBatchJob(job_file,time=180,memory=24,cores=1)    
+              SubmitBatchJob(job_file,time=180,memory=24,cores=1)    
 
 
 

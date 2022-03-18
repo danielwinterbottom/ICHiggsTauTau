@@ -31,6 +31,24 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
   return gen_ip;
 }
 
+std::vector<ic::GenParticle> FamilyTree (std::vector<ic::GenParticle> &v, ic::GenParticle p, std::vector<ic::GenParticle*> gen_particles, unsigned &outputID){ 
+  if(p.daughters().size() == 0){
+    unsigned ID = std::fabs(p.pdgid());
+    if(ID == 11) outputID = 11;
+    else if(ID == 13) outputID = 13;
+    if(!(ID==12 || ID==14 || ID==16)){
+      v.push_back(p);
+    }
+  }
+  else{
+    for(size_t i = 0; i < p.daughters().size(); ++i ){
+      ic::GenParticle d = *gen_particles[p.daughters().at(i)];
+      FamilyTree(v,d, gen_particles, outputID);
+    }
+  }
+  return v;
+}
+
   HTTPairGenInfo::HTTPairGenInfo(std::string const& name) : ModuleBase(name), channel_(channel::mt), era_(era::data_2018) {
     ditau_label_ = "ditau";
     fs_ = NULL;
@@ -172,7 +190,22 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     ROOT::Math::PtEtaPhiEVector neutrinos; 
     ROOT::Math::PtEtaPhiEVector tau_neutrinos; 
     ROOT::Math::PtEtaPhiEVector bosons; 
- 
+
+    int count_s = 0;
+    for (unsigned i=0; i < particles.size(); ++i){
+      // Get parents from t-channel process
+      if (!(particles[i]->statusFlags()[IsHardProcess])) continue;
+      unsigned id = abs(particles[i]->pdgid());
+      if (!(id == 15 || id == 21)) {
+        if (id == 3){
+          count_s = count_s + 1;
+        }
+      }
+
+    }
+    event->Add("count_s",count_s);
+
+
     for (unsigned i=0; i < particles.size(); ++i){
       std::vector<bool> status_flags_start = particles[i]->statusFlags();
       if ( ((abs(particles[i]->pdgid()) == 11 )||(abs(particles[i]->pdgid()) == 13 /*&& particles[i]->status()==1*/)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)){
@@ -272,9 +305,37 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     
     std::vector<GenJet> gen_taus = BuildTauJets(particles, false,true);
     std::vector<GenJet *> gen_taus_ptr;
+    std::vector<GenJet *> gen_taus_ptr_noptcut;
     for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+    for (auto & x : gen_taus) gen_taus_ptr_noptcut.push_back(&x);
     ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
- 
+
+    std::vector<ic::GenParticle> higgs_products;
+    for(unsigned i=0; i<particles.size(); ++i){
+      ic::GenParticle part = *particles[i];
+      unsigned genID = std::fabs(part.pdgid());
+      bool status_flag_t = part.statusFlags().at(0);
+      bool status_flag_tlc = part.statusFlags().at(13);
+      if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      std::vector<ic::GenParticle> family;
+      unsigned outputID = 15;
+      FamilyTree(family, part, particles, outputID);
+      if(family.size()==1 && (outputID ==11 || outputID ==13)){
+        higgs_products.push_back(family[0]);
+      } else {
+        ic::GenParticle had_tau;
+        int charge = 0;
+        int pdgid = 15;
+        for(unsigned j=0; j<family.size(); ++j){
+          had_tau.set_vector(had_tau.vector() + family[j].vector());
+          charge += family[j].charge();
+        }
+        pdgid = 15*charge;
+        had_tau.set_charge(charge);
+        had_tau.set_pdgid(pdgid);
+        higgs_products.push_back(had_tau);
+      }
+    }   
  
     std::vector<std::pair<Candidate*, GenParticle*> > leading_lepton_match = MatchByDR(leading_lepton, sel_particles, 0.2, true, true);
     std::vector<std::pair<Candidate*, GenJet*> > leading_tau_match  = MatchByDR(leading_lepton, gen_taus_ptr, 0.2, true, true);
@@ -462,11 +523,19 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
       for(unsigned i=0; i<gen_jets.size(); ++i){
         ic::GenJet *genjet = gen_jets[i];
         bool MatchedToPrompt = false;
+        //for(unsigned j=0; j<higgs_products.size(); ++j){
+        //  if(DRLessThan(std::make_pair(genjet, higgs_products[j]),0.5)) {
+        //    MatchedToPrompt = true;
+        //  }
         for(unsigned j=0; j<sel_particles.size(); ++j){
-         if(DRLessThan(std::make_pair(genjet, sel_particles[j]),0.5)) MatchedToPrompt = true;
+         if(DRLessThan(std::make_pair(genjet, sel_particles[j]),0.5)) {
+           MatchedToPrompt = true;
+         }
         }
-        for(unsigned j=0; j<gen_taus_ptr.size(); ++j){
-         if(DRLessThan(std::make_pair(genjet, gen_taus_ptr[j]),0.5)) MatchedToPrompt = true;
+        for(unsigned j=0; j<gen_taus_ptr_noptcut.size(); ++j){
+         if(DRLessThan(std::make_pair(genjet, gen_taus_ptr_noptcut[j]),0.5)) {
+           MatchedToPrompt = true;
+         }
         }
         //remove jets that are matched to Higgs decay products
         if(MatchedToPrompt) gen_jets.erase (gen_jets.begin()+i);
@@ -487,7 +556,9 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
       event->Add("genjeteta_1", genjeteta_1);
       event->Add("genjeteta_2", genjeteta_2);
 
-      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 5.0));
+      if(gen_jets.size()>0) {
+        ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 5.0));
+      }
       unsigned ngenjets20 = gen_jets.size();
       event->Add("ngenjets20", ngenjets20);   
       double gen_sjdphi_ = -999; 
@@ -501,11 +572,14 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
           gen_sjdphi_ =  ROOT::Math::VectorUtil::DeltaPhi(gen_jets[1]->vector(), gen_jets[0]->vector());
         
       }
-      ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      if(gen_jets.size()>0) {
+        ic::erase_if(gen_jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+      }
       unsigned ngenjets = gen_jets.size();
       event->Add("ngenjets", ngenjets);
       event->Add("gen_sjdphi", gen_sjdphi_);
       event->Add("gen_mjj", gen_mjj_);
+
     }
 
     return 0;

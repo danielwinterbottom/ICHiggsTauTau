@@ -423,6 +423,8 @@ sample_list = [
     'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_interference',
     'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_up_interference',
     'VectorLQToTauTau_betaRd33_0_highM_mU1000_gU1_matched_xqcut_down_interference',
+    'exo_vlq_sample',
+    'exo_slq_sample'
 	]
 
 

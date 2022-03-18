@@ -692,12 +692,30 @@ class Analysis(object):
             sample+=add_name
         return BasicNode(name, sample, var, sel, factors=myfactors,WriteSubnodes=self.WriteSubnodes)
 
-    def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True,add_name=None):
+    def SummedFactory(self, name, samples, var='', sel='', factors=[], scaleToLumi=True,add_name=None,add_weight=None):
         res = SummedNode(name)
         for sa in samples:
             if not isinstance(sel,list):
-              res.AddNode(self.BasicFactory(sa, sa, var, sel, factors, scaleToLumi,add_name))
+              if add_weight != None:
+                if "Up" in name:
+                  new_sel = "(1/"+str(add_weight[sa][1]) + ")*(" + sel + ")"
+                elif "Down" in name:
+                  new_sel = "(1/"+str(add_weight[sa][0]) + ")*(" + sel + ")"
+                else:
+                  new_sel = sel
+              else:
+                new_sel = sel
+              res.AddNode(self.BasicFactory(sa, sa, var, new_sel, factors, scaleToLumi,add_name))
             else:
-              res.AddNode(self.BasicFactory(sa, sa, var, sel[samples.index(sa)], factors, scaleToLumi,add_name))
+              if add_weight != None:
+                if "Up" in name:
+                  new_sel = "(1/"+str(add_weight[sa][1]) + ")*(" + sel[samples.index(sa)] + ")"
+                elif "Down" in name:
+                  new_sel = "(1/"+str(add_weight[sa][0]) + ")*(" + sel[samples.index(sa)] + ")"
+                else:
+                  new_sel = sel[samples.index(sa)]
+              else:
+                new_sel = sel[samples.index(sa)]
+              res.AddNode(self.BasicFactory(sa, sa, var, new_sel, factors, scaleToLumi,add_name))
         return res
 

@@ -499,6 +499,7 @@ for sa in sample_list:
               print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
               os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./haddout.txt'% vars()) 
               os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
+              #os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*'% vars())
               filetext = open("./haddout.txt").read()
               if 'Warning' in filetext or 'Error' in filetext:
                 print "Hadd had a problem:"

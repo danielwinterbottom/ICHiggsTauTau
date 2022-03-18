@@ -532,7 +532,6 @@ if options.mg_signal or options.proc_sm or options.proc_vlq_matched or options.p
     for FLATJSONPATCH in flatjsons:
       FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
       FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
-      print '%(SIG_FILELIST)s_%(sa)s.dat' %vars()
       if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
         nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 2
@@ -544,6 +543,7 @@ if options.mg_signal or options.proc_sm or options.proc_vlq_matched or options.p
 
         nperjob=1
         if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
+        if "VectorLQ" in JOB: nperjob = 100
  
         if ('MG' in sa or 'Maxmix' in sa or 'Pseudoscalar' in sa) and 'GEN' not in sa: nperjob = 10
         for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :

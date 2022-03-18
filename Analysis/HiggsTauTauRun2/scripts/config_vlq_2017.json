@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep18_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-    //"channels":     ["et","mt","tt"],
-    "channels":     ["tt"],
+    "channels":     ["et","mt","tt","em"],
+    //"channels":     ["em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -31,7 +31,7 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : true,
+    "get_effective" : false,
     "do_btag_eff": false,
     "trg_in_mc" : true,
     "filter_trg" : false,
@@ -59,8 +59,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": true,
-    //"output_folder" : "./",
-    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2017_matched_effective/",
+    //"output_folder" : "output/",
+    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2017_split_weights/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/mssm_2017_embed_v2_svfit/",
