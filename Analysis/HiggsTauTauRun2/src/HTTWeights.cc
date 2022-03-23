@@ -189,7 +189,7 @@ int HTTWeights::PreAnalysis() {
         w_->function("t_trg_mediumDeepTau_etau_embed_ratio")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
  
     // triggers for tau legs in et, mt and tt channels
-    if(era_ != era::data_2018) {
+    if(era_ != era::data_2018 || era_ != era::data_2018UL) {
       fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));
       fns_["t_trg_30_mc"] = std::shared_ptr<RooFunctor>(
@@ -278,7 +278,7 @@ int HTTWeights::PreAnalysis() {
     fns_["t_trg_30_embed_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_mediumDeepTau_etau_embed_ratio_dm11_down")->functor(w_->argSet("t_pt,t_eta,t_phi,t_dm")));
 
-    if(era_ != era::data_2018) {
+    if(era_ != era::data_2018 || era_ != era::data_2018UL) {
 
       fns_["t_trg_30_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
           w_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_up")->functor(w_->argSet("t_pt,t_dm")));
@@ -1883,7 +1883,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       double xtrg_et_sf_mvadm=1.;
 
-      if(era_ == era::data_2017 || era_ == era::data_2018) {
+      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
 
         ele_xtrg = fns_["e_crosstrg_data"]->eval(args_1.data());
         if(is_embedded_) ele_xtrg_mc = fns_["e_crosstrg_embed"]->eval(args_1.data());
@@ -1913,13 +1913,13 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       double et_trg_or=1.;
       //double cpdecay_sf = 1.;
-      if(era_ != era::data_2016){
+      if(era_ != era::data_2016 || era_ != era::data_2016UL_preVFP || era_ != era::data_2016UL_postVFP){
         et_trg_or = (ele_trg + (ele_xtrg - ele_trg)*tau_trg_mvadm_data)/(ele_trg_mc + (ele_xtrg_mc - ele_trg_mc)*tau_trg_mvadm_mc);   
         //eff(single-e) + (eff(e-leg, e-tau)-eff(single-e))*eff(tau-leg, e-tau) 
       }
 
       double e_high_pt_cut=28.;
-      if(era_ == era::data_2018) e_high_pt_cut=33;
+      if(era_ == era::data_2018 || era_ == era::data_2018UL) e_high_pt_cut=33;
 
       double xtrg_et_sf = (ele_xtrg_mc*tau_trg_mc) > 0 ? (ele_xtrg*tau_trg)/(ele_xtrg_mc*tau_trg_mc) : 0.0;
 
@@ -1934,7 +1934,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       xtrg_et_sf_mvadm = ele_xtrg / ele_xtrg_mc *tau_trg_mvadm;
 
-      if(era_ == era::data_2017 && is_embedded_ && e_pt<40 && fabs(e_eta)>1.479){
+      if((era_ == era::data_2017 || era_ == era::data_2017UL) && is_embedded_ && e_pt<40 && fabs(e_eta)>1.479){
         // electron triggers in this eta/pT region don't work properly for the embedding in 2017 so set the SF to the data efficiency and have all events pass the trigger in HTTTriggerFilter - this works for the 2018 but needs to be checked for the 2016 legacy!
         single_e_sf = ele_trg;
         xtrg_et_sf = ele_xtrg*tau_trg_data;
@@ -1956,12 +1956,12 @@ int HTTWeights::Execute(TreeEvent *event) {
       event->Add("et_trg_single",single_e_sf); 
  
       // for 2016 we only use the single electron trigger
-      if(era_ == era::data_2016) {
+      if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
         xtrg_et_sf=0.;
         xtrg_OR_sf=single_e_sf;
       }
 
-      if(era_ != era::data_2016) {
+      if(era_ != era::data_2016 || era_ != era::data_2016UL_preVFP || era_ != era::data_2016UL_postVFP) {
         tau_trg_ic = (tau_trg==0) ? tau_trg_ic : tau_trg_ic/tau_trg;
         tau_trg_mvadm = (tau_trg==0) ? tau_trg_mvadm : tau_trg_mvadm/tau_trg;
         tau_trg_ic = (e_pt>=e_high_pt_cut) ? 1. : tau_trg_ic;
@@ -1982,7 +1982,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         extra="_embed";
       }
 
-      if(era_ == era::data_2017){
+      if(era_ == era::data_2017 || era_ == era::data_2017UL){
         // in 2017 these is an additional factor recommended by the EGammas POG to correct electron triggers
         xtrg_OR_sf*=0.991;
         single_e_sf*=0.991;
@@ -2022,7 +2022,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       double tau_trg_mvadm11_down=1;
 
 
-      if(era_ == era::data_2017 || era_ == era::data_2018) {
+      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
 
         if(e_pt<e_high_pt_cut) { // if this isn't true then we are using the single lepton trigger and therefore the weight = 1
           if(!is_embedded_) {
@@ -2167,7 +2167,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       auto args_mvadm = std::vector<double>{t_pt,t_mvadm};
 
       double m_high_pt_cut = 25;
-      if(era_ == era::data_2016) m_high_pt_cut = 23;
+      if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) m_high_pt_cut = 23;
 
       double mu_xtrg = fns_["m_crosstrg_data"]->eval(args_1.data());
       double mu_xtrg_mc;
@@ -2407,8 +2407,8 @@ int HTTWeights::Execute(TreeEvent *event) {
        if(m_pt<24.) e_trg = m_trg_8*e_trg_23;
      }
 
-     if(era_ == era::data_2017) e_trg*=0.991;
-     if(era_ == era::data_2016)  eventInfo->set_weight("dz_filter_eff",double(0.979));
+     if(era_ == era::data_2017 || era_ == era::data_2017UL) e_trg*=0.991;
+     if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)  eventInfo->set_weight("dz_filter_eff",double(0.979));
      if(e_trg>2.) e_trg=2.;
      weight *= (e_trg);
      event->Add("trigweight_1", e_trg);

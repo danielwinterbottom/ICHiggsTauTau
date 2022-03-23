@@ -349,7 +349,7 @@ namespace ic {
       //single tau trigger  
       if (channel_ == channel::mt || channel_ == channel::et || channel_ == channel::tt || channel_ == channel::zmm || channel_ == channel::zee){
 
-        if(era_ == era::data_2016){
+        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
           singletau_trg_obj_label = "triggerObjectsSingleTau120";
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_filter = "hltPFTau120TrackPt50LooseAbsOrRelVLooseIso";
@@ -357,7 +357,7 @@ namespace ic {
           singletau_trg_obj_alt_label = "triggerObjectsSingleTau140";
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_alt_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
-        } else if(era_ == era::data_2017 || era_ == era::data_2018) {
+        } else if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
           if(is_embedded_) { 
             singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
             singletau_leg1_filter = "hltSingleL2Tau80eta2p2";
@@ -373,7 +373,7 @@ namespace ic {
       }
         
       if (channel_ == channel::et || channel_ == channel::zee || channel_ ==  channel::tpzee) {
-          if(era_ == era::data_2016){
+          if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
           trig_obj_label = "triggerObjectsEle24LooseTau20SingleL1";
           leg1_filter = "hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
@@ -381,7 +381,7 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsEle25GsfTightEta2p1";
           alt_leg1_filter = "hltEle25erWPTightGsfTrackIsoFilter";
           high_leg_pt = 26.;
-          } else if (era_ == era::data_2017){
+          } else if (era_ == era::data_2017 || era_ == era::data_2017UL){
           trig_obj_label = "triggerObjectsEle24Tau30";
           leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
           leg2_filter = "hltSelectedPFTau30LooseChargedIsolationL1HLTMatched";
@@ -396,7 +396,7 @@ namespace ic {
             leg2_filter="hltL1sBigORLooseIsoEGXXerIsoTauYYerdRMin0p3";
             extra_leg2_filter="";
           }
-          } else if (era_ == era::data_2018){
+          } else if (era_ == era::data_2018 || era_ == era::data_2018UL){
           trig_obj_label = "triggerObjectsEle24TauHPS30";
           leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
           leg2_filter = "hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched";
@@ -414,7 +414,7 @@ namespace ic {
 
           }
       } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
-        if (era_ == era::data_2016){
+        if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
           trig_obj_label = "triggerObjectsIsoMu19LooseTau20SingleL1";
           leg1_filter = "hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -443,7 +443,7 @@ namespace ic {
           //  alt_cross_extra_leg2_filter = "";
           //  extra_leg2_filter = "";
           //}
-        } else if (era_ == era::data_2017) {
+        } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -457,7 +457,7 @@ namespace ic {
             leg2_filter="hltL1sMu18erTau24erIorMu20erTau24er";
             extra_leg2_filter="";
           }
-        } else if (era_ == era::data_2018) {
+        } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -477,14 +477,14 @@ namespace ic {
         }
 
       } else if (channel_ == channel::em) {
-        if (era_ == era::data_2016){
+        if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
          trig_obj_label = "triggerObjectsEle12Mu23";
          leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
          alt_trig_obj_label = "triggerObjectsEle23Mu8";
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
-        } else if (era_ == era::data_2017 || era_ == era::data_2018){ 
+        } else if (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL){ 
             trig_obj_label = "triggerObjectsMu23Ele12DZ";
             leg1_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
             leg2_filter = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
@@ -496,7 +496,7 @@ namespace ic {
             alt_extra_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZFilter";
         }
       } else if (channel_ == channel::tt){
-       if (era_ == era::data_2016){
+       if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
          trig_obj_label = "triggerObjectsDoubleMediumTau35";
          alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
          if(is_embedded_){ 
@@ -510,7 +510,7 @@ namespace ic {
            alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
            alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
          }
-      } else if(era_ == era::data_2017){
+      } else if(era_ == era::data_2017 || era_ == era::data_2017UL){
           trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
@@ -528,7 +528,7 @@ namespace ic {
              alt_leg1_filter_2=leg1_filter;
              alt_leg2_filter_2=leg1_filter;
           }
-        } else if (era_ == era::data_2018) {
+        } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
             trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35"; //HPS only
             leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
             leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
@@ -567,19 +567,19 @@ namespace ic {
         bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
         leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first;
 
-        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& era_ == era::data_2017) {
+        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& (era_ == era::data_2017 || era_ == era::data_2017UL)) {
            std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
            std::vector<TriggerObject *> l1_objs = event->GetPtrVec<TriggerObject>("triggerObjectsEle35"); // For the Ele32 trigger we need to make sure the electron is matched to the SingleElectron L1 filter since this path is also seeded by the L1 double electron triggers but this filter does not exist for the previous trigger objects so we much take it from an un-prescaled trigger
            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), l1_objs, extra_filter_2,0.5).first);
           
         }
-        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& era_ == era::data_2018) {
+        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& (era_ == era::data_2018 || era_ == era::data_2018UL) {
            std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first;
 
         }
         
-        if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& era_ == era::data_2016 ) {
+        if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)) {
            std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
            ic::erase_if_not(alt_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_trk_min_online_pt);
            std::vector<TriggerObject *> alt_er_objs = event->GetPtrVec<TriggerObject>(alt_er_trig_obj_label);
@@ -589,7 +589,7 @@ namespace ic {
 
            leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first); 
         } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm) 
-                && (era_ == era::data_2017 || era_ == era::data_2018)) {
+                && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)) {
            std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
            leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
         }
@@ -601,7 +601,7 @@ namespace ic {
         }
       }
     }
-    if(is_embedded_&& era_ == era::data_2017 && (channel_==channel::et || channel_==channel::zee)){
+    if(is_embedded_&& (era_ == era::data_2017 || era_ == era::data_2017UL) && (channel_==channel::et || channel_==channel::zee)){
       // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
       Electron const* elec = dynamic_cast<Electron const*>(dileptons[0]->At(0));
       double eta = fabs(elec->eta());
@@ -652,7 +652,7 @@ namespace ic {
         if(extra_leg2_filter!="") leg2_match = leg2_match&&IsFilterMatchedWithIndex(dileptons[i]->At(1), cross_objs, extra_leg2_filter,0.5).first;
 
         passed_etaucross = leg1_match && leg2_match;
-        if(is_embedded_&&(era_ == era::data_2017||era_ == era::data_2018)) {
+        if(is_embedded_&&(era_ == era::data_2017 || era_ == era::data_2017UL ||era_ == era::data_2018 || era_ == era::data_2018UL)) {
           //L1 cut
           std::vector<Candidate const *> match_tau;
           match_tau.push_back(dileptons[0]->At(1));
@@ -666,7 +666,7 @@ namespace ic {
           //else if(passed_etaucross) std::cout << "L1 passed!" << std::endl;
           passed_etaucross = passed_etaucross && match_l1_part_etau;
         }
-        if(is_embedded_&& era_ == era::data_2017){
+        if(is_embedded_&& (era_ == era::data_2017 || era_ == era::data_2018UL)){
           // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
           Electron const* elec = dynamic_cast<Electron const*>(dileptons[i]->At(0)); 
           double eta = fabs(elec->eta());
@@ -682,7 +682,7 @@ namespace ic {
 
    
    bool passed_muonelectron = false;
-   if (channel_ == channel::em && era_ == era::data_2016){
+   if (channel_ == channel::em && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for(unsigned i = 0; i < dileptons.size(); ++i){
         bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
@@ -714,7 +714,7 @@ namespace ic {
       }
     }
    bool passed_dz = true;
-   if (channel_ == channel::em && (era_ == era::data_2017 || era_ == era::data_2018)){
+   if (channel_ == channel::em && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era::data_2018UL)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       // Mu23_Ele12_DZ matching
       for(unsigned i = 0; i < dileptons.size(); ++i){
@@ -793,7 +793,7 @@ namespace ic {
               dileptons_pass.push_back(dileptons[i]);
             }
         }
-        if(era_ == era::data_2016 && is_embedded_){
+        if((era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && is_embedded_){
           std::string trig_obj_label_embed = "triggerObjectsDoubleMediumTau35";
           std::string alt_trig_obj_label_embed = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
 
@@ -812,7 +812,7 @@ namespace ic {
 
         } else passed_doubletau_extra = true;
         
-        if(era_ == era::data_2017){
+        if(era_ == era::data_2017 || era_ == era::data_2017UL){
           // For 2017 MC we have to match the taus to L1 iso taus with pT>32 GeV to fit with how the SFs were measured
               
           std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
@@ -829,7 +829,7 @@ namespace ic {
       }
 
       // 2018 vbf trg jet matching after double tau trg part
-      if (era_ == era::data_2018 && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
+      if ((era_ == era::data_2018 || era_ == era::data_2018UL) && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
         std::vector<TriggerObject *> alt_objs_3 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_3);  
         std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
         // first need to find jets with maximum mjj and cross clean from taus?

@@ -160,7 +160,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    tau_pt = 20;
    tau_eta = 2.3;
    min_taus = 1;
-   if(era_type == era::data_2016) muon_pt = 20.0; 
+   if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) muon_pt = 20.0; 
    else  muon_pt = 21.0;
   }
   if (channel_str == "tt"){
@@ -175,13 +175,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    lead_min_taus = 1;
   }
   if(channel_str == "zee"){
-    if(era_type == era::data_2017) elec_pt = 28.;
-    if(era_type == era::data_2018) elec_pt = 33.;
+    if(era_type == era::data_2017 || era_type == era::data_2017UL) elec_pt = 28.;
+    if(era_type == era::data_2018 || era_type == era::data_2018UL) elec_pt = 33.;
     else elec_pt = 25.;
     elec_eta = 2.1;
   }
   if(channel_str == "zmm"){
-    if(era_type == era::data_2018 || era_type == era::data_2017) muon_pt = 25.;
+    if(era_type == era::data_2017 || era_type == era::data_2017UL  || era_type == era::data_2018 || era_type == era::data_2018UL) muon_pt = 25.;
     else muon_pt = 23.;
     muon_eta = 2.1;
   }
@@ -366,11 +366,11 @@ void HTTSequence::BuildSequence(){
 
   // Defining good-lumi jsons
   std::string data_json = "";
-  if (era_type == era::data_2016)
+  if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP)
       data_json= "input/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
-  if (era_type == era::data_2017) 
+  if (era_type == era::data_2017 || era_type == era::data_2017UL) 
       data_json= "input/json/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt";
-  if (era_type == era::data_2018)
+  if (era_type == era::data_2018 || era_type == era::data_2018UL)
       data_json= "input/json/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt";
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
@@ -394,7 +394,7 @@ void HTTSequence::BuildSequence(){
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015 || era_type==era::data_2016  
-          || era_type == era::data_2017 || era_type == era::data_2018){
+          || era_type == era::data_2017 || era_type == era::data_2018 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || era_type == era::data_2017UL || era_type == era::data_2018UL){
     httPrint.set_muon_label(js["muons"].asString());
     httPrint.set_jet_label(jets_label);
   }
@@ -425,15 +425,15 @@ if(!is_data && js["do_gen_analysis"].asBool()){
       .set_fs(fs.get());
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
     httStitching.set_do_dy_soup(true);
-    if(era_type == era::data_2016) {
+    if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
       httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
       httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
     }
-    if(era_type == era::data_2017) {
+    if(era_type == era::data_2017 || era_type == era::data_2017UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(48590164+49031214,42205667+33563494,88795+9871382,1147725+5740168,4317756);
     }
-    if(era_type == era::data_2018) {
+    if(era_type == era::data_2018 || era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(99536185, 66994632, 19918141, 5554767, 2812482);
     }
@@ -595,11 +595,11 @@ if(do_met_filters){
         "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
         "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
       };
-      if (era_type == era::data_2016) {
+      if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
         met_filters.pop_back();
         met_filters.push_back("Flag_globalTightHalo2016Filter");
       }
-      if (era_type == era::data_2017 || era_type == era::data_2018) 
+      if (era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL) 
         met_filters.push_back("ecalBadCalibReducedMINIAODFilter");
       bool pass_filters = true;
       for(unsigned i=0;i<met_filters.size();++i){
@@ -625,11 +625,11 @@ BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFi
 
 SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
 .set_input_label(jets_label);
-if (era_type == era::data_2016) {
+if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
   jetIDFilter.set_predicate(bind(PFJetID2016, _1));
-} else if (era_type == era::data_2017) {
+} else if (era_type == era::data_2017 || era_type == era::data_2017UL) {
   jetIDFilter.set_predicate(bind(PFJetID2017, _1));
-} else if (era_type == era::data_2018) {
+} else if (era_type == era::data_2018 || era_type == era::data_2018UL) {
   jetIDFilter.set_predicate(bind(PFJetID2018, _1));
 }
 BuildModule(jetIDFilter);
@@ -642,7 +642,7 @@ BuildModule(jetIDFilter);
 //  })
 //);
 
-if (era_type == era::data_2017) {
+if (era_type == era::data_2017 || era_type == era::data_2017UL) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
     .set_predicate([=](PFJet const* jet) {
@@ -658,7 +658,7 @@ if (!is_data && !is_embedded) {
    BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
      .set_input_label(jets_label)
      .set_jer_shift_mode(jer_mode)
-     .set_EENoiseFix(era_type == era::data_2017)
+     .set_EENoiseFix(era_type == era::data_2017 || era_type == era::data_2017UL)
      .set_shift_met(false)
    );
 }
@@ -682,24 +682,24 @@ if(!is_data) {
 
 std::string scalefactor_file;
 std::string scalefactor_file_ggh;
-if(era_type == era::data_2016) {
+if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
 }
-if(era_type == era::data_2017) {
+if(era_type == era::data_2017 || era_type == era::data_2017UL) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
-if(era_type == era::data_2018) {
+if(era_type == era::data_2018 || era_type == era::data_2018UL) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
 
 TH2F embed_pt_weights_ic;
 
-if(era_type == era::data_2016) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2016");
-if(era_type == era::data_2017) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2017");
-if(era_type == era::data_2018) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
+if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2016");
+if(era_type == era::data_2017 || era_type == era::data_2017UL) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2017");
+if(era_type == era::data_2018 || era_type == era::data_2018UL) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
 
 HTTWeights httWeights = HTTWeights("HTTWeights")   
  .set_channel(channel)
@@ -736,7 +736,7 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
 }
 if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
   httWeights.set_do_mssm_higgspt(true); 
-  if(era_type == era::data_2016) httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_2016_v2.root");
+  if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_2016_v2.root");
   else httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v2.root");
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
@@ -753,30 +753,30 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
   if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
       output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
     httStitching.set_do_w_soup(true);
-    if(era_type == era::data_2016) {
+    if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
      httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6); 
      httStitching.SetWInputYields(29514020+57402435, 45283121, 30064264+30374504, 39356879+19798117, 18751462+2073275+9116657);
     } 
-    if(era_type == era::data_2017) {
+    if(era_type == era::data_2017 || era_type == era::data_2017UL) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
       httStitching.SetWInputYields(33043732+44579681,54070624,6511577,19644624,10874617);
     }
-    if(era_type == era::data_2018) {
+    if(era_type == era::data_2018 || era_type == era::data_2018UL) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
       httStitching.SetWInputYields(63389404, 31521085, 16766140, 13815650, 9874750); 
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
     httStitching.set_do_dy_soup(true);
-    if(era_type == era::data_2016) {
+    if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
       httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); 
       httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
     } 
-    if(era_type == era::data_2017) {
+    if(era_type == era::data_2017 || era_type == era::data_2017UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(48590164+49031214,42205667+33563494,88795+9871382,1147725+5740168,4317756);
     } 
-    if(era_type == era::data_2018) {
+    if(era_type == era::data_2018 || era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(99536185, 66994632, 19918141, 5554767, 2812482);
     }
@@ -887,7 +887,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
        .set_input_label(shift_jets_label)
        .set_met_label(shift_met_label)
        .set_jer_shift_mode(jer_mode_)
-       .set_EENoiseFix(era_type == era::data_2017)
+       .set_EENoiseFix(era_type == era::data_2017 || era_type == era::data_2017UL)
        .set_shift_met(!do_recoil)
      );
   }
@@ -895,15 +895,15 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if (jes_mode_ > 0 && !is_data ){
     std::string jes_input_file  = "";
     std::string jes_input_set  = "";
-    if (era_type == era::data_2016) {
+    if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
       jes_input_file = "input/jec/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
       jes_input_set  = "Total";
     }
-    if (era_type == era::data_2017) {
+    if (era_type == era::data_2017 || era_type == era::data_2017UL) {
       jes_input_file = "input/jec/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
-    if (era_type == era::data_2018) {
+    if (era_type == era::data_2018 || era_type == era::data_2018UL) {
       jes_input_file = "input/jec/RegroupedV2_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
@@ -918,14 +918,14 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       .set_jes_shift_mode(jes_mode_)
       .set_uncert_file(jes_input_file)
       .set_uncert_set(jes_input_set_)
-      .set_EENoiseFix(era_type == era::data_2017)
+      .set_EENoiseFix(era_type == era::data_2017 || era_type == era::data_2017)
       .set_shift_met(!do_recoil)
      );
    
   }
 
   bool hem_fix=false; // disable this "fix" for HEM issue (this is really only used to check impact of HEM problem rather than actually fix it)
-  if (hem_fix && !is_data && !is_embedded && era_type == era::data_2018) {
+  if (hem_fix && !is_data && !is_embedded &&  (era_type == era::data_2018 || era_type == era::data_2018UL)) {
     BuildModule(JetEnergyUncertainty<PFJet>("HEMFix")
       .set_input_label(shift_jets_label)
       .set_met_label(shift_met_label)
@@ -963,7 +963,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     TH2D deepjet_cbtag_eff;
     TH2D deepjet_othbtag_eff;
  
-    if (era_type == era::data_2016){
+    if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP){
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
@@ -975,7 +975,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
       deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
       deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
-    } else if (era_type == era::data_2017) {
+    } else if (era_type == era::data_2017 || era_type == era::data_2017UL) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_oth");
@@ -987,7 +987,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
       deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
       deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
-    } else if (era_type == era::data_2018) {
+    } else if (era_type == era::data_2018 || era_type == era::data_2018UL) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_oth");
@@ -1028,7 +1028,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       .set_btag_mode(btag_mode)
       .set_bfake_mode(bfake_mode));
 
-    if(era_type == era::data_2016 && (output_name.find("TTTo2L2Nu") != output_name.npos || output_name.find("TTToHadronic") != output_name.npos || output_name.find("TTToSemiLeptonic") != output_name.npos)) {
+    if((era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) && (output_name.find("TTTo2L2Nu") != output_name.npos || output_name.find("TTToHadronic") != output_name.npos || output_name.find("TTToSemiLeptonic") != output_name.npos)) {
       BTagWeight.set_do_cp5_2016(true);
       TH2F bbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_b");
       TH2F cbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_c");
@@ -1156,7 +1156,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;
     
-    if(era_type == era::data_2017 || era_type == era::data_2018){
+    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
 
         muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
         std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
@@ -1412,7 +1412,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   } 
 
   if(channel == channel::tpzee){
-    if(era_type == era::data_2017 || era_type == era::data_2018){
+    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
       std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
       std::function<bool(Electron const*)> elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
 

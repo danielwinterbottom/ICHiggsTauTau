@@ -129,8 +129,12 @@ inline std::string Era2String(era const& in) {
 		(era::data_2012_rereco, "data_2012_rereco")
 		(era::data_2015,        "data_2015")
 		(era::data_2016,        "data_2016")
+	(era::data_2016UL_preVFP,	"data_2016UL_preVFP")
+	(era::data_2016UL_postVFP,	"data_2016UL_postVFP")
         (era::data_2017,        "data_2017")
-        (era::data_2018,        "data_2018");
+	(era::data_2017UL,	"data_2017UL")
+        (era::data_2018,        "data_2018")
+	(era::data_2018UL.	"data_2018UL");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -145,8 +149,12 @@ inline era String2Era(std::string const& in) {
 	("data_2012_rereco", era::data_2012_rereco)
 	("data_2015",        era::data_2015)
 	("data_2016",        era::data_2016)
+    ("data_2016UL_preVFP",	era::data_2016UL_preVFP)
+    ("data_2016UL_postVFP",	era::data_2016UL_postVFP)
     ("data_2017",        era::data_2017)
-    ("data_2018",        era::data_2018);
+    ("data_2017_UL",	era::data_2017UL)
+    ("data_2018",        era::data_2018)
+    ("data_2018UL",	era::data_2018UL);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
