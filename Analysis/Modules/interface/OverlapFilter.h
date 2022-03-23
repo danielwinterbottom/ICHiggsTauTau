@@ -16,6 +16,7 @@ class OverlapFilter : public ModuleBase {
   std::string input_label_;
   std::string reference_label_;
   double min_dr_;
+  double max_dr_;
 
  public:
   OverlapFilter(std::string const& name);
@@ -41,6 +42,11 @@ class OverlapFilter : public ModuleBase {
     return *this;
   }
 
+  OverlapFilter<T, U> & set_max_dr(double const& max_dr) {
+    max_dr_ = max_dr;
+    return *this;
+  }
+
 };
 
 
@@ -51,6 +57,7 @@ class OverlapFilter<T, CompositeCandidate> : public ModuleBase {
   std::string input_label_;
   std::string reference_label_;
   double min_dr_;
+  double max_dr_;
 
  public:
   OverlapFilter(std::string const& name);
@@ -73,6 +80,11 @@ class OverlapFilter<T, CompositeCandidate> : public ModuleBase {
 
   OverlapFilter<T, CompositeCandidate> & set_min_dr(double const& min_dr) {
     min_dr_ = min_dr;
+    return *this;
+  }
+
+  OverlapFilter<T, CompositeCandidate> & set_max_dr(double const& max_dr) {
+    max_dr_ = max_dr;
     return *this;
   }
 
@@ -102,6 +114,7 @@ int OverlapFilter<T, U>::Execute(TreeEvent *event) {
   // Get the reference input collection
   std::vector<U *> const& ref_vec = event->GetPtrVec<U>(reference_label_);
   ic::erase_if(vec, !boost::bind(MinDRToCollection<U*>, _1, ref_vec, min_dr_));
+  ic::erase_if(vec, boost::bind(MinDRToCollection<U*>, _1, ref_vec, max_dr_));
   return 0;
 }
 
@@ -141,6 +154,7 @@ int OverlapFilter<T, CompositeCandidate>::Execute(TreeEvent *event) {
   std::vector<CompositeCandidate *> const& ref_vec = event->GetPtrVec<CompositeCandidate>(reference_label_);
   for (unsigned i = 0; i < ref_vec.size(); ++i) {
   ic::erase_if(vec, !boost::bind(MinDRToCollection<Candidate*>, _1, ref_vec[i]->AsVector(), min_dr_));
+  ic::erase_if(vec, boost::bind(MinDRToCollection<Candidate*>, _1, ref_vec[i]->AsVector(), max_dr_));
   }
   return 0;
 }

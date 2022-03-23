@@ -1996,6 +1996,7 @@ if options.analysis == "vlq":
     "VLQ_betaRd33_minus1_M_3000":["VectorLQToTauTau_betaRd33_minus1_mU3_gU1","VectorLQToTauTau_betaRd33_minus1_mU3_gU2","VectorLQToTauTau_betaRd33_minus1_mU3_gU3"],
     "VLQ_betaRd33_minus1_M_4000":["VectorLQToTauTau_betaRd33_minus1_mU4_gU1","VectorLQToTauTau_betaRd33_minus1_mU4_gU2","VectorLQToTauTau_betaRd33_minus1_mU4_gU3"],
     "VLQ_betaRd33_0_matched_M_500":"VectorLQToTauTau_betaRd33_0_mU500_gU1_matched",
+    "VLQ_betaRd33_0_M_1000":"VectorLQToTauTau_betaRd33_0_mU1000_gU1",
     "VLQ_betaRd33_0_matched_M_1000":"VectorLQToTauTau_betaRd33_0_mU1000_gU1_matched",
     "VLQ_betaRd33_0_matched_M_2000":"VectorLQToTauTau_betaRd33_0_mU2000_gU1_matched",
     #"VLQ_betaRd33_0_matched_M_2000":"exo_vlq_sample",
@@ -4674,10 +4675,10 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         elif options.analysis == 'vlq':
             if add_name == "":
               GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=True, split_vlq=options.split_vlq)
-              GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt+"*wt_vlq_off_diag_0", sel, cat, not options.do_ss,doScales=True, split_vlq=options.split_vlq)
+              GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt+"*wt_vlq_off_diag_0", sel, cat, not options.do_ss,doScales=True)
             else:
               GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt, sel, cat, not options.do_ss,doScales=False, split_vlq=options.split_vlq)
-              GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt+"*wt_vlq_off_diag_0", sel, cat, not options.do_ss,doScales=False, split_vlq=options.split_vlq)
+              GenerateVLQSignal(ana, add_name, plot, options.vlq_sig, wt+"*wt_vlq_off_diag_0", sel, cat, not options.do_ss,doScales=False)
         if options.analysis in ['mssm','mssmrun2'] and options.bbh_nlo_masses != "":
             GenerateNLOMSSMSignal(ana, add_name, plot, [''], bbh_nlo_masses, wt, sel, cat, options.doNLOScales, options.doPDF, not options.do_ss)
         if options.analysis in ['mssm','mssmrun2'] and options.doMSSMReWeighting:

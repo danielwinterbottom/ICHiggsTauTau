@@ -1925,6 +1925,25 @@ void HTTSequence::BuildZMMPairs() {
                 fabs(m->dz_vertex())    < muon_dz   &&
                 MuonID(m);
       }));
+
+  if(js["baseline"]["do_muonfakingtaus"].asBool()){
+    BuildModule(SimpleFilter<Tau>("TauFilter")
+        .set_input_label(js["taus"].asString()).set_min(1)
+        .set_predicate([=](Tau const* t) {
+          return  t->pt()                     > 15          &&
+                  fabs(t->eta())              <  2.3        &&
+                  fabs(t->lead_dz_vertex())   <  0.2        &&
+                  fabs(t->charge())           == 1          &&
+                  t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
+
+        }));
+
+    BuildModule(OverlapFilter<Tau,Muon>("TauMuonOverlapFilter")
+      .set_input_label(js["taus"].asString())
+      .set_reference_label("sel_lead_muons")
+      .set_max_dr(0.5));
+  };
+
   
   BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
       .set_input_label_first("sel_lead_muons")
@@ -1932,7 +1951,6 @@ void HTTSequence::BuildZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
-  
   
   if(js["baseline"]["do_faketaus"].asBool()){
     BuildModule(SimpleFilter<Tau>("TauFilter")
@@ -1945,11 +1963,13 @@ void HTTSequence::BuildZMMPairs() {
                   t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
     
         }));  
+   
     BuildModule(OverlapFilter<Tau,CompositeCandidate>("TauMuonOverlapFilter")
       .set_input_label(js["taus"].asString())
       .set_reference_label("ditau")
       .set_min_dr(0.5));
   }
+
   
 }
 

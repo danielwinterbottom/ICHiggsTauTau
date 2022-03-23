@@ -1687,6 +1687,7 @@ namespace ic {
 
   int HTTCategories::Execute(TreeEvent *event) {
     
+
     if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
@@ -3255,12 +3256,14 @@ namespace ic {
         mt_1_nomu_ = MT(not_removed_mu, newmet); 
         mu_pt_ = not_removed_mu->pt();
       }
-
       if(taus.size()>0) { 
         deepTauVsEle_vvvloose_1_   = taus[0]->HasTauID("byVVVLooseDeepTau2017v2p1VSe")   ? taus[0]->GetTauID("byVVVLooseDeepTau2017v2p1VSe"):   0.;
         deepTauVsMu_vloose_1_      =    taus[0]->HasTauID("byVLooseDeepTau2017v2p1VSmu")   ? taus[0]->GetTauID("byVLooseDeepTau2017v2p1VSmu"):   0.;
         deepTauVsJets_vvvloose_1_  = taus[0]->HasTauID("byVVVLooseDeepTau2017v2p1VSjet")   ? taus[0]->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"):   0.;
         tau_mva_decay_mode_1_ = taus[0]->HasTauID("MVADM2017v1") ? taus[0]->GetTauID("MVADM2017v1") : 0.0;
+        iso_1_      = taus[0]->HasTauID("byDeepTau2017v2p1VSjetraw")      ? taus[0]->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
+        deepTauVsEle_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSeraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
+        deepTauVsMu_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSmuraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
       }
       else {
         deepTauVsEle_vvvloose_1_ = 0.;

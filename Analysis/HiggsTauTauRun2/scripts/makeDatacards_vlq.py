@@ -269,15 +269,15 @@ for year in years:
       if cat.startswith("NbtagGt1"): bins = BINS
       else: bins = BINS_FINE
 
+      for j in options.add_options.split(","):
+        add_cond += " --"+j
+
 
       add_cond_nosysts = add_cond
 
       if not no_syst:
         for i in extra_channel[ch]:   
           add_cond += i
-
-      for j in options.add_options.split(","):
-        add_cond += " --"+j
 
       run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond)s --only_sig' % vars()
       rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
