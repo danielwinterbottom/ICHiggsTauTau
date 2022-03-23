@@ -22,7 +22,7 @@ namespace ic {
 
   int BTagWeightRun2::PreAnalysis() {
 
-    if(era_==era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) {
+    if(era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
 
       std::string name = "btag_calib_promotedemote";
       if(ProductExists(name) && ProductExists(name+"_reader_incl") && ProductExists(name+"_reader_comb")){
@@ -32,14 +32,14 @@ namespace ic {
         reader_comb = GetProduct<BTagCalibrationReader*>(name+"_reader_comb");
       } else {
         std::string csv_file_path = "";
-        if (era_==era::data_2016 && !use_deep_csv_ && !use_deep_jet_)      csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
-        else if (era_==era::data_2016 && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
-        else if (era_==era::data_2017 && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
-        else if (era_==era::data_2017 && !use_deep_csv_ && !use_deep_jet_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
-        else if (era_==era::data_2018 && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
-        else if (era_==era::data_2016 && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
-        else if (era_==era::data_2017 && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
-        else if (era_==era::data_2018 && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
+        if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP) && !use_deep_csv_ && !use_deep_jet_)      csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
+        else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP) && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+        else if ((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+        else if ((era_==era::data_2017 || era_ == era::data_2017UL) && !use_deep_csv_ && !use_deep_jet_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+        else if ((era_==era::data_2018 || era_ == era::data_2018UL) && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+        else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP)  && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
+        else if ((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
+        else if ((era_==era::data_2018 || era_ == era::data_2018UL) && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
   
         if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
         else if (use_deep_csv_) calib  = new const BTagCalibration("deepcsv",csv_file_path);
@@ -64,17 +64,17 @@ namespace ic {
 
       std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
       if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
-      else if (era_==era::data_2016 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-      else if (era_==era::data_2016 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
-      else if (era_==era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
-      else if (era_==era::data_2017 && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
-      else if (era_==era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+      else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP)  && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+      else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP)  && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+      else if ((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+      else if ((era_==era::data_2017 || era_ == era::data_2017UL) && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
+      else if ((era_==era::data_2018 || era_ == era::data_2018UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
       if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
       else if (use_deep_csv_) calib  = new const BTagCalibration("deepcsv",csv_file_path);
-      if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
+      if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL){
         reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
       }
-      if(channel_ != channel::tt || era_==era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
+      if(channel_ != channel::tt || era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL){
         reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
         reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
       } else {
@@ -88,7 +88,7 @@ namespace ic {
       reader_mujets->load(*calib,BTagEntry::FLAV_B,"mujets");
       reader_mujets->load(*calib,BTagEntry::FLAV_C,"mujets");
       reader_mujets->load(*calib,BTagEntry::FLAV_UDSG,"mujets");
-      if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
+      if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL){
         reader_comb->load(*calib,BTagEntry::FLAV_B,"comb");
         reader_comb->load(*calib,BTagEntry::FLAV_C,"comb");
         reader_comb->load(*calib,BTagEntry::FLAV_UDSG,"comb");
@@ -105,7 +105,7 @@ namespace ic {
   int BTagWeightRun2::Execute(TreeEvent *event) {
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
     double eta_cut = 2.4;
-    if(era_ == era::data_2017 || era_ == era::data_2018) eta_cut = 2.5;
+    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) eta_cut = 2.5;
     ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     if (!do_reshape_){
       std::map<std::size_t, bool> retag_result = ReTag(embed_jets, btag_mode_, bfake_mode_);
@@ -257,7 +257,7 @@ namespace ic {
         } else {
          sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
         }
-      } else if(jet_flavour == 5 && (era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018)){
+      } else if(jet_flavour == 5 && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)){
         if(btag_mode == 2){ 
          sf = reader_comb->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
         } else if(btag_mode == 1){
@@ -273,7 +273,7 @@ namespace ic {
         } else {
          sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
        }
-      } else if(jet_flavour == 4 && (era_==era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018)){
+      } else if(jet_flavour == 4 && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)){
         if(btag_mode == 2){ 
          sf = reader_comb->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
         } else if(btag_mode == 1){
@@ -307,16 +307,16 @@ namespace ic {
         std::cout << "-- scale factor: " << sf << std::endl;
       }
       bool passtag;
-      if(channel_ != channel::tt || era_==era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
+      if(channel_ != channel::tt || era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL){
         double tight_wp = 0.8;
-        if(era_==era::data_2016 && !use_deep_csv_ && !use_deep_jet_) tight_wp = 0.8484;
-        else if(era_==era::data_2016 && use_deep_csv_) tight_wp = 0.6321;
-        else if(era_==era::data_2017 && use_deep_csv_) tight_wp = 0.4941;
-        else if(era_==era::data_2017 && !use_deep_csv_ && !use_deep_jet_) tight_wp = 0.8838;
-        else if(era_==era::data_2018 && use_deep_csv_) tight_wp = 0.4184;
-        else if(era_==era::data_2018 && use_deep_jet_) tight_wp = 0.2770;
-        else if(era_==era::data_2017 && use_deep_jet_) tight_wp = 0.3033;
-        else if(era_==era::data_2016 && use_deep_jet_) tight_wp = 0.3093;
+        if((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && !use_deep_csv_ && !use_deep_jet_) tight_wp = 0.8484;
+        else if((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_csv_) tight_wp = 0.6321;
+        else if((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_csv_) tight_wp = 0.4941;
+        else if((era_==era::data_2017 || era_ == era::data_2017UL) && !use_deep_csv_ && !use_deep_jet_) tight_wp = 0.8838;
+        else if((era_==era::data_2018 || era_ == era::data_2018UL)&& use_deep_csv_) tight_wp = 0.4184;
+        else if((era_==era::data_2018 || era_ == era::data_2018UL) && use_deep_jet_) tight_wp = 0.2770;
+        else if((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_jet_) tight_wp = 0.3033;
+        else if((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_jet_) tight_wp = 0.3093;
         if (!use_deep_csv_ && !use_deep_jet_) {
           passtag  = jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") > tight_wp;
         }

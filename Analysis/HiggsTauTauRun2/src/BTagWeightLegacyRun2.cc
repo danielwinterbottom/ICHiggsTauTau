@@ -35,9 +35,9 @@ namespace ic {
       reader_comb_loose = GetProduct<BTagCalibrationReader*>(name+"_reader_comb_loose");
     } else {
       std::string csv_file_path = "";
-      if (era_==era::data_2016) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
-      else if (era_==era::data_2017) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
-      else if (era_==era::data_2018) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+      if (era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+      else if (era_==era::data_2017 || era_ == era::data_2017UL) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+      else if (era_==era::data_2018 || era_ == era::data_2018UL) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
   
       calib  = new const BTagCalibration("deepcsv",csv_file_path);
   
@@ -62,7 +62,7 @@ namespace ic {
   int BTagWeightLegacyRun2::Execute(TreeEvent *event) {
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
     double eta_cut = 2.4;
-    if(era_ == era::data_2017 || era_ == era::data_2018) eta_cut = 2.5;
+    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) eta_cut = 2.5;
     ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     std::vector<double> btag_evt_weight = EventReweighting(embed_jets);
     event->ForceAdd("btag_evt_weight"+add_name_, btag_evt_weight[0]);
@@ -171,15 +171,15 @@ namespace ic {
 
       double tight_wp = 0.5;
       double loose_wp = 0.1;
-      if(era_ == era::data_2016){
+      if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
         tight_wp = 0.6321; // medium deepCSV wp
         loose_wp = 0.2217; // loose deepCSV wp
       }
-      else if(era_ == era::data_2017) {
+      else if(era_ == era::data_2017 || era_ == era::data_2017UL) {
         tight_wp = 0.4941; // medium deepCSV wp
         loose_wp = 0.1522; // loose deepCSV wp
       }
-      else if (era_ == era::data_2018){
+      else if (era_ == era::data_2018 || era_ == era::data_2018UL){
         tight_wp = 0.4184; // medium deepCSV wp
         loose_wp = 0.1241; // loose deepCSV wp
       }

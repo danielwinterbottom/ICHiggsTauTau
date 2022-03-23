@@ -386,9 +386,9 @@ namespace ic {
 
     std::string csv_file_path = "";
 
-    if (era_==era::data_2016)       csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
-	    else if (era_==era::data_2017)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
-	    else if (era_==era::data_2018)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
+    if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)       csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
+	    else if (era_==era::data_2017 || era_ == era::data_2017UL)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
+	    else if (era_==era::data_2018 || era_ == era::data_2018UL)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
 
 	    //calib  = new const BTagCalibration("deepjet",csv_file_path);
 

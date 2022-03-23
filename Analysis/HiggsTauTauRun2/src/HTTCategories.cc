@@ -75,20 +75,20 @@ namespace ic {
       TString ip_corr_filename = "";
       TString ip_corr_filename_elecs = "";
       if(is_embedded_) {
-        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2017.root";
+        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2016.root";
+        if(era_ == era::data_2017 || era_ == era::data_2017UL) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2017.root";
         else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_embed_2018.root";
 
-        if(era_ == era::data_2016) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2017.root";
+        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2016.root";
+        if(era_ == era::data_2017 || era_ == era::data_2017UL) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2017.root";
         else                       ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_embed_2018.root";
       } else {
-        if(era_ == era::data_2016) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2017.root";
+        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2016.root";
+        if(era_ == era::data_2017 || era_ == era::data_2017UL) ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2017.root";
         else                       ip_corr_filename = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ip_2018.root";
 
-        if(era_ == era::data_2016) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2016.root";
-        if(era_ == era::data_2017) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2017.root";
+        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2016.root";
+        if(era_ == era::data_2017 || era_ == era::data_2017UL) ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2017.root";
         else                       ip_corr_filename_elecs = TString(cmsswBase)+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/ip_corrs/ipEle_2018.root";
       }
       ipCorrector.Init(ip_corr_filename);
@@ -2504,7 +2504,7 @@ namespace ic {
     std::vector<PFJet*> prebjets = lowpt_jets;
 
     double eta_cut = 2.4;
-    if(era_ == era::data_2017 || era_ == era::data_2018) eta_cut = 2.5;
+    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) eta_cut = 2.5;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     n_prebjets_ = prebjets.size();
     std::vector<PFJet*> bjets = prebjets;
@@ -2519,7 +2519,7 @@ namespace ic {
     double btag_wp;
     double loose_btag_wp;
     double deepjet_wp;
-    if (era_ == era::data_2017) {
+    if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       btag_wp = 0.4941;
       loose_btag_wp = 0.1522;
       btag_label = "pfDeepCSVJetTags:probb";
@@ -2527,7 +2527,7 @@ namespace ic {
 
       deepjet_wp = 0.3033;
     }
-    if (era_ == era::data_2018) {
+    if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       btag_wp = 0.4184;
       loose_btag_wp = 0.1241;
       btag_label = "pfDeepCSVJetTags:probb";
@@ -2535,7 +2535,7 @@ namespace ic {
 
       deepjet_wp = 0.2770;
     }
-    if (era_ == era::data_2016) {
+    if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       btag_wp = 0.6321;
       loose_btag_wp = 0.2217;
       btag_label = "pfDeepCSVJetTags:probb";

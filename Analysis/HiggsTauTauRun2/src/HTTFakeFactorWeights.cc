@@ -493,12 +493,12 @@ namespace ic {
     double btag_wp (1.0);
     if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) btag_wp = 0.8484;
     // if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) btag_wp = 0.8838;
-    if (era_ == era::data_2017) {
+    if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       btag_wp          = 0.4941;
       btag_label       = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
     }
-    if (era_ == era::data_2018) {
+    if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       btag_wp          = 0.4184;
       btag_label       = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
@@ -507,7 +507,7 @@ namespace ic {
     auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
     };
-    if (era_ == era::data_2017 || era_ == era::data_2018) {
+    if (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
       if (event->Exists("retag_result")) {
         auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
         ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
@@ -528,13 +528,13 @@ namespace ic {
     n_prebjets_ = (double)deepbjets.size();
 
     double deepjet_wp;
-    if (era_ == era::data_2017) {
+    if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       deepjet_wp = 0.3033;
     }
-    if (era_ == era::data_2018) {
+    if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       deepjet_wp = 0.2770;
     }
-    if (era_ == era::data_2016) {
+    if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       deepjet_wp = 0.3093;
     }
 
@@ -819,12 +819,12 @@ namespace ic {
             //bool trg_singleelectron;
             //if (!event->Exists("trg_singleelectron")) trg_singleelectron = true;
             //else  trg_singleelectron = event->Get<bool>("trg_singleelectron");
-            if(era_ == era::data_2017) {
+            if(era_ == era::data_2017 || era_ == era::data_2017UL) {
               if(pt_1_<28) pass_single=0.;
-            } else if(era_ == era::data_2018) {
+            } else if(era_ == era::data_2018 || era_ == era::data_2018UL) {
               if(pt_1_<33) pass_single=0.;
             }
-            if(era_ == era::data_2016) pass_single=1.;
+            if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) pass_single=1.;
           }
 
 
