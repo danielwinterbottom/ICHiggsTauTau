@@ -138,7 +138,7 @@ inline std::string Era2String(era const& in) {
         (era::data_2017,        "data_2017")
 	(era::data_2017UL,	"data_2017UL")
         (era::data_2018,        "data_2018")
-	(era::data_2018UL.	"data_2018UL");
+	(era::data_2018UL,	"data_2018UL");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
