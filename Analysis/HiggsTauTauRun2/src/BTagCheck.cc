@@ -83,8 +83,8 @@ namespace ic {
       outtree_->Branch("sf",                     & sf);
     }
     std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
-    if((era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016_UL_postVFP) && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-    else if((era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016_UL_postVFP) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+    if((era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+    else if((era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
     else if((era_ == era::data_2017 || era_ == era::data_2017UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
     else if((era_ == era::data_2017 || era_ == era::data_2017UL) && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
     else if((era_ == era::data_2018 || era_ == era::data_2018UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";

@@ -573,7 +573,7 @@ namespace ic {
            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(0), l1_objs, extra_filter_2,0.5).first);
           
         }
-        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& (era_ == era::data_2018 || era_ == era::data_2018UL) {
+        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& (era_ == era::data_2018 || era_ == era::data_2018UL)) {
            std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs_2, alt_leg1_filter_2, 0.5).first;
 
@@ -714,7 +714,7 @@ namespace ic {
       }
     }
    bool passed_dz = true;
-   if (channel_ == channel::em && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era::data_2018UL)){
+   if (channel_ == channel::em && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)){
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       // Mu23_Ele12_DZ matching
       for(unsigned i = 0; i < dileptons.size(); ++i){
