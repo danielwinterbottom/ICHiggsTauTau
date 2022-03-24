@@ -273,7 +273,7 @@ namespace ic {
         } else {
          sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_C, eta, pt);
        }
-      } else if(jet_flavour == 4 && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)){
+      } else if(jet_flavour == 4 && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)){
         if(btag_mode == 2){ 
          sf = reader_comb->eval_auto_bounds("up",BTagEntry::FLAV_C, eta, pt);
         } else if(btag_mode == 1){
@@ -307,7 +307,7 @@ namespace ic {
         std::cout << "-- scale factor: " << sf << std::endl;
       }
       bool passtag;
-      if(channel_ != channel::tt || era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL){
+      if(channel_ != channel::tt || era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL){
         double tight_wp = 0.8;
         if((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && !use_deep_csv_ && !use_deep_jet_) tight_wp = 0.8484;
         else if((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_csv_) tight_wp = 0.6321;
