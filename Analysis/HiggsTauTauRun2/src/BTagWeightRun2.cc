@@ -22,7 +22,7 @@ namespace ic {
 
   int BTagWeightRun2::PreAnalysis() {
 
-    if(era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
+    if(era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
 
       std::string name = "btag_calib_promotedemote";
       if(ProductExists(name) && ProductExists(name+"_reader_incl") && ProductExists(name+"_reader_comb")){
@@ -32,12 +32,12 @@ namespace ic {
         reader_comb = GetProduct<BTagCalibrationReader*>(name+"_reader_comb");
       } else {
         std::string csv_file_path = "";
-        if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP) && !use_deep_csv_ && !use_deep_jet_)      csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
-        else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP) && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+        if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && !use_deep_csv_ && !use_deep_jet_)      csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
+        else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
         else if ((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
         else if ((era_==era::data_2017 || era_ == era::data_2017UL) && !use_deep_csv_ && !use_deep_jet_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
         else if ((era_==era::data_2018 || era_ == era::data_2018UL) && use_deep_csv_)  csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
-        else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP)  && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
+        else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)  && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
         else if ((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
         else if ((era_==era::data_2018 || era_ == era::data_2018UL) && use_deep_jet_)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
   
@@ -64,8 +64,8 @@ namespace ic {
 
       std::string csv_file_path = "./input/btag_sf/CSVv2.csv";
       if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16) csv_file_path = "./input/btag_sf/CSVv2_Moriond17_B_H.csv";
-      else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP)  && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
-      else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era:data_2016UL_postVFP)  && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+      else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)  && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_ichep.csv";
+      else if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)  && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
       else if ((era_==era::data_2017 || era_ == era::data_2017UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
       else if ((era_==era::data_2017 || era_ == era::data_2017UL) && !use_deep_csv_) csv_file_path = "./input/btag_sf/CSVv2_94XSF_V2_B_F.csv";
       else if ((era_==era::data_2018 || era_ == era::data_2018UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
@@ -257,7 +257,7 @@ namespace ic {
         } else {
          sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);
         }
-      } else if(jet_flavour == 5 && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ = era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)){
+      } else if(jet_flavour == 5 && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)){
         if(btag_mode == 2){ 
          sf = reader_comb->eval_auto_bounds("up",BTagEntry::FLAV_B, eta, pt);
         } else if(btag_mode == 1){
