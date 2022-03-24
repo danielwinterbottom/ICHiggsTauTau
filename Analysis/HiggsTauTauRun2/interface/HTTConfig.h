@@ -117,8 +117,12 @@ struct era_def {
 		data_2012_rereco,
 		data_2015,
 		data_2016,
+	data_2016UL_preVFP,
+	data_2016UL_postVFP,
         data_2017,
-        data_2018
+	data_2017UL,
+        data_2018,
+	data_2018UL
 	};
 };
 typedef safe_enum<era_def> era;
