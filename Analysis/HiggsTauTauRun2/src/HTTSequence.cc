@@ -575,32 +575,32 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
       .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
 }
 
-if(do_met_filters && (is_data || is_embedded)){
-  BuildModule(GenericModule("MetFilters")
-    .set_function([=](ic::TreeEvent *event){
-       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-       std::vector<std::string> met_filters = {"Flag_eeBadScFilter"};
-       bool pass_filters = true;
-       for(unsigned i=0;i<met_filters.size();++i){
-        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
-       }
-       return !pass_filters;
-    }));
-}
+
 if(do_met_filters){
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-      std::vector<std::string> met_filters = {
-        "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
-        "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
-      };
-      if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
-        met_filters.pop_back();
-        met_filters.push_back("Flag_globalTightHalo2016Filter");
+      std::vector<std::string> met_filters = {"Flag_eeBadScFilter"};
+      if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) 	  {
+        met_filters.push_back("Flag_goodVertices");
+	met_filters.push_back("Flag_globalSuperTightHalo2016Filter");
+	met_filters.push_back("Flag_HBHENoiseFilter");
+	met_filters.push_back("Flag_HBHENoiseIsoFilter");
+	met_filters.push_back("EcalDeadCellTriggerPrimitiveFilter");
+	met_filters.push_back("Flag_BadPFMuonFilter");
+	met_filters.push_back("Flag_BadPFMuonDzFilter");
       }
       if (era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL) 
-        met_filters.push_back("ecalBadCalibReducedMINIAODFilter");
+      {
+        met_filters.push_back("Flag_goodVertices");
+        met_filters.push_back("Flag_globalSuperTightHalo2016Filter");
+        met_filters.push_back("Flag_HBHENoiseFilter");
+        met_filters.push_back("Flag_HBHENoiseIsoFilter");
+        met_filters.push_back("EcalDeadCellTriggerPrimitiveFilter");
+        met_filters.push_back("Flag_BadPFMuonFilter");
+        met_filters.push_back("Flag_BadPFMuonDzFilter");
+	met_filters.push_back("Flag_ecalBadCalibFilter");
+      }
       bool pass_filters = true;
       for(unsigned i=0;i<met_filters.size();++i){
        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
