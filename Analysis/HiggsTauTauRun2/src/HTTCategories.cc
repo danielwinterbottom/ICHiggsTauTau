@@ -69,12 +69,16 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "make_mva_ntuple" % make_mva_ntuple_;
 
+    std::string MVADM2017;
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
+         MVADM2017 = "MVADM2017v1";
 
-    std::string MVADM2017 = " ";
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+         MVADM2017 = "MVADM2017v2";
+    } else {
+         MVADM2017 = " ";
+    }
 
-    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
-
-    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
  
     if (!is_data_) {
       // initialize IP corrector
@@ -1683,12 +1687,16 @@ namespace ic {
       trg_etaucross_ = true;
     } 
 
-    std::string MVADM2017 = " ";
 
-    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
+    std::string MVADM2017;
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
+         MVADM2017 = "MVADM2017v1";
 
-    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
-
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+         MVADM2017 = "MVADM2017v2";
+    } else {
+         MVADM2017 = " ";
+    }
 
     w_frac_score_ = event->Exists("w_frac_score") ? event->Get<double>("w_frac_score") : -1.; 
     qcd_frac_score_ = event->Exists("qcd_frac_score") ? event->Get<double>("qcd_frac_score") : -1.;

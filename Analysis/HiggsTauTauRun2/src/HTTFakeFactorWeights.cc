@@ -30,12 +30,15 @@ namespace ic {
 
   int HTTFakeFactorWeights::PreAnalysis() {
     
-    std::string MVADM2017 = " ";
+    std::string MVADM2017;
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
+         MVADM2017 = "MVADM2017v1";
 
-    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
-
-    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
-    
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+        MVADM2017 = "MVADM2017v2";
+    } else {
+        MVADM2017 = " ";
+    }
 
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "HTTFakeFactorWeights" << std::endl;
@@ -486,12 +489,15 @@ namespace ic {
   }
 
   int HTTFakeFactorWeights::Execute(TreeEvent *event) {
-    std::string MVADM2017 = " ";
+    std::string MVADM2017;
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
+	 MVADM2017 = "MVADM2017v1";
 
-    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
-
-    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
-
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){
+       	MVADM2017 = "MVADM2017v2";
+    } else { 
+	MVADM2017 = " ";
+    }
       
     if(channel_ != channel::et && channel_ != channel::mt && channel_ != channel::tt) return 0;
 
