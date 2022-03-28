@@ -1107,7 +1107,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       double eta_2 = tau2->eta();
       auto args_2 = std::vector<double>{pt_2,eta_2,decay_mode_2};
 
-      double mvadm_2 = tau2->GetTauID("MVADM2017v1");
+      double mvadm_2 = tau2->GetTauID(MVADM2017);
       auto args_mvadm = std::vector<double>{pt_2,mvadm_2};
 
       if (!is_embedded_){
@@ -1339,8 +1339,8 @@ int HTTWeights::Execute(TreeEvent *event) {
       auto args_pt_1 = std::vector<double>{pt_1};
       auto args_pt_2 = std::vector<double>{pt_2};
 
-      double mvadm_1 = tau1->GetTauID("MVADM2017v1");
-      double mvadm_2 = tau2->GetTauID("MVADM2017v1");
+      double mvadm_1 = tau1->GetTauID(MVADM2017);
+      double mvadm_2 = tau2->GetTauID(MVADM2017);
 
       auto args_mvadm_1 = std::vector<double>{pt_1,mvadm_1};
       auto args_mvadm_2 = std::vector<double>{pt_2,mvadm_2};
@@ -1886,7 +1886,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm}; 
       auto args_4 = std::vector<double>{t_pt,t_dm};
 
-      double t_mvadm = tau->GetTauID("MVADM2017v1");
+      double t_mvadm = tau->GetTauID(MVADM2017);
       auto args_mvadm = std::vector<double>{t_pt,t_mvadm};
 
       double ele_xtrg = 1.;
@@ -2175,7 +2175,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       auto args_2 = std::vector<double>{pt,m_signed_eta};  
       auto args_3 = std::vector<double>{t_pt,t_signed_eta,t_phi,t_dm};  
       auto args_4 = std::vector<double>{t_pt,t_dm};
-      double t_mvadm = tau->GetTauID("MVADM2017v1");
+      double t_mvadm = tau->GetTauID(MVADM2017);
       auto args_mvadm = std::vector<double>{t_pt,t_mvadm};
 
       double m_high_pt_cut = 25;
@@ -2451,8 +2451,8 @@ int HTTWeights::Execute(TreeEvent *event) {
       auto args_2_1 = std::vector<double>{pt_1,dm_1};
       auto args_2_2 = std::vector<double>{pt_2,dm_2};
 
-      double mvadm_1 = tau1->GetTauID("MVADM2017v1");
-      double mvadm_2 = tau2->GetTauID("MVADM2017v1");
+      double mvadm_1 = tau1->GetTauID(MVADM2017);
+      double mvadm_2 = tau2->GetTauID(MVADM2017);
 
       auto args_mvadm_1 = std::vector<double>{pt_1,mvadm_1};
       auto args_mvadm_2 = std::vector<double>{pt_2,mvadm_2};

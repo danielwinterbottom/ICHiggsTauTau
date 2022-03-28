@@ -29,6 +29,14 @@ namespace ic {
   }
 
   int HTTFakeFactorWeights::PreAnalysis() {
+    
+    std::string MVADM2017 = " ";
+
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
+
+    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
+    
+
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "HTTFakeFactorWeights" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
@@ -478,6 +486,12 @@ namespace ic {
   }
 
   int HTTFakeFactorWeights::Execute(TreeEvent *event) {
+    std::string MVADM2017 = " ";
+
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
+
+    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
+
       
     if(channel_ != channel::et && channel_ != channel::mt && channel_ != channel::tt) return 0;
 
@@ -830,7 +844,7 @@ namespace ic {
 
           double ipsig = IPAndSignificance(tau, refit_vertex, pfcands).second;
 
-          mva_dm_2_=tau->HasTauID("MVADM2017v1") ? tau->GetTauID("MVADM2017v1") : -1.;
+          mva_dm_2_=tau->HasTauID(MVADM2017) ? tau->GetTauID(MVADM2017) : -1.;
           bool isOS = PairOppSign(ditau);
 
           // get mva fractions
@@ -974,7 +988,7 @@ namespace ic {
 
           double ipsig = IPAndSignificance(tau1, refit_vertex, pfcands).second;
 
-          double mva_dm_1=tau1->HasTauID("MVADM2017v1") ? tau1->GetTauID("MVADM2017v1") : -1.;
+          double mva_dm_1=tau1->HasTauID(MVADM2017) ? tau1->GetTauID(MVADM2017) : -1.;
 
           bool isOS = PairOppSign(ditau);
           double os = 1.;
@@ -983,7 +997,7 @@ namespace ic {
           auto args = std::vector<double>{pt_1_,mva_dm_1,ipsig,n_jets_,pt_2_,os,met_var_qcd_tt};
           double ff_nom = fns_["ff_tt_medium_mvadmbins"]->eval(args.data()); 
           event->Add("wt_ff_1",  ff_nom);
-          double mva_dm_2_=tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : -1.;
+          double mva_dm_2_=tau2->HasTauID(MVADM2017) ? tau2->GetTauID(MVADM2017) : -1.;
           double ipsig2 = IPAndSignificance(tau2, refit_vertex, pfcands).second;
           auto args2 = std::vector<double>{pt_2_,mva_dm_2_,ipsig2,n_jets_,pt_1_,0.,met_var_qcd_tt}; // we are using this FF only for W and ttbar contributions so we set this to false as we want to take the same-sign value in this case 
           double ff_nom_2 = fns_["ff_tt_medium_mvadmbins"]->eval(args2.data());
