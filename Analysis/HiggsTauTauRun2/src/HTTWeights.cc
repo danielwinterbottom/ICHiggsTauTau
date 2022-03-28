@@ -76,6 +76,12 @@ int HTTWeights::PreAnalysis() {
   std::cout << boost::format(param_fmt()) % "scalefactor_file"    % scalefactor_file_;
   std::cout << boost::format(param_fmt()) % "scalefactor_file_ggh" % scalefactor_file_ggh_;
 
+  std::string MVADM2017 = " ";
+
+  if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
+
+  if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
+
   if (do_nnlops_weights_){
     // Retrieve file with TGraphs of weights
     std::string file = "input/ggh_weights/NNLOPS_reweight.root";
@@ -967,6 +973,12 @@ int HTTWeights::Execute(TreeEvent *event) {
 
   double weight = 1.0;
   EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
+  std::string MVADM2017 = " ";
+
+  if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
+
+  if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
 
   if(is_embedded_){
     double gen_match_undecayed_1_pt = event->Get<double>("gen_match_undecayed_1_pt");

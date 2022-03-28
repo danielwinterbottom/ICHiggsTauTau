@@ -606,9 +606,10 @@ if(do_met_filters){
 	met_filters.push_back("Flag_globalSuperTightHalo2016Filter");
 	met_filters.push_back("Flag_HBHENoiseFilter");
 	met_filters.push_back("Flag_HBHENoiseIsoFilter");
-	met_filters.push_back("EcalDeadCellTriggerPrimitiveFilter");
+	met_filters.push_back("Flag_EcalDeadCellTriggerPrimitiveFilter");
 	met_filters.push_back("Flag_BadPFMuonFilter");
-	met_filters.push_back("Flag_BadPFMuonDzFilter");
+	//disabled (missing filter) 
+	//met_filters.push_back("Flag_BadPFMuonDzFilter");
       }
       if (era_type == era::data_2017UL || era_type == era::data_2018UL) 
       {
@@ -616,9 +617,10 @@ if(do_met_filters){
         met_filters.push_back("Flag_globalSuperTightHalo2016Filter");
         met_filters.push_back("Flag_HBHENoiseFilter");
         met_filters.push_back("Flag_HBHENoiseIsoFilter");
-        met_filters.push_back("EcalDeadCellTriggerPrimitiveFilter");
+        met_filters.push_back("Flag_EcalDeadCellTriggerPrimitiveFilter");
         met_filters.push_back("Flag_BadPFMuonFilter");
-        met_filters.push_back("Flag_BadPFMuonDzFilter");
+        //disabled (missing filter)
+	//met_filters.push_back("Flag_BadPFMuonDzFilter");
 	met_filters.push_back("Flag_ecalBadCalibFilter");
       }
       bool pass_filters = true;

@@ -52,7 +52,7 @@ namespace ic {
 }
 
   HTTCategories::~HTTCategories() {
-    ;
+	;
   }
 
   int HTTCategories::PreAnalysis() {
@@ -69,6 +69,13 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "make_mva_ntuple" % make_mva_ntuple_;
 
+
+    std::string MVADM2017 = " ";
+
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
+
+    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
+ 
     if (!is_data_) {
       // initialize IP corrector
       std::string cmsswBase = (getenv ("CMSSW_BASE"));
@@ -1676,6 +1683,13 @@ namespace ic {
       trg_etaucross_ = true;
     } 
 
+    std::string MVADM2017 = " ";
+
+    if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018) std::string MVADM2017 = "MVADM2017v1";
+
+    if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL) std::string MVADM2017 = "MVADM2017v2";
+
+
     w_frac_score_ = event->Exists("w_frac_score") ? event->Get<double>("w_frac_score") : -1.; 
     qcd_frac_score_ = event->Exists("qcd_frac_score") ? event->Get<double>("qcd_frac_score") : -1.;
 
@@ -3260,7 +3274,7 @@ namespace ic {
         deepTauVsMu_tight_1_      =    taus[0]->HasTauID("byTightDeepTau2017v2p1VSmu")   ? taus[0]->GetTauID("byTightDeepTau2017v2p1VSmu"):   0.;
         deepTauVsJets_vvvloose_1_  = taus[0]->HasTauID("byVVVLooseDeepTau2017v2p1VSjet")   ? taus[0]->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"):   0.;
         deepTauVsJets_medium_1_  = taus[0]->HasTauID("byMediumDeepTau2017v2p1VSjet")   ? taus[0]->GetTauID("byMediumDeepTau2017v2p1VSjet"):   0.;
-        tau_mva_decay_mode_1_ = taus[0]->HasTauID("MVADM2017v1") ? taus[0]->GetTauID("MVADM2017v1") : 0.0;
+        tau_mva_decay_mode_1_ = taus[0]->HasTauID(MVADM2017) ? taus[0]->GetTauID(MVADM2017) : 0.0;
       }
       else {
         deepTauVsEle_vvvloose_1_ = 0.;
@@ -3504,8 +3518,8 @@ namespace ic {
       lead_pt_1_ =  tau1->lead_pt();
       lead_pt_2_ =  tau2->lead_pt();
      
-      tau_mva_decay_mode_1_ = tau1->HasTauID("MVADM2017v1") ? tau1->GetTauID("MVADM2017v1") : 0.0;
-      tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
+      tau_mva_decay_mode_1_ = tau1->HasTauID(MVADM2017) ? tau1->GetTauID(MVADM2017) : 0.0;
+      tau_mva_decay_mode_2_ = tau2->HasTauID(MVADM2017) ? tau2->GetTauID(MVADM2017) : 0.0;
 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(tau1, pfcands);
@@ -4311,7 +4325,7 @@ namespace ic {
 
       lead_pt_2_ =  tau2->lead_pt();
 
-      tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
+      tau_mva_decay_mode_2_ = tau2->HasTauID(MVADM2017) ? tau2->GetTauID(MVADM2017) : 0.0;
 
 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
@@ -4693,7 +4707,7 @@ namespace ic {
       lead_pt_2_ =  tau2->lead_pt();
       raw_pt_1_ = ele1->ecalTrkEnergyPreCorr()/ele1->energy()*pt_1_.var_float;
 
-      tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
+      tau_mva_decay_mode_2_ = tau2->HasTauID(MVADM2017) ? tau2->GetTauID(MVADM2017) : 0.0;
 
       std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
