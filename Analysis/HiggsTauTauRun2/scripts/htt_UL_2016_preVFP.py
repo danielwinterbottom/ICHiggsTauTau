@@ -215,7 +215,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   DATAFILELIST="./filelists/Feb16_2016-preVFP_Data_106X"
 
   for sa in data_samples:
-      JOB='%s_2016' % (sa)
+      JOB='%s_2016_pre' % (sa)
       DATAFILELIST_ = DATAFILELIST
       user='guttley'
       prefix='Feb16_Data_106X_2016-preVFP'
@@ -261,9 +261,9 @@ if options.proc_bkg or options.proc_all:
 	'DY3JetsToLL_M-10to50-LO',
 	'DY4JetsToLL_M-10to50-LO',
 	 # Drell-Yan NLO
-	'DYJetsToLL_0J-NLO',
-	'DYJetsToLL_1J-NLO',
-	'DYJetsToLL_2J-NLO',
+#	'DYJetsToLL_0J-NLO',
+#	'DYJetsToLL_1J-NLO',
+#	'DYJetsToLL_2J-NLO',
 	 # Electroweak W and Z
 	'EWKWMinus2Jets_WToLNu',
 	'EWKWPlus2Jets_WToLNu',
@@ -275,9 +275,9 @@ if options.proc_bkg or options.proc_all:
 	'W3JetsToLNu-LO',
 	'W4JetsToLNu-LO',
 	 # W + Jets NLO
-	'WJetsToLNu_0J-NLO',
-	'WJetsToLNu_1J-NLO',
-	'WJetsToLNu_2J-NLO',
+#	'WJetsToLNu_0J-NLO',
+#	'WJetsToLNu_1J-NLO',
+#	'WJetsToLNu_2J-NLO',
 	 # ttbar
 	'TTTo2L2Nu',
 	'TTToHadronic',
@@ -314,7 +314,7 @@ if options.proc_bkg or options.proc_all:
   ] 
 
   for sa in central_samples:
-      JOB='%s_2016' % (sa)
+      JOB='%s_2016_pre' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
