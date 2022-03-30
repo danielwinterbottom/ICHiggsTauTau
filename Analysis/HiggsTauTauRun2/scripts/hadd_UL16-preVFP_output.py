@@ -13,7 +13,7 @@ parser.add_option("--folder", dest = "folder",
                   help="Specify folder that contains the output to be hadded")
 parser.add_option("--ignore_nfiles", dest= "ignore", default=False, action='store_true',
                   help="Ignore number of files per sample")
-parser.add_option("--sample_list", dest = "samplelist", default="./jobs/files_per_sample_2016.txt",
+parser.add_option("--sample_list", dest = "samplelist", default="./jobs/files_per_sample_2016_preVFP.txt",
                   help="list of files per sample you want to use for hadding")
 parser.add_option("--batch", dest= "batch", default=False, action='store_true',
                   help="Submit as batch jobs")
