@@ -67,11 +67,11 @@ sample_list = [
 	'MuonEGE',
 	'MuonEGF',
  	 # Double Muon
-	'DoubleMuonB',
-	'DoubleMuonC',
-	'DoubleMuonD',
-	'DoubleMuonE',
-	'DoubleMuonF',
+#	'DoubleMuonB',
+#	'DoubleMuonC',
+#	'DoubleMuonD',
+#	'DoubleMuonE',
+#	'DoubleMuonF',
  
        	 # MC
  	 # Drell-Yan LO
@@ -214,7 +214,7 @@ for sa in sample_list:
               else :
                 to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())
             else:
-              haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
+              haddout='haddout_%s_%s_%s_2016_pre.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())) 
               command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
           else :

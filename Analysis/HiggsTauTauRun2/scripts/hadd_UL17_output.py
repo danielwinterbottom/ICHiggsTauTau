@@ -65,11 +65,11 @@ sample_list = [
         'MuonEGE',
         'MuonEGF',
          # Double Muon
-        'DoubleMuonB',
-        'DoubleMuonC',
-        'DoubleMuonD',
-        'DoubleMuonE',
-        'DoubleMuonF',
+#        'DoubleMuonB',
+#        'DoubleMuonC',
+#        'DoubleMuonD',
+#        'DoubleMuonE',
+#        'DoubleMuonF',
 
          # MC
   	 # Drell-Yan LO
