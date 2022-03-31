@@ -137,7 +137,7 @@ print out
 #print sample_list
 
 #channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
-channel = ['et','em','mt','tt','zmm','tpzmm','tpzee']
+channel = ['et','em','mt','tt','zmm']
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
@@ -202,7 +202,7 @@ for sa in sample_list:
               else :
                 to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())
             else:
-              haddout='haddout_%s_%s_%s_2016_postVFP.txt' % (sa,ch,sdir)  
+              haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())) 
               command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
           else :
@@ -229,4 +229,3 @@ for sa in sample_list:
       if remove: file.write("\n%s" % rm_command)
       file.write('\nEnd of job')
     os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
-
