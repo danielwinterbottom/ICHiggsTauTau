@@ -481,7 +481,7 @@ if options.analysis in ['sm','cpprod','cpdecay']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>25&&pt_1<23)||(trg_singlemuon&&pt_1>23)))'
         if options.era in ['tauid2017']:
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && pt_1>25 && trg_singlemuon &&pt_2>20)'
-        if options.era in ['cpsummer17','cp18']:
+        if options.era in ['cpsummer17','cp18','UL18']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && ((trg_mutaucross&&pt_2>32&&pt_1<25)||(trg_singlemuon&&pt_1>25)) && wt<2)'
         if options.era in ['tauid2016']: 
           cats['baseline'] = '(iso_1<0.15 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon && pt_1>23)'
@@ -502,7 +502,7 @@ if options.analysis in ['sm','cpprod','cpdecay']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && trg_singleelectron && fabs(wt<2))'
         if options.era in ['cpsummer17']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && leptonveto==0 && ((trg_etaucross&&pt_2>35&&pt_1<28&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>28)))'
-        if options.era in ['cp18']:
+        if options.era in ['cp18', 'UL18']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && !leptonveto && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)))'
           #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1 && fabs(eta_1-eta_2)>0.2)||(trg_singleelectron&&pt_1>33)))&&wt<2'
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_medium_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && ((trg_etaucross&&pt_2>35&&pt_1<33&&fabs(eta_2)<2.1)||(trg_singleelectron&&pt_1>33)))&&wt<2'
@@ -522,7 +522,7 @@ elif options.analysis in ['mssmrun2','vlq']:
       t_highpt=180
       t_lowpt_mt=32
       t_lowpt_et=35
-    if options.era in ['cp18']:
+    if options.era in ['cp18','UL18']:
       m_lowpt=25
       e_lowpt=33
       t_highpt=180
@@ -568,7 +568,7 @@ if options.channel == 'tt':
         cats['baseline_aisotau2_sb'] = '(mva_olddm_vloose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_1>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && leptonveto==0 && trg_doubletau)'
     if options.era in ['cpdecay16','legacy16']:
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && trg_doubletau && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-    if options.era in ['cpsummer17','cp18']:
+    if options.era in ['cpsummer17','cp18','UL18']:
       cats['baseline'] = '(deepTauVsJets_medium_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 
     if options.analysis in ['mssmrun2','vlq']:
@@ -589,19 +589,19 @@ elif options.channel == 'em':
     elif options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']:
       cats['loose_baseline'] = '(wt<2 && iso_1<0.15 && iso_2<0.5 && !leptonveto &&trg_muonelectron)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron && pt_1>15 && pt_2>15)'
-    if options.era in ['cpsummer17','cp18']:
+    if options.era in ['cpsummer17','cp18','UL18']:
         cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto && trg_muonelectron && pt_1>15 && pt_2>15)'
         cats['loose_baseline'] = '(wt<2 && iso_1<0.15 && iso_2<0.5 && !leptonveto && trg_muonelectron)'
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
-    if options.era in ['cpsummer17','cp18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
+    if options.era in ['cpsummer17','cp18','UL18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron && fabs(wt)<2)'
 
     if options.era in ['cpsummer17']: cats['baseline'] = '(pt_1>28&&pt_2>13&&iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
-    if options.era in ['cp18']: 
+    if options.era in ['cp18','UL18']: 
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 
 if options.analysis == 'cpdecay':
@@ -750,7 +750,7 @@ if options.channel == 'tt': cats['vbf'] = '(n_jets>=2 && pt_tt>100 && jdeta>2.5)
 cats['boosted'] = '(!(%s) && !(%s))' % (cats['0jet'], cats['vbf'])
 if options.channel == 'em': cats['boosted'] = '(!(%s) && !(%s) && n_bjets==0)' % (cats['0jet'], cats['vbf'])
 
-if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] or options.analysis in ['cpprod']:
+if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','UL18','mvadm2016'] or options.analysis in ['cpprod']:
   cats['ttbar'] = 'n_jets>0'  
   if options.channel in ['mt','et']: 
       cats['0jet'] = '(n_jets==0 && n_bjets==0 &&n_loose_bjets<2)'
@@ -1483,7 +1483,7 @@ if options.era in ["smsummer16"]:
     top_sels['ttt_sel'] = '(gen_match_1==5 && gen_match_2==5)' 
     top_sels['ttj_sel'] = '(!(gen_match_1==5 && gen_match_2==5))'
 
-if options.era in ['cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016']:
+if options.era in ['cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','UL18','mvadm2016']:
   # define these selections to make them more compatible with the fake-factor method and embedded samples
   if options.channel =='em':
     z_sels['zll_sel'] = '(!(gen_match_2==4 && gen_match_1==3))'
@@ -1686,7 +1686,7 @@ if options.era in ['cpsummer17','tauid2017']:
     if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
     if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
 
-if options.era in ['cp18']:
+if options.era in ['cp18','UL18']:
 
     ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
     # ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10-50-LO']
@@ -1812,7 +1812,7 @@ if options.analysis in ['cpprod']:
 
 # 2018
 
-  if options.era == 'cp18':
+  if (options.era == 'cp18' or options.era == 'UL18'):
     sm_samples = {
          #'vbf_new' : 'VBFHToTauTau_M125_withDipoleRecoil',
          'ggh*_powheg' : 'GluGluHToTauTau_M-125',
@@ -1889,7 +1889,7 @@ if options.analysis in ['cpdecay']:
         "qqH_flat_htt*": "VBFHToTauTauUncorrelatedDecay_Filtered", 
     }
 
-  if options.era == 'cp18':
+  if (options.era == 'cp18' or options.era == 'UL18'):
     sm_samples = {
         # test CP in decay samples
         'ggH_ph_htt*' : 'GluGluHToTauTau_M-125',
@@ -1913,7 +1913,7 @@ if options.analysis in ['cpdecay']:
     }
 
 if options.analysis in ['mssmrun2','vlq']:
-  if options.era == 'cp18':
+  if (options.era == 'cp18' or options.era == 'UL18'):
     sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
                    'qqH125' : ['VBFHToTauTau_M-125-ext1','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
                    'qqH95' : 'VBFHToTauTau_M-95',
@@ -2153,7 +2153,7 @@ if options.syst_scale_j_regrouped != "":
     replaceYear = ""
     if options.era == "legacy16": replaceYear = "2016"
     elif options.era == "cpsummer17": replaceYear = "2017"
-    elif options.era == "cp18": replaceYear = "2018"
+    elif (options.era == "cp18" or options.era == 'UL18'): replaceYear = "2018"
     else: assert ValueError("Regrouped JES only works for full RunII analyses")
 
     if "*group" in hist_name:
@@ -2802,10 +2802,10 @@ else:
           qcd_os_ss_ratio = 1.0
           qcd_os_ss_ratio = 1.13 
           if options.cat == '0jet':
-            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016']: qcd_os_ss_ratio = 0.97
+            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','UL18','mvadm2016']: qcd_os_ss_ratio = 0.97
             else: qcd_os_ss_ratio = 1.0
           elif options.cat == 'boosted':
-            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016']: qcd_os_ss_ratio = 1.61
+            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','UL18','mvadm2016']: qcd_os_ss_ratio = 1.61
             else: qcd_os_ss_ratio = 1.28
           elif options.cat in ['vbf']: qcd_os_ss_ratio = 1.0
           elif options.cat in ['dijet','dijet_lowboost','dijet_boosted',
@@ -2817,10 +2817,10 @@ else:
           #qcd_os_ss_ratio = 1.07
           qcd_os_ss_ratio = 1.12
           if options.cat == '0jet':
-            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016']: qcd_os_ss_ratio = 1.15
+            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','UL18','mvadm2016']: qcd_os_ss_ratio = 1.15
             else: qcd_os_ss_ratio = 1.07
           elif options.cat == 'boosted':
-            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016']: qcd_os_ss_ratio = 1.18
+            if options.era in ['cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','UL18','mvadm2016']: qcd_os_ss_ratio = 1.18
             else: qcd_os_ss_ratio = 1.06
           elif options.cat in ['vbf']: qcd_os_ss_ratio = 1.0
           elif options.cat in ['dijet','dijet_lowboost','dijet_boosted',
@@ -2905,7 +2905,7 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
       #for em channel there are non-closures wrt data and MC which are corrected here with these additional correction factors
       if options.era in ['cpsummer16','cpdecay16',"legacy16",'mvadm2016']: wt_+='*1.106'
       if options.era in ['cpsummer17']: wt_+='*1.080'
-      if options.era in ['cp18']: wt_+='*1.101'
+      if options.era in ['cp18','UL18']: wt_+='*1.101'
     full_selection = BuildCutString(wt_+'*(wt<2)', sel, cat, OSSS, z_sels['ztt_sel'])
     return ana.SummedFactory('EmbedZTT'+add_name, samples, plot, full_selection)
 
@@ -3287,7 +3287,7 @@ def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method
   else:
     ztt_node = GetZTTNode(ana, "", ztt_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ztt_node)
-  if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','tauid2017','cpsummer17','cp18','mvadm2016'] and options.method!=0: 
+  if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','tauid2017','cpsummer17','cp18','UL18','mvadm2016'] and options.method!=0: 
     ewkz_node = GetEWKZNode(ana, "", ewkz_samples, plot, wt, sel, cat, z_sels, OSSS)
     subtract_node.AddNode(ewkz_node)
   if options.channel not in ["em"]:
@@ -3436,18 +3436,18 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
     # Select data from anti-isolated region
     if options.channel != "tt":
         if options.channel == 'mt':
-            if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18']:
+            if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18','UL18']:
               anti_isolated_sel = cats['baseline'].replace('deepTauVsJets_%(wp)s_2>0.5' % vars(),'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5' % vars())
             else: 
               anti_isolated_sel = '(iso_1<0.15 && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singlemuon)'
         elif options.channel == 'et': 
-            if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","cpsummer17","mvadm2016","cp18"]:
+            if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","cpsummer17","mvadm2016","cp18",'UL18']:
               anti_isolated_sel = cats['baseline'].replace('deepTauVsJets_%(wp)s_2>0.5' % vars(),'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5' % vars())
             else: 
               anti_isolated_sel = '(iso_1<0.1  && mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5 && antiele_2 && antimu_2 && !leptonveto && trg_singleelectron)'
         ff_cat = cats[cat_name] +" && "+ anti_isolated_sel
         ff_cat_data = cats_unmodified[cat_name] +" && "+ anti_isolated_sel
-        if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18']:
+        if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'cpsummer17','mvadm2016','cp18','UL18']:
           if ff_syst_weight is not None and 'sub_syst' not in add_name: fake_factor_wt_string = '('+ff_syst_weight+'_1)'
           else:
             if options.analysis in ['cpprod']: 
@@ -3503,7 +3503,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
         if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","mvadm2016"]:
           anti_isolated_sel_1 = cats['baseline'].replace('mva_olddm_tight_1>0.5','mva_olddm_tight_1<0.5 && mva_olddm_vloose_1>0.5')
           anti_isolated_sel_2 = cats['baseline'].replace('mva_olddm_tight_2>0.5','mva_olddm_tight_2<0.5 && mva_olddm_vloose_2>0.5')
-        if options.era in ["cpsummer17","cp18",'cpdecay16','legacy16']: # need to do also for MVA cats for 2016!
+        if options.era in ["cpsummer17","cp18",'UL18','cpdecay16','legacy16']: # need to do also for MVA cats for 2016!
           anti_isolated_sel_2 = cats['baseline'].replace('deepTauVsJets_%(wp)s_2>0.5' % vars(),'deepTauVsJets_%(wp)s_2<0.5 && deepTauVsJets_vvvloose_2>0.5' % vars())
           anti_isolated_sel_1 = cats['baseline'].replace('deepTauVsJets_%(wp)s_1>0.5' % vars(),'deepTauVsJets_%(wp)s_1<0.5 && deepTauVsJets_vvvloose_1>0.5' % vars())
         ff_cat_1 = cats[cat_name] +" && "+ anti_isolated_sel_1
@@ -3518,7 +3518,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             if options.analysis in ['cpprod'] and 'ff_tt_qcd_syst' in add_name:
               flat = 1.04
               if options.era=='cpsummer17': flat=1.07
-              if options.era=='cp18': flat=1.06
+              if (options.era=='cp18'or options.era == 'UL18'): flat=1.06
 
               if 'njets0' in add_name:
                 if 'Up' in add_name:
@@ -3535,7 +3535,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
 
 
             if options.analysis in ['cpdecay'] and 'ff_tt_qcd_syst' in add_name:
-              if options.era=='cp18':
+              if(options.era=='cp18' or options.era == 'UL18'):
                 if 'njets0' in add_name:
                   if 'Up' in add_name:
                     ff_syst_weight = '((n_jets==0)*(1.24845-0.0578994*dR)/1.06 + (n_jets>0))*wt_ff_1'
@@ -3590,7 +3590,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             if options.analysis in ['cpprod','cpdecay','mssmrun2','vlq']:
               fake_factor_wt_string_2='0'
         else:
-          if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","cpsummer17","mvadm2016","cp18"]:
+          if options.era in ["smsummer16","cpsummer16","cpdecay16","legacy16","cpsummer17","mvadm2016","cp18",'UL18']:
             # deep tau tight 2018 anti isolating the subleading tau
             if options.analysis == 'cpprod':
               fake_factor_wt_string_2='0'
@@ -3622,7 +3622,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
             wt_2=fake_factor_wt_string_2
         
         if options.analysis == 'cpdecay' and get_os:
-          if options.era=='cp18':
+          if (options.era=='cp18' or options.era == 'UL18'):
             fake_factor_wt_string_1+='*wt_ff_qcd_syst_down_1/wt_ff_1*((n_jets==0)*(1.24845-0.0578994*dR) + (n_jets>0)*(1.15364-0.0317013*dR))'  
           if options.era=='cpsummer17':
             fake_factor_wt_string_1+='*wt_ff_qcd_syst_down_1/wt_ff_1*((n_jets==0)*(1.40415-0.101317*dR) + (n_jets>0)*(1.16253-0.031154*dR))'
@@ -4846,9 +4846,9 @@ while len(systematics) > 0:
       ana.remaps['MuonEG'] = 'data_obs'
   elif options.channel in ['mt','mj','zmm']:
       ana.remaps['SingleMuon'] = 'data_obs'
-  elif options.era != 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
+  elif (options.era != 'cp18' or options.era != 'UL18') and (options.channel == 'et' or options.channel == 'zee'):
       ana.remaps['SingleElectron'] = 'data_obs'
-  elif options.era == 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
+  elif (options.era == 'cp18' or options.era == 'UL18') and (options.channel == 'et' or options.channel == 'zee'):
       ana.remaps['EGamma'] = 'data_obs'
   elif options.channel == 'tt':
       ana.remaps['Tau'] = 'data_obs'  
@@ -5493,7 +5493,7 @@ for add_name in add_names:
         NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
-if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm' and options.analysis != "mssmrun2":
+if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','UL18','mvadm2016'] and options.channel != 'zmm' and options.analysis != "mssmrun2":
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
   hists_to_add = []
