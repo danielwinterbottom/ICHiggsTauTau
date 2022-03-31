@@ -1568,26 +1568,58 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
     # Add data sample names
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
-	if options.era in ["legacy16",'UL_16_preVFP','UL_16_postVFP']: 
+	if options.era in ["legacy16"]: 
           data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
           if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH'] 
+	if options.era in ['UL_16_preVFP']:
+	  data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+	  if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF'] 
+	if options.era in ['UL_16_postVFP']:
+          data_samples = ['SingleMuonG','SingleMuonH']
+	  if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauG','TauH']  
+
     if options.channel == 'em':
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
-        if options.era in ["legacy16",'UL_16_preVFP','UL_16_postVFP']: data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
+        if options.era in ["legacy16"]: data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
+	if options.era in ["UL_16_preVFP"]: data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
+	if options.era in ["UL_16_postVFP"]: data_samples = ['MuonEGG','MuonEGH']
+   
     if options.channel == 'et' or options.channel == 'zee':
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
-        if options.era in ["legacy16",'UL_16_preVFP','UL_16_postVFP']: 
+        if options.era in ["legacy16"]: 
           data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
           if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
+        if options.era in ["UL_16_preVFP"]: 
+          data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+          if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+        if options.era in ["UL_16_postVFP"]: 
+          data_samples = ['SingleElectronG','SingleElectronH']
+          if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauG','TauH']
+
+
     if options.channel == 'tt':
         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauHv2','TauHv3']
-        if options.era in ["legacy16",'UL_16_preVFP','UL_16_postVFP']: data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
+        if options.era in ["legacy16"]: data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
+	if options.era in ['UL_16_preVFP']: data_samples = ['TauB','TauC','TauD','TauE','TauF']
+	if options.era in ['UL_16_postVFP']: data_samples = ['TauG','TauH']
+
 
     # Add MC sample names   
-    ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-    #ztt_samples = ['DYJetsToLL'] # NL0 filelists 
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-    wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3']
+    if options.era in ["legacy16"]: 
+	ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+        vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+	wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3']
+
+    if options.era in ["UL_16_preVFP"]:
+	ztt_samples = ['DYJetsToLL','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DYJetsToLL_M-10to50-LO','DY2JetsToLL_M-10to50-LO','DY3JetsToLL_M-10to50-LO','DY4JetsToLL_M-10to50-LO']
+	vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
+	wgam_samples = ['WGToLNuG']
+
+    if options.era in ["UL_16_postVFP"]:
+        ztt_samples = ['DYJetsToLL','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DYJetsToLL_M-10to50-LO','DY2JetsToLL_M-10to50-LO','DY3JetsToLL_M-10to50-LO','DY4JetsToLL_M-10to50-LO']
+        vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
+        wgam_samples = ['WGToLNuG']
+
     if options.analysis in ['mssmrun2','vlq']: top_samples = ['TT']
     else: top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     ztt_shape_samples = ['DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
