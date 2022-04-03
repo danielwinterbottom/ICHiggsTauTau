@@ -41,24 +41,27 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
 
 
 sample_list = [
-	 # Data
-	 # Single Muon
-	'SingleMuonG',
-	'SingleMuonH',
-	 # Single Electron
-	'SingleElectronG',
-	'SingleElectronH',
-	 # Tau
-	'TauG',
-	'TauH',
-	 # MuonEG
-	'MuonEGG',
-	'MuonEGH',
- 	 # Double Muon
-#	'DoubleMuonG',
-#	'DoubleMuonH',
- 
-       	 # MC
+          # Data
+          # Single Muon
+         'SingleMuonG',
+         'SingleMuonH',
+          # Single Electron
+         'SingleElectronG',
+         'SingleElectronH',
+          # Tau
+         'TauG',
+         'TauH',
+          # MuonEG
+         'MuonEGG',
+         'MuonEGH',
+	  # EGamma
+	 'EGammaG',
+	 'EGammaH',
+          # Double Muon
+#         'DoubleMuonG',
+#         'DoubleMuonH',
+
+	  # MC
   	 # Drell-Yan LO
 	'DY1JetsToLL-LO',
         'DY2JetsToLL-LO',
@@ -109,8 +112,8 @@ sample_list = [
 	'WWZ-ext1',
 	'WZZ',
 	'WZZ-ext1',
-        'WWW',
-        'WWW-ext1',
+	'WWW',
+	'WWW-ext1',
 	'ZZZ',
 	'ZZZ-ext1',
 	 # Other backgrounds
@@ -126,7 +129,8 @@ sample_list = [
 	'WplusHToTauTau_M125',
 	'ZHToTauTau_M125',
 	'ttHToTauTau_M125',
-    ]
+
+	]
 
 sample_list = list(set(sample_list))
 

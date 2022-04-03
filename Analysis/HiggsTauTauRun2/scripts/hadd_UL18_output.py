@@ -62,6 +62,11 @@ sample_list = [
          'MuonEGB',
          'MuonEGC',
          'MuonEGD',
+	  # EGamma
+	 'EGammaA',
+	 'EGammaB',
+	 'EGammaC',
+	 'EGammaD',
           # Double Muon
 #         'DoubleMuonA',
 #         'DoubleMuonB',
