@@ -1466,7 +1466,7 @@ if options.era in ['cp18']:
 
 
 if options.era in ['UL_18']:
-    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DY1JetsToLL_M-10to50-LO','DY2JetsToLL_M-10to50-LO','DY3JetsToLL_M-10to50-LO','DY4JetsToLL_M-10to50-LO']
+    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WWTo1L1Nu2Q','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','Tbar-t','Tbar-tW','T-t','T-tW']
     # if options.analysis in ['mssmrun2','vlq']:
