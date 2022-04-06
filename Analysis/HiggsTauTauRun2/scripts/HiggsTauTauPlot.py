@@ -403,7 +403,7 @@ print 'year              = ' + options.year
 print 'era               = ' + options.era
 print 'sel               = ' + options.sel
 print 'analysis          = ' + options.analysis
-print 'var               = ' + options.var
+print 'var            wt_wsoup   = ' + options.var
 print 'method            ='  ,  options.method
 print 'do_ss             ='  ,  options.do_ss
 print 'sm_masses         = ' +  options.sm_masses
@@ -592,7 +592,7 @@ elif options.channel == 'em':
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
-    if options.era in ['cpsummer17','UL_17','cp18','UL_18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
+    if options.era in ['cpsummwt_wsouper17','UL_17','cp18','UL_18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron && fabs(wt)<2)'
@@ -1473,7 +1473,7 @@ if options.era in ['UL_18']:
         # vv_samples = [
               # 'T-tW', 'Tbar-tW','Tbar-t','T-t',
               # 'WZTo3LNu','ZZTo4L']
-    wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+    wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets_ZToLL']
     gghww_samples = ['']
@@ -4882,7 +4882,7 @@ while len(systematics) > 0:
           ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
       
       # Add all MC background files
-      for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples:
+      for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples:
           ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
           #ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), sample_name) # this fixes issues if a sample is not included in systematic sub directory (e.g because systematics doesn't affect it) but at the same time can make it easier to miss issues like a sample missing that should be there 
  
