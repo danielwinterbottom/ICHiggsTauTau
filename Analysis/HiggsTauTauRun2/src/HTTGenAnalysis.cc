@@ -626,7 +626,8 @@ namespace ic {
              outparts.push_back(lhe_parts[i]);
              partons_++;
              parton_pt_vec.push_back(lhe_parts[i]->pt());
-             if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
+	     partons_lhe_++;
+            // if(lhe_parts[i]->pt()>=10) partons_lhe_++; 
         }
       }
     lead_b_pt_ = largest_b_pt;
