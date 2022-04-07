@@ -299,40 +299,40 @@ if options.proc_bkg or options.proc_all:
 	#'WJetsToLNu_1J-NLO',
 	#'WJetsToLNu_2J-NLO',
 	 # ttbar
- #	'TTTo2L2Nu',
- # 	'TTToHadronic',
- #	'TTToSemiLeptonic',
- #	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
- #	'WZTo3LNu',
- #	'WWTo2L2Nu',
- #	'ZZTo2L2Nu',
- #	'ZZTo4L',
- # 	 # Inclusive
- # 	'WW',
- # 	'WZ',
- #	'ZZ',
- #	 # Triboson
- #	'WWZ',
- #	'WWZ-ext1',
- #	'WZZ',
- #	'WZZ-ext1',
- #	'WWW',
- #	'WWW-ext1',
- #	'ZZZ',
- #	'ZZZ-ext1',
- #	 # Other backgrounds
- # 	'WGToLNuG',
- #	'Tbar-t',
- #	'Tbar-tW',
- #	'T-t',
- #	'T-tW',
- #	 # SM Higgs
- #	'GluGluHToTauTau_M125',
- #	'VBFHToTauTau_M125',
- #	'WminusHToTauTau_M125',
- #	'WplusHToTauTau_M125',
- #	'ZHToTauTau_M125',
- #	'ttHToTauTau_M125',    
+ 	'TTTo2L2Nu',
+  	'TTToHadronic',
+ 	'TTToSemiLeptonic',
+ 	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
+ 	'WZTo3LNu',
+ 	'WWTo2L2Nu',
+ 	'ZZTo2L2Nu',
+ 	'ZZTo4L',
+  	 # Inclusive
+  	'WW',
+  	'WZ',
+ 	'ZZ',
+ 	 # Triboson
+ 	'WWZ',
+ 	'WWZ-ext1',
+ 	'WZZ',
+ 	'WZZ-ext1',
+ 	'WWW',
+ 	'WWW-ext1',
+ 	'ZZZ',
+ 	'ZZZ-ext1',
+ 	 # Other backgrounds
+  	'WGToLNuG',
+ 	'Tbar-t',
+ 	'Tbar-tW',
+ 	'T-t',
+ 	'T-tW',
+ 	 # SM Higgs
+ 	'GluGluHToTauTau_M125',
+ 	'VBFHToTauTau_M125',
+ 	'WminusHToTauTau_M125',
+ 	'WplusHToTauTau_M125',
+ 	'ZHToTauTau_M125',
+ 	'ttHToTauTau_M125',    
   	]
   for sa in central_samples:
       JOB='%s_2017' % (sa)
