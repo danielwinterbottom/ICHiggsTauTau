@@ -824,6 +824,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+    httStitching.set_do_dy_soup(true);
     if(era_type == era::data_2016) {
       httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
       httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
