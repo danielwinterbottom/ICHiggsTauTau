@@ -403,7 +403,7 @@ print 'year              = ' + options.year
 print 'era               = ' + options.era
 print 'sel               = ' + options.sel
 print 'analysis          = ' + options.analysis
-print 'var            wt_wsoup   = ' + options.var
+print 'var               = ' + options.var
 print 'method            ='  ,  options.method
 print 'do_ss             ='  ,  options.do_ss
 print 'sm_masses         = ' +  options.sm_masses
@@ -1393,7 +1393,7 @@ if options.era in ['cpsummer17','tauid2017']:
 
 if options.era in ['UL_17']:
 
-    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DY1JetsToLL_M-10to50-LO','DY2JetsToLL_M-10to50-LO','DY3JetsToLL_M-10to50-LO','DY4JetsToLL_M-10to50-LO']
+    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']
     # Question: Is this need for UL_17?
     #if options.channel == "tt": # remove 'DYJetsToLL_M-10-50-LO (zero entries)
         #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1']
@@ -1402,7 +1402,7 @@ if options.era in ['UL_17']:
     # if options.analysis in ['mssmrun2','vlq']:
       # vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo2L2Q','WZTo3LNu', 'ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','VVTo2L2Nu']
     
-    wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+    wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets_ZToLL']
     gghww_samples = ['']
@@ -1466,14 +1466,15 @@ if options.era in ['cp18']:
 
 
 if options.era in ['UL_18']:
-    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']
+    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+    #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WWTo1L1Nu2Q','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','Tbar-t','Tbar-tW','T-t','T-tW']
     # if options.analysis in ['mssmrun2','vlq']:
         # vv_samples = [
               # 'T-tW', 'Tbar-tW','Tbar-t','T-t',
               # 'WZTo3LNu','ZZTo4L']
-    wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+    wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets_ZToLL']
     gghww_samples = ['']
