@@ -686,6 +686,7 @@ class Analysis(object):
             if sample in self.info:
                 myfactors.append(self.info[sample]['sf'])
             else:
+                print "ERROR: %(sample)s not found in parameter file, so left unscaled." % vars()
                 myfactors.append(1.0)
         if add_name is not None: 
             name+=add_name
