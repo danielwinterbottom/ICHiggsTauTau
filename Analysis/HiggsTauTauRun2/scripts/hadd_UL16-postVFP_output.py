@@ -189,9 +189,11 @@ for sa in sample_list:
       sdir = jsdir[0]
       infiles=jsdir[1]
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_0.root'%vars()):
+#	print(nfiles)
         if "%(sa)s_2016"%vars() in nfiles or ignore==True:
+#	  print("%(sa)s_2016"%vars())
 #          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*.root'%vars())
-          no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles) 
+          no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles)  
           if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2016_%(ch)s_*'%vars())) == nfiles["%(sa)s_2016"%vars()]):
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()

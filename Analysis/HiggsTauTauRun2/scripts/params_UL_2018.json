@@ -19,9 +19,9 @@
     "xs": 6077.22,
     "evt": 97808057
   },
-  "DYJetsToLL_M-10-50-LO": {
+  "DYJetsToLL_M-10to50-LO": {
     "xs": 18610.0,
-    "evt": 97808057
+    "evt": 99515235
   },
   "EWKWMinus2Jets_WToLNu": {
     "xs": 20.25,
