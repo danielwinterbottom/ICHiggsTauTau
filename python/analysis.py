@@ -674,6 +674,7 @@ class Analysis(object):
                     #print name, data
                     data['sf'] = lumi / (float(data['evt']) / float(data['xs']))
                 else:
+                    if "data_obs" != name: print "ERROR: %(name)s not found in parameter file, so left unscaled." % vars()
                     data['sf'] = 1.0
                 if 'eff' in data: data['sf'] *= float(data['eff'])
         #pprint.pprint(self.info)
@@ -686,7 +687,6 @@ class Analysis(object):
             if sample in self.info:
                 myfactors.append(self.info[sample]['sf'])
             else:
-                print "ERROR: %(sample)s not found in parameter file, so left unscaled." % vars()
                 myfactors.append(1.0)
         if add_name is not None: 
             name+=add_name
