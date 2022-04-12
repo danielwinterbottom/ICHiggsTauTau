@@ -1237,14 +1237,15 @@ if options.channel == 'tt':
     data_samples = ['TauB','TauC','TauD']
     
 # Add MC sample names   
-ztt_samples = ['DYJetsToLL-LO-ext','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','ZZTo2L2Q','ZZTo4L','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
-wgam_samples = ['WGToLNuG','WGstarToLNuEE','WGstarToLNuMuMu']
-top_samples = ['TT']
-wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+ztt_samples = []
+vv_samples = []
+wgam_samples = []
+top_samples = []
+wjets_samples = []
 ewkz_samples = []
 gghww_samples = []
 qqhww_samples = []
+top_samples = []
 # ------------------------------------------------------------ 
 
 if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','tauid2016','mvadm2016']:
@@ -1256,10 +1257,10 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
             if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
         if options.era in ['UL_16_preVFP']:
             data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-            #if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF']
         if options.era in ['UL_16_postVFP']:
             data_samples = ['SingleMuonG','SingleMuonH']
-            #if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauG','TauH']
+            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauG','TauH']
             
     if options.channel == 'em':
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
@@ -1274,10 +1275,10 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
             if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
         if options.era in ["UL_16_preVFP"]: 
             data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-            #if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
         if options.era in ["UL_16_postVFP"]: 
             data_samples = ['SingleElectronG','SingleElectronH']
-            #if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauG','TauH']
+            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauG','TauH']
             
     if options.channel == 'tt':
         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauHv2','TauHv3']
@@ -1285,6 +1286,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         if options.era in ['UL_16_preVFP']: data_samples = ['TauB','TauC','TauD','TauE','TauF']
         if options.era in ['UL_16_postVFP']: data_samples = ['TauG','TauH']
 
+    # MC Samples
     if options.era in ["legacy16"]: 
         ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
         vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
@@ -1297,26 +1299,37 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         if options.channel == 'zmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
         if options.channel == 'zee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
 
+    if not options.era in ["UL_16_preVFP", "UL_16_postVFP"]:
+	if options.analysis in ['mssmrun2','vlq']: 
+		top_samples = ['TT']
+	else:
+		top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+
+
     if options.era in ["UL_16_preVFP"]:
-        ztt_samples = ['DYJetsToLL','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DYJetsToLL_M-10to50-LO','DY2JetsToLL_M-10to50-LO','DY3JetsToLL_M-10to50-LO','DY4JetsToLL_M-10to50-LO']
+        ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
         vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
         wgam_samples = ['WGToLNuG']
-        wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
+        wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+        gghww_samples = []
+        qqhww_samples = []
+	ewkz_samples = ['EWKZ2Jets_ZToLL']
+	top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
 
     if options.era in ["UL_16_postVFP"]:
-        ztt_samples = ['DYJetsToLL','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DYJetsToLL_M-10to50-LO','DY2JetsToLL_M-10to50-LO','DY3JetsToLL_M-10to50-LO','DY4JetsToLL_M-10to50-LO']
+        ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
         vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
         wgam_samples = ['WGToLNuG']
-        wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO']
-
-    if options.analysis in ['mssmrun2','vlq']: top_samples = ['TT']
-    else: top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    
+        wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+        gghww_samples = []
+        qqhww_samples = []
+	ewkz_samples = ['EWKZ2Jets_ZToLL']
+	top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     
 # ------------------------------------------------------------------------
 # Seems Redundant but ok I will ask    
     
-if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','tauid2016','mvadm2016']:
+if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'tauid2016','mvadm2016']:
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
     wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2', 'EWKWMinus2Jets_WToLNu','EWKWMinus2Jets_WToLNu-ext1','EWKWMinus2Jets_WToLNu-ext2','EWKWPlus2Jets_WToLNu','EWKWPlus2Jets_WToLNu-ext1','EWKWPlus2Jets_WToLNu-ext2']
     ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext']
@@ -1328,25 +1341,6 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVF
         ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
         wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3','WGstarToLNuEE','WGstarToLNuMuMu']
     
-
-    if options.era == "UL_16_preVFP":
-        vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
-        wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
-        ewkz_samples = ['EWKZ2Jets_ZToLL']
-        wgam_samples = ['WGToLNuG']
-        gghww_samples = ['']
-        qqhww_samples = ['']
-     
-    if options.era == "UL_16_postVFP":
-        vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
-        wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
-        ewkz_samples = ['EWKZ2Jets_ZToLL']
-        wgam_samples = ['WGToLNuG']
-        gghww_samples = ['']
-        qqhww_samples = ['']
-
-
-
 # ------------------------------------------------------------------------
 # 2017
  

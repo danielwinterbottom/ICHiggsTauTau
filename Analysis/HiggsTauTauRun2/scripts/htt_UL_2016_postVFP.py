@@ -249,17 +249,17 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 if options.proc_bkg or options.proc_all:
   central_samples = [
   	 # Drell-Yan LO
-	'DY1JetsToLL-LO',
-        'DY2JetsToLL-LO',
-        'DY3JetsToLL-LO',
-        'DY4JetsToLL-LO',
-        'DYJetsToLL-LO',
+	#'DY1JetsToLL-LO',
+        #'DY2JetsToLL-LO',
+        #'DY3JetsToLL-LO',
+        #'DY4JetsToLL-LO',
+        #'DYJetsToLL-LO',
 	 # Low mass Drell Yan LO
-        'DYJetsToLL_M-10to50-LO',
-	'DY1JetsToLL_M-10to50-LO',
-	'DY2JetsToLL_M-10to50-LO',
-	'DY3JetsToLL_M-10to50-LO',
-	'DY4JetsToLL_M-10to50-LO',
+        #'DYJetsToLL_M-10to50-LO',
+	#'DY1JetsToLL_M-10to50-LO',
+	#'DY2JetsToLL_M-10to50-LO',
+	#'DY3JetsToLL_M-10to50-LO',
+	#'DY4JetsToLL_M-10to50-LO',
 	 # Drell-Yan NLO
 #	'DYJetsToLL_0J-NLO',
 #	'DYJetsToLL_1J-NLO',
@@ -269,11 +269,11 @@ if options.proc_bkg or options.proc_all:
 	#'EWKWPlus2Jets_WToLNu',
 	#'EWKZ2Jets_ZToLL',
 	 # W + Jets L0
-	'WJetsToLNu-LO',
-	'W1JetsToLNu-LO',
-	'W2JetsToLNu-LO',
+	#'WJetsToLNu-LO',
+	#'W1JetsToLNu-LO',
+	#'W2JetsToLNu-LO',
 	'W3JetsToLNu-LO',
-	'W4JetsToLNu-LO',
+	#'W4JetsToLNu-LO',
 	 # W + Jets NLO
 #	'WJetsToLNu_0J-NLO',
 #	'WJetsToLNu_1J-NLO',
