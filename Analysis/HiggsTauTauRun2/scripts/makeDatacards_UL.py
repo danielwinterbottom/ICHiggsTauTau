@@ -23,11 +23,13 @@ import sys
 from optparse import OptionParser
 import os
 
-CHANNELS = ['et','mt','tt']
-config_files = {#'2016':'scripts/plot_mssm_2016.cfg',
+CHANNELS = ['et','mt','tt','zmm','zee']
+config_files = {'2016_preVFP':'scripts/plot_UL_2016_preVFP.cfg',
+		'2016_postVFP':'scripts/plot_UL_2016_postVFP.cfg',
                 '2017':'scripts/plot_UL_2017.cfg',
                 '2018':'scripts/plot_UL_2018.cfg'}
-param_files = {#'2016':'scripts/params_mssm_2016.json',
+param_files = {'2016_preVFP':'scripts/params_UL_2016_preVFP.json',
+	       '2016_postVFP':'scripts/params_UL_2016_postVFP.json',
                '2017':'scripts/params_UL_2017.json',
                '2018':'scripts/params_UL_2018.json'}
 
@@ -67,7 +69,7 @@ parser.add_option("-c", "--channels", dest="channels", type='string', action='ca
                   help="A comma separated list of channels to process.  Supported channels: %(CHANNELS)s" % vars())
 parser.add_option("--batch", dest="batch", action='store_true', default=False,
                   help="Submit on batch.")
-parser.add_option("--years", dest="years", type='string', default='2016,2017,2018',
+parser.add_option("--years", dest="years", type='string', default='2016_preVFP,2016_postVFP,2017,2018',
                   help="Year input")
 parser.add_option("--file_name", dest = "file_name",type = 'string', help = "Name of file")
 
@@ -98,9 +100,15 @@ categories_mt = ["inclusive"]
 
 categories_tt = ["inclusive"]
 
+categories_zmm = ["inclusive"]
+
+categories_zee = ["inclusive"]
+
 cat_schemes = {'et' : categories_et,
                'mt' : categories_mt,
-               'tt' : categories_tt}
+               'tt' : categories_tt,
+	       'zmm': categories_zmm,
+	       'zee': categories_zee}
 for year in years:
 
   if not os.path.isdir('%(output_folder)s/%(year)s' % vars()):
@@ -142,7 +150,7 @@ for year in years:
             var_used = item[0]
             bin_used = item[1]
 
-            run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --sel=\'mt_1<50\' --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --set_alias=\'inclusive:(n_deepbjets==0)\'  --extra_name=%(filename)s  --var="%(var_used)s%(bin_used)s"  %(add_cond)s' % vars()
+            run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --sel=\'mt_1<50\' --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg=''  --var="%(var_used)s%(bin_used)s"  %(add_cond)s' % vars()
 
 
             commands = [run_cmd]

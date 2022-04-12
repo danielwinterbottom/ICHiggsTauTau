@@ -23,7 +23,7 @@ import sys
 from optparse import OptionParser
 import os
 
-CHANNELS = ['et','mt','tt']
+CHANNELS = ['et','mt','tt','zmm','zee']
 config_files = {'2016':'scripts/plot_mssm_2016.cfg',
                 '2017':'scripts/plot_mssm_2017.cfg',
                 '2018':'scripts/plot_mssm_2018.cfg'}
@@ -90,15 +90,23 @@ if not os.path.isdir('%(output_folder)s' % vars()):
 if not os.path.isdir('%(output_folder)s/jobs' % vars()):
   os.system("mkdir %(output_folder)s/jobs" % vars())
 
-categories_et = ["MTLt70"]
+#categories_et = ["MTLt70"]
+categories_et = ["inclusive"]
 
-categories_mt = ["MTLt70"]
+#categories_mt = ["MTLt70"]
+categories_mt = ["inclusive"]
 
 categories_tt = ["inclusive"]
 
+categories_zmm = ["inclusive"]
+
+categories_zee = ["inclusive"]
+
 cat_schemes = {'et' : categories_et,
                'mt' : categories_mt,
-               'tt' : categories_tt}
+               'tt' : categories_tt,
+	       'zmm': categories_zmm,
+	       'zee': categories_zee}
 for year in years:
 
   if not os.path.isdir('%(output_folder)s/%(year)s' % vars()):
@@ -113,14 +121,14 @@ for year in years:
   BINSlt400 = '[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400]'
   BINSlt500 = '[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,340,380,420,460,500]'
 
-  var = [['mt_tot', BINS],
-         ['m_vis', BINS],
-         ['met',BINSlt200],
-         ['mt_1',BINSlt400],
-         ['mt_2',BINSlt200],
-         ['pt_1',BINSlt400],
-         ['pt_2',BINSlt200],
-         ['pt_tt',BINSlt500]]
+  var = [['mt_tot', BINS]]
+        # ['m_vis', BINS],
+        # ['met',BINSlt200],
+        # ['mt_1',BINSlt400],
+        # ['mt_2',BINSlt200],
+        # ['pt_1',BINSlt400],
+        # ['pt_2',BINSlt200],
+        # ['pt_tt',BINSlt500]]
 
 
   for ch in channels:
@@ -129,7 +137,7 @@ for year in years:
       os.system("mkdir %(output_folder)s/%(year)s/%(ch)s" % vars())
 
     add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
-    method='17'
+    method='8'
 
     categories = cat_schemes[ch]
     for cat in categories:
@@ -138,7 +146,7 @@ for year in years:
             var_used = item[0]
             bin_used = item[1]
 
-            run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --embed_folder='' --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --folder=%(input_folder)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var="%(var_used)s%(bin_used)s" --embedding  %(add_cond)s' % vars()
+            run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --sel=\'mt_1<50\' --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var="%(var_used)s%(bin_used)s"  %(add_cond)s' % vars()
 
 
             commands = [run_cmd]
