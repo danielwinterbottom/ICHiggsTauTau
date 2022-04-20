@@ -4809,7 +4809,7 @@ while len(systematics) > 0:
       ana.remaps['MuonEG'] = 'data_obs'
   elif options.channel in ['mt','mj','zmm']:
       ana.remaps['SingleMuon'] = 'data_obs'
-  elif (options.era != 'cp18' or options.era != 'UL_18') and (options.channel == 'et' or options.channel == 'zee'):
+  elif (options.era != 'cp18' and options.era != 'UL_18') and (options.channel == 'et' or options.channel == 'zee'):
       ana.remaps['SingleElectron'] = 'data_obs'
   elif (options.era == 'cp18' or options.era == 'UL_18') and (options.channel == 'et' or options.channel == 'zee'):
       ana.remaps['EGamma'] = 'data_obs'
@@ -4817,7 +4817,7 @@ while len(systematics) > 0:
       ana.remaps['Tau'] = 'data_obs'  
       
   ana.nodes.AddNode(ListNode(nodename))
-
+  print ana.remaps
 
   prev_dir=None    
   for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
