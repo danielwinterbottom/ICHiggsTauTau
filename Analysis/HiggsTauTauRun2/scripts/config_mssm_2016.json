@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
     //"channels":      ["mt","et","tt","em"],
-    "channels":      ["mt","em"],
+    "channels":      ["tt","et","mt","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -59,7 +59,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/mssm_2016_muscale0p15/",
+    "output_folder" : "/vols/cms/ks1021/output/MSSM/2016",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2016_tres1_v2_svfit/",
