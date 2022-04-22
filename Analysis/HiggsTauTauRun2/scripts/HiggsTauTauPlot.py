@@ -597,7 +597,12 @@ elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron && fabs(wt)<2)'
 
+    #if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(1)'
+
     if options.era in ['cpsummer17','UL_17']: cats['baseline'] = '(pt_1>28&&pt_2>13&&iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
+
+    #if options.era in ['cpsummer17','UL_17']: cats['baseline'] = '(1)'
+
     if options.era in ['cp18','UL_18']: 
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 

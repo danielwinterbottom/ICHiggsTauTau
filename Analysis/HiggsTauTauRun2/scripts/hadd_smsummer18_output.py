@@ -371,7 +371,7 @@ for s in sorted(sample_list): out+='    - %s\n' %s
 
 print out
 
-channel = ['tt','mt','et','em','zmm','zee','tpzee','tpzmm']
+channel = ['tt','mt','et','em','zmm','zee']
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 
