@@ -2652,9 +2652,23 @@ int HTTWeights::Execute(TreeEvent *event) {
      else ele1_trg_mc = fns_["e_trg_binned_mc"]->eval(args_1.data());
      ele2_trg = 1.0;
      ele2_trg_mc = 1.0;
+     
+     cout << "ele1_trg: " << ele1_trg << endl;
+     cout << "ele1_trg_mc: " << ele1_trg_mc << endl;
+     cout << "e1_pt: " << e1_pt << endl;
+     cout << "e1_eta: " << e1_eta << endl;
+     cout << "e_iso_1: " << e_iso_1 << endl;
+
      if (trg_applied_in_mc_) {
-       ele1_trg = ele1_trg / ele1_trg_mc;
-       ele2_trg = ele2_trg / ele2_trg_mc;
+		ele1_trg = ele1_trg / ele1_trg_mc;
+		ele2_trg = ele2_trg / ele2_trg_mc;
+		if(ele1_trg_mc == 0){
+			 ele1_trg = 0;
+		 }
+		if(ele2_trg_mc ==0){
+			 ele2_trg_mc =0;
+		 }
+			
      }
      weight *= (ele1_trg * ele2_trg);
      event->Add("trigweight_1", ele1_trg);
@@ -2787,6 +2801,7 @@ int HTTWeights::Execute(TreeEvent *event) {
        double e_2_iso = PF03EAIsolationVal(ele_2, eventInfo->jet_rho());
        double e_1_sceta = ele_1->sc_eta();   
        double e_2_sceta = ele_2->sc_eta();
+       
        auto args1_1 = std::vector<double>{e_1_pt,e_1_sceta,e_1_iso};
        auto args2_1 = std::vector<double>{e_2_pt,e_2_sceta,e_2_iso};
 

@@ -5,7 +5,9 @@
     "max_events":   -1,
     "timings":      true,
     //"channels":     ["et","mt","tt","em"],
-    "channels":     ["tt","et","mt","em","zmm","zee"],
+    "channels":     ["zee"],
+
+    //"channels":     ["tt","et","mt","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]

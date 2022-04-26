@@ -223,7 +223,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   if options.calc_lumi:
     for sa in data_samples:
-        JOB='%s_2017' % (sa)
+        JOB='%s_2017UL' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
@@ -238,7 +238,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   else:
     for sa in data_samples:
-        JOB='%s_2017' % (sa)
+        JOB='%s_2017UL' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
@@ -335,7 +335,7 @@ if options.proc_bkg or options.proc_all:
  	'ttHToTauTau_M125',    
   	]
   for sa in central_samples:
-      JOB='%s_2017' % (sa)
+      JOB='%s_2017UL' % (sa)
       PREFIX='Feb16_MC_106X_2017'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\",%(jetuncert_string)s}}' "%vars());
       if "DYJetsToLL-LO" in sa or "W3JetsToLNu-LO" in sa or "WWTo1L1Nu2Q" in sa:

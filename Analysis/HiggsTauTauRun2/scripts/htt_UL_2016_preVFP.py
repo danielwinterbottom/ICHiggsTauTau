@@ -215,7 +215,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   DATAFILELIST="./filelists/Feb16_2016-preVFP_Data_106X"
 
   for sa in data_samples:
-      JOB='%s_2016' % (sa)
+      JOB='%s_2016preVFP' % (sa)
       DATAFILELIST_ = DATAFILELIST
       user='guttley'
       prefix='Feb16_Data_106X_2016-preVFP'
@@ -314,7 +314,7 @@ if options.proc_bkg or options.proc_all:
   ] 
 
   for sa in central_samples:
-      JOB='%s_2016' % (sa)
+      JOB='%s_2016preVFP' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 
