@@ -2748,6 +2748,58 @@ namespace ic {
   }
 
 
+  ROOT::Math::PtEtaPhiEVector RotateToGJMax (ROOT::Math::PtEtaPhiEVector vis_tau_vec, ROOT::Math::PtEtaPhiEVector tau_vec) {
+    TVector3 tau_dir = ConvertToTVector3(tau_vec).Unit();
+    TVector3 vis_dir = ConvertToTVector3(vis_tau_vec).Unit();
+    TLorentzVector tau_vis = ConvertToLorentz(vis_tau_vec);
+
+    double m_tau = tau_vec.M();
+    double m_vis = vis_tau_vec.M();
+    double theta_GJ = std::acos(std::clamp(tau_dir.Dot(vis_dir.Unit()), -1.0, 1.0));
+    double theta_GJ_max = std::asin(std::clamp((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()), -1.0, 1.0));
+
+    
+    ROOT::Math::PtEtaPhiEVector new_tau_vec(tau_vec.Pt(), tau_vec.Eta(), tau_vec.Phi(), tau_vec.E());
+
+    //std::cout << "GJ angles: " <<  theta_GJ << "  " << theta_GJ_max << std::endl;
+
+    // Rotate tau back if theta_GJ is in unphysical region
+    if (theta_GJ > theta_GJ_max)
+    {
+        TVector3 new_dir;
+	theta_GJ = theta_GJ_max;
+	// Create a normalised vector prependicular to a1
+	double n_1_x = 1/std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2));
+	double n_1_y = -n_1_x * tau_vis.X()/tau_vis.Y();
+	TVector3 n_1(n_1_x, n_1_y, 0);
+	// create n_2, a unit vector perpendicular to n_1 and the a1
+	TVector3 n_2 = n_1.Cross(tau_vis.Vect()).Unit();
+	
+	// optimal phi from calculus
+	double phi_opt_1 = std::atan(tau_dir.Dot(n_2)/tau_dir.Dot(n_1));
+	TVector3 new_dir_1 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_1)*n_1 + std::sin(phi_opt_1)*n_2);
+	
+	// tan so can have phi+pi solution
+	double phi_opt_2 = phi_opt_1 + M_PI;
+	TVector3 new_dir_2 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_2)*n_1 + std::sin(phi_opt_2)*n_2);
+	
+	// test which solution maximises dot product
+	if ( new_dir_1.Dot(tau_dir) > new_dir_2.Dot(tau_dir) )
+	{
+		new_dir = new_dir_1;
+	}
+	else
+	{
+		new_dir = new_dir_2;
+	}
+        double new_pt = tau_vec.P()*sin(std::atan(std::exp(-new_dir.Eta()))*2);
+        new_tau_vec = ROOT::Math::PtEtaPhiEVector(new_pt, new_dir.Eta(), new_dir.Phi(), tau_vec.E());
+    }
+    return new_tau_vec;
+  }
+
+
+
   double PolarimetricA1A1(TVector3 tau1, TVector3 tau2, TLorentzVector a1_1, TLorentzVector a1_2, std::vector<TLorentzVector> pis_1, std::vector<TLorentzVector> pis_2, std::vector<double> charges_1, std::vector<double> charges_2) {
     double angle = -9999.;
     TLorentzVector Tauminus, Tauplus;

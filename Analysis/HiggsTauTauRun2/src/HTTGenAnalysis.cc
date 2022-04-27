@@ -229,6 +229,9 @@ namespace ic {
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
 
+      outtree_->Branch("dm_1", &tauFlag_1_);
+      outtree_->Branch("dm_2", &tauFlag_2_);
+
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
         outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -368,17 +371,12 @@ namespace ic {
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
       outtree_->Branch("pv_aco_angle", &pv_aco_angle_);
       outtree_->Branch("pv_lin_angle", &pv_lin_angle_);
-      outtree_->Branch("pv_aco_angle_vis", &pv_aco_angle_vis_);
 
 
       outtree_->Branch("costheta_1", &costheta_1_);
-      //outtree_->Branch("costheta_1", &costheta_hf_1_);
       outtree_->Branch("costheta_tf_1", &costheta_tf_1_);
-      //outtree_->Branch("costheta_1", &costheta_visf_1_);
       outtree_->Branch("costheta_2", &costheta_2_);
-      //outtree_->Branch("costheta_2", &costheta_hf_2_);
       outtree_->Branch("costheta_tf_2", &costheta_tf_2_);
-      //outtree_->Branch("costheta_2", &costheta_visf_2_);
       
       outtree_->Branch("q_2", &q_2_);
       outtree_->Branch("q_1", &q_1_);
@@ -533,9 +531,12 @@ namespace ic {
 
 	    //std::cout << "================event " << event_ << "===================" << std::endl;
 
-	    wt_cp_sm_=0.0; 
-	    wt_cp_ps_=0.0; 
-	    wt_cp_mm_=0.0; 
+	    wt_cp_sm_=1.0; 
+	    wt_cp_ps_=1.0; 
+	    wt_cp_mm_=1.0; 
+
+            t_E_frac_1_=-9999.;
+            t_E_frac_2_=-9999.;
 
 	    // test tauspinner weights
 	    if(event->ExistsInTree("tauspinner")){
@@ -566,8 +567,11 @@ namespace ic {
 	      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
 	      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
 	      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
-	    }
-
+	    } else {
+              if(eventInfo->weight_defined("sm_weight")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight");
+              if(eventInfo->weight_defined("ps_weight")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight");
+              if(eventInfo->weight_defined("mm_weight")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight");
+           }
 
 	    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
 	    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
@@ -1607,7 +1611,6 @@ namespace ic {
         if(foundLep) {
           l_daughters.push_back(lep);
         //  prho_daughters.push_back(prho);
-        //  pi_daughters.push_back(pi);
         }
         if(foundA1&&!foundLep){
           a1_daughters.push_back(a1);
@@ -1711,6 +1714,7 @@ namespace ic {
 
     int tau1_charge=0, tau2_charge=0;
     tauFlag_1_=-1, tauFlag_2_=-1;
+
 
     std::vector<ic::Vertex*> gen_vertices;
     if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
@@ -2308,18 +2312,25 @@ namespace ic {
         }
     }
 
-    //if(decayType == "mt") std::cout << rho_daughters.size() << "    " <<  pi_daughters.size() << std::endl;
-
     if (rho_daughters.size()==1 && pi_daughters.size()==1){
         cp_channel_=2;
         cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
 
-        //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-        //for (unsigned i = 0; i < vertex_vec.size(); i++) {
-        //  reco_pvx_ = vertex_vec[0]->vx();
-        //  reco_pvy_ = vertex_vec[0]->vy();
-        //  reco_pvz_ = vertex_vec[0]->vz();
-        //}
+        pi_px_1_ = pi_daughters[0]->vector().Px();
+        pi_py_1_ = pi_daughters[0]->vector().Py();
+        pi_pz_1_ = pi_daughters[0]->vector().Pz();
+        pi_E_1_ =  pi_daughters[0]->vector().E();
+
+        pi_px_2_ = rho_daughters[0].first->vector().Px();
+        pi_py_2_ = rho_daughters[0].first->vector().Py();
+        pi_pz_2_ = rho_daughters[0].first->vector().Pz();
+        pi_E_2_ =  rho_daughters[0].first->vector().E();
+        pi0_px_2_ = rho_daughters[0].second->vector().Px();
+        pi0_py_2_ = rho_daughters[0].second->vector().Py();
+        pi0_pz_2_ = rho_daughters[0].second->vector().Pz();
+        pi0_E_2_ =  rho_daughters[0].second->vector().E();
+
+
         for (unsigned i = 0; i < gen_vertices.size(); i++) {
           gen_pvx_ = gen_vertices[0]->vx();
           gen_pvy_ = gen_vertices[0]->vy();
@@ -2342,12 +2353,6 @@ namespace ic {
         cp_channel_=12;
         cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
 
-        //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-        //for (unsigned i = 0; i < vertex_vec.size(); i++) {
-        //  reco_pvx_ = vertex_vec[0]->vx();
-        //  reco_pvy_ = vertex_vec[0]->vy();
-        //  reco_pvz_ = vertex_vec[0]->vz();
-        //}
         for (unsigned i = 0; i < gen_vertices.size(); i++) {
           gen_pvx_ = gen_vertices[0]->vx();
           gen_pvy_ = gen_vertices[0]->vy();
@@ -2409,8 +2414,6 @@ namespace ic {
 
       a1_daughters[0] = SortA1Products(a1_daughters[0]);
 
-//      aco_angle_1_ = AcoplanarityAngle(std::vector<GenParticle*> ({rho_daughters[0].first,rho_daughters[0].second}), std::vector<GenParticle*> ({a1_daughters[0][0],a1_daughters[0][1]}));
-
         cp_channel_=51;
         std::vector<ic::Vertex*> vertex_vec = {};
         if(event->ExistsInTree("vertices")) vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
@@ -2447,46 +2450,6 @@ namespace ic {
         cp_sign_1_ = YRho(std::vector<GenParticle*>(
                     {a1_daughters[0][0], a1_daughters[0][1]}),TVector3());
     }
-
-//    if (pi_daughters.size()==1&&l_daughters.size()==1){
-//        cp_channel_=1;
-//        //lvec1 = ConvertToLorentz(prho_daughters[0].second->vector());
-//        //lvec2 = ConvertToLorentz(rho_daughters[0].second->vector());
-//        //lvec3 = ConvertToLorentz(prho_daughters[0].first->vector());
-//        //lvec4 = ConvertToLorentz(rho_daughters[0].first->vector());
-//        std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
-//        std::vector<ic::Vertex*> gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices"); //gen  
-//        for (unsigned i = 0; i < vertex_vec.size(); i++) {
-//          reco_pvx_ = vertex_vec[0]->vx();
-//          reco_pvy_ = vertex_vec[0]->vy();
-//          reco_pvz_ = vertex_vec[0]->vz();
-//        }
-//        for (unsigned i = 0; i < gen_vertices.size(); i++) {
-//          gen_pvx_ = gen_vertices[0]->vx();
-//          gen_pvy_ = gen_vertices[0]->vy();
-//          gen_pvz_ = gen_vertices[0]->vz();
-//        }
-//        TLorentzVector pvtosv(
-//                pi_daughters[0]->vtx().vx() - prho_daughters[0].second->vtx().vx(),
-//                pi_daughters[0]->vtx().vy() - prho_daughters[0].second->vtx().vy(),
-//                pi_daughters[0]->vtx().vz() - prho_daughters[0].second->vtx().vz(),
-//                0.);
-//
-//        TLorentzVector pvtosv1(
-//                l_daughters[0]->vtx().vx() - prho_daughters[1].second->vtx().vx(),
-//                l_daughters[0]->vtx().vy() - prho_daughters[1].second->vtx().vy(),
-//                l_daughters[0]->vtx().vz() - prho_daughters[1].second->vtx().vz(),
-//                0.);
-//
-//        lvec3 = ConvertToLorentz(pi_daughters[1]->vector()); //pi charge from rho
-//        lvec4 = ConvertToLorentz(pi_daughters[0]->vector()); //pi charge from tau
-//
-//        TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
-//        lvec1 = TLorentzVector(ip1, 0.);
-//
-//        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
-//        lvec2 = TLorentzVector(ip, 0.);
-//    }
 
     if (rho_daughters.size()==2){
         cp_channel_=3;  
@@ -2585,35 +2548,12 @@ namespace ic {
         ConvertToLorentz(ss_pi_2_2->vector())
       };
 
-      //for (unsigned i=0; i<TauA1andProd1.size(); ++i) TauA1andProd1[i].Boost(-boost);
-      //for (unsigned i=0; i<TauA1andProd2.size(); ++i) TauA1andProd2[i].Boost(-boost);
-
-      //if(tauFlag_1_==10 && tauFlag_2_==10) {
-      //  std::cout <<"New event: " << std::endl;
-      //  cout << charged_daughters[0][0]->M() << "  " << charged_daughters[0][0]->pt()  <<  std::endl;
-      //  cout << charged_daughters[1][0]->M() << "  " << charged_daughters[1][0]->pt()  <<  std::endl;
-      //}
-
-
       PolarimetricA1  a1pol_1;
       a1pol_1.Configure(TauA1andProd1,taucharge1);
       auto l_h1 = a1pol_1.PVC();
       PolarimetricA1  a1pol_2;
       a1pol_2.Configure(TauA1andProd2,taucharge2);
       auto l_h2 = a1pol_2.PVC();
-
-
-      //if(tauFlag_1_==10 && tauFlag_2_==10) {
-      //  std::cout <<"!!!!!" << std::endl;
-      //  cout << charged_daughters[0][0]->M() << "  " << charged_daughters[0][0]->pt()  <<  std::endl; 
-      //  cout << l_h1.X() << "  " << l_h1.Y() << "  " <<  l_h1.Z() << "  " << l_h1.M() << std::endl;
-      //  cout << charged_daughters[1][0]->M() << "  " << charged_daughters[1][0]->pt()  <<  std::endl; 
-      //  cout << l_h2.X() << "  " << l_h2.Y() << "  " <<  l_h2.Z() << "  " << l_h2.M() << std::endl;
-      //}
-
-
-      //l_h1.Boost(-boost1);
-      //l_h2.Boost(-boost2);
 
       l_h1.Boost(-boost);
       l_h2.Boost(-boost);
@@ -2643,65 +2583,6 @@ namespace ic {
     aco_angle_smear_=-9999;
     aco_sign_smear_=-9999;
     aco_sign_=-9999;
-
-//    if (pi_daughters.size()==1&&l_daughters.size()==1){
-//        cp_channel_=101;
-//
-//        gen_pvx_ = l_daughters[0].second->vtx().vx();
-//        gen_pvy_ = l_daughters[0].second->vtx().vy();
-//        gen_pvz_ = l_daughters[0].second->vtx().vz();
-//
-//        TLorentzVector pvtosv(
-//                pi_daughters[0]->vtx().vx() - gen_pvx_,
-//                pi_daughters[0]->vtx().vy() - gen_pvy_,
-//                pi_daughters[0]->vtx().vz() - gen_pvz_,
-//                0.);
-//
-//        TLorentzVector pvtosv1(
-//                l_daughters[0].first->vtx().vx() - gen_pvx_,
-//                l_daughters[0].first->vtx().vy() - gen_pvy_,
-//                l_daughters[0].first->vtx().vz() - gen_pvz_,
-//                0.);
-//
-//        TLorentzVector lvec3 = ConvertToLorentz(l_daughters[0].first->vector()); //pi charge from lep
-//        TLorentzVector lvec4 = ConvertToLorentz(pi_daughters[0]->vector()); //pi charge from tau
-//
-//        TVector3 ip1 = (pvtosv1.Vect() - pvtosv1.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
-//        TLorentzVector lvec1 = TLorentzVector(ip1, 0.);
-//
-//        TVector3 ip = (pvtosv.Vect() - pvtosv.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
-//        TLorentzVector lvec2 = TLorentzVector(ip, 0.);
-//
-//        aco_angle_1_ = IPAcoAngle(lvec1, lvec2, lvec3, lvec4,false);    
-//        aco_sign_ = IPAcoSign(lvec1, lvec2, lvec3, lvec4,false);   
-//
-//        rand->SetSeed((int)((pi_daughters[0]->eta()+5)*100000 + (pi_daughters[0]->phi()+4)*1000));
-//
-//        double rx = rand->Gaus(0,0.001); 
-//        double ry = rand->Gaus(0,0.001); 
-//        double rz = rand->Gaus(0,0.0015);
-//
-//        TLorentzVector pvtosv_smear(
-//                pi_daughters[0]->vtx().vx() - gen_pvx_ - rx,
-//                pi_daughters[0]->vtx().vy() - gen_pvy_ - ry,
-//                pi_daughters[0]->vtx().vz() - gen_pvz_ - rz,
-//                0.);
-//        
-//        TLorentzVector pvtosv1_smear(
-//                l_daughters[0].first->vtx().vx() - gen_pvx_ - rx,
-//                l_daughters[0].first->vtx().vy() - gen_pvy_ - ry,
-//                l_daughters[0].first->vtx().vz() - gen_pvz_ - rz,
-//                0.); 
-//
-//        TVector3 ip1_smear = (pvtosv1_smear.Vect() - pvtosv1_smear.Vect().Dot(lvec3.Vect().Unit())*lvec3.Vect().Unit()).Unit();
-//        TLorentzVector lvec1_smear = TLorentzVector(ip1_smear, 0.);
-//
-//        TVector3 ip_smear = (pvtosv_smear.Vect() - pvtosv_smear.Vect().Dot(lvec4.Vect().Unit())*lvec4.Vect().Unit()).Unit();
-//        TLorentzVector lvec2_smear = TLorentzVector(ip, 0.);
-//
-//        aco_angle_smear_ = IPAcoAngle(lvec1_smear, lvec2_smear, lvec3, lvec4,false);
-//        aco_sign_smear_ = IPAcoSign(lvec1_smear, lvec2_smear, lvec3, lvec4,false);
-//    }
 
     if (pi_daughters.size()==2 && prho_daughters.size()==2){
         cp_channel_=101;
@@ -2877,126 +2758,87 @@ namespace ic {
       }
     }
 
-pv_aco_angle_=-9999;
-pv_lin_angle_=-9999;
-pv_aco_angle_vis_=-9999;
-
-costheta_1_=-9999;
-costheta_hf_1_=-9999;
-costheta_tf_1_=-9999;
-costheta_visf_1_=-9999;
-costheta_2_=-9999;
-costheta_hf_2_=-9999;
-costheta_tf_2_=-9999;
-costheta_visf_2_=-9999;
-q_1_=-9999;
-q_2_=-9999;
-
-if(undecayed_taus.size()>1) {
-
-  q_1_ = undecayed_taus[0]->charge();
-  q_2_ = undecayed_taus[1]->charge();
-
-  TLorentzVector l_h1= PolarimetricVector(pis[0], pi0s[0], undecayed_taus[0],false);
-  TLorentzVector l_h2= PolarimetricVector(pis[1], pi0s[1], undecayed_taus[1],false);
-  TLorentzVector l_tau_1 = ConvertToLorentz(undecayed_taus[0]->vector());
-  TLorentzVector l_tau_2 = ConvertToLorentz(undecayed_taus[1]->vector());
-
-  TVector3 boost = ConvertToLorentz(undecayed_taus[0]->vector()+undecayed_taus[1]->vector()).BoostVector();
-  TVector3 boost1 = ConvertToLorentz(undecayed_taus[0]->vector()).BoostVector();
-  TVector3 boost2 = ConvertToLorentz(undecayed_taus[1]->vector()).BoostVector();
-
-  ROOT::Math::PtEtaPhiEVector vis_tau_1, vis_tau_2, vis_system;
-  for (auto p : pis[0]) vis_tau_1+=p->vector();
-  for (auto p : pis[1]) vis_tau_2+=p->vector();
-  for (auto p : pi0s[0]) vis_tau_1+=p->vector();
-  for (auto p : pi0s[1]) vis_tau_2+=p->vector(); 
-
-  vis_system=vis_tau_1+vis_tau_2;
-
-  TVector3 vis_boost = ConvertToLorentz(vis_system).BoostVector();
-
-  TVector3 h1, h2, n1, n2, k1, k2;
-  double pv_sign=0.;
-
-  if(tauFlag_1_==1&&tauFlag_2_==1){
-    l_h1= ConvertToLorentz(pis[0][0]->vector()-pi0s[0][0]->vector()); 
-    l_h2= ConvertToLorentz(pis[1][0]->vector()-pi0s[1][0]->vector()); 
-
-    l_h1 = TLorentzVector(l_h1.Vect(),0.);
-    l_h1.SetT(sqrt(-1+l_h1.Mag2()));
-    l_h2 = TLorentzVector(l_h2.Vect(),0.);
-    l_h2.SetT(sqrt(-1+l_h2.Mag2()));
-
-    l_tau_1 = ConvertToLorentz(vis_tau_1);
-    l_tau_2 = ConvertToLorentz(vis_tau_2);
-  
-    l_h1.Boost(-vis_boost);
-    l_h2.Boost(-vis_boost);
-  
-    l_tau_1.Boost(-vis_boost);
-    l_tau_2.Boost(-vis_boost);
-  
-    h1 = l_h1.Vect().Unit();
-    h2 = l_h2.Vect().Unit();
-  
-    n1 = l_tau_1.Vect().Unit();
-    n2 = l_tau_2.Vect().Unit();
-  
-    k1 = h1.Cross(n1).Unit();
-    k2 = h2.Cross(n2).Unit();
-  
-    pv_aco_angle_vis_ = acos(k1.Dot(k2));
-    pv_sign = h1.Cross(h2).Dot(n1);
-    if(pv_sign>0) pv_aco_angle_vis_ = 2*M_PI-pv_aco_angle_vis_;
-  }
-
-  l_h1= PolarimetricVector(pis[0], pi0s[0], undecayed_taus[0],false);
-  l_h2= PolarimetricVector(pis[1], pi0s[1], undecayed_taus[1], false);
-  l_tau_1 = ConvertToLorentz(undecayed_taus[0]->vector());
-  l_tau_2 = ConvertToLorentz(undecayed_taus[1]->vector());
-
-  l_h1.Boost(-boost);
-  l_h2.Boost(-boost);
-
-  l_tau_1.Boost(-boost);
-  l_tau_2.Boost(-boost);
-
-  h1 = l_h1.Vect().Unit(); 
-  h2 = l_h2.Vect().Unit(); 
-
-  n1 = l_tau_1.Vect().Unit();
-  n2 = l_tau_2.Vect().Unit();
+    pv_aco_angle_=-9999;
+    pv_lin_angle_=-9999;
+    
+    costheta_1_=-9999;
+    costheta_tf_1_=-9999;
+    costheta_2_=-9999;
+    costheta_tf_2_=-9999;
+    q_1_=-9999;
+    q_2_=-9999;
+    
+    if(undecayed_taus.size()>1) {
+    
+      q_1_ = undecayed_taus[0]->charge();
+      q_2_ = undecayed_taus[1]->charge();
+    
+      TLorentzVector l_h1= PolarimetricVector(pis[0], pi0s[0], undecayed_taus[0],false);
+      TLorentzVector l_h2= PolarimetricVector(pis[1], pi0s[1], undecayed_taus[1],false);
+      TLorentzVector l_tau_1 = ConvertToLorentz(undecayed_taus[0]->vector());
+      TLorentzVector l_tau_2 = ConvertToLorentz(undecayed_taus[1]->vector());
+    
+      TVector3 boost = ConvertToLorentz(undecayed_taus[0]->vector()+undecayed_taus[1]->vector()).BoostVector();
+      TVector3 boost1 = ConvertToLorentz(undecayed_taus[0]->vector()).BoostVector();
+      TVector3 boost2 = ConvertToLorentz(undecayed_taus[1]->vector()).BoostVector();
+   
+      TVector3 boson = (ConvertToLorentz(undecayed_taus[0]->vector()+undecayed_taus[1]->vector())).Vect();
  
-  k1 = h1.Cross(n1).Unit();
-  k2 = h2.Cross(n2).Unit();
-  
-  pv_lin_angle_ = acos(h1.Dot(h2));
-  pv_aco_angle_ = acos(k1.Dot(k2));
-  pv_sign = h1.Cross(h2).Dot(n1);
-  if(pv_sign>0) pv_aco_angle_ = 2*M_PI-pv_aco_angle_;
-
-  costheta_1_=h1.Dot(n1);
-  costheta_2_=h2.Dot(n2);
-
-  //bost back to lab frame, then to tau frame
-  l_h1.Boost(boost);
-  l_h2.Boost(boost);
-  l_h1.Boost(-boost1);
-  l_h2.Boost(-boost2);
-
-  TVector3 h1_tf = l_h1.Vect().Unit();
-  TVector3 h2_tf = l_h2.Vect().Unit();
-
-  costheta_tf_1_=h1_tf.Dot(n1);
-  costheta_tf_2_=h2_tf.Dot(n2);
+      ROOT::Math::PtEtaPhiEVector vis_tau_1, vis_tau_2, vis_system;
+      for (auto p : pis[0]) vis_tau_1+=p->vector();
+      for (auto p : pis[1]) vis_tau_2+=p->vector();
+      for (auto p : pi0s[0]) vis_tau_1+=p->vector();
+      for (auto p : pi0s[1]) vis_tau_2+=p->vector(); 
+    
+      vis_system=vis_tau_1+vis_tau_2;
+    
+      TVector3 vis_boost = ConvertToLorentz(vis_system).BoostVector();
+    
+      TVector3 h1, h2, n1, n2, k1, k2;
+      double pv_sign=0.;
+    
+      l_h1= PolarimetricVector(pis[0], pi0s[0], undecayed_taus[0], false);
+      l_h2= PolarimetricVector(pis[1], pi0s[1], undecayed_taus[1], false);
+      l_tau_1 = ConvertToLorentz(undecayed_taus[0]->vector());
+      l_tau_2 = ConvertToLorentz(undecayed_taus[1]->vector());
  
+      l_h1.Boost(-boost);
+      l_h2.Boost(-boost);
+    
+      l_tau_1.Boost(-boost);
+      l_tau_2.Boost(-boost);
+
+      h1 = l_h1.Vect().Unit();
+      h2 = l_h2.Vect().Unit();
+
+      n1 = l_tau_1.Vect().Unit();
+      n2 = l_tau_2.Vect().Unit();
+
+      k1 = h1.Cross(n1).Unit();
+      k2 = h2.Cross(n2).Unit();
+
+      pv_lin_angle_ = acos(h1.Dot(h2));
+      pv_aco_angle_ = acos(k1.Dot(k2));
+      pv_sign = h1.Cross(h2).Dot(n1);
+      if(pv_sign>0) pv_aco_angle_ = 2*M_PI-pv_aco_angle_;
+    
+      costheta_1_=h1.Dot(n1);
+      costheta_2_=h2.Dot(n2);
+    
+      //bost back to lab frame, then to tau frame
+      l_h1.Boost(boost);
+      l_h2.Boost(boost);
+      l_h1.Boost(-boost1);
+      l_h2.Boost(-boost2);
+    
+      TVector3 h1_tf = l_h1.Vect().Unit();
+      TVector3 h2_tf = l_h2.Vect().Unit();
+    
+      costheta_tf_1_=h1_tf.Dot(n1);
+      costheta_tf_2_=h2_tf.Dot(n2);
+
  
-  //    n1 = p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();
-  //    n2 = p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
-  //
-  //pv_line_angle_ = acos(p1.Dot(p2));
-}
+    }
 
 
 

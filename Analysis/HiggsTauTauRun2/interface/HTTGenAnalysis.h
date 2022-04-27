@@ -290,15 +290,10 @@ class HTTGenAnalysis : public ModuleBase {
   double aco_angle_smear_;
   double pv_lin_angle_;
   double pv_aco_angle_;
-  double pv_aco_angle_vis_;
   double costheta_1_;
-  double costheta_hf_1_;
   double costheta_tf_1_;
-  double costheta_visf_1_;
   double costheta_2_;
-  double costheta_hf_2_;
   double costheta_tf_2_;
-  double costheta_visf_2_;
 
   double aco_angle_1_;
   double aco_angle_2_;
