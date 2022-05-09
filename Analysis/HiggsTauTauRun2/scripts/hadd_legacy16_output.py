@@ -397,7 +397,7 @@ print out
 #print sample_list
 
 #channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
-channel = ['et','em','mt','tt','zmm','tpzmm','tpzee']
+channel = ['et','em','mt','tt','zmm','zee']
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()

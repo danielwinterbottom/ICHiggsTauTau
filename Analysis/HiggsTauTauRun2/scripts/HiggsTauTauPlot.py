@@ -465,7 +465,12 @@ compare_qcd_shapes = False
 if options.scheme == "qcd_shape": compare_qcd_shapes = True
 if options.scheme == "w_shape": compare_w_shapes = True
 w_abs_shift=None # if not None then the QCD shape will be adjusted by shifting the W yield up and down by +/- w_abs_shift
-if options.era in ["mssmsummer16","smsummer16","cpsummer16","cpdecay16","legacy16",'UL_16_preVFP','UL_16_postVFP',"tauid2016","mvadm2016"]: options.lumi = "35.9 fb^{-1} (13 TeV)"
+if options.era in ["mssmsummer16","smsummer16","cpsummer16","cpdecay16","legacy16","tauid2016","mvadm2016"]: options.lumi = "35.9 fb^{-1} (13 TeV)"
+if options.era in ['UL_16_preVFP']: options.lumi = "19.5 fb^{-1} (13 TeV)"
+if options.era in ['UL_16_postVFP']: options.lumi = "16.8 fb^{-1} (13 TeV)"
+
+
+
 
 # option to split the real tau events into rho, pi, a1, other
 split_taus=False
@@ -597,7 +602,12 @@ elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron && fabs(wt)<2)'
 
+    #if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(1)'
+
     if options.era in ['cpsummer17','UL_17']: cats['baseline'] = '(pt_1>28&&pt_2>13&&iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
+
+    #if options.era in ['cpsummer17','UL_17']: cats['baseline'] = '(1)'
+
     if options.era in ['cp18','UL_18']: 
         cats['baseline'] = '(pt_1>33 && pt_2>13 && iso_1<0.15 && iso_2<0.15 && trg_singleelectron && fabs(wt)<2)'
 

@@ -121,8 +121,8 @@ for year in years:
   BINSlt400 = '[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400]'
   BINSlt500 = '[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,340,380,420,460,500]'
 
-  var = [['mt_tot', BINS]]
-        # ['m_vis', BINS],
+  var = [['mt_tot', BINS],
+        ['m_vis', BINS]]
         # ['met',BINSlt200],
         # ['mt_1',BINSlt400],
         # ['mt_2',BINSlt200],
@@ -146,7 +146,7 @@ for year in years:
             var_used = item[0]
             bin_used = item[1]
 
-            run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --sel=\'mt_1<50\' --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var="%(var_used)s%(bin_used)s"  %(add_cond)s' % vars()
+            run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --sel=\'m_vis>50\' --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var="%(var_used)s%(bin_used)s"  %(add_cond)s' % vars()
 
 
             commands = [run_cmd]

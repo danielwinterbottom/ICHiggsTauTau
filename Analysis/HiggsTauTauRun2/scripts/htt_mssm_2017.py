@@ -2,6 +2,9 @@
 
 # python scripts/htt_mssm_2017.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
 
+# python scripts/htt_mssm_2017.py --bkg --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
+
+
 import sys
 from optparse import OptionParser
 import os
@@ -385,7 +388,7 @@ if options.proc_bkg or options.proc_all:
       "DY3JetsToLL-LO",
       "DY3JetsToLL-LO-ext",
       "DY4JetsToLL-LO",
-      #"DYJetsToLL",
+      "DYJetsToLL",
       "DYJetsToLL-LO", # buggy PU
       "DYJetsToLL-LO-ext1", # buggy PU
       "DYJetsToLL-ext",
@@ -422,7 +425,7 @@ if options.proc_bkg or options.proc_all:
       "ZZTo2L2Q",
       "ZZTo4L",
       "ZZTo4L-ext",
-      ]
+     ]
 
   for sa in central_samples:
       JOB='%s_2017' % (sa)

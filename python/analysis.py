@@ -628,6 +628,9 @@ class Analysis(object):
             for i, hist in enumerate(res):
                 # if not isinstance(hist, ROOT.TH1):
                 #     continue
+		#test = Shape(hist)
+		#test.Print()
+		hist.Print("all")
                 setattr(outdict[sample][i][0], outdict[sample][i][1], Shape(hist))
         self.nodes.Run()
 
