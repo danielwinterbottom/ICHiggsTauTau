@@ -1746,6 +1746,15 @@ namespace ic {
     return (charge != 0 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1 && abs(cand->At(2)->charge()) == 1 && abs(cand->At(3)->charge()) == 1);
   }
 
+  bool NoDuplicateParticle(CompositeCandidate const* cand) {
+    std::vector<double> pt_check = {cand->At(0)->pt(),cand->At(1)->pt(),cand->At(2)->pt(),cand->At(3)->pt()};
+    std::sort(pt_check.begin(),pt_check.end());
+    auto new_pt_check = std::unique(pt_check.begin(), pt_check.end());
+    pt_check.erase(new_pt_check,pt_check.end());
+    return (pt_check.size()==4);
+  }
+
+
   bool MuonTight(Muon const* muon) {
     bool tightCut = ( 
         muon->is_global() &&

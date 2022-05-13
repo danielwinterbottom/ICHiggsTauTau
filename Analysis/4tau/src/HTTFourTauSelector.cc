@@ -89,10 +89,13 @@ namespace ic {
     std::vector<CompositeCandidate *> non_zero_charge;
     std::vector<CompositeCandidate *> result;
 
+    // Remove duplicate decay products from multilepton
     for (unsigned i = 0; i < multilepton.size(); ++i) {
-      if (TotalZeroChargeFourParticles(multilepton[i])) zero_charge.push_back(multilepton[i]);
-      if (TotalNonZeroChargeFourParticles(multilepton[i])) non_zero_charge.push_back(multilepton[i]);
-      all_multilepton.push_back(multilepton[i]);
+      if (NoDuplicateParticle(multilepton[i])) {
+        if (TotalZeroChargeFourParticles(multilepton[i])) zero_charge.push_back(multilepton[i]);
+        if (TotalNonZeroChargeFourParticles(multilepton[i])) non_zero_charge.push_back(multilepton[i]);
+        all_multilepton.push_back(multilepton[i]);
+      }
     }
 
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -106,7 +109,6 @@ namespace ic {
     std::vector<Candidate *> sort_collection = {lep1, lep2, lep3, lep4};
     std::vector<Candidate *> sort_collection_1 = {lep1, lep2, lep3, lep4};
     std::vector<Candidate *> sort_collection_2 = {lep1, lep2, lep3, lep4};
-
     if(use_os_preference_) {    
 
       // The first pair should have the highest "scalar sum pt"
@@ -153,7 +155,6 @@ namespace ic {
         lep4 = non_zero_charge[0]->GetCandidate("lepton4");
       }
     } else {
-        std::sort(all_multilepton.begin(),all_multilepton.end(), SortBySumPt);
         if(channel_ ==  channel::ettt) {
            std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoETTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
         }
@@ -213,7 +214,6 @@ namespace ic {
       pt_sorted_pair->AddCandidate("lepton4",pt_sorted_collection[3]);
       result.push_back(pt_sorted_pair);
     }
-
     if (result.size() == 0) return 1;  //Require at least one 4 tau collection
 
     // ************************************************************************
@@ -443,15 +443,15 @@ namespace ic {
 //    }
 //
 //     
-    // ************************************************************************
-    // Restrict decay modes
-    // ************************************************************************
-    Tau const* tau_ptr = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
-    if (tau_ptr && allowed_tau_modes_ != "") {
-      if (tau_mode_set_.find(tau_ptr->decay_mode()) == tau_mode_set_.end()) return 1;
-    }
+//    // ************************************************************************
+//    // Restrict decay modes
+//    // ************************************************************************
+//    Tau const* tau_ptr = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+//    if (tau_ptr && allowed_tau_modes_ != "") {
+//      if (tau_mode_set_.find(tau_ptr->decay_mode()) == tau_mode_set_.end()) return 1;
+//    }
 
-    all_multilepton = result;
+    multilepton = result;
     return 0;
   }
   int HTTFourTauSelector::PostAnalysis() {
@@ -647,7 +647,6 @@ namespace ic {
     double t_iso2_1 = t2_1->GetTauID(tau_idiso_name);
     if (t_iso1_1 != t_iso2_1) return t_iso1_1 > t_iso2_1;
     if (t1_1->pt() != t2_1->pt()) return t1_1->pt() > t2_1->pt();
-
     Tau const* t1_2 = static_cast<Tau const*>(c1->At(1));
     Tau const* t2_2 = static_cast<Tau const*>(c2->At(1));
     double t_iso1_2 = t1_2->GetTauID(tau_idiso_name);

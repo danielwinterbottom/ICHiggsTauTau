@@ -87,6 +87,53 @@ namespace ic {
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
 
+      // transverse momentums
+      outtree_->Branch("pt_1",              &pt_1_.var_double);
+      outtree_->Branch("pt_2",              &pt_2_.var_double);
+      outtree_->Branch("pt_3",              &pt_3_.var_double);
+      outtree_->Branch("pt_4",              &pt_4_.var_double);
+
+      // masses and energies
+      outtree_->Branch("m_1",              &m_1_.var_double);
+      outtree_->Branch("m_2",              &m_2_.var_double);
+      outtree_->Branch("m_3",              &m_3_.var_double);
+      outtree_->Branch("m_4",              &m_4_.var_double);
+      outtree_->Branch("E_1",              &E_1_.var_double);
+      outtree_->Branch("E_2",              &E_2_.var_double);
+      outtree_->Branch("E_3",              &E_3_.var_double);
+      outtree_->Branch("E_4",              &E_4_.var_double);
+
+      // angles
+      outtree_->Branch("eta_1",              &eta_1_.var_double);
+      outtree_->Branch("eta_2",              &eta_2_.var_double);
+      outtree_->Branch("eta_3",              &eta_3_.var_double);
+      outtree_->Branch("eta_4",              &eta_4_.var_double);
+      outtree_->Branch("phi_1",              &phi_1_.var_double);
+      outtree_->Branch("phi_2",              &phi_2_.var_double);
+      outtree_->Branch("phi_3",              &phi_3_.var_double);
+      outtree_->Branch("phi_4",              &phi_4_.var_double);
+
+      // angles/distances between objects
+      outtree_->Branch("dphi_12",              &dphi_12_.var_double);
+      outtree_->Branch("dphi_13",              &dphi_13_.var_double);
+      outtree_->Branch("dphi_14",              &dphi_14_.var_double);
+      outtree_->Branch("dphi_23",              &dphi_23_.var_double);
+      outtree_->Branch("dphi_24",              &dphi_24_.var_double);
+      outtree_->Branch("dphi_34",              &dphi_34_.var_double);
+
+      outtree_->Branch("dR_12",              &dR_12_.var_double);
+      outtree_->Branch("dR_13",              &dR_13_.var_double);
+      outtree_->Branch("dR_14",              &dR_14_.var_double);
+      outtree_->Branch("dR_23",              &dR_23_.var_double);
+      outtree_->Branch("dR_24",              &dR_24_.var_double);
+      outtree_->Branch("dR_34",              &dR_34_.var_double);
+
+      // charges
+      outtree_->Branch("q_1",              &q_1_.var_double);
+      outtree_->Branch("q_2",              &q_2_.var_double);
+      outtree_->Branch("q_3",              &q_3_.var_double);
+      outtree_->Branch("q_4",              &q_4_.var_double);
+
       // DeepTau scores
       outtree_->Branch("deepTauVsEle_iso_1",       &deepTauVsEle_iso_1_);
       outtree_->Branch("deepTauVsEle_iso_2",       &deepTauVsEle_iso_2_);
@@ -250,6 +297,43 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
     rho_ = eventInfo->jet_rho();
+
+    pt_1_ = lep1->pt();
+    pt_2_ = lep2->pt();
+    pt_3_ = lep3->pt();
+    pt_4_ = lep4->pt();
+    eta_1_ = lep1->eta();
+    eta_2_ = lep2->eta();
+    eta_3_ = lep1->eta();
+    eta_4_ = lep2->eta();
+    phi_1_ = lep1->phi();
+    phi_2_ = lep2->phi();
+    phi_3_ = lep1->phi();
+    phi_4_ = lep2->phi();
+    dphi_12_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector());
+    dphi_13_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector());
+    dphi_14_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector());
+    dphi_23_ = ROOT::Math::VectorUtil::DeltaPhi(lep2->vector(),lep3->vector()); 
+    dphi_24_ = ROOT::Math::VectorUtil::DeltaPhi(lep2->vector(),lep4->vector());
+    dphi_34_ = ROOT::Math::VectorUtil::DeltaPhi(lep2->vector(),lep4->vector());
+    dR_12_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
+    dR_13_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep3->vector()));
+    dR_14_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep4->vector()));
+    dR_23_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(),lep3->vector()));
+    dR_24_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(),lep4->vector()));
+    dR_34_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep3->vector(),lep4->vector()));
+    E_1_ = lep1->energy();
+    E_2_ = lep2->energy();
+    E_3_ = lep3->energy();
+    E_4_ = lep4->energy();
+    m_1_ = lep1->M();
+    m_2_ = lep2->M();
+    m_3_ = lep3->M();
+    m_4_ = lep4->M();
+    q_1_ = lep1->charge();
+    q_2_ = lep2->charge();
+    q_3_ = lep3->charge();
+    q_4_ = lep4->charge();
 
     if (channel_ == channel::ettt) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -879,6 +963,7 @@ namespace ic {
 
     }
 
+    if (write_tree_ && fs_) outtree_->Fill();
     return 0;
   }
 

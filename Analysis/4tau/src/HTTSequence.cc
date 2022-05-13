@@ -1265,7 +1265,7 @@ void HTTSequence::BuildEETTProducts() {
 
   BuildModule(FourParticleCompositeProducer<Electron, Electron, Tau, Tau>("EETTProducer")
       .set_input_label_first("sel_electrons")
-      .set_input_label_second("sel_eletrons")
+      .set_input_label_second("sel_electrons")
       .set_input_label_third(js["taus"].asString())
       .set_input_label_fourth(js["taus"].asString())
       .set_candidate_name_first("lepton1")
@@ -1339,191 +1339,191 @@ void HTTSequence::BuildTauSelection(){
 
      }));
  
- //if (tau_scale_mode > 0 && !is_data){
- //   // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
- //   BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
- //     .set_input_vec_label(js["taus"].asString())
- //     .set_output_vec_label("genmatched_taus")
- //     .set_gen_match(mcorigin::tauHad));
+  if (tau_scale_mode > 0 && !is_data){
+     // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
+     BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
+       .set_input_vec_label(js["taus"].asString())
+       .set_output_vec_label("genmatched_taus")
+       .set_gen_match(mcorigin::tauHad));
 
- //   BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
- //     "genmatched_taus", "genmatched_taus_1prong0pi0"));
- //   
- //   BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong1Pi",
- //     "genmatched_taus", "genmatched_taus_1prong1pi0"));
+     BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
+       "genmatched_taus", "genmatched_taus_1prong0pi0"));
+     
+     BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong1Pi",
+       "genmatched_taus", "genmatched_taus_1prong1pi0"));
 
- //   BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
- //     "genmatched_taus", "genmatched_taus_3prong0pi0"));
+     BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong0Pi",
+       "genmatched_taus", "genmatched_taus_3prong0pi0"));
 
- //   BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong1Pi",
- //     "genmatched_taus", "genmatched_taus_3prong1pi0"));
+     BuildModule(CopyCollection<Tau>("CopyTauHadTo3Prong1Pi",
+       "genmatched_taus", "genmatched_taus_3prong1pi0"));
 
- //   BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
- //     .set_input_label("genmatched_taus_1prong0pi0")
- //     .set_predicate([=](Tau const* t) {
- //       return  t->decay_mode() == 0;
- //     }));
- //   
- //   BuildModule(SimpleFilter<Tau>("1Prong1PiTauHadFilter")
- //     .set_input_label("genmatched_taus_1prong1pi0")
- //     .set_predicate([=](Tau const* t) {
- //       return  t->decay_mode() == 1;
- //     }));
+     BuildModule(SimpleFilter<Tau>("1Prong0PiTauHadFilter")
+       .set_input_label("genmatched_taus_1prong0pi0")
+       .set_predicate([=](Tau const* t) {
+         return  t->decay_mode() == 0;
+       }));
+     
+     BuildModule(SimpleFilter<Tau>("1Prong1PiTauHadFilter")
+       .set_input_label("genmatched_taus_1prong1pi0")
+       .set_predicate([=](Tau const* t) {
+         return  t->decay_mode() == 1;
+       }));
 
- //   BuildModule(SimpleFilter<Tau>("3Prong0PiTauHadFilter")
- //     .set_input_label("genmatched_taus_3prong0pi0")
- //     .set_predicate([=](Tau const* t) {
- //       return  t->decay_mode() == 10;
- //     }));
- //   
- //   BuildModule(SimpleFilter<Tau>("3Prong1PiTauHadFilter")
- //     .set_input_label("genmatched_taus_3prong1pi0")
- //     .set_predicate([=](Tau const* t) {
- //       return  t->decay_mode() == 11;
- //     }));
- //
- //   BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
- //   .set_input_label("genmatched_taus_1prong0pi0")
- //   .set_save_shifts(true) 
- //   .set_shift_label("scales_taues_1prong0pi0") 
- //   .set_shift(tau_shift_1prong0pi0)
- //   .set_shift_func(tau_shift_func_1prong0pi0));
+     BuildModule(SimpleFilter<Tau>("3Prong0PiTauHadFilter")
+       .set_input_label("genmatched_taus_3prong0pi0")
+       .set_predicate([=](Tau const* t) {
+         return  t->decay_mode() == 10;
+       }));
+     
+     BuildModule(SimpleFilter<Tau>("3Prong1PiTauHadFilter")
+       .set_input_label("genmatched_taus_3prong1pi0")
+       .set_predicate([=](Tau const* t) {
+         return  t->decay_mode() == 11;
+       }));
+  
+     BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong0pi0")
+     .set_input_label("genmatched_taus_1prong0pi0")
+     .set_save_shifts(true) 
+     .set_shift_label("scales_taues_1prong0pi0") 
+     .set_shift(tau_shift_1prong0pi0)
+     .set_shift_func(tau_shift_func_1prong0pi0));
 
- //   BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
- //   .set_input_label("genmatched_taus_1prong1pi0")
- //   .set_save_shifts(true) 
- //   .set_shift_label("scales_taues_1prong1pi0") 
- //   .set_shift(tau_shift_1prong1pi0)
- //   .set_shift_func(tau_shift_func_1prong1pi0));
+     BuildModule(EnergyShifter<Tau>("TauEnergyShifter1prong1pi0")
+     .set_input_label("genmatched_taus_1prong1pi0")
+     .set_save_shifts(true) 
+     .set_shift_label("scales_taues_1prong1pi0") 
+     .set_shift(tau_shift_1prong1pi0)
+     .set_shift_func(tau_shift_func_1prong1pi0));
 
- //   BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
- //   .set_input_label("genmatched_taus_3prong0pi0")
- //   .set_save_shifts(true) 
- //   .set_shift_label("scales_taues_3prong0pi0") 
- //   .set_shift(tau_shift_3prong0pi0)
- //   .set_shift_func(tau_shift_func_3prong0pi0));
+     BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong0pi0")
+     .set_input_label("genmatched_taus_3prong0pi0")
+     .set_save_shifts(true) 
+     .set_shift_label("scales_taues_3prong0pi0") 
+     .set_shift(tau_shift_3prong0pi0)
+     .set_shift_func(tau_shift_func_3prong0pi0));
 
- //   BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
- //   .set_input_label("genmatched_taus_3prong1pi0")
- //   .set_save_shifts(true)
- //   .set_shift_label("scales_taues_3prong1pi0")
- //   .set_shift(tau_shift_3prong1pi0)
- //   .set_shift_func(tau_shift_func_3prong1pi0));
- //}
- //if (!is_data){
- //  BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
- //    .set_input_vec_label(js["taus"].asString())
- //    .set_output_vec_label("fakeE_genmatched_taus")
- //    .set_gen_match(mcorigin::promptE));
- //  
- //  BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
- //    "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi"));
- //  
- //  BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
- //    "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
+     BuildModule(EnergyShifter<Tau>("TauEnergyShifter3prong1pi0")
+     .set_input_label("genmatched_taus_3prong1pi0")
+     .set_save_shifts(true)
+     .set_shift_label("scales_taues_3prong1pi0")
+     .set_shift(tau_shift_3prong1pi0)
+     .set_shift_func(tau_shift_func_3prong1pi0));
+  }
+  if (!is_data){
+    BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("fakeE_genmatched_taus")
+      .set_gen_match(mcorigin::promptE));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi"));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
 
- //  BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
- //    "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi_endcap"));
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi_endcap"));
 
- //  BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
- //    "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi_endcap"));
- //  
- //  BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
- //    .set_input_label("fakeE_genmatched_taus_0pi")
- //    .set_predicate([=](Tau const* t) {
- //      return  t->decay_mode() == 0 && fabs(t->eta()) < 1.5;
- //    }));
- //  
- //  BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
- //    .set_input_label("fakeE_genmatched_taus_1pi")
- //    .set_predicate([=](Tau const* t) {
- //      return  t->decay_mode() == 1 && fabs(t->eta()) < 1.5;
- //    }));
- //   
- //  BuildModule(SimpleFilter<Tau>("1Prong0PiEndCapTauFilter")
- //    .set_input_label("fakeE_genmatched_taus_0pi_endcap")
- //    .set_predicate([=](Tau const* t) {
- //      return  t->decay_mode() == 0 && fabs(t->eta()) >= 1.5;
- //    }));
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi_endcap"));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+      .set_input_label("fakeE_genmatched_taus_0pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0 && fabs(t->eta()) < 1.5;
+      }));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+      .set_input_label("fakeE_genmatched_taus_1pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1 && fabs(t->eta()) < 1.5;
+      }));
+     
+    BuildModule(SimpleFilter<Tau>("1Prong0PiEndCapTauFilter")
+      .set_input_label("fakeE_genmatched_taus_0pi_endcap")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0 && fabs(t->eta()) >= 1.5;
+      }));
 
- //  BuildModule(SimpleFilter<Tau>("1Prong1PiEndCapTauFilter")
- //    .set_input_label("fakeE_genmatched_taus_1pi_endcap")
- //    .set_predicate([=](Tau const* t) {
- //      return  t->decay_mode() == 1 && fabs(t->eta()) >= 1.5;
- //    }));
+    BuildModule(SimpleFilter<Tau>("1Prong1PiEndCapTauFilter")
+      .set_input_label("fakeE_genmatched_taus_1pi_endcap")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1 && fabs(t->eta()) >= 1.5;
+      }));
 
- //  BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
- //  .set_input_label("fakeE_genmatched_taus_0pi")
- //  .set_save_shifts(true)
- //  .set_shift_label("scales_efaketaues_1prong0pi0")
- //  .set_shift(fakeE_tau_shift_0pi));
- //  
- //  BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEnergyShifter")
- //  .set_input_label("fakeE_genmatched_taus_1pi")
- //  .set_save_shifts(true)
- //  .set_shift_label("scales_efaketaues_1prong1pi0")
- //  .set_shift(fakeE_tau_shift_1pi));
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_0pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong0pi0")
+    .set_shift(fakeE_tau_shift_0pi));
+    
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_1pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong1pi0")
+    .set_shift(fakeE_tau_shift_1pi));
 
- //  BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEndCapEnergyShifter")
- //  .set_input_label("fakeE_genmatched_taus_0pi_endcap")
- //  .set_save_shifts(true)
- //  .set_shift_label("scales_efaketaues_1prong0pi0_endcap")
- //  .set_shift(fakeE_tau_shift_0pi_endcap));
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong0PiEndCapEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_0pi_endcap")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong0pi0_endcap")
+    .set_shift(fakeE_tau_shift_0pi_endcap));
 
- //  BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEndCapEnergyShifter")
- //  .set_input_label("fakeE_genmatched_taus_1pi_endcap")
- //  .set_save_shifts(true)
- //  .set_shift_label("scales_efaketaues_1prong1pi0_endcap")
- //  .set_shift(fakeE_tau_shift_1pi_endcap));
+    BuildModule(EnergyShifter<Tau>("FakeE1Prong1PiEndCapEnergyShifter")
+    .set_input_label("fakeE_genmatched_taus_1pi_endcap")
+    .set_save_shifts(true)
+    .set_shift_label("scales_efaketaues_1prong1pi0_endcap")
+    .set_shift(fakeE_tau_shift_1pi_endcap));
 
- //  BuildModule(HTTGenMatchSelector<Tau>("FakeMuGenMatchSelector")
- //    .set_input_vec_label(js["taus"].asString())
- //    .set_output_vec_label("fakeMu_genmatched_taus")
- //    .set_gen_match(mcorigin::promptMu));
- //  
- //  BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
- //    "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_0pi"));
- //  
- //  BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
- //    "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_1pi"));
- //  
- //  BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
- //    .set_input_label("fakeMu_genmatched_taus_0pi")
- //    .set_predicate([=](Tau const* t) {
- //      return  t->decay_mode() == 0;
- //    }));
- //  
- //  BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
- //    .set_input_label("fakeMu_genmatched_taus_1pi")
- //    .set_predicate([=](Tau const* t) {
- //      return  t->decay_mode() == 1;
- //    }));
- //   
- //  BuildModule(EnergyShifter<Tau>("FakeMu1Prong0PiEnergyShifter")
- //  .set_input_label("fakeMu_genmatched_taus_0pi")
- //  .set_save_shifts(true)
- //  .set_shift_label("scales_mufaketaues_1prong0pi0")
- //  .set_shift(fakeMu_tau_shift_0pi));
- //  
- //  BuildModule(EnergyShifter<Tau>("FakeMu1Prong1PiEnergyShifter")
- //  .set_input_label("fakeMu_genmatched_taus_1pi")
- //  .set_save_shifts(true)
- //  .set_shift_label("scales_mufaketaues_1prong1pi0")
- //  .set_shift(fakeMu_tau_shift_1pi));
+    BuildModule(HTTGenMatchSelector<Tau>("FakeMuGenMatchSelector")
+      .set_input_vec_label(js["taus"].asString())
+      .set_output_vec_label("fakeMu_genmatched_taus")
+      .set_gen_match(mcorigin::promptMu));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+      "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_0pi"));
+    
+    BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+      "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_1pi"));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+      .set_input_label("fakeMu_genmatched_taus_0pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 0;
+      }));
+    
+    BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+      .set_input_label("fakeMu_genmatched_taus_1pi")
+      .set_predicate([=](Tau const* t) {
+        return  t->decay_mode() == 1;
+      }));
+     
+    BuildModule(EnergyShifter<Tau>("FakeMu1Prong0PiEnergyShifter")
+    .set_input_label("fakeMu_genmatched_taus_0pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_mufaketaues_1prong0pi0")
+    .set_shift(fakeMu_tau_shift_0pi));
+    
+    BuildModule(EnergyShifter<Tau>("FakeMu1Prong1PiEnergyShifter")
+    .set_input_label("fakeMu_genmatched_taus_1pi")
+    .set_save_shifts(true)
+    .set_shift_label("scales_mufaketaues_1prong1pi0")
+    .set_shift(fakeMu_tau_shift_1pi));
 
- //}
+  }
 
- //BuildModule(SimpleFilter<Tau>("TauFilterNewDM")
- //   .set_input_label(js["taus"].asString()).set_min(min_taus)
- //   .set_predicate([=](Tau const* t) {
- //     return  t->pt()                     >  tau_pt     &&
- //             fabs(t->eta())              <  tau_eta    &&
- //             fabs(t->lead_dz_vertex())   <  tau_dz     &&
- //             fabs(t->charge())           == 1          &&
- //             t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
- //             t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5; 
+  BuildModule(SimpleFilter<Tau>("TauFilterNewDM")
+    .set_input_label(js["taus"].asString()).set_min(min_taus)
+    .set_predicate([=](Tau const* t) {
+      return  t->pt()                     >  tau_pt     &&
+              fabs(t->eta())              <  tau_eta    &&
+              fabs(t->lead_dz_vertex())   <  tau_dz     &&
+              fabs(t->charge())           == 1          &&
+              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
+              t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5; 
 
- //   }));
+    }));
 
  }
 

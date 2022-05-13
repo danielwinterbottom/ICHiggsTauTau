@@ -86,6 +86,45 @@ class HTTCategories : public ModuleBase {
   branch_var iso_1_;
   branch_var iso_2_;
 
+  branch_var pt_1_;
+  branch_var pt_2_;
+  branch_var pt_3_;
+  branch_var pt_4_;
+
+  branch_var eta_1_;
+  branch_var eta_2_;
+  branch_var eta_3_;
+  branch_var eta_4_;
+  branch_var phi_1_;
+  branch_var phi_2_;
+  branch_var phi_3_;
+  branch_var phi_4_;
+  branch_var dphi_12_;
+  branch_var dphi_13_;
+  branch_var dphi_14_;
+  branch_var dphi_23_;
+  branch_var dphi_24_;
+  branch_var dphi_34_;
+  branch_var dR_12_;
+  branch_var dR_13_;
+  branch_var dR_14_;
+  branch_var dR_23_;
+  branch_var dR_24_;
+  branch_var dR_34_;
+  branch_var E_1_;
+  branch_var E_2_;
+  branch_var E_3_;
+  branch_var E_4_;
+  branch_var m_1_;
+  branch_var m_2_;
+  branch_var m_3_;
+  branch_var m_4_;
+  branch_var q_1_;
+  branch_var q_2_;
+  branch_var q_3_;
+  branch_var q_4_;
+
+
   double deepTauVsEle_iso_1_;
   double deepTauVsEle_iso_2_;
   double deepTauVsEle_iso_3_;

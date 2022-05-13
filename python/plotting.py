@@ -27,6 +27,8 @@ def SetAxisTitles(plot, channel):
   chan_label = '#tau#tau'
   lep1_label = '#tau'
   lep2_label = '#tau'
+  lep3_label = '#tau'
+  lep4_label = '#tau'
   if channel == 'et': 
     chan_label = 'e#tau'
     lep1_label = 'e'
@@ -51,7 +53,43 @@ def SetAxisTitles(plot, channel):
     chan_label = '#mu#mu'
     lep1_label = '#mu_{1}'
     lep2_label = '#mu_{2}'
-  
+  elif channel == 'ettt':
+    chan_label = 'e#tau#tau#tau'
+    lep1_label = 'e'
+    lep2_label = '#tau_{1}'
+    lep3_label = '#tau_{2}'
+    lep4_label = '#tau_{3}'
+  elif channel == 'mttt':
+    chan_label = '#mu#tau#tau#tau'
+    lep1_label = '#mu'
+    lep2_label = '#tau_{1}'
+    lep3_label = '#tau_{2}'
+    lep4_label = '#tau_{3}'
+  if channel == 'emtt':
+    chan_label = 'e#mu#tau#tau'
+    lep1_label = 'e'
+    lep2_label = '#mu'
+    lep3_label = '#tau_{1}'
+    lep4_label = '#tau_{2}'
+  elif channel == 'tttt':
+    chan_label = '#tau#tau#tau#tau'
+    lep1_label = '#tau_{1}'
+    lep2_label = '#tau_{2}'
+    lep3_label = '#tau_{3}'
+    lep4_label = '#tau_{4}'
+  elif channel == 'eett':
+    chan_label = 'ee#tau#tau'
+    lep1_label = 'e_{1}'
+    lep2_label = 'e_{2}'
+    lep3_label = '#tau_{1}'
+    lep4_label = '#tau_{2}'
+  elif channel == 'mmtt':
+    chan_label = '#mu#mu#tau#tau'
+    lep1_label = '#mu_{1}'
+    lep2_label = '#mu_{2}'
+    lep3_label = '#tau_{1}'
+    lep4_label = '#tau_{2}'
+
   bin_width=''
   #if not isVarBins:
   #    binning = plot.split('(')[1].split(')')[0].split(',')
@@ -63,6 +101,8 @@ def SetAxisTitles(plot, channel):
   titles['iso_2'] = ['iso_{'+lep2_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep2_label+'}']
   titles['pt_1'] = ['p_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['p_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep2_label+'} (1/GeV)']
+  titles['pt_3'] = ['p_{T}^{'+lep3_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep3_label+'} (1/GeV)']
+  titles['pt_4'] = ['p_{T}^{'+lep4_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep4_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
@@ -2246,6 +2286,36 @@ def HTTPlot(nodename,
     'qcd':[backgroundComp("QCD",["QCD"],R.TColor.GetColor(250,202,255))],
     'qcd_shape':[backgroundComp("QCD loosened shape",["QCD_shape"],R.TColor.GetColor(250,202,255))],
     'ff_comp':[backgroundComp("t#bar{t} j#rightarrow#tau",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak j#rightarrow#tau",["VVJ","W","ZJ"],R.TColor.GetColor(222,90,106))],
+      'mttt': [
+        backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),
+        backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+        backgroundComp("Diboson",["VV"],R.TColor.GetColor(100,192,232)),
+        backgroundComp("Z",["ZTT"],R.TColor.GetColor(248,206,104))],
+      'ettt': [
+        backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),
+        backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+        backgroundComp("Diboson",["VV"],R.TColor.GetColor(100,192,232)),
+        backgroundComp("Z",["ZTT"],R.TColor.GetColor(248,206,104))],
+      'tttt': [
+        backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),
+        backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+        backgroundComp("Diboson",["VV"],R.TColor.GetColor(100,192,232)),
+        backgroundComp("Z",["ZTT"],R.TColor.GetColor(248,206,104))],
+      'mmtt': [
+        backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),
+        backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+        backgroundComp("Diboson",["VV"],R.TColor.GetColor(100,192,232)),
+        backgroundComp("Z",["ZTT"],R.TColor.GetColor(248,206,104))],
+      'emtt': [
+        backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),
+        backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+        backgroundComp("Diboson",["VV"],R.TColor.GetColor(100,192,232)),
+        backgroundComp("Z",["ZTT"],R.TColor.GetColor(248,206,104))],
+      'eett': [
+        backgroundComp("t#bar{t}",["TT"],R.TColor.GetColor(155,152,204)),
+        backgroundComp("W",["W"],R.TColor.GetColor(222,90,106)),
+        backgroundComp("Diboson",["VV"],R.TColor.GetColor(100,192,232)),
+        backgroundComp("Z",["ZTT"],R.TColor.GetColor(248,206,104))]
     }
     if channel == "zee" or channel == "zmm": background_schemes['dy'] = [backgroundComp("DY",["ZLL"],R.TColor.GetColor(100,192,232))]
     if FF:
@@ -2304,10 +2374,11 @@ def HTTPlot(nodename,
     #        else:              bkg['plot_list'] = ["EmbedZTT_rho"]
     #        bkg['leg_text'] = ztt_name+' (#tau#rightarrow#rho)'
 
-    total_datahist = infile.Get(nodename+'/data_obs').Clone()
-    if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
-    if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
-    if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
+    #total_datahist = infile.Get(nodename+'/data_obs').Clone()
+    total_datahist = infile.Get(nodename+'/ZTT').Clone()
+    #if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
+    #if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
+    #if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
  
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
@@ -2589,7 +2660,7 @@ def HTTPlot(nodename,
           error_hist.SetBinError(i,error)
           
     error_hist.Draw("e2same")
-    blind_datahist.Draw("E same")
+    #blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
     
     #Setup legend
@@ -2631,6 +2702,12 @@ def HTTPlot(nodename,
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
+    if channel == "tttt": channel_label = "#tau_{h}#tau_{h}#tau_{h}#tau_{h}"
+    if channel == "mttt": channel_label = "#mu_{}#tau_{h}#tau_{h}#tau_{h}"
+    if channel == "ettt": channel_label = "e_{}#tau_{h}#tau_{h}#tau_{h}"
+    if channel == "mmtt": channel_label = "#mu_{}#mu_{}#tau_{h}#tau_{h}"
+    if channel == "eett": channel_label = "e_{}e_{}#tau_{h}#tau_{h}"
+    if channel == "emtt": channel_label = "e_{}#mu_{}#tau_{h}#tau_{h}"
     if "MVA" in x_title or "NN" in x_title: channel_label += " {}".format(cat)
     latex2 = R.TLatex()
     latex2.SetNDC()
@@ -3710,10 +3787,10 @@ def HTTPlotUnrolled(nodename,
           if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
             bkg['plot_list'] = ["EmbedZL","ZJ"]
 
-    total_datahist = infile.Get(nodename+'/data_obs').Clone()
-    if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
-    if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
-    if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
+    #total_datahist = infile.Get(nodename+'/data_obs').Clone()
+    #if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
+    #if scheme == 'qcd_shape': total_datahist = infile.Get(nodename+'/QCD').Clone()
+    #if scheme == 'ff_comp': total_datahist = infile.Get(nodename+'/jetFakes').Clone()
         
     #Create stacked plot for the backgrounds
     bkg_histos = []
@@ -3881,38 +3958,38 @@ def HTTPlotUnrolled(nodename,
     
     #blinding histograms, autoblind option overwrites others
     
-    blind_datahist = total_datahist.Clone()
-    total_datahist.SetMarkerStyle(20)
-    blind_datahist.SetMarkerStyle(20)
-    blind_datahist.SetLineColor(1)
-    
-    # Auto blinding option
-    if auto_blind:
-      for i in range(1,total_datahist.GetNbinsX()+1):
-        b = bkghist_blind.GetBinContent(i)  
-        s = totsighist.GetBinContent(i) 
-        if PassAutoBlindMetric(s,b,metric=0.00001) or True:
-          blind_datahist.SetBinContent(i,0)
-          blind_datahist.SetBinError(i,0)
-    #Blinding by hand using requested range, set to 200-4000 by default:
-    elif blind:
-        for i in range(0,total_datahist.GetNbinsX()):
-          low_edge = total_datahist.GetBinLowEdge(i+1)
-          high_edge = low_edge+total_datahist.GetBinWidth(i+1)
-          if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
-            blind_datahist.SetBinContent(i+1,0)
-            blind_datahist.SetBinError(i+1,0)
-    if norm_bins:
-        Norm2DBins(blind_datahist)
-        Norm2DBins(total_datahist)    
-        
-    error_hist = bkghist.Clone()
-    if do_custom_uncerts:
-      bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
-      bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
-      if norm_bins:
-        Norm2DBins(bkg_uncert_up)
-        Norm2DBins(bkg_uncert_down)
+    #blind_datahist = total_datahist.Clone()
+    #total_datahist.SetMarkerStyle(20)
+    #blind_datahist.SetMarkerStyle(20)
+    #blind_datahist.SetLineColor(1)
+    #
+    ## Auto blinding option
+    #if auto_blind:
+    #  for i in range(1,total_datahist.GetNbinsX()+1):
+    #    b = bkghist_blind.GetBinContent(i)  
+    #    s = totsighist.GetBinContent(i) 
+    #    if PassAutoBlindMetric(s,b,metric=0.00001) or True:
+    #      blind_datahist.SetBinContent(i,0)
+    #      blind_datahist.SetBinError(i,0)
+    ##Blinding by hand using requested range, set to 200-4000 by default:
+    #elif blind:
+    #    for i in range(0,total_datahist.GetNbinsX()):
+    #      low_edge = total_datahist.GetBinLowEdge(i+1)
+    #      high_edge = low_edge+total_datahist.GetBinWidth(i+1)
+    #      if ((low_edge > float(x_blind_min) and low_edge < float(x_blind_max)) or (high_edge > float(x_blind_min) and high_edge<float(x_blind_max))):
+    #        blind_datahist.SetBinContent(i+1,0)
+    #        blind_datahist.SetBinError(i+1,0)
+    #if norm_bins:
+    #    Norm2DBins(blind_datahist)
+    #    Norm2DBins(total_datahist)    
+    #    
+    #error_hist = bkghist.Clone()
+    #if do_custom_uncerts:
+    #  bkg_uncert_up = infile.Get(nodename+'/'+custom_uncerts_up_name).Clone()
+    #  bkg_uncert_down = infile.Get(nodename+'/'+custom_uncerts_down_name).Clone()
+    #  if norm_bins:
+    #    Norm2DBins(bkg_uncert_up)
+    #    Norm2DBins(bkg_uncert_down)
 
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
