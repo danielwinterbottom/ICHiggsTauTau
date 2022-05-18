@@ -124,13 +124,13 @@ for year in years:
   BINSlt500 = '[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,340,380,420,460,500]'
 
   var = [['mt_tot', BINS],
-        ['m_vis', BINS]]
-        # ['met',BINSlt200],
-        # ['mt_1',BINSlt400],
-        # ['mt_2',BINSlt200],
-        # ['pt_1',BINSlt400],
-        # ['pt_2',BINSlt200],
-        # ['pt_tt',BINSlt500]]
+        ['m_vis', BINS],
+        ['met',BINSlt200],
+        ['mt_1',BINSlt400],
+        ['mt_2',BINSlt200],
+        ['pt_1',BINSlt400],
+        ['pt_2',BINSlt200],
+        ['pt_tt',BINSlt500]]
 
 
   for ch in channels:
@@ -138,7 +138,7 @@ for year in years:
     if not os.path.isdir('%(output_folder)s/%(year)s/%(ch)s' % vars()):
       os.system("mkdir %(output_folder)s/%(year)s/%(ch)s" % vars())
 
-    add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
+    add_cond = '--add_wt=\'wt_tau_id_mssm*wt_prefire\''
     #add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire*(1/wt_dysoup)\''
     #add_cond = '--add_wt =\'1/wt_dysoup\''
     method='8'
