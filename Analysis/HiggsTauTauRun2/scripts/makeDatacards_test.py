@@ -138,7 +138,6 @@ for year in years:
 
     add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
     method='8'
-    add_cond ='--do_ss'
     categories = cat_schemes[ch]
     for cat in categories:
 	
