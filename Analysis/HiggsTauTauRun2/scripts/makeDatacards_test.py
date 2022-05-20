@@ -136,7 +136,7 @@ for year in years:
     if not os.path.isdir('%(output_folder)s/%(year)s/%(ch)s' % vars()):
       os.system("mkdir %(output_folder)s/%(year)s/%(ch)s" % vars())
 
-    add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
+    add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire*(1/puweight)\''
     method='8'
     categories = cat_schemes[ch]
     for cat in categories:
