@@ -597,7 +597,7 @@ elif options.channel == 'em':
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
-    if options.era in ['cpsummwt_wsouper17','UL_17','cp18','UL_18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
+    if options.era in ['cpsummer17','UL_17','cp18','UL_18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron && fabs(wt)<2)'
@@ -1413,13 +1413,13 @@ if options.era in ['UL_17']:
  
     if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt' and options.singletau: data_samples += ['TauB','TauC','TauD','TauE','TauF']
 
     if options.channel == 'em': 
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
     if options.channel == 'et' or options.channel == 'zee': 
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-        #options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
+        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et' and options.singletau: data_samples += ['TauB','TauC','TauD','TauE','TauF']
     if options.channel == 'tt': 
         data_samples = ['TauB','TauC','TauD','TauE','TauF']
 
@@ -1451,12 +1451,12 @@ if options.era in ['cp18']:
  
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-        if options.analysis in ['mssmrun2','vlq']  and options.channel == 'mt': data_samples += ['TauA','TauB','TauC','TauD']
+        if options.analysis in ['mssmrun2','vlq']  and options.channel == 'mt' and options.singletau == True : data_samples += ['TauA','TauB','TauC','TauD']
     if options.channel == 'em':
         data_samples = ['MuonEGA','MuonEGB','MuonEGC','MuonEGD']
     if options.channel == 'et' or options.channel == 'zee':
         data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
-        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauA','TauB','TauC','TauD']
+        if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et' and options.singletau == True: data_samples += ['TauA','TauB','TauC','TauD']
     if options.channel == 'tt':
         data_samples = ['TauA','TauB','TauC','TauD']
 
