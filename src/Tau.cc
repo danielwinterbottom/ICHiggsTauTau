@@ -30,8 +30,8 @@ float Tau::GetTauID(std::string const& name) const {
   if (iter != tau_ids_.end()) {
     return iter->second;
   } else {
-    std::cerr << "Warning in <Tau::GetTauID>: Algorithm \"" << name
-              << "\" not found" << std::endl;
+    //std::cerr << "Warning in <Tau::GetTauID>: Algorithm \"" << name
+      //        << "\" not found" << std::endl;
     return 0.0;
   }
 }

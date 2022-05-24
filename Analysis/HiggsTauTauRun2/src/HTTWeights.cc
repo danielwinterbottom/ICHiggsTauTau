@@ -2653,11 +2653,11 @@ int HTTWeights::Execute(TreeEvent *event) {
      ele2_trg = 1.0;
      ele2_trg_mc = 1.0;
      
-     cout << "ele1_trg: " << ele1_trg << endl;
-     cout << "ele1_trg_mc: " << ele1_trg_mc << endl;
-     cout << "e1_pt: " << e1_pt << endl;
-     cout << "e1_eta: " << e1_eta << endl;
-     cout << "e_iso_1: " << e_iso_1 << endl;
+    // cout << "ele1_trg: " << ele1_trg << endl;
+    // cout << "ele1_trg_mc: " << ele1_trg_mc << endl;
+    // cout << "e1_pt: " << e1_pt << endl;
+    // cout << "e1_eta: " << e1_eta << endl;
+    // cout << "e_iso_1: " << e_iso_1 << endl;
 
      if (trg_applied_in_mc_) {
 		ele1_trg = ele1_trg / ele1_trg_mc;
