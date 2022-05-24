@@ -630,7 +630,7 @@ class Analysis(object):
                 #     continue
 		#test = Shape(hist)
 		#test.Print()
-		hist.Print("all")
+		#hist.Print("all")
                 setattr(outdict[sample][i][0], outdict[sample][i][1], Shape(hist))
         self.nodes.Run()
 
