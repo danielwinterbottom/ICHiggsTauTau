@@ -31,8 +31,8 @@ options, remaining_argv = conf_parser.parse_known_args()
 defaults = {
     "channel":"tpzmm" , 
     "outputfolder":"tagandprobe", 
-    "folder":"/vols/cms/dw515/Offline/output/SM/TAPElMuLO2016/",
-    "era":"sm18", 
+    "folder":"/vols/cms/ks1021/output/UL/2017UL_SF",
+    "era":"UL_17", 
     "embedded":False, 
     "em_iso":False, 
     "aiso1":False, 
@@ -952,7 +952,7 @@ if  options.channel == 'tpzee':
     elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'legacy16': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
     elif options.era == 'UL_17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-    elif options.era == 'UL_18': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    elif options.era == 'UL_18': data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     #if options.era == 'summer17': data_samples = ['SingleElectronB']
     else: data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
