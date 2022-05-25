@@ -1199,6 +1199,7 @@ for name in wsnames:
   if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
   else: sig_model = 'BWDoubleCBConvCorr'
 
+# ---------------
   if options.era in ['UL_17','UL_18','summer17','sm18']:
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
     elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
@@ -1208,8 +1209,8 @@ for name in wsnames:
     if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
     if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
     if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
-# ---------------
-  if options.era in ['sm18']:
+
+  if options.era in ['UL_18','sm18']:
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
     elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
     elif options.channel =='tpzmm':
@@ -1220,7 +1221,7 @@ for name in wsnames:
     if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
 
 
-  if options.era == 'summer18':
+  if options.era == 'summer18' or options.era == 'UL_18':
     if options.channel =='tpzmm':
         if "iso" in name: sig_model = 'DoubleVPartcorr_TwoPeaks_18'
         elif "id" in name: sig_model = 'DoubleVUncorr_18'

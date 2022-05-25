@@ -45,18 +45,23 @@ sample_list = [
           # Single Muon
          'SingleMuonG',
          'SingleMuonH',
+	 'SingleMuonF',
           # Single Electron
          'SingleElectronG',
          'SingleElectronH',
+         'SingleElectronF',
           # Tau
          'TauG',
          'TauH',
+         'TauF',
           # MuonEG
          'MuonEGG',
          'MuonEGH',
+         'MuonEGF',
 	  # EGamma
 	 'EGammaG',
 	 'EGammaH',
+         'EGammaF',
           # Double Muon
 #         'DoubleMuonG',
 #         'DoubleMuonH',
