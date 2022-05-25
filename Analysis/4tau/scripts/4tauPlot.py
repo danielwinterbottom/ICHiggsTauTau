@@ -163,7 +163,7 @@ cats = {}
 
 VsJets_wp = "vvvloose"
 VsMu_wp = "vloose"
-VsEle_wp = "vvvloose"
+VsEle_wp = "vvloose"
 lepton_iso = "0.15"
 
 t_sel = "deepTauVsJets_%(VsJets_wp)s_X>0.5 && deepTauVsMu_%(VsMu_wp)s_X>0.5 && deepTauVsEle_%(VsEle_wp)s_X>0.5" % vars()
