@@ -5,8 +5,8 @@
     "max_events":   -1,
     "timings":      true,
     //"channels": ["zee"],
-   //"channels":      ["mt","et","tt","em","zmm","zee"],
-    "channels":      ["mt"],
+    "channels":      ["et","tt","em","zmm","zee"],
+   // "channels":      ["mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -19,7 +19,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "mc"            : "mcleg2016",
     "era"           : "data_2016UL_postVFP",
     "strategy"      : "legacy16",
@@ -60,7 +60,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/ks1021/output/UL/2016UL_postVFP_gen_analysis/",
+    "output_folder" : "/vols/cms/ks1021/output/UL/2016UL_postVFP_pu_fix/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2016_tres1_v2_svfit/",
@@ -82,8 +82,8 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/Data_Pileup_2016_271036-284044_80bins.root",
-    "mc_pu_file"    : "input/pileup/MC_Moriond17_PU25ns_V1.root",
+    "data_pu_file"  : "input/pileup/2016UL/PileupHistogram-goldenJSON-13tev-2016-69200ub-99bins.root",
+    "mc_pu_file"    : "/vols/cms/ks1021/output/UL/2016UL_postVFP_gen_analysis/pileupDistribution/pileup_2017_DYJetsToLL-LO.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,

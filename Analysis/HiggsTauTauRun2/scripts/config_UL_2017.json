@@ -5,8 +5,8 @@
     "max_events":   -1,
     "timings":      true,
    // "channels": ["zee"],
-  // "channels":     ["et","mt","tt","em","zmm","zee"],
-    "channels":     ["mt"],
+   //"channels":     ["et","mt","tt","em","zmm","zee"],
+   "channels":     ["tpzee","tpzmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -19,7 +19,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {  
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "era"           : "data_2017UL",
     "mc"            : "mc2017",
     "strategy"      : "cpdecays17",
@@ -61,7 +61,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "./",
-    "output_folder" : "/vols/cms/ks1021/output/UL/2017UL_gen_analysis",
+    "output_folder" : "/vols/cms/ks1021/output/UL/2017UL_SF",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2017_tres1_v2_svfit/",
@@ -84,8 +84,8 @@
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
     // "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462_200bins.root",
-    "data_pu_file"  : "input/pileup/pu_distributions_data_2017.root",
-    "mc_pu_file"    : "input/pileup/MC_Winter17_PU25ns_V1.root",
+    "data_pu_file"  : "input/pileup/2017UL/PileupHistogram-goldenJSON-13tev-2017-69200ub-99bins.root",
+    "mc_pu_file"    : "/vols/cms/ks1021/output/UL/2017UL_gen_analysis/pileupDistribution/pileup_2017_DYJetsToLL-LO.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,

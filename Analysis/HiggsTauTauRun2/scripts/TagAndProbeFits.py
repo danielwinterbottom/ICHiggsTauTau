@@ -941,12 +941,18 @@ if options.channel == 'tpzmm':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     elif options.era == 'legacy16':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
+    elif options.era == 'UL_17':
+        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+    elif options.era == 'UL_18':
+        data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
  
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
 if  options.channel == 'tpzee': 
     if options.era in ['summer18','sm18']: data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'legacy16': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
+    elif options.era == 'UL_17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    elif options.era == 'UL_18': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     #if options.era == 'summer17': data_samples = ['SingleElectronB']
     else: data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
@@ -955,6 +961,8 @@ if  options.channel == 'tpzee':
 if options.era == 'summer17': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 elif options.era in ['summer18','sm18']: ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'legacy16': ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
+elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO']
+elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO']
 else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 
 embed_samples = []
@@ -1008,7 +1016,7 @@ if options.channel == 'tpzmm':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
   
-  if options.era in ['summer17','summer18','sm18']:
+  if options.era in ['UL_17','UL_18','summer17','summer18','sm18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
   else:
@@ -1020,7 +1028,7 @@ if options.channel == 'tpzmm':
     iso_cut_2="1"
   
 if options.channel == 'tpzee':
-  if options.era in ['summer17','summer18','legacy16','sm18']:
+  if options.era in ['UL_17','UL_18','summer17','summer18','legacy16','sm18']:
     iso_cut_1='iso_1<0.15'
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
@@ -1038,7 +1046,7 @@ if options.channel == 'tpzee':
     if options.aiso2:
       iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
-  if options.em_iso or options.era in ['summer17','summer18','sm18']:
+  if options.em_iso or options.era in ['UL_17','UL_18','summer17','summer18','sm18']:
     iso_cut_1='iso_1<0.15'    
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
@@ -1048,7 +1056,7 @@ if options.channel == 'tpzee':
       iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
       iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
-  if options.era in ['summer18','sm18','summer17']:
+  if options.era in ['UL_17','UL_18','summer18','sm18','summer17']:
     if options.tree_name == 'tagandprobe_ET':
       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&trg_tag_extra_1&&os)'
       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&trg_tag_extra_2&&os)'
@@ -1096,14 +1104,14 @@ if options.charge_flip:
   trg_probe_2= '(os==0)'
   baseline_tag2='(1)'
   if options.channel == 'tpzee':
-    if options.era in ['summer17','summer18','sm18']:
+    if options.era in ['UL_17','UL_18','summer17','summer18','sm18']:
       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<1.4&&iso_1<0.15&&id_tag_1&&trg_tag_1&&iso_2<0.15&&id_probe_2)'
       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<1.4&&iso_2<0.15&&id_tag_2&&trg_tag_2&&iso_1<0.15&&id_probe_1)'
     else:
       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<1.4&&iso_1<0.15&&id_tag_1&&trg_tag_1&&iso_2<0.15&&id_probe_2)'
       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<1.4&&iso_2<0.15&&id_tag_2&&trg_tag_2&&iso_1<0.15&&id_probe_1)'
   else:
-    if options.era in ['summer18','sm18','summer17']:
+    if options.era in ['UL_17','UL_18','summer18','sm18','summer17']:
       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&iso_2<0.1&&id_probe_1)'
       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&iso_1<0.1&&id_probe_1)'
     else:
@@ -1117,7 +1125,7 @@ if options.mutoele:
 
   trg_probe_1= '(elec_id_1)*((abs(elec_id_M_1-90)>5) || elec_id_1==0)'
   trg_probe_2= '(elec_id_2)*((abs(elec_id_M_2-90)>5) || elec_id_1==0)'
-  if options.era in ['summer18','sm18','summer17']:
+  if options.era in ['UL_17','UL_18','summer18','sm18','summer17']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1)&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2)&&os)'
   else:
@@ -1140,7 +1148,7 @@ if options.draw_hists == 1:
     ana.remaps = {}
     if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'tpzee':
-        if options.era in ['summer18','sm18']: ana.remaps['EGamma'] = 'data_obs'
+        if options.era in ['UL_18','summer18','sm18']: ana.remaps['EGamma'] = 'data_obs'
         else: ana.remaps['SingleElectron'] = 'data_obs'
     
     # Add all data files
@@ -1191,7 +1199,7 @@ for name in wsnames:
   if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
   else: sig_model = 'BWDoubleCBConvCorr'
 
-  if options.era in ['summer17','sm18']:
+  if options.era in ['UL_17','UL_18','summer17','sm18']:
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
     elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
     elif options.channel =='tpzmm': 
@@ -1200,7 +1208,7 @@ for name in wsnames:
     if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
     if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
     if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
-
+# ---------------
   if options.era in ['sm18']:
     if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
     elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
