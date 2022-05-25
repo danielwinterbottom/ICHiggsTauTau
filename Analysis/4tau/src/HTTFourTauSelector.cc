@@ -9,25 +9,14 @@
 
 namespace ic {
 
-  HTTFourTauSelector::HTTFourTauSelector(std::string const& name) : ModuleBase(name), channel_(channel::et),strategy_(strategy::paper2013),mc_(mc::summer12_53X) {
-    pair_label_ = "emtauCandidates";
-    mva_met_from_vector_ = true;
-    faked_tau_selector_ = 0;
-    hadronic_tau_selector_ = 0;
-    ztt_mode_ = 0;
-    use_status_flags_ = true;
-    met_label_ = "pfMVAMet";
+  HTTFourTauSelector::HTTFourTauSelector(std::string const& name) : ModuleBase(name), channel_(channel::tttt),strategy_(strategy::paper2013),mc_(mc::summer12_53X) {
+    pair_label_ = "4tau";
     fs_ = NULL;
-    hists_.resize(1);
     use_most_isolated_ = false;
-    use_os_preference_ = true;
-    scale_met_for_tau_ = 0;
-    tau_scale_ = 1.0;
+    use_charge_preference_ = true;
     allowed_tau_modes_ = "";
-    gen_taus_label_ = "genParticlesTaus";
     metcl_mode_ = 0;
     metuncl_mode_ = 0;
-    shift_jes_ = false;
   }
 
   HTTFourTauSelector::~HTTFourTauSelector() {
@@ -41,10 +30,7 @@ namespace ic {
     std::cout << "HTTFourTauSelector" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
     std::cout << boost::format(param_fmt) % "pair_label"            % pair_label_;
-    std::cout << boost::format(param_fmt) % "met_label"             % met_label_;
     std::cout << boost::format(param_fmt) % "use_most_isolated"     % use_most_isolated_;
-    std::cout << boost::format(param_fmt) % "scale_met_for_tau"     % scale_met_for_tau_;
-    std::cout << boost::format(param_fmt) % "tau_scale"             % tau_scale_;
     std::string allowed_str = "";
     if (allowed_tau_modes_ == "") {
       allowed_str = "all modes";
@@ -58,20 +44,6 @@ namespace ic {
       } 
     }
     std::cout << boost::format(param_fmt) % "allowed_tau_modes"     % allowed_str;
-    std::cout << boost::format(param_fmt) % "faked_tau_selector"    % faked_tau_selector_;
-    std::cout << boost::format(param_fmt) % "ztt_mode"              % ztt_mode_;
-    std::cout << boost::format(param_fmt) % "use_status_flags"      % use_status_flags_;
-    std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector_;
-    std::cout << boost::format(param_fmt) % "gen_taus_label"        % gen_taus_label_;
-
-    if (fs_) {
-      hists_[0] = new Dynamic2DHistoSet(fs_->mkdir("httpairselector"));
-      for (unsigned i = 0; i < hists_.size(); ++i) {
-        hists_[i]->Create("n_pairs", 4, -0.5, 3.5, 4, -0.5, 3.5);
-        hists_[i]->Create("pt_gen_reco", 50, 0, 100, 50, 0, 100);
-        hists_[i]->Create("lepton_source",6,0.5,6.5,6,0.5,6.5);
-      }
-    }
 
     tau_idiso_name_ = "byDeepTau2017v2p1VSjetraw";
 
@@ -80,9 +52,6 @@ namespace ic {
 
   int HTTFourTauSelector::Execute(TreeEvent *event) {
 
-    // ************************************************************************
-    // Do the actual pair selection, either by highest pT or most isolated tau
-    // ************************************************************************
     std::vector<CompositeCandidate *> & multilepton = event->GetPtrVec<CompositeCandidate>(pair_label_);
     std::vector<CompositeCandidate *> all_multilepton;
     std::vector<CompositeCandidate *> zero_charge;
@@ -109,7 +78,7 @@ namespace ic {
     std::vector<Candidate *> sort_collection = {lep1, lep2, lep3, lep4};
     std::vector<Candidate *> sort_collection_1 = {lep1, lep2, lep3, lep4};
     std::vector<Candidate *> sort_collection_2 = {lep1, lep2, lep3, lep4};
-    if(use_os_preference_) {    
+    if(use_charge_preference_) {    
 
       // The first pair should have the highest "scalar sum pt"
       std::sort(zero_charge.begin(),zero_charge.end(), SortBySumPt); 
@@ -216,240 +185,23 @@ namespace ic {
     }
     if (result.size() == 0) return 1;  //Require at least one 4 tau collection
 
-    // ************************************************************************
-    // If using pair-wise mva met select the appropriate met
-    // ************************************************************************
-    // TO DO: Remove as not needed anymore?
-//    if (mva_met_from_vector_) {
-//      std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
-//      std::size_t id = 0;
-//      boost::hash_combine(id, result[0]->GetCandidate("lepton1")->id());
-//      boost::hash_combine(id, result[0]->GetCandidate("lepton2")->id());
-//      std::size_t id_inv = 0;
-//      boost::hash_combine(id_inv, result[0]->GetCandidate("lepton2")->id());
-//      boost::hash_combine(id_inv, result[0]->GetCandidate("lepton1")->id());
-//      std::map<std::size_t, Met *>::const_iterator it = met_map.find(id);
-//      std::map<std::size_t, Met *>::const_iterator it_inv = met_map.find(id_inv);
-//      if (it != met_map.end()) {
-//        Met * mva_met = it->second;
-//        event->Add("pfMVAMet", mva_met);
-//      } else if (it_inv != met_map.end()){
-//        //lepton1 <--> lepton2 (needed for fully hadronic)
-//        Met * mva_met = it_inv->second;
-//        event->Add("pfMVAMet", mva_met);
-//      } else {
-//        std::cerr << "Could not find Met in collection for ID: " << id << " or " << id_inv <<std::endl;
-//        exit(0);
-//      }
-//    }
-//   
-//    std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-//    if((mc_ == mc::mcleg2016 || mc_ == mc::mc2018 || mc_ == mc::mc2017) && !usePFMET_) pfMet_vec = event->GetPtrVec<Met>("puppiMet"); // for legacy 2016 and 2018 use the puppi MET (but still call this "pfMET" to avoid having to change other sections of the code)
-//    Met *pfmet = pfMet_vec.at(0);
-//    // shift MET for systematic shifts
-//    if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTFourTauSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
-//    else if(metuncl_mode_!=0 || metcl_mode_!=0){
-//      std::string shift_type = "NoShift";  
-//      if(metcl_mode_==1) shift_type = "JetEnDown";
-//      if(metcl_mode_==2) shift_type = "JetEnUp";
-//      if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
-//      if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
-//      double pt = pfmet->GetShiftedMet(shift_type).pt();
-//      double phi = pfmet->GetShiftedMet(shift_type).phi();
-//      pfmet->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
-//    }
-//    event->Add("pfMET", pfmet);
-//   
-//   // TO DO: Update for 4taus
-//   // ************************************************************************
-//   // Scale met for the tau energy scale shift
-//   // ************************************************************************
-//    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
-//    if (/*scale_met_for_tau_ &&*/ channel_ != channel::em && channel_ != channel::tt && channel_ != channel::zmm && channel_ != channel::zee) {
-//      Met * met = event->GetPtr<Met>(met_label_);
-//      Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
-//      //double t_scale = tau_scale_;
-//      std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-//       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_taues_3prong1pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
-//      for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
-//        if(event->Exists(tau_shifts.at(i))){
-//          auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
-//          if(es_shifts.count(tau->id()) > 0){
-//             this->CorrectMETForShift(met, es_shifts.at(tau->id()));
-//          }
-//        }
-//      }
-//      if (channel_ == channel::et && event->Exists("elec_scales")) {
-//        double t_scale_ = 1.0;  
-//        Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
-//        std::map<std::size_t, double> const& elec_scales = event->Get< std::map<std::size_t, double>  > ("elec_scales");
-//        std::map<std::size_t, double>::const_iterator it = elec_scales.find(elec->id());
-//        if (it != elec_scales.end()) {
-//          t_scale_ = it->second;
-//        } else {
-//          std::cout << "Scale for chosen electron not found!" << std::endl;
-//          throw;
-//        }
-//        double metx = met->vector().px();
-//        double mety = met->vector().py();
-//        double metet = met->vector().energy();
-//        double dx = elec->vector().px() * (( 1. / t_scale_) - 1.);
-//        double dy = elec->vector().py() * (( 1. / t_scale_) - 1.);
-//        metx = metx + dx;
-//        mety = mety + dy;
-//        metet = sqrt(metx*metx + mety*mety);
-//        ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
-//        met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
-//      }
-//      if ((channel_ == channel::mt || channel_ == channel::tpmt) && event->Exists("muon_scales")) {
-//        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton1"));
-//        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
-//        if(es_shifts.count(muon->id()) > 0){
-//          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
-//        }
-//      }
-//    }
-//
-//   // ************************************************************************
-//   // Scale met for the tau energy scale shift in fully hadronic channel
-//   // ************************************************************************
-//    if (/*scale_met_for_tau_ && */channel_ == channel::tt) {
-//      Met * met = event->GetPtr<Met>(met_label_);
-//      Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
-//      Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
-//      std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
-//       "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0","scales_efaketaues_1prong0pi0_endcap","scales_efaketaues_1prong1pi0_endcap", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
-//      for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
-//        if(event->Exists(tau_shifts.at(i))){
-//          auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
-//          if(es_shifts.count(tau1->id()) > 0){
-//             this->CorrectMETForShift(met, es_shifts.at(tau1->id()));
-//          }
-//          if(es_shifts.count(tau2->id()) > 0){
-//             this->CorrectMETForShift(met, es_shifts.at(tau2->id()));
-//          }
-//        }
-//      }
-//    }
-//    // ************************************************************************
-//    // Scale met for the electron energy scale shift
-//    // ************************************************************************
-//    if (scale_met_for_tau_ && channel_ == channel::em) {
-//      //Still to be moved to the better method used above
-//      Met * met = event->GetPtr<Met>(met_label_);
-//      double t_scale_ = tau_scale_;
-//      Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
-//      if (event->Exists("elec_scales")) {
-//        std::map<std::size_t, double> const& elec_scales = event->Get< std::map<std::size_t, double>  > ("elec_scales");
-//        std::map<std::size_t, double>::const_iterator it = elec_scales.find(elec->id());
-//        if (it != elec_scales.end()) {
-//          t_scale_ = it->second;
-//        } else {
-//          std::cout << "Scale for chosen electron not found!" << std::endl;
-//          throw;
-//        }
-//      }
-//      double metx = met->vector().px();
-//      double mety = met->vector().py();
-//      double metet = met->vector().energy();
-//      double dx = elec->vector().px() * (( 1. / t_scale_) - 1.);
-//      double dy = elec->vector().py() * (( 1. / t_scale_) - 1.);
-//      metx = metx + dx;
-//      mety = mety + dy;
-//      metet = sqrt(metx*metx + mety*mety);
-//      ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
-//      met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
-//      if (event->Exists("muon_scales")) {
-//        Muon const* muon = dynamic_cast<Muon const*>(result[0]->GetCandidate("lepton2"));
-//        auto const& es_shifts = event->Get<map_id_vec>("muon_scales");
-//        if(es_shifts.count(muon->id()) > 0){
-//          this->CorrectMETForShift(met, es_shifts.at(muon->id()));
-//        }
-//      }
-//    }
-//    
-//    // ************************************************************************
-//    // Scale met for the jet energy scale shift in fully hadronic channel
-//    // ************************************************************************
-//
-//    if(event->Exists("jes_shift") && shift_jes_){
-//      Met * met = event->GetPtr<Met>(met_label_);
-//      ROOT::Math::PxPyPzEVector jes_shift = event->Get<ROOT::Math::PxPyPzEVector>("jes_shift");
-//      this->CorrectMETForShift(met, jes_shift);
-//    }
-//
-//    // ************************************************************************
-//    // Scale met for the jet energy resolution
-//    // ************************************************************************
-//
-//    if(event->Exists("jer_shift") && shift_jes_){
-//      Met * met = event->GetPtr<Met>(met_label_);
-//      ROOT::Math::PxPyPzEVector jer_shift = event->Get<ROOT::Math::PxPyPzEVector>("jer_shift");
-//      this->CorrectMETForShift(met, jer_shift);
-//    }
-//
-//    // ************************************************************************
-//    // Select l->tau or jet->tau fakes
-//    // ************************************************************************
-//    // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
-//    // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
-//    // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-//    if(strategy_ != strategy::spring15 && strategy_ != strategy::fall15 && strategy_ != strategy::mssmspring16 && strategy_ != strategy::smspring16 && strategy_!=strategy::mssmsummer16 && strategy_ != strategy::smsummer16 && strategy_ != strategy::cpsummer16 &&  strategy_ != strategy::legacy16 && strategy_ != strategy::cpdecays16 && strategy_ != strategy::cpsummer17 && strategy_ != strategy::cpdecays17 && strategy_ != strategy::cpdecays18) {
-//      if (faked_tau_selector_ > 0  && channel_ != channel::em && channel_ != channel::zmm && channel_ != channel::zee ) {
-//        std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
-//        std::vector<GenParticle *> sel_particles;
-//        if (channel_ == channel::et || channel_ == channel::etmet) {
-//          // Add all status 3 electrons with pT > 8 to sel_particles
-//          for (unsigned i = 0; i < particles.size(); ++i) {
-//            if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
-//          }
-//        } else if (channel_ == channel::mt || channel_ == channel::mtmet || channel_ == channel::tpmt) {
-//          // Add all status 3 muons with pT > 8 to sel_particles
-//         for (unsigned i = 0; i < particles.size(); ++i) {
-//           if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
-//         } 
-//        }
-//        // Get the reco tau from the pair
-//        std::vector<Candidate *> tau;
-//        if(channel_ == channel::tt){
-//          tau.push_back(result[0]->GetCandidate("lepton1"));
-//        }
-//        tau.push_back(result[0]->GetCandidate("lepton2"));
-//        // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
-//        std::vector<std::pair<Candidate*, GenParticle*> > matches = MatchByDR(tau, sel_particles, 0.5, true, true);
-//        // If we want ZL and there's no match, fail the event
-//        if (faked_tau_selector_ == 1 && matches.size() == 0) return 1;
-//        // If we want ZJ and there is a match, fail the event
-//        if (faked_tau_selector_ == 2 && matches.size() > 0) return 1;
-//      }
-//      if (hadronic_tau_selector_ > 0 && channel_ != channel::em) {
-//        std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
-//        std::vector<GenJet> gen_taus = BuildTauJets(particles, false,false);
-//        std::vector<GenJet *> gen_taus_ptr;
-//        for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
-//        ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
-//        std::vector<Candidate *> tau;
-//        tau.push_back(result[0]->GetCandidate("lepton2"));
-//        // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
-//        std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
-//        // If we want ZL and there's no match, fail the event
-//        if (hadronic_tau_selector_ == 1 && matches.size() == 0) return 1;
-//        if (fs_ && matches.size() == 1) {
-//          hists_[0]->Fill("pt_gen_reco", matches[0].second->pt(), matches[0].first->pt(), 1);
-//        }
-//        // If we want ZJ and there is a match, fail the event
-//        if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
-//      }
-//    }
-//
-//     
-//    // ************************************************************************
-//    // Restrict decay modes
-//    // ************************************************************************
-//    Tau const* tau_ptr = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
-//    if (tau_ptr && allowed_tau_modes_ != "") {
-//      if (tau_mode_set_.find(tau_ptr->decay_mode()) == tau_mode_set_.end()) return 1;
-//    }
+    std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
+    pfMet_vec = event->GetPtrVec<Met>("puppiMet");
+    Met *pfmet = pfMet_vec.at(0);
+    // shift MET for systematic shifts
+    if(metuncl_mode_!=0 && metcl_mode_!=0) std::cout<< "HTTPairSelector:: Trying to perform more that 1 MET shift at once, MET will not be shifted!" << std::endl;
+    else if(metuncl_mode_!=0 || metcl_mode_!=0){
+      std::string shift_type = "NoShift";  
+      if(metcl_mode_==1) shift_type = "JetEnDown";
+      if(metcl_mode_==2) shift_type = "JetEnUp";
+      if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
+      if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
+      double pt = pfmet->GetShiftedMet(shift_type).pt();
+      double phi = pfmet->GetShiftedMet(shift_type).phi();
+      pfmet->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
+    }
+    event->Add("pfMET", pfmet);
+
 
     multilepton = result;
     return 0;

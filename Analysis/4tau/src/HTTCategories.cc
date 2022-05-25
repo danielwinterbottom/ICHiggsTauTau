@@ -15,34 +15,16 @@
 
 #include "UserCode/ICHiggsTauTau/Analysis/4tau/test/pola_module.hpp"
 
-double CPWeight(double x, double sm, double ps, double mm ){
-        x*=M_PI/180; //convert to radians
-        return cos(x)*cos(x)*sm + sin(x)*sin(x)*ps + 2*cos(x)*sin(x)*(mm-sm/2-ps/2);
-
-}
-
 namespace ic {
 
   HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), 
-      channel_(channel::et), 
-      era_(era::data_2012_rereco),
-      strategy_(strategy::paper2013) {
-      ditau_label_ = "emtauCandidates";
-      jets_label_ = "pfJetsPFlow";
-      met_label_ = "pfMVAMetNoLeptons";
+      channel_(channel::tttt), 
+      era_(era::data_2018),
+      strategy_(strategy::cpdecays18) {
+      fourtau_label_ = "4tau";
       fs_ = NULL;
       write_tree_ = true;
-      make_sync_ntuple_ = false;
-      make_mva_ntuple_ = false;
-      sync_output_name_ = "SYNC.root";
-      is_embedded_=false;
-      is_data_=false;
-      systematic_shift_ = false;
-      do_qcd_scale_wts_ = false;
-      do_mssm_higgspt_ = false;
-      do_faketaus_ = false;
-      trg_applied_in_mc_ = true;
-}
+  }
 
   HTTCategories::~HTTCategories() {
     ;
@@ -55,12 +37,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
     std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
     std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
-    std::cout << boost::format(param_fmt()) % "dilepton_label"  % ditau_label_;
-    std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
-    std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
+    std::cout << boost::format(param_fmt()) % "dilepton_label"  % fourtau_label_;
     std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
-    std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
-    std::cout << boost::format(param_fmt()) % "make_mva_ntuple" % make_mva_ntuple_;
 
 
     
@@ -285,7 +263,7 @@ namespace ic {
     
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    std::vector<CompositeCandidate *> const& fourtau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+    std::vector<CompositeCandidate *> const& fourtau_vec = event->GetPtrVec<CompositeCandidate>(fourtau_label_);
     CompositeCandidate const* fourtau = fourtau_vec.at(0);
     Candidate const* lep1 = fourtau->GetCandidate("lepton1");
     Candidate const* lep2 = fourtau->GetCandidate("lepton2");
@@ -968,16 +946,6 @@ namespace ic {
   }
 
   int HTTCategories::PostAnalysis() {
-    if(make_sync_ntuple_) {   
-      lOFile->cd();
-      synctree_->Write();
-      lOFile->Close();
-    }
-    if(make_mva_ntuple_) {
-      lOFile->cd();
-      mvatree_->Write();
-      lOFile->Close();
-    }
     return 0;
   }
 

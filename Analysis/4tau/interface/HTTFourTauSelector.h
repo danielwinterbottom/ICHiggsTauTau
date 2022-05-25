@@ -30,25 +30,14 @@ class HTTFourTauSelector : public ModuleBase {
  private:
   CLASS_MEMBER(HTTFourTauSelector, ic::channel, channel)
   CLASS_MEMBER(HTTFourTauSelector, std::string, pair_label)
-  CLASS_MEMBER(HTTFourTauSelector, std::string, met_label)
   CLASS_MEMBER(HTTFourTauSelector, ic::strategy, strategy) 
-  CLASS_MEMBER(HTTFourTauSelector, bool, mva_met_from_vector)
   CLASS_MEMBER(HTTFourTauSelector, bool, use_most_isolated)
-  CLASS_MEMBER(HTTFourTauSelector, bool, use_os_preference)
-  CLASS_MEMBER(HTTFourTauSelector, unsigned, faked_tau_selector)
-  CLASS_MEMBER(HTTFourTauSelector, unsigned, hadronic_tau_selector)
-  CLASS_MEMBER(HTTFourTauSelector, unsigned, ztt_mode)
-  CLASS_MEMBER(HTTFourTauSelector, bool, scale_met_for_tau)
-  CLASS_MEMBER(HTTFourTauSelector, double, tau_scale)
-  CLASS_MEMBER(HTTFourTauSelector, bool, use_status_flags)
+  CLASS_MEMBER(HTTFourTauSelector, bool, use_charge_preference)
   CLASS_MEMBER(HTTFourTauSelector, std::string, allowed_tau_modes)
-  CLASS_MEMBER(HTTFourTauSelector, std::string, gen_taus_label)
   CLASS_MEMBER(HTTFourTauSelector, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HTTFourTauSelector, ic::mc, mc)
   CLASS_MEMBER(HTTFourTauSelector, unsigned, metcl_mode)
   CLASS_MEMBER(HTTFourTauSelector, unsigned, metuncl_mode)
-  CLASS_MEMBER(HTTFourTauSelector, bool, shift_jes)
-  CLASS_MEMBER(HTTFourTauSelector, ic::mc, mc)
-  CLASS_MEMBER(HTTFourTauSelector, bool, usePFMET)
   std::vector<Dynamic2DHistoSet *> hists_;
   std::set<int> tau_mode_set_;
 

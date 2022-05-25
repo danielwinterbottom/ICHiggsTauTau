@@ -16,32 +16,14 @@ namespace ic {
 class HTTCategories : public ModuleBase {
 
  private:
-  CLASS_MEMBER(HTTCategories, std::string, ditau_label)
-  CLASS_MEMBER(HTTCategories, std::string, met_label)
-  CLASS_MEMBER(HTTCategories, std::string, jets_label)
+  CLASS_MEMBER(HTTCategories, std::string, fourtau_label)
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
   CLASS_MEMBER(HTTCategories, ic::era, era)
-  CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
-  CLASS_MEMBER(HTTCategories, bool, make_sync_ntuple)
-  CLASS_MEMBER(HTTCategories, bool, make_mva_ntuple)
-  CLASS_MEMBER(HTTCategories, bool, is_embedded)
-  CLASS_MEMBER(HTTCategories, bool, is_data)
-  CLASS_MEMBER(HTTCategories, bool, systematic_shift)
-  CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
-  CLASS_MEMBER(HTTCategories, std::string, mva_output_name)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
-  CLASS_MEMBER(HTTCategories, bool, do_ff_weights)
-  CLASS_MEMBER(HTTCategories, bool, do_ff_systematics)
-  CLASS_MEMBER(HTTCategories, bool, do_qcd_scale_wts)
-  CLASS_MEMBER(HTTCategories, bool, do_mssm_higgspt)
-  CLASS_MEMBER(HTTCategories, bool, do_sm_ps_wts)
-  CLASS_MEMBER(HTTCategories, bool, do_faketaus)
-  CLASS_MEMBER(HTTCategories, bool, trg_applied_in_mc)
+  CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
 
   TTree *outtree_;
-  TTree *synctree_;
-  TTree *mvatree_;
   TFile *lOFile;
 
   TRandom3  *rand;

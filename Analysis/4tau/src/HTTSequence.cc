@@ -186,11 +186,6 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  muon_shift_barrel = json["baseline"]["muon_es_shift_barrel"].asDouble();
  muon_shift_nearendcap = json["baseline"]["muon_es_shift_nearendcap"].asDouble();
  muon_shift_farendcap = json["baseline"]["muon_es_shift_farendcap"].asDouble();
- if(channel_str!="em"){
- tau_shift = json["baseline"]["tau_es_shift"].asDouble();
- } else {
- tau_shift = 1.0;//Just to set it to something
- }
  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
  tau_shift_1prong0pi0 = 1.0;
@@ -405,18 +400,6 @@ if(!is_data && js["do_gen_analysis"].asBool()){
   BuildModule(lumiMask);
  }
 
-// TO DO: Ask what this does
-if((strategy_type == strategy::fall15 || strategy_type ==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18) && output_name.find("WGToLNuG")!=output_name.npos){
-  SimpleCounter<GenParticle> wgammaStarFilter = SimpleCounter<GenParticle>("WgammaStarSelector")
-    .set_input_label("genParticles")
-    .set_predicate(
-      (bind(&GenParticle::status,_1) == 44) &&
-      (bind(&GenParticle::pdgid, _1) == 22))
-    .set_min(0).set_max(0);
- 
-  BuildModule(wgammaStarFilter);
-}
-
 if (channel == channel::ettt) BuildETTTProducts();
 if (channel == channel::mttt) BuildMTTTProducts();
 if (channel == channel::emtt) BuildEMTTProducts();
@@ -424,60 +407,31 @@ if (channel == channel::tttt) BuildTTTTProducts();
 if (channel == channel::eett) BuildEETTProducts();
 if (channel == channel::mmtt) BuildMMTTProducts();
 
-// TO DO: Change pair filter to 4tau filter
-// Pair DeltaR filtering
-//BuildModule(SimpleFilter<CompositeCandidate>("FourTauFilter")
-//      .set_input_label("4tau").set_min(1)
-//      .set_predicate([=](CompositeCandidate const* c) {
-//        return DeltaR(c->at(0)->vector(), c->at(1)->vector())
-//            > pair_dr;
-//      }));
-
-bool usePFMET = false;
-usePFMET = js["usePFMET"].asBool();
-
-// TO DO: Remove redundant options
 HTTFourTauSelector httFourTauSelector = HTTFourTauSelector("HTTFourTauSelector")
   .set_channel(channel)
   .set_fs(fs.get())
   .set_pair_label("4tau")
-  .set_met_label(met_label)
   .set_strategy(strategy_type)
-  .set_mva_met_from_vector(mva_met_mode==1)
-  .set_faked_tau_selector(faked_tau_selector)
-  .set_hadronic_tau_selector(hadronic_tau_selector)
-  .set_ztt_mode(ztautau_mode)
   .set_mc(mc_type)
-  .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
-  .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
-  .set_tau_scale(tau_shift)
-  .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
-  .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
-  .set_allowed_tau_modes(allowed_tau_modes)
-  .set_metuncl_mode(metuncl_mode)
-  .set_metcl_mode(metcl_mode)
-  .set_shift_jes(!do_recoil)
-  .set_usePFMET(usePFMET);
+  .set_use_most_isolated(true)
+  .set_use_charge_preference(false)
+  .set_allowed_tau_modes(allowed_tau_modes);
     
-httFourTauSelector.set_gen_taus_label("genParticles");
-
 BuildModule(httFourTauSelector);
 
 // TO DO: Update for 4tau UL
-//if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_in_mc"].asBool())){
-//  BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-//      .set_channel(channel)
-//      .set_mc(mc_type)
-//      .set_era(era_type)
-//      .set_strategy(strategy_type)
-//      .set_is_data(is_data)
-//      .set_is_embedded(is_embedded)
-//      .set_do_singletau(js["do_singletau"].asBool())
-//      .set_do_filter(false)
-//      .set_pair_label("4tau"));
-//}
+BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+    .set_channel(channel)
+    .set_mc(mc_type)
+    .set_era(era_type)
+    .set_strategy(strategy_type)
+    .set_is_data(is_data)
+    .set_is_embedded(is_embedded)
+    .set_do_singletau(js["do_singletau"].asBool())
+    .set_do_filter(false)
+    .set_pair_label("4tau"));
 
-// TO DO: Ask how to implement vetos
+// TO DO: Implement extra lepton vetos for leptonic decay channels
 // Lepton Vetoes
 //if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
 //if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
@@ -491,7 +445,6 @@ if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != cha
    .set_do_preselection(true)
    .set_dilepton_label("4tau"));
 }
-
 
 // Pileup Weighting
 TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
@@ -541,64 +494,47 @@ if(do_met_filters){
     }));
 }
 
-//BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
-//
-//SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
-//.set_input_label(jets_label);
-//if (era_type == era::data_2016) {
-//  jetIDFilter.set_predicate(bind(PFJetID2016, _1));
-//} else if (era_type == era::data_2017) {
-//  jetIDFilter.set_predicate(bind(PFJetID2017, _1));
-//} else if (era_type == era::data_2018) {
-//  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
-//}
-//BuildModule(jetIDFilter);
-//
-//// Apply loose PUJID universally
-////BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
-////  .set_input_label(jets_label)
-////  .set_predicate([=](PFJet const* jet) {
-////    return  PileupJetID(jet, pu_id_training, false, true);
-////  })
-////);
-//
-//if (era_type == era::data_2017) {
-//  BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
-//    .set_input_label(jets_label)
-//    .set_predicate([=](PFJet const* jet) {
-//      return  (jet->pt() * (jet->uncorrected_energy()/jet->energy())) > 50 ||
-//        fabs(jet->eta()) > 3.139 ||
-//        fabs(jet->eta()) < 2.65 ;
-//    })
-//  );
-//}
-//
-//// nominal JER
-//if (!is_data && !is_embedded) {
-//   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-//     .set_input_label(jets_label)
-//     .set_jer_shift_mode(jer_mode)
-//     .set_EENoiseFix(era_type == era::data_2017)
-//     .set_shift_met(false)
-//   );
-//}
-//
-//BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
-//  .set_input_label(jets_label)
-//  .set_reference_label("4tau")
-//  .set_min_dr(0.5));
+BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,jets_label+"UnFiltered"));
 
-// TO DO: Rewrite for 4tau stuff
-//if(!is_data) {
-//  bool do_ngenjets = (output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos || output_name.find("JJH")!=output_name.npos);
-//  BuildModule(HTTPairGenInfo("HTTPairGenInfo")
-//    .set_fs(fs.get())
-//    .set_write_plots(false)
-//    .set_ditau_label("4tau")
-//    .set_channel(channel)
-//    .set_ngenjets((do_ngenjets||true) && !is_data && !is_embedded));
-//}
+SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>("JetIDFilter")
+.set_input_label(jets_label);
+if (era_type == era::data_2016) {
+  jetIDFilter.set_predicate(bind(PFJetID2016, _1));
+} else if (era_type == era::data_2017) {
+  jetIDFilter.set_predicate(bind(PFJetID2017, _1));
+} else if (era_type == era::data_2018) {
+  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
+}
+BuildModule(jetIDFilter);
 
+// Apply loose PUJID universally
+BuildModule(SimpleFilter<PFJet>("JetPUIDFilter")
+  .set_input_label(jets_label)
+  .set_predicate([=](PFJet const* jet) {
+    return  PileupJetID(jet, pu_id_training, false, true);
+  })
+);
+
+if (era_type == era::data_2017) {
+  BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
+    .set_input_label(jets_label)
+    .set_predicate([=](PFJet const* jet) {
+      return  (jet->pt() * (jet->uncorrected_energy()/jet->energy())) > 50 ||
+        fabs(jet->eta()) > 3.139 ||
+        fabs(jet->eta()) < 2.65 ;
+    })
+  );
+}
+
+// nominal JER
+if (!is_data && !is_embedded) {
+   BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+     .set_input_label(jets_label)
+     .set_jer_shift_mode(jer_mode)
+     .set_EENoiseFix(era_type == era::data_2017)
+     .set_shift_met(false)
+   );
+}
 
 // TO DO: Change and rederive scale factors for UL and 4tau search
 std::string scalefactor_file;
@@ -748,262 +684,146 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
 
   // first make a deep copy of the jets and the met - we will need to delete these after we are finished with them  
 
- std::string shift_jets_label = jets_label+"_uncert_"+uncert; 
- std::string shift_met_label = met_label+"_uncert_"+uncert; 
-//  BuildModule(CopyCollection<PFJet>("CopyJetsForUncert_"+uncert,jets_label,shift_jets_label,true));
-//
-//  BuildModule(GenericModule("CopyMetForUncert_"+uncert)
-//    .set_function([=](ic::TreeEvent *event){
-//       Met* met = event->GetPtr<Met>(met_label);
-//       Met *met_copy = new Met(*met);
-//       event->Add(shift_met_label,met_copy);
-//       return 0;
-//    }));
-//
-//  if(metuncl_mode_>0) {
-//    std::string shift_type = "NoShift";
-//    if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
-//    if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
-//    BuildModule(GenericModule("MetUnclusteredEnergyShift")
-//      .set_function([=](ic::TreeEvent *event){
-//         Met* met = event->GetPtr<Met>(shift_met_label);
-//         double pt = met->GetShiftedMet(shift_type).pt();
-//         double phi = met->GetShiftedMet(shift_type).phi();
-//         met->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
-//         return 0;
-//      }));
-//  }
-//
-//  if (jer_mode_>0 && !is_data && !is_embedded) {
-//     BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
-//       .set_input_label(shift_jets_label)
-//       .set_met_label(shift_met_label)
-//       .set_jer_shift_mode(jer_mode_)
-//       .set_EENoiseFix(era_type == era::data_2017)
-//       .set_shift_met(!do_recoil)
-//     );
-//  }
-//  
-//  if (jes_mode_ > 0 && !is_data ){
-//    std::string jes_input_file  = "";
-//    std::string jes_input_set  = "";
-//    if (era_type == era::data_2016) {
-//      jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
-//      jes_input_set  = "Total";
-//    }
-//    if (era_type == era::data_2017) {
-//      jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
-//      jes_input_set  = "Total";
-//    }
-//    if (era_type == era::data_2018) {
-//      jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
-//      jes_input_set  = "Total";
-//    }
-//    
-//    if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
-//   
-//    std::string jes_input_set_ = jes_input_set;
-//
-//    BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-//      .set_input_label(shift_jets_label)
-//      .set_met_label(shift_met_label)
-//      .set_jes_shift_mode(jes_mode_)
-//      .set_uncert_file(jes_input_file)
-//      .set_uncert_set(jes_input_set_)
-//      .set_EENoiseFix(era_type == era::data_2017)
-//      .set_shift_met(!do_recoil)
-//     );
-//   
-//  }
-//  
-//  if(js["do_btag_eff"].asBool()){
-//     BuildModule(BTagCheck("BTagCheck")
-//      .set_fs(fs.get())
-//      .set_channel(channel)
-//      .set_era(era_type)
-//      .set_strategy(strategy_type)
-//      .set_do_legacy(false)
-//      .set_use_deep_csv(use_deep_csv)
-//      .set_wp_to_check(wp_to_check)
-//      .set_jet_label(shift_jets_label));
-//  }
-// 
-//  // TO DO: Check if btag efficiencies have changed for UL 
-//  if(!is_data && !is_embedded){
-//    TH2F bbtag_eff;
-//    TH2F cbtag_eff;
-//    TH2F othbtag_eff;
-//    TH2F bbtag_eff_alt;
-//    TH2F cbtag_eff_alt;
-//    TH2F othbtag_eff_alt;
-//  
-//    if (era_type == era::data_2016){
-//      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
-//      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
-//      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
-//  
-//      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_b");
-//      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
-//      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
-//    } else if (era_type == era::data_2017) {
-//      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_b");
-//      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_c");
-//      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_oth");
-//  
-//      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_b");
-//      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
-//      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
-//    } else if (era_type == era::data_2018) {
-//      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
-//      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");
-//      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_oth");
-//  
-//      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_b");
-//      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
-//      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
-//    }
-//
-//    BTagWeightLegacyRun2 BTagWeight = BTagWeightLegacyRun2("BTagWeightLegacyRun2")
-//     .set_channel(channel)
-//     .set_era(era_type)
-//     .set_strategy(strategy_type)
-//     .set_jet_label(shift_jets_label)
-//     .set_bbtag_eff(new TH2F(bbtag_eff))
-//     .set_cbtag_eff(new TH2F(cbtag_eff))
-//     .set_othbtag_eff(new TH2F(othbtag_eff))
-//     .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
-//     .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
-//     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt));
-//
-//    if(era_type == era::data_2016 && (output_name.find("TTTo2L2Nu") != output_name.npos || output_name.find("TTToHadronic") != output_name.npos || output_name.find("TTToSemiLeptonic") != output_name.npos)) {
-//      BTagWeight.set_do_cp5_2016(true);
-//      TH2F bbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_b");
-//      TH2F cbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_c");
-//      TH2F othbtag_cp5_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5.root","/","btag_eff_oth");
-//      TH2F bbtag_eff_cp5_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5_loose.root","/","btag_eff_b");
-//      TH2F cbtag_eff_cp5_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5_loose.root","/","btag_eff_c");
-//      TH2F othbtag_eff_cp5_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2016_CP5_loose.root","/","btag_eff_oth");
-//      BTagWeight.set_bbtag_eff_cp5(new TH2F(bbtag_cp5_eff));
-//      BTagWeight.set_cbtag_eff_cp5(new TH2F(cbtag_cp5_eff));
-//      BTagWeight.set_othbtag_eff_cp5(new TH2F(othbtag_cp5_eff));
-//      BTagWeight.set_bbtag_eff_cp5_alt(new TH2F(bbtag_eff_cp5_alt));
-//      BTagWeight.set_cbtag_eff_cp5_alt(new TH2F(cbtag_eff_cp5_alt));
-//      BTagWeight.set_othbtag_eff_cp5_alt(new TH2F(othbtag_eff_cp5_alt));
-//   }
-// 
-//   BuildModule(BTagWeight);
-//  }
-//  
-//  if(usePFMET && do_recoil){ 
-//    BuildModule(HTTRun2RecoilCorrector("HTTRun2RecoilCorrector")
-//     .set_sample(output_name)
-//     .set_channel(channel)
-//     .set_mc(mc_type)
-//     .set_met_label(shift_met_label)
-//     .set_jets_label(shift_jets_label)
-//     .set_strategy(strategy_type)
-//     .set_use_quantile_map(false)
-//     .set_met_scale_mode(metscale_mode_)
-//     .set_met_res_mode(metres_mode_)
-//     .set_store_boson_pt(js["make_sync_ntuple"].asBool()));
-//  }
-//  
-//   TO DO: Unsure if this needs to change for 4tau search
-//  if(!usePFMET){
-//    unsigned njets_mode = js["njets_mode"].asUInt();
-//  
-//    BuildModule(HTTLegacyRun2RecoilCorrector("HTTLegacyRun2RecoilCorrector")
-//     .set_sample(output_name)
-//     .set_channel(channel)
-//     .set_mc(mc_type)
-//     .set_met_label(shift_met_label)
-//     .set_jets_label(shift_jets_label)
-//     .set_strategy(strategy_type)
-//     .set_use_quantile_map(true) // use quantile mapping now
-//     .set_use_puppimet(true) 
-//     .set_met_scale_mode(metscale_mode_)
-//     .set_met_res_mode(metres_mode_)
-//     .set_store_boson_pt(js["make_sync_ntuple"].asBool())
-//     .set_njets_mode(njets_mode)
-//     .set_do_recoil(do_recoil)
-//     );
-//  }
-//  
-//  int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;
-//  
-//                                            // TO DO: Will have to pick a pair from the 4 to do this on. May be useful. Possibly to do later
-//  SVFitTest svFitTest  = SVFitTest("SVFitTest")
-//    .set_channel(channel)
-//    .set_strategy(strategy_type)
-//    .set_mc(mc_type)
-//    .set_outname(svfit_override == "" ? output_name : svfit_override)
-//    .set_run_mode(mode)
-//    .set_fail_mode(0)
-//    .set_require_inputs_match(false)
-//    .set_split(40000)
-//    .set_dilepton_label("4tau")
-//    .set_met_label(shift_met_label)
-//    .set_fullpath(svfit_folder_)
-//    .set_legacy_svfit(true)
-//    .set_do_preselection(false)
-//    .set_MC(true)
-//    .set_do_light(true)
-//    .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
-//   svFitTest.set_legacy_svfit(false);
-//   //svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());
-//   svFitTest.set_do_preselection(false); // this is done elsewhere
-//   svFitTest.set_read_svfit_mt(true);
-//   svFitTest.set_tau_optimisation(js["tau_id_study"].asBool());
-//   svFitTest.set_read_all(js["read_all_svfit_files"].asBool());
-//   svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
-//  
-//  BuildModule(svFitTest);
+  std::string shift_jets_label = jets_label+"_uncert_"+uncert; 
+  std::string shift_met_label = met_label+"_uncert_"+uncert;
+  
+  BuildModule(CopyCollection<PFJet>("CopyJetsForUncert_"+uncert,jets_label,shift_jets_label,true));
+
+  BuildModule(GenericModule("CopyMetForUncert_"+uncert)
+    .set_function([=](ic::TreeEvent *event){
+       Met* met = event->GetPtr<Met>(met_label);
+       Met *met_copy = new Met(*met);
+       event->Add(shift_met_label,met_copy);
+       return 0;
+    }));
+
+  if(metuncl_mode_>0) {
+    std::string shift_type = "NoShift";
+    if(metuncl_mode_==1) shift_type = "UnclusteredEnDown";
+    if(metuncl_mode_==2) shift_type = "UnclusteredEnUp";
+    BuildModule(GenericModule("MetUnclusteredEnergyShift")
+      .set_function([=](ic::TreeEvent *event){
+         Met* met = event->GetPtr<Met>(shift_met_label);
+         double pt = met->GetShiftedMet(shift_type).pt();
+         double phi = met->GetShiftedMet(shift_type).phi();
+         met->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
+         return 0;
+      }));
+  }
+
+  if (jer_mode_>0 && !is_data && !is_embedded) {
+     BuildModule(JetEnergyResolution<PFJet>("JetEnergyResolution")
+       .set_input_label(shift_jets_label)
+       .set_met_label(shift_met_label)
+       .set_jer_shift_mode(jer_mode_)
+       .set_EENoiseFix(era_type == era::data_2017)
+       .set_shift_met(!do_recoil)
+     );
+  }
+  
+  if (jes_mode_ > 0 && !is_data ){
+    std::string jes_input_file  = "";
+    std::string jes_input_set  = "";
+    if (era_type == era::data_2016) {
+      jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2017) {
+      jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2018) {
+      jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    
+    if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
+   
+    std::string jes_input_set_ = jes_input_set;
+
+    BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+      .set_input_label(shift_jets_label)
+      .set_met_label(shift_met_label)
+      .set_jes_shift_mode(jes_mode_)
+      .set_uncert_file(jes_input_file)
+      .set_uncert_set(jes_input_set_)
+      .set_EENoiseFix(era_type == era::data_2017)
+      .set_shift_met(!do_recoil)
+     );
+   
+  }
+  
+  if(js["do_btag_eff"].asBool()){
+     BuildModule(BTagCheck("BTagCheck")
+      .set_fs(fs.get())
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_do_legacy(false)
+      .set_use_deep_csv(use_deep_csv)
+      .set_wp_to_check(wp_to_check)
+      .set_jet_label(shift_jets_label));
+  }
+
+  if(!is_data && !is_embedded){
+
+    TH2D deepjet_bbtag_eff;
+    TH2D deepjet_cbtag_eff;
+    TH2D deepjet_othbtag_eff;
  
-  bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
+    if (era_type == era::data_2016){
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2017) {
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2018) {
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+    }
+
+    BuildModule(BTagWeightRun2("DeepJetBTagWeightRun2")
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_jet_label(shift_jets_label)
+      .set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
+      .set_cbtag_eff((TH2F*)(new TH2D(deepjet_cbtag_eff)))
+      .set_othbtag_eff((TH2F*)(new TH2D(deepjet_othbtag_eff)))
+      .set_do_reshape(do_reshape)
+      .set_use_deep_jet(true)
+      .set_use_deep_csv(false)
+      .set_btag_mode(btag_mode)
+      .set_bfake_mode(bfake_mode));
+  }
+ 
   BuildModule(HTTCategories("HTTCategories")
       .set_fs(fs_vec[i].get())
       .set_channel(channel)
       .set_era(era_type)
-      .set_strategy(strategy_type)
-      .set_ditau_label("4tau")
-      .set_met_label(shift_met_label)
-      .set_jets_label(shift_jets_label)
-      .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
-      .set_make_mva_ntuple(js["make_mva_ntuple"].asBool())
-      .set_sync_output_name(js["output_folder"].asString()+"/SYNCFILE_"+output_name)
-      .set_mva_output_name(js["output_folder"].asString()+"/MVAFILE_"+output_name)
-      .set_is_embedded(is_embedded)
-      .set_is_data(is_data)
-      .set_systematic_shift(addit_output_folder!="" && i==0)
-      //Good to avoid accidentally overwriting existing output files when syncing
-      .set_write_tree(!js["make_sync_ntuple"].asBool())
-      .set_do_ff_weights(js["baseline"]["do_ff_weights"].asBool())
-      .set_do_ff_systematics(i==0 && js["baseline"]["do_ff_systematics"].asBool()&& (addit_output_folder=="" || addit_output_folder.find("TSCALE")!=std::string::npos || addit_output_folder.find("ESCALE")!=std::string::npos || addit_output_folder.find("MUSCALE")!=std::string::npos))
-      .set_do_qcd_scale_wts(do_qcd_scale_wts_)
-      .set_do_mssm_higgspt(do_mssm_higgspt)
-      .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
-      .set_trg_applied_in_mc(js["trg_in_mc"].asBool()));
+      .set_fourtau_label("4tau"));
 
  
-//  // now we need to delete the deep copies of the jet and met collections
-//  BuildModule(GenericModule("DeleteCopiedJetMET")
-//    .set_function([=](ic::TreeEvent *event){
-//       Met* met = event->GetPtr<Met>(shift_met_label);
-//       delete met;
-//       event->Remove(shift_met_label);
-//       std::vector<PFJet*> & jets = event->GetPtrVec<PFJet>(shift_jets_label);
-//       for (auto j : jets) delete j;
-//       jets.clear();
-//       event->Remove(shift_jets_label);
-//       return 0;
-//    }));
-//
-//  
+  // now we need to delete the deep copies of the jet and met collections
+  BuildModule(GenericModule("DeleteCopiedJetMET")
+    .set_function([=](ic::TreeEvent *event){
+       Met* met = event->GetPtr<Met>(shift_met_label);
+       delete met;
+       event->Remove(shift_met_label);
+       std::vector<PFJet*> & jets = event->GetPtrVec<PFJet>(shift_jets_label);
+       for (auto j : jets) delete j;
+       jets.clear();
+       event->Remove(shift_jets_label);
+       return 0;
+    }));
+
+  
 } // end of loop over jet met uncertainties
 }
 }
-
-// TO DO: Write new sequences
 
 // --------------------------------------------------------------------------
 // TTTT Product Sequence
@@ -1195,13 +1015,6 @@ void HTTSequence::BuildEMTTProducts() {
                 fabs(e->dxy_vertex())   < elec_dxy   &&
                 fabs(e->dz_vertex())    < elec_dz ;
       }));
-
-  // TO DO: May need to rewrite - will comment for now
-  //BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
-  //    .set_input_label("ditau").set_min(1)
-  //    .set_predicate([=](CompositeCandidate const* c) {
-  //    return PairOneWithPt(c, 24.0);
-  //    }));
 
   BuildTauSelection();
 
