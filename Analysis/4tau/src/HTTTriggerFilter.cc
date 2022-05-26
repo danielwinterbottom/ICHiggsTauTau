@@ -30,9 +30,6 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
     std::cout << boost::format(param_fmt()) % "is_data"         % is_data_;
-    std::cout << boost::format(param_fmt()) % "is_embedded"     % is_embedded_;
-    std::cout << boost::format(param_fmt()) % "do_singletau"    % do_singletau_;
-    std::cout << boost::format(param_fmt()) % "do_filter"       % do_filter_;
     return 0;
   }
 
@@ -52,7 +49,7 @@ namespace ic {
     std::string alt_leg1_filter_3;
     std::string alt_leg2_filter_3;
     std::string alt_leg2_filter;
-    
+   
     if (is_data_) { 
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
@@ -126,22 +123,15 @@ namespace ic {
           alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleLooseChargedIsoPFTauHPS20"; 
         }
       }
-      
+    } else { 
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt){
        if (era_ == era::data_2016){
          trig_obj_label = "triggerObjectsDoubleMediumTau35";
          alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
-         if(is_embedded_){ 
-           alt_leg1_filter = "hltDoublePFTau35Reg";
-           alt_leg2_filter = "hltDoublePFTau35Reg";
-           leg1_filter = "hltDoublePFTau35Reg";
-           leg2_filter = "hltDoublePFTau35Reg";
-         } else {
-           leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-           leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-           alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-           alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-         }
+         leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
+         leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
+         alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
+         alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
       } else if(era_ == era::data_2017){
           trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
@@ -152,35 +142,19 @@ namespace ic {
           alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
           alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
           alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-          if(is_embedded_) {
-             leg1_filter="hltDoubleL2IsoTau26eta2p2";
-             leg2_filter=leg1_filter;
-             alt_leg1_filter=leg1_filter;
-             alt_leg2_filter=leg1_filter;
-             alt_leg1_filter_2=leg1_filter;
-             alt_leg2_filter_2=leg1_filter;
-          }
-        } else if (era_ == era::data_2018) {
-            trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35"; //HPS only
-            leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
-            leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
-            alt_trig_obj_label_3 = "triggerObjectsVBFDoubleMediumChargedIsoPFTauHPS20";
-            alt_leg1_filter_3 = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon";
-            alt_leg2_filter_3 = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon";
-            alt_jetleg1_filter = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; // leading 
-            //subleading from following (but contains leading as well)
-            alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; 
-            if(is_embedded_) {
-               leg1_filter="hltDoubleL2IsoTau26eta2p2";
-               leg2_filter=leg1_filter;
-               alt_leg1_filter=leg1_filter;
-               alt_leg2_filter=leg1_filter;
-               alt_leg1_filter_2=leg1_filter;
-               alt_leg2_filter_2=leg1_filter;
-            }
-        }
+      } else if (era_ == era::data_2018) {
+          trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35"; //HPS only
+          leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
+          leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
+          alt_trig_obj_label_3 = "triggerObjectsVBFDoubleMediumChargedIsoPFTauHPS20";
+          alt_leg1_filter_3 = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon";
+          alt_leg2_filter_3 = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon";
+          alt_jetleg1_filter = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; // leading 
+          //subleading from following (but contains leading as well)
+          alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; 
       }
     }
+  }
 
     std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
     std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
@@ -194,7 +168,6 @@ namespace ic {
    bool jetleg2_match = false;
    if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt){
      for(unsigned i = 0; i < dileptons.size(); ++i){
-       std::cout << dileptons[i]->At(0)->pt() << " " << dileptons[i]->At(1)->pt() << " " << dileptons[i]->At(2)->pt() << " " << dileptons[i]->At(3)->pt() << " " << std::endl;
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
        bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
        
@@ -278,9 +251,6 @@ namespace ic {
     event->Add("trg_doubletau", passed_doubletau);
     event->Add("trg_vbfdoubletau", passed_vbfdoubletau);
     
-    if(!do_filter_){
-      return 0;    
-    }
     
     dileptons = dileptons_pass;
     if (dileptons.size() >= 1) {

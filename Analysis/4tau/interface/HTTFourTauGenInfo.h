@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_HTTPairGenInfo_h
-#define ICHiggsTauTau_Module_HTTPairGenInfo_h
+#ifndef ICHiggsTauTau_Module_HTTFourTauGenInfo_h
+#define ICHiggsTauTau_Module_HTTFourTauGenInfo_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -12,18 +12,18 @@
 
 namespace ic {
   
-class HTTPairGenInfo : public ModuleBase {
+class HTTFourTauGenInfo : public ModuleBase {
  private:
-  CLASS_MEMBER(HTTPairGenInfo, std::string, ditau_label)
-  CLASS_MEMBER(HTTPairGenInfo, fwlite::TFileService*, fs)
-  CLASS_MEMBER(HTTPairGenInfo, bool, write_plots)
-  CLASS_MEMBER(HTTPairGenInfo, bool, ngenjets)
-  CLASS_MEMBER(HTTPairGenInfo, ic::channel, channel)
+  CLASS_MEMBER(HTTFourTauGenInfo, std::string, ditau_label)
+  CLASS_MEMBER(HTTFourTauGenInfo, fwlite::TFileService*, fs)
+  CLASS_MEMBER(HTTFourTauGenInfo, bool, write_plots)
+  CLASS_MEMBER(HTTFourTauGenInfo, bool, ngenjets)
+  CLASS_MEMBER(HTTFourTauGenInfo, ic::channel, channel)
   std::vector<Dynamic2DHistoSet *> hists_;
 
  public:
-  HTTPairGenInfo(std::string const& name);
-  virtual ~HTTPairGenInfo();
+  HTTFourTauGenInfo(std::string const& name);
+  virtual ~HTTFourTauGenInfo();
 
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
