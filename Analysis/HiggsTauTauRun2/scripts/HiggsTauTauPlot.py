@@ -1269,14 +1269,14 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
             data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
             if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauB','TauC','TauD','TauE','TauF']
         if options.era in ['UL_16_postVFP']:
-            data_samples = ['SingleMuonG','SingleMuonH']
-            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauG','TauH']
+            data_samples = ['SingleMuonF','SingleMuonG','SingleMuonH']
+            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'mt': data_samples += ['TauF','TauG','TauH']
             
     if options.channel == 'em':
         data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGHv2','MuonEGHv3']
         if options.era == "legacy16": data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
         if options.era in ["UL_16_preVFP"]: data_samples = ['MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
-        if  options.era in ["UL_16_postVFP"]: data_samples = ['MuonEGG','MuonEGH']
+        if  options.era in ["UL_16_postVFP"]: data_samples = ['MuonEGF','MuonEGG','MuonEGH']
     
     if options.channel == 'et' or options.channel == 'zee':
         data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
@@ -1287,14 +1287,14 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
             data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
             if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauB','TauC','TauD','TauE','TauF']
         if options.era in ["UL_16_postVFP"]: 
-            data_samples = ['SingleElectronG','SingleElectronH']
-            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauG','TauH']
+            data_samples = ['SingleElectronF','SingleElectronG','SingleElectronH']
+            if options.analysis in ['mssmrun2','vlq'] and options.channel == 'et': data_samples += ['TauF','TauG','TauH']
             
     if options.channel == 'tt':
         data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauHv2','TauHv3']
         if options.era in ["legacy16"]: data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
         if options.era in ['UL_16_preVFP']: data_samples = ['TauB','TauC','TauD','TauE','TauF']
-        if options.era in ['UL_16_postVFP']: data_samples = ['TauG','TauH']
+        if options.era in ['UL_16_postVFP']: data_samples = ['TauF','TauG','TauH']
 
     # MC Samples
     if options.era in ["legacy16"]: 
