@@ -123,9 +123,7 @@ no_shift_systs = options.no_shift_systs
 
 # create separate output folder for scheme and year
 output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
-os.system('mkdir {}'.format(output_folder))
-os.system('mkdir {}/{}'.format(output_folder, SCHEME))
-os.system('mkdir {}/{}/{}'.format(output_folder, SCHEME, YEAR))
+os.system('mkdir -p {}'.format(output_folder))
 
 ########## Set up schemes and options
 

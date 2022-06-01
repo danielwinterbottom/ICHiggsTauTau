@@ -2771,8 +2771,8 @@ def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', plo
   w_node_name = 'W'  
   if options.channel == 'em':
       w_total_node = SummedNode('W'+add_name)
-      w_total_node.AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
-      ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat))
+      w_total_node.AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat, get_os))
+      ana.nodes[nodename].AddNode(GetWGNode(ana, add_name, wg_samples, plot, wt, sel, cat, get_os))
       w_node_name+='J'
   ana.nodes[nodename].AddNode(GetWNode(ana, w_node_name+add_name, samples, data, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_factor, get_os))
   if options.channel == 'em':
