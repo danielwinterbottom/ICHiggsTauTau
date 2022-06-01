@@ -223,7 +223,7 @@ if options.channel == 'tttt':
   if options.year == "2016-preVFP":
     data_samples = ['TauB','TauC','TauD','TauE','TauF']
   elif options.year == "2016-postVFP":
-    data_samples = ['TauG','TauH']
+    data_samples = ['TauF','TauG','TauH']
   elif options.year == "2017":
     data_samples = ['TauB','TauC','TauD','TauE','TauF']
   elif options.year == "2018":
@@ -233,7 +233,7 @@ elif options.channel == 'ettt':
   if options.year == "2016-preVFP":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
   elif options.year == "2016-postVFP":
-    data_samples = ['TauG','TauH','SingleElectronG','SingleElectronH']
+    data_samples = ['TauF','TauG','TauH','SingleElectronF','SingleElectronG','SingleElectronH']
   elif options.year == "2017":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
   elif options.year == "2018":
@@ -243,7 +243,7 @@ elif options.channel == 'mttt':
   if options.year == "2016-preVFP":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
   elif options.year == "2016-postVFP":
-    data_samples = ['TauG','TauH','SingleMuonG','SingleMuonH']
+    data_samples = ['TauF','TauG','TauH','SingleMuonF','SingleMuonG','SingleMuonH']
   elif options.year == "2017":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
   elif options.year == "2018":
@@ -251,11 +251,11 @@ elif options.channel == 'mttt':
 
 elif options.channel == 'eett':
   if options.year == "2016-preVFP":
-    data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleEGB','DoubleEGC','DoubleEGD','DoubleEGE','DoubleEGF']
   elif options.year == "2016-postVFP":
-    data_samples = ['TauG','TauH','SingleElectronG','SingleElectronH']
+    data_samples = ['TauF','TauG','TauH','DoubleEGF','DoubleEGG','DoubleEGH']
   elif options.year == "2017":
-    data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleEGB','DoubleEGC','DoubleEGD','DoubleEGE','DoubleEGF']
   elif options.year == "2018":
     data_samples = ['TauA','TauB','TauC','TauD','EGammaA','EGammaB','EGammaC','EGammaD']
 
@@ -263,7 +263,7 @@ elif options.channel == 'mmtt':
   if options.year == "2016-preVFP":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
   elif options.year == "2016-postVFP":
-    data_samples = ['TauG','TauH','DoubleMuonG','DoubleMuonH']
+    data_samples = ['TauF','TauG','TauH','DoubleMuonF','DoubleMuonG','DoubleMuonH']
   elif options.year == "2017":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
   elif options.year == "2018":
@@ -273,7 +273,7 @@ elif options.channel == 'emtt':
   if options.year == "2016-preVFP":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
   elif options.year == "2016-postVFP":
-    data_samples = ['TauG','TauH','MuonEGG','MuonEGH']
+    data_samples = ['TauF','TauG','TauH','MuonEGF','MuonEGG','MuonEGH']
   elif options.year == "2017":
     data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
   elif options.year == "2018":
@@ -457,8 +457,10 @@ while len(systematics) > 0:
       ana.remaps['SingleMuon'] = 'data_obs'
   elif options.channel in ['mmtt']:
       ana.remaps['DoubleMuon'] = 'data_obs'
-  elif options.year != '2018' and options.channel in ['eett','ettt']:
+  elif options.year != '2018' and options.channel in ['ettt']:
       ana.remaps['SingleElectron'] = 'data_obs'
+  elif options.year != '2018' and options.channel in ['eett']:
+      ana.remaps['DoubleEG'] = 'data_obs'
   elif options.year == '2018' and options.channel in ['eett','ettt']:
       ana.remaps['EGamma'] = 'data_obs'
   elif options.channel == 'tttt':

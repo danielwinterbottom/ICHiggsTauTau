@@ -195,7 +195,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
         channels=cfg["job"]["channels"]
     else:
-        channels=['mt','et','tt','em','zmm','zee']
+        channels=["tttt","mttt","ettt","emtt","eett","mmtt"]
 
 if options.proc_data or options.proc_all or options.calc_lumi:
 
@@ -203,17 +203,16 @@ if options.proc_data or options.proc_all or options.calc_lumi:
     data_eras = ['A','B','C','D']
     for chn in channels:
         for era in data_eras:
-            if 'mt' in chn or 'zmm' in chn:
+            if 'mttt' in chn:
                 data_samples+=['SingleMuon'+era]
-            if 'et' in chn or 'zee' in chn:
+            if 'mmtt' in chn:
+                data_samples+=['DoubleMuon'+era]
+            if 'ettt' in chn or 'eett' in chn:
                 data_samples+=['EGamma'+era]
-            if 'em' in chn:
+            if 'emtt' in chn:
                 data_samples+=['MuonEG'+era]
-            if 'tt' in chn:
+            if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn:
                 data_samples+=['Tau'+era]
-    if ('mt' in channels or 'et' in channels) and 'tt' not in channels:
-      for era in data_eras:
-        data_samples+=['Tau'+era]
 
 
     DATAFILELIST="./filelists/Apr22_2018_Data_106X"

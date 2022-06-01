@@ -200,17 +200,18 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   data_eras = ['F','G','H']
   for chn in channels:
     for era in data_eras:
-      if 'mt' in chn or 'zmm' in chn:
-           data_samples+=['SingleMuon'+era] 
-      if 'et' in chn or 'zee' in chn:
-           data_samples+=['SingleElectron'+era]
-      if 'em' in chn:
-           data_samples+=['MuonEG'+era]
-      if 'tt' in chn:
-           data_samples+=['Tau'+era]
-    if ('mt' in channels or 'et' in channels) and 'tt' not in channels:
-      for era in data_eras:
-        data_samples+=['Tau'+era]        
+      if 'mttt' in chn:
+          data_samples+=['SingleMuon'+era]
+      if 'mmtt' in chn:
+          data_samples+=['DoubleMuon'+era]
+      if 'ettt' in chn:
+          data_samples+=['SingleElectron'+era]
+      if 'eett' in chn:
+          data_samples+=['DoubleEG'+era]
+      if 'emtt' in chn:
+          data_samples+=['MuonEG'+era]
+      if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn:
+          data_samples+=['Tau'+era]
 
   DATAFILELIST="./filelists/Apr22_2016-postVFP_Data_106X"
 
