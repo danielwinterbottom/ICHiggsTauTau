@@ -561,6 +561,61 @@ namespace ic {
     event->Add("trg_singlemuon", passed_singlemuon);
     event->Add("trg_singleelectron", passed_singleelectron);
 
+    bool passed_singlemuon_2 = false;
+    bool passed_singleelectron_2 = false;
+    if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm ||
+        channel_ == channel::zee || channel_ == channel::tpzee || channel_ == channel::tpzmm) ) {
+      std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+      ic::erase_if_not(alt_objs,boost::bind(&TriggerObject::pt,_1)>alt_min_online_pt);
+      for (unsigned i = 0; i < dileptons.size(); ++i) {
+        bool leg2_match = false;
+        bool highpt_leg = dileptons[i]->At(1)->pt()>high_leg_pt;
+        leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first;
+
+        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& era_ == era::data_2017) {
+           std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
+           std::vector<TriggerObject *> l1_objs = event->GetPtrVec<TriggerObject>("triggerObjectsEle35"); // For the Ele32 trigger we need to make sure the electron is matched to the SingleElectron L1 filter since this path is also seeded by the L1 double electron triggers but this filter does not exist for the previous trigger objects so we much take it from an un-prescaled trigger
+           leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs_2, alt_leg1_filter_2, 0.5).first&&IsFilterMatchedWithIndex(dileptons[i]->At(1), l1_objs, extra_filter_2,0.5).first);
+
+        }
+        if((channel_==channel::et || channel_==channel::zee || channel_==channel::tpzee)&& era_ == era::data_2018) {
+           std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
+           leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs_2, alt_leg1_filter_2, 0.5).first;
+
+        }
+
+        if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)&& era_ == era::data_2016 ) {
+           std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
+           ic::erase_if_not(alt_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_trk_min_online_pt);
+           std::vector<TriggerObject *> alt_er_objs = event->GetPtrVec<TriggerObject>(alt_er_trig_obj_label);
+           ic::erase_if_not(alt_er_objs,boost::bind(&TriggerObject::pt,_1)>alt_er_min_online_pt);
+           std::vector<TriggerObject *> alt_er_trk_objs = event->GetPtrVec<TriggerObject>(alt_er_trk_trig_obj_label);
+           ic::erase_if_not(alt_er_trk_objs,boost::bind(&TriggerObject::pt,_1)>alt_er_trk_min_online_pt);
+
+           leg2_match = (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first);
+        } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm)
+                && (era_ == era::data_2017 || era_ == era::data_2018)) {
+           std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
+           leg2_match = (IsFilterMatchedWithIndex(dileptons[i]->At(1),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
+        }
+    
+        if (leg2_match&&highpt_leg){
+          dileptons_pass.push_back(dileptons[i]);
+          if (channel_ == channel::et || channel_ == channel::zee) passed_singleelectron_2 = true;
+          if (channel_ == channel::mt || channel_ == channel::zmm) passed_singlemuon_2 = true;
+        }
+      }
+    }
+    if(is_embedded_&& era_ == era::data_2017 && (channel_==channel::et || channel_==channel::zee)){
+      // Electron triggers don't work properly for the embedded samples with e_eta>1.5 and pt<40 GeV so we allow all embedded events to pass these triggers and apply the efficiency measured for data as the SF in HTTWeights
+      Electron const* elec = dynamic_cast<Electron const*>(dileptons[0]->At(0));
+      double eta = fabs(elec->eta());
+      double pt = elec->pt();
+      if(pt<40 && eta>1.479) passed_singleelectron_2 = true;
+    }
+    event->Add("trg_singlemuon_2", passed_singlemuon_2);
+    event->Add("trg_singleelectron_2", passed_singleelectron_2);
+
     // mutau cross triggers
     bool passed_mutaucross = false;
     bool passed_mutaucross_alt = false;

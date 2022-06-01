@@ -2173,12 +2173,17 @@ def HTTPlot(nodename,
     if "sm" in signal_scheme: 
         background_schemes = {
             'mt':[
-                backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
-                backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-                backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
-                backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
-                backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
+#                backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+#                backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+#                backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
+#                backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
+#                backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
+#                ],
+                backgroundComp("Others",["ZL","TTT","VVT"],R.TColor.GetColor(100,192,232)),
+                backgroundComp("Jet#rightarrow#tau_{h}",["W","QCD","TTJ","ZJ","VVJ"],R.TColor.GetColor(192,232,100)),
+                backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
                 ],
+
             'et':[
                 backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
                 backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
@@ -2254,20 +2259,25 @@ def HTTPlot(nodename,
                     backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
                     backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),
                     backgroundComp("Z#rightarrow#mu#mu",["ZL"],R.TColor.GetColor(100,192,232)),
-                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
                     backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
                     ],
+#                    backgroundComp("Others",["ZL","TTT","VVT"],R.TColor.GetColor(100,192,232)),
+#                    backgroundComp("Jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+#                    backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
+#                    ],
+
                 'et':[
                     backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
                     backgroundComp("Electroweak",["VVT"],R.TColor.GetColor(222,90,106)),
                     backgroundComp("Z#rightarrowee",["ZL"],R.TColor.GetColor(100,192,232)),
-                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
                     backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
                     ],
                 'tt':[
                     backgroundComp("t#bar{t}",["TTT"],R.TColor.GetColor(155,152,204)),
                     backgroundComp("Electroweak",["VVT","ZL"],R.TColor.GetColor(222,90,106)),
-                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes","Wfakes"],R.TColor.GetColor(192,232,100)),
+                    backgroundComp("Jet#rightarrow#tau_{h}",["jetFakes","Wfakes"],R.TColor.GetColor(192,232,100)),
 #                    backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100)),
                     backgroundComp("Z#rightarrow#tau#tau",["ZTT"],R.TColor.GetColor(248,206,104))
                     ],
@@ -2290,7 +2300,7 @@ def HTTPlot(nodename,
         for bkg in schemes:
           if chan != 'zmm' and chan !='zee' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
             bkg['plot_list'] = ["EmbedZTT"]
-            bkg['leg_text'] = '#mu#rightarrow#tau embedding'
+            bkg['leg_text'] = '#tau#tau bkg.'
           if chan == 'zee' and bkg['leg_text'] is 'Z#rightarrow ee':
             bkg['plot_list'] = ["EmbedZL","ZJ"]
 
@@ -2379,7 +2389,7 @@ def HTTPlot(nodename,
             axish[1].GetXaxis().SetTitleSize(0.04)
             axish[1].GetYaxis().SetNdivisions(4)
             if scheme == 'w_shape' or scheme == 'qcd_shape' or scheme == 'ff_comp': axish[1].GetYaxis().SetTitle("Ratio")
-            else: axish[1].GetYaxis().SetTitle("Obs/Exp")
+            else: axish[1].GetYaxis().SetTitle("Obs./Exp.")
             axish[1].GetYaxis().SetTitleOffset(1.6)
             axish[1].GetYaxis().SetTitleSize(0.04)
             axish[1].GetYaxis().SetLabelSize(0.03)
@@ -2593,21 +2603,23 @@ def HTTPlot(nodename,
     axish[0].Draw("axissame")
     
     #Setup legend
-    legend = PositionedLegend(0.37,0.3,3,0.03) 
+    #legend = PositionedLegend(0.37,0.3,3,0.03) 
+    legend = PositionedLegend(0.22,0.3,3,0.03) 
     #legend = PositionedLegend(0.37,0.37,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
     legend.SetTextSize(0.03)
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
-    else: legend.AddEntry(blind_datahist,"Observation","PE")
+    else: legend.AddEntry(blind_datahist,"Observed","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
     background_schemes[scheme].reverse()
     for legi,hists in enumerate(bkg_histos):
         legend.AddEntry(hists,background_schemes[scheme][legi]['leg_text'],"f")
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
-    else: legend.AddEntry(error_hist,"Background uncertainty","f")
+    #else: legend.AddEntry(error_hist,"Background uncertainty","f")
+    else: legend.AddEntry(error_hist,"Bkg. unc.","f")
     if signal_mass != "":
         if not split_sm_scheme:
             legend.AddEntry(sighist,sig_schemes[signal_scheme][0],"l")
@@ -2628,6 +2640,9 @@ def HTTPlot(nodename,
     if channel == "em": channel_label = "e_{}#mu_{}"
     if channel == "et": channel_label = "e_{}#tau_{h}"
     if channel == "mt": channel_label = "#mu_{}#tau_{h}"
+    if channel == "mt": channel_label = "#mu#rho"#!!!
+    #if channel == "mt": channel_label = "#mu#pi"#!!!
+    if channel == "mt": channel_label = "#mu_{}a_{1}^{3pr}"#!!!
     if channel == "tt": channel_label = "#tau_{h}#tau_{h}"
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
@@ -2641,7 +2656,8 @@ def HTTPlot(nodename,
     
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    #DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Supplementary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
     
@@ -3093,7 +3109,7 @@ def CompareHists(hists=[],
     
     
     #Setup legend
-    legend = PositionedLegend(0.4,0.15,3,0.01)
+    legend = PositionedLegend(0.65,0.2,3,0.03)
     legend.SetTextFont(42)
     legend.SetTextSize(0.040)
     legend.SetFillColor(0)

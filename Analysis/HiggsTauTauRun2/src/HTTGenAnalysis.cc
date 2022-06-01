@@ -350,6 +350,10 @@ namespace ic {
       outtree_->Branch("HpT"     , &pT_A_     );
       outtree_->Branch("partons"     , &partons_);
       outtree_->Branch("partons_lhe"     , &partons_lhe_);
+      outtree_->Branch("quarks_initial"     , &quarks_initial_);
+      outtree_->Branch("quarks_final"     , &quarks_final_);
+      outtree_->Branch("gluons_initial"     , &gluons_initial_);
+      outtree_->Branch("gluons_final"     , &gluons_final_);
       outtree_->Branch("parton_pt"     , &parton_pt_);
       outtree_->Branch("parton_pt_2"     , &parton_pt_2_);
       outtree_->Branch("parton_pt_3"     , &parton_pt_3_);
@@ -469,7 +473,22 @@ namespace ic {
       outtree_->Branch("wt_ps_fsr_down" , &wt_ps_fsr_down_ );
 
       outtree_->Branch("count_taus" , &count_taus_ );
-      
+
+      outtree_->Branch("gammas_deta_1", &gammas_deta_1_);
+      outtree_->Branch("gammas_dphi_1", &gammas_dphi_1_);
+      outtree_->Branch("gammas_deta_2", &gammas_deta_2_);
+      outtree_->Branch("gammas_dphi_2", &gammas_dphi_2_);
+     
+      outtree_->Branch("pi0s_deta_1", &pi0s_deta_1_);
+      outtree_->Branch("pi0s_dphi_1", &pi0s_dphi_1_);
+      outtree_->Branch("pi0s_deta_2", &pi0s_deta_2_);
+      outtree_->Branch("pi0s_dphi_2", &pi0s_dphi_2_);
+
+      outtree_->Branch("rho_deta_1", &rho_deta_1_);
+      outtree_->Branch("rho_dphi_1", &rho_dphi_1_);
+      outtree_->Branch("rho_deta_2", &rho_deta_2_);
+      outtree_->Branch("rho_dphi_2", &rho_dphi_2_);
+ 
     }
     count_ee_ = 0;
     count_em_ = 0;
@@ -701,6 +720,12 @@ namespace ic {
     partons_=0;
     parton_mjj_=-9999;
     parton_HpT_=-9999;
+
+    quarks_initial_=0;
+    quarks_final_=0;
+    gluons_initial_=0;
+    gluons_final_=0;
+
     //double higgs_eta = 0;
     std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
@@ -711,14 +736,21 @@ namespace ic {
       double largest_b_pt=-1;
       double lead_b_eta=-9999;
       for(unsigned i = 0; i< lhe_parts.size(); ++i){
-           if(lhe_parts[i]->status() != 1) continue;
            unsigned id = abs(lhe_parts[i]->pdgid());
+
+           if(lhe_parts[i]->status() != 1) {
+             if (id >= 1 && id <=6) quarks_initial_++;
+             if (id==21) gluons_initial_++;   
+           }
+           if(lhe_parts[i]->status() != 1) continue;
 
            if(id==5 && lhe_parts[i]->pt()>largest_b_pt) {
              largest_b_pt = lhe_parts[i]->pt();
              lead_b_eta=lhe_parts[i]->eta();
            }
            if(id==25) parton_HpT_ = lhe_parts[i]->pt();
+           if (id >= 1 && id <=6) quarks_final_++; 
+           if (id==21) gluons_final_++; 
            if ((id >= 1 && id <=6) || id == 21){ 
              outparts.push_back(lhe_parts[i]);
              partons_++;
@@ -2789,7 +2821,57 @@ namespace ic {
       for (auto p : pis[1]) vis_tau_2+=p->vector();
       for (auto p : pi0s[0]) vis_tau_1+=p->vector();
       for (auto p : pi0s[1]) vis_tau_2+=p->vector(); 
-    
+   
+      // checks gamma seperation in single pi0 events
+      gammas_deta_1_=-9999;
+      gammas_dphi_1_=-9999;
+      gammas_deta_2_=-9999;
+      gammas_dphi_2_=-9999;
+
+      pi0s_deta_1_=-9999;
+      pi0s_dphi_1_=-9999;
+      pi0s_deta_2_=-9999;
+      pi0s_dphi_2_=-9999;
+
+      rho_deta_1_=-9999;
+      rho_dphi_1_=-9999;
+      rho_deta_2_=-9999;
+      rho_dphi_2_=-9999;
+
+
+      if (pi0s.size()>0 && pi0s[0].size()==1 && pis[0].size()==1) {
+        rho_deta_1_ = pi0s[0][0]->eta() - pis[0][0]->eta();
+        rho_dphi_1_ = ROOT::Math::VectorUtil::DeltaPhi(pi0s[0][0]->vector(), pis[0][0]->vector());
+        auto gammas = pi0s[0][0]->daughters();
+        if (gammas.size()==2) {
+          if(gen_particles[gammas[0]]->pdgid()==22 && gen_particles[gammas[0]]->pdgid()==22) {
+            gammas_deta_1_ = gen_particles[gammas[0]]->eta() - gen_particles[gammas[1]]->eta();
+            gammas_dphi_1_ = ROOT::Math::VectorUtil::DeltaPhi(gen_particles[gammas[0]]->vector(), gen_particles[gammas[1]]->vector()); 
+          }
+        }
+      }
+      if (pi0s.size()>1 && pi0s[1].size()==1 && pis[1].size()==1) {
+        rho_deta_2_ = pi0s[1][0]->eta() - pis[1][0]->eta();
+        rho_dphi_2_ = ROOT::Math::VectorUtil::DeltaPhi(pi0s[1][0]->vector(), pis[1][0]->vector());
+        auto gammas = pi0s[1][0]->daughters();
+        if (gammas.size()==2) {
+          if(gen_particles[gammas[0]]->pdgid()==22 && gen_particles[gammas[0]]->pdgid()==22) {
+            gammas_deta_2_ = gen_particles[gammas[0]]->eta() - gen_particles[gammas[1]]->eta();
+            gammas_dphi_2_ = ROOT::Math::VectorUtil::DeltaPhi(gen_particles[gammas[0]]->vector(), gen_particles[gammas[1]]->vector());
+          }
+        }
+      }
+
+      if (pi0s.size()>0 && pi0s[0].size()==2 && pis[0].size()==1) {
+        pi0s_deta_1_ = pi0s[0][0]->eta() - pi0s[0][1]->eta();
+        pi0s_dphi_1_ = ROOT::Math::VectorUtil::DeltaPhi(pi0s[0][0]->vector(), pi0s[0][1]->vector());
+      }
+
+      if (pi0s.size()>1 && pi0s[1].size()==2 && pis[1].size()==1) {
+        pi0s_deta_2_ = pi0s[1][0]->eta() - pi0s[1][1]->eta();
+        pi0s_dphi_2_ = ROOT::Math::VectorUtil::DeltaPhi(pi0s[1][0]->vector(), pi0s[1][1]->vector());
+      }
+ 
       vis_system=vis_tau_1+vis_tau_2;
     
       TVector3 vis_boost = ConvertToLorentz(vis_system).BoostVector();

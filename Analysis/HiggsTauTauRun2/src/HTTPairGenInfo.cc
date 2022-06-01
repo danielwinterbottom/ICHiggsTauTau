@@ -32,6 +32,17 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
   return gen_ip;
 }
 
+TVector3 GenSV (ic::GenParticle *h, ic::GenParticle *t) {
+
+  TVector3 pvtosv(
+           t->vtx().vx() - h->vtx().vx(),
+           t->vtx().vy() - h->vtx().vy(),
+           t->vtx().vz() - h->vtx().vz()
+           );
+
+  return pvtosv;
+}
+
   HTTPairGenInfo::HTTPairGenInfo(std::string const& name) : ModuleBase(name), channel_(channel::mt) {
     ditau_label_ = "ditau";
     fs_ = NULL;
@@ -78,10 +89,16 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     double gen_match_undecayed_2_pt = -1;
     double gen_match_undecayed_1_eta = -1;
     double gen_match_undecayed_2_eta = -1;
+    double gen_match_undecayed_1_p = -1;
+    double gen_match_undecayed_2_p = -1;
+    double gen_match_undecayed_1_q = -1;
+    double gen_match_undecayed_2_q = -1;
     double gen_met=0.;
 
     TVector3 gen_ip_1(0.,0.,0.);
     TVector3 gen_ip_2(0.,0.,0.);
+    TVector3 gen_sv_1(0.,0.,0.);
+    TVector3 gen_sv_2(0.,0.,0.);
     bool foundboson=false;
     GenParticle *h = new GenParticle();
 
@@ -116,10 +133,14 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     if(undecayed_taus.size()>0){
       gen_match_undecayed_1_pt = undecayed_taus[0]->pt();
       gen_match_undecayed_1_eta = undecayed_taus[0]->eta();
+      gen_match_undecayed_1_p = undecayed_taus[0]->vector().P();
+      gen_match_undecayed_1_q = undecayed_taus[0]->charge();
     }
     if(undecayed_taus.size()>1){
       gen_match_undecayed_2_pt = undecayed_taus[1]->pt();
       gen_match_undecayed_2_eta = undecayed_taus[1]->eta();
+      gen_match_undecayed_2_p = undecayed_taus[1]->vector().P();
+      gen_match_undecayed_2_q = undecayed_taus[1]->charge();
     }
 
     int tauFlag1 = 0;
@@ -172,6 +193,7 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    double gen_match_1_pt = -1;
    double gen_match_2_pt = -1;
 
+
    if(leptonsize!=0&&tausize!=0){
      DR(leading_lepton_match.at(0).first,leading_lepton_match.at(0).second) < DR(leading_tau_match.at(0).first,leading_tau_match.at(0).second) ? tausize=0 : leptonsize = 0;
    }
@@ -189,6 +211,7 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        for(auto p: particles) {
          if(p->id() == id && p->charge()!=0 && !found) {
            gen_ip_1 = GenIP(h,p);
+           gen_sv_1 = GenSV(h,p);
            found=true;
            break;
          }
@@ -269,6 +292,7 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        for(auto p: particles) {
          if(p->id() == id && p->charge()!=0 && !found) {
            gen_ip_2 = GenIP(h,p);
+           gen_sv_2 = GenSV(h,p);
            found=true;
            break;
          }
@@ -331,6 +355,29 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    if(gen_match_1 == mcorigin::tauHad) event->Add("leading_gen_tau", new ic::GenJet(*(leading_tau_match.at(0).second)));
    if(gen_match_2 == mcorigin::tauHad) event->Add("subleading_gen_tau", new ic::GenJet(*(subleading_tau_match.at(0).second)));
 
+   //if(gen_match_1==mcorigin::promptE&&gen_match_2==mcorigin::promptMu) {
+   //  std::cout << "-------" << std::endl;
+   //  std::cout << "matching pt:  " <<  leading_lepton_match.at(0).second->pt() << "  " << subleading_lepton_match.at(0).second->pt() << std::endl;
+   //  std::cout << " " << std::endl;
+   //  std::cout << "mothers (lep1):" << std::endl;
+   //  for (auto x : leading_lepton_match.at(0).second->mothers()) {
+   //    std::cout << particles[x]->pdgid() << "    " << particles[particles[x]->mothers()[0]]->pdgid() << std::endl;
+   //    std::cout << "    siblings (lep1):" << std::endl;
+   //    for (auto x : particles[x]->daughters()) std::cout << "    " << particles[x]->pdgid() << "  " << particles[x]->phi() << "  " << particles[x]->eta() << "  " << particles[x]->pt() << std::endl;
+   //  }
+
+   //  std::cout << " " << std::endl;
+   //  std::cout << "mothers (lep2):" << std::endl;
+   //  for (auto x : subleading_lepton_match.at(0).second->mothers()) {
+   //    std::cout << particles[x]->pdgid() << "    " << particles[particles[x]->mothers()[0]]->pdgid() << std::endl;
+   //    std::cout << "    siblings (lep2):" << std::endl;
+   //    for (auto x : particles[x]->daughters()) std::cout << "    " << particles[x]->pdgid() << "  " << particles[x]->phi() << "  " << particles[x]->eta() << "  " << particles[x]->pt() << std::endl;
+   //  }
+   //  std::cout << " " << std::endl;
+   //  std::cout << "pT  charge  pdgid  mother-pdgid" << std::endl; 
+   //  for(auto p :  sel_particles) { std::cout << p->pt() << "  " << p->charge() << "  " << p->pdgid() << "  " << particles[p->mothers()[0]]->pdgid() << std::endl;  };
+   //}
+
 
    event->Add("gen_match_1",gen_match_1);
    event->Add("gen_match_2",gen_match_2);
@@ -340,12 +387,18 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    event->Add("gen_match_undecayed_2_pt", gen_match_undecayed_2_pt);
    event->Add("gen_match_undecayed_1_eta", gen_match_undecayed_1_eta);
    event->Add("gen_match_undecayed_2_eta", gen_match_undecayed_2_eta);
+   event->Add("gen_match_undecayed_1_p", gen_match_undecayed_1_p);
+   event->Add("gen_match_undecayed_2_p", gen_match_undecayed_2_p);
+   event->Add("gen_match_undecayed_1_q", gen_match_undecayed_1_q);
+   event->Add("gen_match_undecayed_2_q", gen_match_undecayed_2_q);
    event->Add("tauFlag1", tauFlag1);
    event->Add("tauFlag2", tauFlag2);
 
    event->Add("gen_ip_1", gen_ip_1);
+   event->Add("gen_sv_1", gen_sv_1);
 
    event->Add("gen_ip_2", gen_ip_2);
+   event->Add("gen_sv_2", gen_sv_2);
 
    event->Add("gen_nu_p_1",gen_nu_p_1);
    event->Add("gen_nu_phi_1",gen_nu_phi_1);
