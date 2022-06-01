@@ -125,14 +125,14 @@ namespace ic {
       }
     } else { 
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt){
-       if (era_ == era::data_2016){
+       if ((era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)){
          trig_obj_label = "triggerObjectsDoubleMediumTau35";
          alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
          leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
          leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
          alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
          alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-      } else if(era_ == era::data_2017){
+      } else if((era_ == era::data_2017 || era_ == era::data_2017UL)){
           trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
           leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
           leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
@@ -142,7 +142,7 @@ namespace ic {
           alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
           alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
           alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-      } else if (era_ == era::data_2018) {
+      } else if ((era_ == era::data_2018 || era_ == era::data_2018UL)) {
           trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35"; //HPS only
           leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
           leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
@@ -202,7 +202,7 @@ namespace ic {
             }
         }
         
-        if(era_ == era::data_2017){
+        if((era_ == era::data_2017 || era_ == era::data_2017UL)){
           // For 2017 MC we have to match the taus to L1 iso taus with pT>32 GeV to fit with how the SFs were measured
               
           std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
@@ -219,7 +219,7 @@ namespace ic {
       }
 
       // 2018 vbf trg jet matching after double tau trg part
-      if (era_ == era::data_2018 && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
+      if ((era_ == era::data_2018 || era_ == era::data_2018UL) && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
         std::vector<TriggerObject *> alt_objs_3 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_3);  
         std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
         // first need to find jets with maximum mjj and cross clean from taus?

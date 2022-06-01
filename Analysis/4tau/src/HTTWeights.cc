@@ -150,19 +150,22 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       int pn = i + 1; // define to use to get particle information
 
-      if ( strcmp(&Channel2String(channel_)[i],"e") == 0 ) {
+      std::string po = Channel2String(channel_);
+      std::string e_string = "e";
+      std::string m_string = "m";
+      std::string t_string = "t";
+
+      if ( e_string == po[i] ) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_id_sf = std::vector<double>{elec->pt(),elec->sc_eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
         id_sf = fns_["e_idiso_ratio"]->eval(args_id_sf.data());
       }
-
-      if ( strcmp(&Channel2String(channel_)[i],"m") == 0 ) {
+      if ( m_string == po[i] ) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_id_sf = std::vector<double>{muon->pt(),muon->eta(),PF04IsolationVal(muon, 0.5, 0)};  
         id_sf = fns_["m_idiso_ratio"]->eval(args_id_sf.data());
       }
-
-      if ( strcmp(&Channel2String(channel_)[i],"t") == 0 ) {
+      if ( t_string == po[i] ) {
         unsigned gen_match = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_"+std::to_string(pn)));
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_id_sf = std::vector<double>{static_cast<double>(tau->decay_mode())};

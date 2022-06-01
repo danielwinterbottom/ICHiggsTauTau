@@ -60,13 +60,13 @@ namespace ic {
 
     TString filename_even = "";
     TString filename_odd  = "";
-    if (era_ == era::data_2017) {
+    if ((era_ == era::data_2017 || era_ == era::data_2017UL)) {
       filename_even = (std::string)getenv("CMSSW_BASE") +
           "/src/UserCode/ICHiggsTauTau/Analysis/4tau/input/MVA/multi_fold1_sm_tt_tauspinner_2017_xgb.xml"; // apply to even here
       filename_odd  = (std::string)getenv("CMSSW_BASE") +
           "/src/UserCode/ICHiggsTauTau/Analysis/4tau/input/MVA/multi_fold0_sm_tt_tauspinner_2017_xgb.xml"; // apply to odd
     } 
-    else if (era_ == era::data_2018) {
+    else if ((era_ == era::data_2018 || era_ == era::data_2018UL)) {
       filename_even = (std::string)getenv("CMSSW_BASE") +
           "/src/UserCode/ICHiggsTauTau/Analysis/4tau/input/MVA/multi_fold1_sm_tt_tauspinner_2018_xgb.xml"; // apply to even here
       filename_odd  = (std::string)getenv("CMSSW_BASE") +

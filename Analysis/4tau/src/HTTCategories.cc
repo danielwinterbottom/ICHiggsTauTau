@@ -51,6 +51,125 @@ namespace ic {
       outtree_->Branch("lumi",               &lumi_);
       outtree_->Branch("rho",               &rho_, "rho/F");
 
+      // weights
+      outtree_->Branch("wt",                &wt_.var_double);
+      outtree_->Branch("wt_dysoup",         &wt_dysoup_);
+      outtree_->Branch("wt_wsoup",         &wt_wsoup_);
+
+      // gen matches
+      outtree_->Branch("gen_match_1",         &gen_match_1_);
+      outtree_->Branch("gen_match_2",         &gen_match_2_);
+      outtree_->Branch("gen_match_3",         &gen_match_3_);
+      outtree_->Branch("gen_match_4",         &gen_match_4_);
+
+      // idiso weights
+      outtree_->Branch("idisoweight_1", &idisoweight_1_);
+      outtree_->Branch("idisoweight_2", &idisoweight_2_);
+      outtree_->Branch("idisoweight_3", &idisoweight_3_);
+      outtree_->Branch("idisoweight_4", &idisoweight_4_);
+
+      outtree_->Branch("idisoweight_vvvloose_1", &idisoweight_vvvloose_1_);
+      outtree_->Branch("idisoweight_vvvloose_2", &idisoweight_vvvloose_2_);
+      outtree_->Branch("idisoweight_vvvloose_3", &idisoweight_vvvloose_3_);
+      outtree_->Branch("idisoweight_vvvloose_4", &idisoweight_vvvloose_4_);
+
+      outtree_->Branch("idisoweight_vvloose_1", &idisoweight_vvloose_1_);
+      outtree_->Branch("idisoweight_vvloose_2", &idisoweight_vvloose_2_);
+      outtree_->Branch("idisoweight_vvloose_3", &idisoweight_vvloose_3_);
+      outtree_->Branch("idisoweight_vvloose_4", &idisoweight_vvloose_4_);
+
+      outtree_->Branch("idisoweight_vloose_1", &idisoweight_vloose_1_);
+      outtree_->Branch("idisoweight_vloose_2", &idisoweight_vloose_2_);
+      outtree_->Branch("idisoweight_vloose_3", &idisoweight_vloose_3_);
+      outtree_->Branch("idisoweight_vloose_4", &idisoweight_vloose_4_);
+
+      outtree_->Branch("idisoweight_loose_1", &idisoweight_loose_1_);
+      outtree_->Branch("idisoweight_loose_2", &idisoweight_loose_2_);
+      outtree_->Branch("idisoweight_loose_3", &idisoweight_loose_3_);
+      outtree_->Branch("idisoweight_loose_4", &idisoweight_loose_4_);
+
+      outtree_->Branch("idisoweight_medium_1", &idisoweight_medium_1_);
+      outtree_->Branch("idisoweight_medium_2", &idisoweight_medium_2_);
+      outtree_->Branch("idisoweight_medium_3", &idisoweight_medium_3_);
+      outtree_->Branch("idisoweight_medium_4", &idisoweight_medium_4_);
+
+      outtree_->Branch("idisoweight_tight_1", &idisoweight_tight_1_);
+      outtree_->Branch("idisoweight_tight_2", &idisoweight_tight_2_);
+      outtree_->Branch("idisoweight_tight_3", &idisoweight_tight_3_);
+      outtree_->Branch("idisoweight_tight_4", &idisoweight_tight_4_);
+
+      // etau fake rates
+      outtree_->Branch("etau_fakerate_1", &etau_fakerate_1_);
+      outtree_->Branch("etau_fakerate_2", &etau_fakerate_2_);
+      outtree_->Branch("etau_fakerate_3", &etau_fakerate_3_);
+      outtree_->Branch("etau_fakerate_4", &etau_fakerate_4_);
+
+      outtree_->Branch("etau_fakerate_vvloose_1", &etau_fakerate_vvloose_1_);
+      outtree_->Branch("etau_fakerate_vvloose_2", &etau_fakerate_vvloose_2_);
+      outtree_->Branch("etau_fakerate_vvloose_3", &etau_fakerate_vvloose_3_);
+      outtree_->Branch("etau_fakerate_vvloose_4", &etau_fakerate_vvloose_4_);
+
+      outtree_->Branch("etau_fakerate_vloose_1", &etau_fakerate_vloose_1_);
+      outtree_->Branch("etau_fakerate_vloose_2", &etau_fakerate_vloose_2_);
+      outtree_->Branch("etau_fakerate_vloose_3", &etau_fakerate_vloose_3_);
+      outtree_->Branch("etau_fakerate_vloose_4", &etau_fakerate_vloose_4_);
+
+      outtree_->Branch("etau_fakerate_loose_1", &etau_fakerate_loose_1_);
+      outtree_->Branch("etau_fakerate_loose_2", &etau_fakerate_loose_2_);
+      outtree_->Branch("etau_fakerate_loose_3", &etau_fakerate_loose_3_);
+      outtree_->Branch("etau_fakerate_loose_4", &etau_fakerate_loose_4_);
+
+      outtree_->Branch("etau_fakerate_medium_1", &etau_fakerate_medium_1_);
+      outtree_->Branch("etau_fakerate_medium_2", &etau_fakerate_medium_2_);
+      outtree_->Branch("etau_fakerate_medium_3", &etau_fakerate_medium_3_);
+      outtree_->Branch("etau_fakerate_medium_4", &etau_fakerate_medium_4_);
+
+      outtree_->Branch("etau_fakerate_tight_1", &etau_fakerate_tight_1_);
+      outtree_->Branch("etau_fakerate_tight_2", &etau_fakerate_tight_2_);
+      outtree_->Branch("etau_fakerate_tight_3", &etau_fakerate_tight_3_);
+      outtree_->Branch("etau_fakerate_tight_4", &etau_fakerate_tight_4_);
+
+      outtree_->Branch("etau_fakerate_vtight_1", &etau_fakerate_vtight_1_);
+      outtree_->Branch("etau_fakerate_vtight_2", &etau_fakerate_vtight_2_);
+      outtree_->Branch("etau_fakerate_vtight_3", &etau_fakerate_vtight_3_);
+      outtree_->Branch("etau_fakerate_vtight_4", &etau_fakerate_vtight_4_);
+
+      // mtau fake rates
+      outtree_->Branch("mtau_fakerate_1", &mtau_fakerate_1_);
+      outtree_->Branch("mtau_fakerate_2", &mtau_fakerate_2_);
+      outtree_->Branch("mtau_fakerate_3", &mtau_fakerate_3_);
+      outtree_->Branch("mtau_fakerate_4", &mtau_fakerate_4_);
+
+      outtree_->Branch("mtau_fakerate_vloose_1", &mtau_fakerate_vloose_1_);
+      outtree_->Branch("mtau_fakerate_vloose_2", &mtau_fakerate_vloose_2_);
+      outtree_->Branch("mtau_fakerate_vloose_3", &mtau_fakerate_vloose_3_);
+      outtree_->Branch("mtau_fakerate_vloose_4", &mtau_fakerate_vloose_4_);
+
+      outtree_->Branch("mtau_fakerate_loose_1", &mtau_fakerate_loose_1_);
+      outtree_->Branch("mtau_fakerate_loose_2", &mtau_fakerate_loose_2_);
+      outtree_->Branch("mtau_fakerate_loose_3", &mtau_fakerate_loose_3_);
+      outtree_->Branch("mtau_fakerate_loose_4", &mtau_fakerate_loose_4_);
+
+      outtree_->Branch("mtau_fakerate_medium_1", &mtau_fakerate_medium_1_);
+      outtree_->Branch("mtau_fakerate_medium_2", &mtau_fakerate_medium_2_);
+      outtree_->Branch("mtau_fakerate_medium_3", &mtau_fakerate_medium_3_);
+      outtree_->Branch("mtau_fakerate_medium_4", &mtau_fakerate_medium_4_);
+
+      outtree_->Branch("mtau_fakerate_tight_1", &mtau_fakerate_tight_1_);
+      outtree_->Branch("mtau_fakerate_tight_2", &mtau_fakerate_tight_2_);
+      outtree_->Branch("mtau_fakerate_tight_3", &mtau_fakerate_tight_3_);
+      outtree_->Branch("mtau_fakerate_tight_4", &mtau_fakerate_tight_4_);
+
+      // tracking weights
+      outtree_->Branch("trackingweight_1", &trackingweight_1_);
+      outtree_->Branch("trackingweight_2", &trackingweight_2_);
+      outtree_->Branch("trackingweight_3", &trackingweight_3_);
+      outtree_->Branch("trackingweight_4", &trackingweight_4_);
+
+      // trigger weights
+      outtree_->Branch("trigweight_tau_1", &trigweight_tau_1_);
+      outtree_->Branch("trigweight_tau_2", &trigweight_tau_2_);
+
       // dxy and dz
       outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
       outtree_->Branch("dZ_1", &dz_1_.var_float, "dz_1/F");
@@ -275,6 +394,118 @@ namespace ic {
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
     rho_ = eventInfo->jet_rho();
+
+    wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
+    wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
+    wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
+
+    gen_match_1_ = event->Exists("gen_match_1") ? MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1")) : 0.0;
+    gen_match_2_ = event->Exists("gen_match_2") ? MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2")) : 0.0;
+    gen_match_3_ = event->Exists("gen_match_3") ? MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_3")) : 0.0;
+    gen_match_4_ = event->Exists("gen_match_4") ? MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_4")) : 0.0;
+
+    idisoweight_1_ = event->Exists("idisoweight_1") ? event->Get<double>("idisoweight_1") : 1.0;
+    idisoweight_2_ = event->Exists("idisoweight_2") ? event->Get<double>("idisoweight_2") : 1.0;
+    idisoweight_3_ = event->Exists("idisoweight_3") ? event->Get<double>("idisoweight_3") : 1.0;
+    idisoweight_4_ = event->Exists("idisoweight_4") ? event->Get<double>("idisoweight_4") : 1.0;
+
+    idisoweight_vvvloose_1_ = event->Exists("idisoweight_vvvloose_1") ? event->Get<double>("idisoweight_vvvloose_1") : 1.0;
+    idisoweight_vvvloose_2_ = event->Exists("idisoweight_vvvloose_2") ? event->Get<double>("idisoweight_vvvloose_2") : 1.0;
+    idisoweight_vvvloose_3_ = event->Exists("idisoweight_vvvloose_3") ? event->Get<double>("idisoweight_vvvloose_3") : 1.0;
+    idisoweight_vvvloose_4_ = event->Exists("idisoweight_vvvloose_4") ? event->Get<double>("idisoweight_vvvloose_4") : 1.0;
+
+    idisoweight_vvloose_1_ = event->Exists("idisoweight_vvloose_1") ? event->Get<double>("idisoweight_vvloose_1") : 1.0;
+    idisoweight_vvloose_2_ = event->Exists("idisoweight_vvloose_2") ? event->Get<double>("idisoweight_vvloose_2") : 1.0;
+    idisoweight_vvloose_3_ = event->Exists("idisoweight_vvloose_3") ? event->Get<double>("idisoweight_vvloose_3") : 1.0;
+    idisoweight_vvloose_4_ = event->Exists("idisoweight_vvloose_4") ? event->Get<double>("idisoweight_vvloose_4") : 1.0;
+
+    idisoweight_vloose_1_ = event->Exists("idisoweight_vloose_1") ? event->Get<double>("idisoweight_vloose_1") : 1.0;
+    idisoweight_vloose_2_ = event->Exists("idisoweight_vloose_2") ? event->Get<double>("idisoweight_vloose_2") : 1.0;
+    idisoweight_vloose_3_ = event->Exists("idisoweight_vloose_3") ? event->Get<double>("idisoweight_vloose_3") : 1.0;
+    idisoweight_vloose_4_ = event->Exists("idisoweight_vloose_4") ? event->Get<double>("idisoweight_vloose_4") : 1.0;
+
+    idisoweight_loose_1_ = event->Exists("idisoweight_loose_1") ? event->Get<double>("idisoweight_loose_1") : 1.0;
+    idisoweight_loose_2_ = event->Exists("idisoweight_loose_2") ? event->Get<double>("idisoweight_loose_2") : 1.0;
+    idisoweight_loose_3_ = event->Exists("idisoweight_loose_3") ? event->Get<double>("idisoweight_loose_3") : 1.0;
+    idisoweight_loose_4_ = event->Exists("idisoweight_loose_4") ? event->Get<double>("idisoweight_loose_4") : 1.0;
+
+    idisoweight_medium_1_ = event->Exists("idisoweight_medium_1") ? event->Get<double>("idisoweight_medium_1") : 1.0;
+    idisoweight_medium_2_ = event->Exists("idisoweight_medium_2") ? event->Get<double>("idisoweight_medium_2") : 1.0;
+    idisoweight_medium_3_ = event->Exists("idisoweight_medium_3") ? event->Get<double>("idisoweight_medium_3") : 1.0;
+    idisoweight_medium_4_ = event->Exists("idisoweight_medium_4") ? event->Get<double>("idisoweight_medium_4") : 1.0;
+
+    idisoweight_tight_1_ = event->Exists("idisoweight_tight_1") ? event->Get<double>("idisoweight_tight_1") : 1.0;
+    idisoweight_tight_2_ = event->Exists("idisoweight_tight_2") ? event->Get<double>("idisoweight_tight_2") : 1.0;
+    idisoweight_tight_3_ = event->Exists("idisoweight_tight_3") ? event->Get<double>("idisoweight_tight_3") : 1.0;
+    idisoweight_tight_4_ = event->Exists("idisoweight_tight_4") ? event->Get<double>("idisoweight_tight_4") : 1.0;
+
+    etau_fakerate_1_ = event->Exists("etau_fakerate_1") ? event->Get<double>("etau_fakerate_1") : 1.0;
+    etau_fakerate_2_ = event->Exists("etau_fakerate_2") ? event->Get<double>("etau_fakerate_2") : 1.0;
+    etau_fakerate_3_ = event->Exists("etau_fakerate_3") ? event->Get<double>("etau_fakerate_3") : 1.0;
+    etau_fakerate_4_ = event->Exists("etau_fakerate_4") ? event->Get<double>("etau_fakerate_4") : 1.0;
+
+    etau_fakerate_vvloose_1_ = event->Exists("etau_fakerate_vvloose_1") ? event->Get<double>("etau_fakerate_vvloose_1") : 1.0;
+    etau_fakerate_vvloose_2_ = event->Exists("etau_fakerate_vvloose_2") ? event->Get<double>("etau_fakerate_vvloose_2") : 1.0;
+    etau_fakerate_vvloose_3_ = event->Exists("etau_fakerate_vvloose_3") ? event->Get<double>("etau_fakerate_vvloose_3") : 1.0;
+    etau_fakerate_vvloose_4_ = event->Exists("etau_fakerate_vvloose_4") ? event->Get<double>("etau_fakerate_vvloose_4") : 1.0;
+
+    etau_fakerate_vloose_1_ = event->Exists("etau_fakerate_vloose_1") ? event->Get<double>("etau_fakerate_vloose_1") : 1.0;
+    etau_fakerate_vloose_2_ = event->Exists("etau_fakerate_vloose_2") ? event->Get<double>("etau_fakerate_vloose_2") : 1.0;
+    etau_fakerate_vloose_3_ = event->Exists("etau_fakerate_vloose_3") ? event->Get<double>("etau_fakerate_vloose_3") : 1.0;
+    etau_fakerate_vloose_4_ = event->Exists("etau_fakerate_vloose_4") ? event->Get<double>("etau_fakerate_vloose_4") : 1.0;
+
+    etau_fakerate_loose_1_ = event->Exists("etau_fakerate_loose_1") ? event->Get<double>("etau_fakerate_loose_1") : 1.0;
+    etau_fakerate_loose_2_ = event->Exists("etau_fakerate_loose_2") ? event->Get<double>("etau_fakerate_loose_2") : 1.0;
+    etau_fakerate_loose_3_ = event->Exists("etau_fakerate_loose_3") ? event->Get<double>("etau_fakerate_loose_3") : 1.0;
+    etau_fakerate_loose_4_ = event->Exists("etau_fakerate_loose_4") ? event->Get<double>("etau_fakerate_loose_4") : 1.0;
+
+    etau_fakerate_medium_1_ = event->Exists("etau_fakerate_medium_1") ? event->Get<double>("etau_fakerate_medium_1") : 1.0;
+    etau_fakerate_medium_2_ = event->Exists("etau_fakerate_medium_2") ? event->Get<double>("etau_fakerate_medium_2") : 1.0;
+    etau_fakerate_medium_3_ = event->Exists("etau_fakerate_medium_3") ? event->Get<double>("etau_fakerate_medium_3") : 1.0;
+    etau_fakerate_medium_4_ = event->Exists("etau_fakerate_medium_4") ? event->Get<double>("etau_fakerate_medium_4") : 1.0;
+
+    etau_fakerate_tight_1_ = event->Exists("etau_fakerate_tight_1") ? event->Get<double>("etau_fakerate_tight_1") : 1.0;
+    etau_fakerate_tight_2_ = event->Exists("etau_fakerate_tight_2") ? event->Get<double>("etau_fakerate_tight_2") : 1.0;
+    etau_fakerate_tight_3_ = event->Exists("etau_fakerate_tight_3") ? event->Get<double>("etau_fakerate_tight_3") : 1.0;
+    etau_fakerate_tight_4_ = event->Exists("etau_fakerate_tight_4") ? event->Get<double>("etau_fakerate_tight_4") : 1.0;
+
+    etau_fakerate_vtight_1_ = event->Exists("etau_fakerate_vtight_1") ? event->Get<double>("etau_fakerate_vtight_1") : 1.0;
+    etau_fakerate_vtight_2_ = event->Exists("etau_fakerate_vtight_2") ? event->Get<double>("etau_fakerate_vtight_2") : 1.0;
+    etau_fakerate_vtight_3_ = event->Exists("etau_fakerate_vtight_3") ? event->Get<double>("etau_fakerate_vtight_3") : 1.0;
+    etau_fakerate_vtight_4_ = event->Exists("etau_fakerate_vtight_4") ? event->Get<double>("etau_fakerate_vtight_4") : 1.0;
+
+    mtau_fakerate_1_ = event->Exists("mtau_fakerate_1") ? event->Get<double>("mtau_fakerate_1") : 1.0;
+    mtau_fakerate_2_ = event->Exists("mtau_fakerate_2") ? event->Get<double>("mtau_fakerate_2") : 1.0;
+    mtau_fakerate_3_ = event->Exists("mtau_fakerate_3") ? event->Get<double>("mtau_fakerate_3") : 1.0;
+    mtau_fakerate_4_ = event->Exists("mtau_fakerate_4") ? event->Get<double>("mtau_fakerate_4") : 1.0;
+    
+    mtau_fakerate_vloose_1_ = event->Exists("mtau_fakerate_vloose_1") ? event->Get<double>("mtau_fakerate_vloose_1") : 1.0;
+    mtau_fakerate_vloose_2_ = event->Exists("mtau_fakerate_vloose_2") ? event->Get<double>("mtau_fakerate_vloose_2") : 1.0;
+    mtau_fakerate_vloose_3_ = event->Exists("mtau_fakerate_vloose_3") ? event->Get<double>("mtau_fakerate_vloose_3") : 1.0;
+    mtau_fakerate_vloose_4_ = event->Exists("mtau_fakerate_vloose_4") ? event->Get<double>("mtau_fakerate_vloose_4") : 1.0;
+
+    mtau_fakerate_loose_1_ = event->Exists("mtau_fakerate_loose_1") ? event->Get<double>("mtau_fakerate_loose_1") : 1.0;
+    mtau_fakerate_loose_2_ = event->Exists("mtau_fakerate_loose_2") ? event->Get<double>("mtau_fakerate_loose_2") : 1.0;
+    mtau_fakerate_loose_3_ = event->Exists("mtau_fakerate_loose_3") ? event->Get<double>("mtau_fakerate_loose_3") : 1.0;
+    mtau_fakerate_loose_4_ = event->Exists("mtau_fakerate_loose_4") ? event->Get<double>("mtau_fakerate_loose_4") : 1.0;
+
+    mtau_fakerate_medium_1_ = event->Exists("mtau_fakerate_medium_1") ? event->Get<double>("mtau_fakerate_medium_1") : 1.0;
+    mtau_fakerate_medium_2_ = event->Exists("mtau_fakerate_medium_2") ? event->Get<double>("mtau_fakerate_medium_2") : 1.0;
+    mtau_fakerate_medium_3_ = event->Exists("mtau_fakerate_medium_3") ? event->Get<double>("mtau_fakerate_medium_3") : 1.0;
+    mtau_fakerate_medium_4_ = event->Exists("mtau_fakerate_medium_4") ? event->Get<double>("mtau_fakerate_medium_4") : 1.0;
+
+    mtau_fakerate_tight_1_ = event->Exists("mtau_fakerate_tight_1") ? event->Get<double>("mtau_fakerate_tight_1") : 1.0;
+    mtau_fakerate_tight_2_ = event->Exists("mtau_fakerate_tight_2") ? event->Get<double>("mtau_fakerate_tight_2") : 1.0;
+    mtau_fakerate_tight_3_ = event->Exists("mtau_fakerate_tight_3") ? event->Get<double>("mtau_fakerate_tight_3") : 1.0;
+    mtau_fakerate_tight_4_ = event->Exists("mtau_fakerate_tight_4") ? event->Get<double>("mtau_fakerate_tight_4") : 1.0;
+
+    trackingweight_1_ = event->Exists("trackingweight_1") ? event->Get<double>("trackingweight_1") : 1.0;
+    trackingweight_2_ = event->Exists("trackingweight_2") ? event->Get<double>("trackingweight_2") : 1.0;
+    trackingweight_3_ = event->Exists("trackingweight_3") ? event->Get<double>("trackingweight_3") : 1.0;
+    trackingweight_4_ = event->Exists("trackingweight_4") ? event->Get<double>("trackingweight_4") : 1.0;
+
+    trigweight_tau_1_ = event->Exists("trigweight_tau_1") ? event->Get<double>("trigweight_tau_1") : 1.0;
+    trigweight_tau_2_ = event->Exists("trigweight_tau_2") ? event->Get<double>("trigweight_tau_2") : 1.0;
 
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();

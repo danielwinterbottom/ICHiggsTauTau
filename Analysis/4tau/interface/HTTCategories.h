@@ -51,6 +51,119 @@ class HTTCategories : public ModuleBase {
   int lumi_;
   float rho_;
 
+  branch_var wt_;
+
+  double wt_wsoup_;
+  double wt_dysoup_;
+
+  double gen_match_1_;
+  double gen_match_2_;
+  double gen_match_3_;
+  double gen_match_4_;
+
+  double idisoweight_1_;
+  double idisoweight_2_;
+  double idisoweight_3_;
+  double idisoweight_4_;
+
+  double idisoweight_vvvloose_1_;
+  double idisoweight_vvvloose_2_;
+  double idisoweight_vvvloose_3_;
+  double idisoweight_vvvloose_4_;
+
+  double idisoweight_vvloose_1_;
+  double idisoweight_vvloose_2_;
+  double idisoweight_vvloose_3_;
+  double idisoweight_vvloose_4_;
+
+  double idisoweight_vloose_1_;
+  double idisoweight_vloose_2_;
+  double idisoweight_vloose_3_;
+  double idisoweight_vloose_4_;
+
+  double idisoweight_loose_1_;
+  double idisoweight_loose_2_;
+  double idisoweight_loose_3_;
+  double idisoweight_loose_4_;
+
+  double idisoweight_medium_1_;
+  double idisoweight_medium_2_;
+  double idisoweight_medium_3_;
+  double idisoweight_medium_4_;
+
+  double idisoweight_tight_1_;
+  double idisoweight_tight_2_;
+  double idisoweight_tight_3_;
+  double idisoweight_tight_4_;
+
+  double etau_fakerate_1_;
+  double etau_fakerate_2_;
+  double etau_fakerate_3_;
+  double etau_fakerate_4_;
+
+  double etau_fakerate_vvloose_1_;
+  double etau_fakerate_vvloose_2_;
+  double etau_fakerate_vvloose_3_;
+  double etau_fakerate_vvloose_4_;
+
+  double etau_fakerate_vloose_1_;
+  double etau_fakerate_vloose_2_;
+  double etau_fakerate_vloose_3_;
+  double etau_fakerate_vloose_4_;
+
+  double etau_fakerate_loose_1_;
+  double etau_fakerate_loose_2_;
+  double etau_fakerate_loose_3_;
+  double etau_fakerate_loose_4_;
+
+  double etau_fakerate_medium_1_;
+  double etau_fakerate_medium_2_;
+  double etau_fakerate_medium_3_;
+  double etau_fakerate_medium_4_;
+
+  double etau_fakerate_tight_1_;
+  double etau_fakerate_tight_2_;
+  double etau_fakerate_tight_3_;
+  double etau_fakerate_tight_4_;
+
+  double etau_fakerate_vtight_1_;
+  double etau_fakerate_vtight_2_;
+  double etau_fakerate_vtight_3_;
+  double etau_fakerate_vtight_4_;
+
+  double mtau_fakerate_1_;
+  double mtau_fakerate_2_;
+  double mtau_fakerate_3_;
+  double mtau_fakerate_4_;
+
+  double mtau_fakerate_vloose_1_;
+  double mtau_fakerate_vloose_2_;
+  double mtau_fakerate_vloose_3_;
+  double mtau_fakerate_vloose_4_;
+
+  double mtau_fakerate_loose_1_;
+  double mtau_fakerate_loose_2_;
+  double mtau_fakerate_loose_3_;
+  double mtau_fakerate_loose_4_;
+
+  double mtau_fakerate_medium_1_;
+  double mtau_fakerate_medium_2_;
+  double mtau_fakerate_medium_3_;
+  double mtau_fakerate_medium_4_;
+
+  double mtau_fakerate_tight_1_;
+  double mtau_fakerate_tight_2_;
+  double mtau_fakerate_tight_3_;
+  double mtau_fakerate_tight_4_;
+
+  double trackingweight_1_;
+  double trackingweight_2_;
+  double trackingweight_3_;
+  double trackingweight_4_;
+
+  double trigweight_tau_1_;
+  double trigweight_tau_2_;
+
   branch_var d0_1_;
   branch_var d0_2_;
   branch_var d0_3_;
