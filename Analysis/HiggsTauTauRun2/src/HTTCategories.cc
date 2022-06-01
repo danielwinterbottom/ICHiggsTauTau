@@ -4347,8 +4347,6 @@ namespace ic {
           deta_2*=0.2;
         }
 
-        //std::cout << gen_sv_phi_1 << "  " << gen_sv_eta_1 << "  " << gen_sv_phi_2 << "  " << gen_sv_eta_2 << std::endl;
-        //std::cout << dphi_1 << "  " << deta_1 << "  " << dphi_2 << "  " << deta_2 << std::endl;
  
         double new_phi_1_up = svminuspv_1.Phi()-dphi_1;
         double new_eta_1_up = svminuspv_1.Eta()-deta_1;
