@@ -293,7 +293,6 @@ class HTTCategories : public ModuleBase {
   double pv_angle_smearsv_up_;
   double pv_angle_smearsv_down_;
   double pv_angle_new_;
-  double pv_angle_new_2_;
   double sv_mag_2_;
   double sv_dphi_2_, sv_deta_2_;
   double rho_dphi_2_, rho_deta_2_;
@@ -302,8 +301,6 @@ class HTTCategories : public ModuleBase {
   double ip_L_2_, ip_eta_2_, ip_phi_2_;
   double ip_dphi_2_, ip_deta_2_;
   double sv_L_2_, sv_eta_2_, sv_phi_2_;
-
-  double pi0_n_x_2_, pi0_n_y_2_, pi0_n_z_2_, pi0_n_phi_2_, pi0_n_eta_2_;
 
   bool hasSV_2_;
   double lead_pt_1_, lead_pt_2_;

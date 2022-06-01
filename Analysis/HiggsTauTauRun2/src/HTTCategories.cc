@@ -778,12 +778,6 @@ namespace ic {
       outtree_->Branch("pv_angle_smearsv_up", &pv_angle_smearsv_up_);
       outtree_->Branch("pv_angle_smearsv_down", &pv_angle_smearsv_down_);
       outtree_->Branch("pv_angle_new", &pv_angle_new_);
-      outtree_->Branch("pv_angle_new_2", &pv_angle_new_2_);
-      outtree_->Branch("pi0_n_x_2", &pi0_n_x_2_);
-      outtree_->Branch("pi0_n_y_2", &pi0_n_y_2_);
-      outtree_->Branch("pi0_n_z_2", &pi0_n_z_2_);
-      outtree_->Branch("pi0_n_eta_2", &pi0_n_eta_2_);
-      outtree_->Branch("pi0_n_phi_2", &pi0_n_phi_2_);
       outtree_->Branch("rho_dphi_2", &rho_dphi_2_);
       outtree_->Branch("rho_deta_2", &rho_deta_2_);
       outtree_->Branch("pi0_E_2", &pi0_E_2_);
@@ -3145,7 +3139,7 @@ namespace ic {
     aco_angle_7_=-9999.;
     pv_angle_=-9999.;
     pv_angle_new_=-9999.;
-    pv_angle_new_2_=-9999.;
+    pv_angle_=-9999.;
     sv_x_2_=0.;
     sv_y_2_=-0.;
     sv_z_2_=0.;
@@ -4095,7 +4089,7 @@ namespace ic {
                 TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
                 TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
 
-                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+                pv_angle_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
 
             }
           }
@@ -4224,12 +4218,12 @@ namespace ic {
                 TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
                 TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
 
-                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+                pv_angle_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
 
 
                 if (y_1_1_<0) {
-                  if (pv_angle_new_2_<M_PI) pv_angle_new_2_ += M_PI;
-                  else                   pv_angle_new_2_ -= M_PI;
+                  if (pv_angle_<M_PI) pv_angle_ += M_PI;
+                  else                   pv_angle_ -= M_PI;
                 }
 
             }
@@ -4828,10 +4822,6 @@ namespace ic {
         pi_eta_2_ = pi->eta();
         pi_E_2_ = pi->energy();
 
-        std::pair<TVector3, TVector3> dirs = IPAcoAngleVectors(lvec1, lvec2, lvec3, lvec4,false);
-
-        pi0_n_x_2_ = dirs.second.X(), pi0_n_y_2_ = dirs.second.Y(), pi0_n_z_2_ = dirs.second.Z(), pi0_n_phi_2_ = dirs.second.Phi(), pi0_n_eta_2_ = dirs.second.Eta();
-
         double cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         y_1_1_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         TLorentzVector pvtosv2(
@@ -4950,7 +4940,7 @@ namespace ic {
                 TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
                 TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
 
-                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+                pv_angle_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
                 }
 
           }
