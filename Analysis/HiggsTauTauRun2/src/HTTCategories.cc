@@ -4104,7 +4104,7 @@ namespace ic {
       
         ic::Candidate *pi;
         ic::Candidate *pi0;
-        ic::Tau const *tau_1;
+        //ic::Tau const *tau_1;
         ic::Tau const *tau_2;
         Candidate tau_undecay_2;
         Candidate tau_undecay_1;
@@ -4112,7 +4112,7 @@ namespace ic {
         std::vector<ic::PFCandidate*> a1_daughters;
         std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
         if(tau_decay_mode_1_>9){
-          tau_1 = tau2;
+          //tau_1 = tau2;
           tau_2 = tau1;
           a1_daughters  = GetA1(tau1, pfcands).first;
           rho_daughters = GetRho(tau2, pfcands);
@@ -4121,7 +4121,7 @@ namespace ic {
           tau_undecay_2 = svfit_ditau.first;
           tau_undecay_1 = svfit_ditau.second;
         } else {
-          tau_1 = tau1;
+          //tau_1 = tau1;
           tau_2 = tau2;
           a1_daughters  = GetA1(tau2, pfcands).first;
           rho_daughters = GetRho(tau1, pfcands);
