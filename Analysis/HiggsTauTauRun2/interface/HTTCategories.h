@@ -286,42 +286,6 @@ class HTTCategories : public ModuleBase {
   double aco_angle_5_smearpi0dir_up_;
   double aco_angle_5_smearpi0dir_down_;
 
-  double aco_angle_5_scale_0p1_;
-  double aco_angle_5_scale_0p25_;
-  double aco_angle_5_scale_0p5_;
-  double aco_angle_5_scale_0p75_;
-  double aco_angle_5_scale_0p9_;
-  double aco_angle_5_scale_1p0_;
-  double aco_angle_5_scale_perfect_;
-  double aco_angle_1_scale_0p1_;
-  double aco_angle_1_scale_0p25_;
-  double aco_angle_1_scale_0p5_;
-  double aco_angle_1_scale_0p75_;
-  double aco_angle_1_scale_0p9_;
-  double aco_angle_1_scale_1p0_;
-
-  double aco_angle_1_scale_0p025_;
-  double aco_angle_1_scale_0p05_;
-  double aco_angle_1_scale_0p075_;
-
-  double aco_angle_5_scale_0p0_;
-  double aco_angle_5_scale_0p025_;
-  double aco_angle_5_scale_0p05_;
-  double aco_angle_5_scale_0p075_;
-
-  double aco_angle_5_scaleE_0p1_;
-  double aco_angle_5_scaleE_0p25_;
-  double aco_angle_5_scaleE_0p5_;
-  double aco_angle_5_scaleE_0p75_;
-  double aco_angle_5_scaleE_0p9_;
-  double aco_angle_5_scaleE_1p0_;
-  double aco_angle_1_scaleE_0p1_;
-  double aco_angle_1_scaleE_0p25_;
-  double aco_angle_1_scaleE_0p5_;
-  double aco_angle_1_scaleE_0p75_;
-  double aco_angle_1_scaleE_0p9_;
-  double aco_angle_1_scaleE_1p0_;
-
   double gen_ip_phi_2_, gen_ip_eta_2_;
   double gen_sv_phi_2_, gen_sv_eta_2_;
   double ip_phi_raw_2_, ip_eta_raw_2_;
@@ -330,9 +294,6 @@ class HTTCategories : public ModuleBase {
   double pv_angle_smearsv_down_;
   double pv_angle_new_;
   double pv_angle_new_2_;
-  double pv_angle_new_3_;
-  double pv_angle_new_4_;
-  double pv_angle_new_5_;
   double sv_mag_2_;
   double sv_dphi_2_, sv_deta_2_;
   double rho_dphi_2_, rho_deta_2_;

@@ -773,53 +773,12 @@ namespace ic {
       outtree_->Branch("aco_angle_5_scalepi0_down", &aco_angle_5_scalepi0_down_);
       outtree_->Branch("aco_angle_5_scalepi0_up", &aco_angle_5_scalepi0_up_);
 
-      outtree_->Branch("aco_angle_5_scale_0p1", &aco_angle_5_scale_0p1_);
-      outtree_->Branch("aco_angle_5_scale_0p25", &aco_angle_5_scale_0p25_);
-      outtree_->Branch("aco_angle_5_scale_0p5", &aco_angle_5_scale_0p5_);
-      outtree_->Branch("aco_angle_5_scale_0p75", &aco_angle_5_scale_0p75_);
-      outtree_->Branch("aco_angle_5_scale_0p9", &aco_angle_5_scale_0p9_);
-      outtree_->Branch("aco_angle_5_scale_1p0", &aco_angle_5_scale_1p0_);
-      outtree_->Branch("aco_angle_5_scale_perfect", &aco_angle_5_scale_perfect_);
-      outtree_->Branch("aco_angle_1_scale_0p1", &aco_angle_1_scale_0p1_);
-      outtree_->Branch("aco_angle_1_scale_0p25", &aco_angle_1_scale_0p25_);
-      outtree_->Branch("aco_angle_1_scale_0p5", &aco_angle_1_scale_0p5_);
-      outtree_->Branch("aco_angle_1_scale_0p75", &aco_angle_1_scale_0p75_);
-      outtree_->Branch("aco_angle_1_scale_0p9", &aco_angle_1_scale_0p9_);
-      outtree_->Branch("aco_angle_1_scale_1p0", &aco_angle_1_scale_1p0_);
-
-      outtree_->Branch("aco_angle_5_scale_0p0", &aco_angle_5_scale_0p0_);
-      outtree_->Branch("aco_angle_5_scale_0p025", &aco_angle_5_scale_0p025_);
-      outtree_->Branch("aco_angle_5_scale_0p05", &aco_angle_5_scale_0p05_);
-      outtree_->Branch("aco_angle_5_scale_0p075", &aco_angle_5_scale_0p075_);
-
-      outtree_->Branch("aco_angle_1_scale_0p025", &aco_angle_1_scale_0p025_);
-      outtree_->Branch("aco_angle_1_scale_0p05", &aco_angle_1_scale_0p05_);
-      outtree_->Branch("aco_angle_1_scale_0p075", &aco_angle_1_scale_0p075_);
-
-      outtree_->Branch("aco_angle_5_scaleE_0p1",  &aco_angle_5_scaleE_0p1_);
-      outtree_->Branch("aco_angle_5_scaleE_0p25", &aco_angle_5_scaleE_0p25_);
-      outtree_->Branch("aco_angle_5_scaleE_0p5",  &aco_angle_5_scaleE_0p5_);
-      outtree_->Branch("aco_angle_5_scaleE_0p75", &aco_angle_5_scaleE_0p75_);
-      outtree_->Branch("aco_angle_5_scaleE_0p9",  &aco_angle_5_scaleE_0p9_);
-      outtree_->Branch("aco_angle_5_scaleE_1p0",  &aco_angle_5_scaleE_1p0_);
-      outtree_->Branch("aco_angle_1_scaleE_0p1",  &aco_angle_1_scaleE_0p1_);
-      outtree_->Branch("aco_angle_1_scaleE_0p25", &aco_angle_1_scaleE_0p25_);
-      outtree_->Branch("aco_angle_1_scaleE_0p5",  &aco_angle_1_scaleE_0p5_);
-      outtree_->Branch("aco_angle_1_scaleE_0p75", &aco_angle_1_scaleE_0p75_);
-      outtree_->Branch("aco_angle_1_scaleE_0p9",  &aco_angle_1_scaleE_0p9_);
-      outtree_->Branch("aco_angle_1_scaleE_1p0",  &aco_angle_1_scaleE_1p0_);
-
-
-
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
       outtree_->Branch("pv_angle", &pv_angle_);
       outtree_->Branch("pv_angle_smearsv_up", &pv_angle_smearsv_up_);
       outtree_->Branch("pv_angle_smearsv_down", &pv_angle_smearsv_down_);
       outtree_->Branch("pv_angle_new", &pv_angle_new_);
       outtree_->Branch("pv_angle_new_2", &pv_angle_new_2_);
-      outtree_->Branch("pv_angle_new_3", &pv_angle_new_3_);
-      outtree_->Branch("pv_angle_new_4", &pv_angle_new_4_);
-      outtree_->Branch("pv_angle_new_5", &pv_angle_new_5_);
       outtree_->Branch("pi0_n_x_2", &pi0_n_x_2_);
       outtree_->Branch("pi0_n_y_2", &pi0_n_y_2_);
       outtree_->Branch("pi0_n_z_2", &pi0_n_z_2_);
@@ -3393,9 +3352,6 @@ namespace ic {
     pv_angle_=-9999.;
     pv_angle_new_=-9999.;
     pv_angle_new_2_=-9999.;
-    pv_angle_new_3_=-9999.;
-    pv_angle_new_4_=-9999.;
-    pv_angle_new_5_=-9999.;
     sv_x_2_=0.;
     sv_y_2_=-0.;
     sv_z_2_=0.;
@@ -3404,49 +3360,11 @@ namespace ic {
     sv_deta_2_=0.;
     hasSV_2_=false;
 
-    aco_angle_1_scale_0p1_=-9999.;
-    aco_angle_1_scale_0p25_=-9999.;
-    aco_angle_1_scale_0p5_=-9999.;
-    aco_angle_1_scale_0p75_=-9999.;
-    aco_angle_1_scale_0p9_=-9999.;
-    aco_angle_1_scale_1p0_=-9999.;
-
-    aco_angle_5_scale_0p1_=-9999.;
-    aco_angle_5_scale_0p25_=-9999.;
-    aco_angle_5_scale_0p5_=-9999.;
-    aco_angle_5_scale_0p75_=-9999.;
-    aco_angle_5_scale_0p9_=-9999.;
-    aco_angle_5_scale_1p0_=-9999.;
-    aco_angle_5_scale_perfect_=-9999.;
-
-    aco_angle_1_scaleE_0p1_=-9999.;
-    aco_angle_1_scaleE_0p25_=-9999.;
-    aco_angle_1_scaleE_0p5_=-9999.;
-    aco_angle_1_scaleE_0p75_=-9999.;
-    aco_angle_1_scaleE_0p9_=-9999.;
-    aco_angle_1_scaleE_1p0_=-9999.;
-    aco_angle_5_scaleE_0p1_=-9999.;
-    aco_angle_5_scaleE_0p25_=-9999.;
-    aco_angle_5_scaleE_0p5_=-9999.;
-    aco_angle_5_scaleE_0p75_=-9999.;
-    aco_angle_5_scaleE_0p9_=-9999.;
-    aco_angle_5_scaleE_1p0_=-9999.;
-
-    aco_angle_5_scale_0p0_=-9999.;
-    aco_angle_5_scale_0p025_=-9999.;
-    aco_angle_5_scale_0p05_=-9999.;
-    aco_angle_5_scale_0p075_=-9999.;
- 
-    aco_angle_1_scale_0p025_=-9999.;
-    aco_angle_1_scale_0p05_=-9999.;
-    aco_angle_1_scale_0p075_=-9999.;
-
     y_1_1_=-9999.;
     y_1_2_=-9999.;
     y_2_2_=-9999.;
     y_3_2_=-9999.;
     y_4_2_=-9999.;
-
 
     tau_px_1_=0.;
     tau_py_1_=0.;
@@ -4270,197 +4188,6 @@ namespace ic {
           else                    aco_angle_5_smearpi0dir_down_ = aco_angle_5_smearpi0dir_down_-M_PI;
         }
 
-
-        TLorentzVector lvec1_new;
-        double new_phi_pi0, new_eta_pi0, new_pt_pi0, dphi_pi0_=0., deta_pi0_=0.;
-
-        if(gen_neutral_phi>-100&&gen_neutral_eta==gen_neutral_eta) {
-          dphi_pi0_ = pi0->phi() - gen_neutral_phi;
-          while (dphi_pi0_ >= M_PI) dphi_pi0_ -= 2*M_PI;
-          while (dphi_pi0_ < -M_PI) dphi_pi0_ += 2*M_PI;
-        }
-        //if(dphi_pi0_!=0) {
-        //std::cout << "------" << std::endl;
-        //std::cout << gen_neutral_phi << "  " << gen_neutral_eta << std::endl; 
-        //std::cout << dphi_pi0_ << "  " << deta_pi0_ << std::endl;}
-
-        if(gen_neutral_eta>-100&&gen_neutral_eta==gen_neutral_eta) {
-          deta_pi0_ = pi0->eta() - gen_neutral_eta;
-        }
-
-        if(gen_neutral_eta>-100 && gen_neutral_phi>-100&&gen_neutral_eta==gen_neutral_eta&&gen_neutral_eta==gen_neutral_eta){
-        double gen_neutral_pt = pi0->vector().P()*sqrt(1.-pow(tanh(gen_neutral_eta),2));
-        lvec1_new.SetPtEtaPhiE(gen_neutral_pt,gen_neutral_eta,gen_neutral_phi,pi0->energy());
-          aco_angle_5_scale_perfect_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-          if (cp_sign_<0) {
-            if (aco_angle_5_scale_perfect_<M_PI)  aco_angle_5_scale_perfect_ = aco_angle_5_scale_perfect_+M_PI;
-            else                    aco_angle_5_scale_perfect_ = aco_angle_5_scale_perfect_-M_PI;
-          }
-        } else {
-          aco_angle_5_scale_perfect_ = aco_angle_5_;
-        }
-
-        // 0.0
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.0;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.0;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p0_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p0_<M_PI)  aco_angle_5_scale_0p0_ = aco_angle_5_scale_0p0_+M_PI;
-          else                    aco_angle_5_scale_0p0_ = aco_angle_5_scale_0p0_-M_PI;
-        }
-
-        // 0.025
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.025;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.025;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p025_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p025_<M_PI)  aco_angle_5_scale_0p025_ = aco_angle_5_scale_0p025_+M_PI;
-          else                    aco_angle_5_scale_0p025_ = aco_angle_5_scale_0p025_-M_PI;
-        }
-
-        // 0.05
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.05;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.05;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p05_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p05_<M_PI)  aco_angle_5_scale_0p05_ = aco_angle_5_scale_0p05_+M_PI;
-          else                    aco_angle_5_scale_0p05_ = aco_angle_5_scale_0p05_-M_PI;
-        }
-
-        // 0.075
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.075;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.075;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p075_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p075_<M_PI)  aco_angle_5_scale_0p075_ = aco_angle_5_scale_0p075_+M_PI;
-          else                    aco_angle_5_scale_0p075_ = aco_angle_5_scale_0p075_-M_PI;
-        }
-
-        // 0.1
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.1;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.1;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p1_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p1_<M_PI)  aco_angle_5_scale_0p1_ = aco_angle_5_scale_0p1_+M_PI;
-          else                    aco_angle_5_scale_0p1_ = aco_angle_5_scale_0p1_-M_PI;
-        }
-
-        // 0.25
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.25;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.25;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p25_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p25_<M_PI)  aco_angle_5_scale_0p25_ = aco_angle_5_scale_0p25_+M_PI;
-          else                    aco_angle_5_scale_0p25_ = aco_angle_5_scale_0p25_-M_PI;
-        }
-
-        // 0.5
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.5;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.5;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p5_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p5_<M_PI)  aco_angle_5_scale_0p5_ = aco_angle_5_scale_0p5_+M_PI;
-          else                    aco_angle_5_scale_0p5_ = aco_angle_5_scale_0p5_-M_PI;
-        }
-
-        // 0.75
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.75;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.75;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p75_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p75_<M_PI)  aco_angle_5_scale_0p75_ = aco_angle_5_scale_0p75_+M_PI;
-          else                    aco_angle_5_scale_0p75_ = aco_angle_5_scale_0p75_-M_PI;
-        }
-
-        // 0.9
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*0.9;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*0.9;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_0p9_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_0p9_<M_PI)  aco_angle_5_scale_0p9_ = aco_angle_5_scale_0p9_+M_PI;
-          else                    aco_angle_5_scale_0p9_ = aco_angle_5_scale_0p9_-M_PI;
-        }
-
-        // 1.0
-
-        new_phi_pi0 = pi0->phi()-dphi_pi0_*1.;
-        new_eta_pi0 = pi0->eta()-deta_pi0_*1.;
-        new_pt_pi0 = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0->energy());
-
-
-        aco_angle_5_scale_1p0_ = IPAcoAngle(lvec1_new, lvec2, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_5_scale_1p0_<M_PI)  aco_angle_5_scale_1p0_ = aco_angle_5_scale_1p0_+M_PI;
-          else                    aco_angle_5_scale_1p0_ = aco_angle_5_scale_1p0_-M_PI;
-        }
-
-
         TLorentzVector lvec2_up = TLorentzVector(ip_up, 0.);
         TLorentzVector lvec2_down = TLorentzVector(ip_down, 0.);
 
@@ -4584,332 +4311,6 @@ namespace ic {
           }
         } 
 
-        TLorentzVector lvec1_newE;
-        double dp_pi0_=0.;
-        double new_p_pi0, new_E_pi0;
-        if(gen_neutral_p>-100&&gen_neutral_p==gen_neutral_p) {
-          dp_pi0_ = pi0_tau1->vector().P() - gen_neutral_p;
-        }
-
-        TLorentzVector lvec2_newE;
-        double dp_pi0_2_=0.;
-        double new_p_pi0_2, new_E_pi0_2;
-        if(gen_neutral_p_2>-100&&gen_neutral_p_2==gen_neutral_p_2) {
-          dp_pi0_2_ = pi0_tau2->vector().P() - gen_neutral_p_2;
-        }
-
-        // 0.1
-
-        new_p_pi0 = pi0_tau1->vector().P()-dp_pi0_*0.1;
-        new_E_pi0 = sqrt(pow(new_p_pi0,2)+pow(pi0_tau1->M(),2));
-        lvec1_newE.SetPtEtaPhiE(pi0_tau1->pt()*new_p_pi0/pi0_tau1->vector().P(),pi0_tau1->eta(),pi0_tau1->phi(),new_E_pi0);
-
-        new_p_pi0_2 = pi0_tau2->vector().P()-dp_pi0_2_*0.1;
-        new_E_pi0_2 = sqrt(pow(new_p_pi0_2,2)+pow(pi0_tau2->M(),2));
-        lvec2_newE.SetPtEtaPhiE(pi0_tau2->pt()*new_p_pi0_2/pi0_tau2->vector().P(),pi0_tau2->eta(),pi0_tau2->phi(),new_E_pi0_2);
-
-        aco_angle_1_scaleE_0p1_ = IPAcoAngle(lvec1_newE, lvec2_newE, lvec3, lvec4,false);
-
-        double cp_sign_scaleE_0p1_ = (lvec1_newE.E() - pi_tau1->energy())/(lvec1_newE.E() + pi_tau1->energy()) * (lvec2_newE.E() - pi_tau2->energy())/(lvec2_newE.E() + pi_tau2->energy());
-
-
-        if (cp_sign_scaleE_0p1_<0) {
-          if (aco_angle_1_scaleE_0p1_<M_PI)  aco_angle_1_scaleE_0p1_ = aco_angle_1_scaleE_0p1_+M_PI;
-          else                    aco_angle_1_scaleE_0p1_ = aco_angle_1_scaleE_0p1_-M_PI;
-        }
-
-        // 0.25
-
-        new_p_pi0 = pi0_tau1->vector().P()-dp_pi0_*0.25;
-        new_E_pi0 = sqrt(pow(new_p_pi0,2)+pow(pi0_tau1->M(),2));
-        lvec1_newE.SetPtEtaPhiE(pi0_tau1->pt()*new_p_pi0/pi0_tau1->vector().P(),pi0_tau1->eta(),pi0_tau1->phi(),new_E_pi0);
-
-        aco_angle_1_scaleE_0p25_ = IPAcoAngle(lvec1_newE, lvec2_newE, lvec3, lvec4,false);
-        double cp_sign_scaleE_0p25_ = (lvec1_newE.E() - pi_tau1->energy())/(lvec1_newE.E() + pi_tau1->energy()) * (lvec2_newE.E() - pi_tau2->energy())/(lvec2_newE.E() + pi_tau2->energy());
-        if (cp_sign_scaleE_0p25_<0) {
-          if (aco_angle_1_scaleE_0p25_<M_PI)  aco_angle_1_scaleE_0p25_ = aco_angle_1_scaleE_0p25_+M_PI;
-          else                    aco_angle_1_scaleE_0p25_ = aco_angle_1_scaleE_0p25_-M_PI;
-        }
-
-
-        // 0.5
-
-        new_p_pi0 = pi0_tau1->vector().P()-dp_pi0_*0.5;
-        new_E_pi0 = sqrt(pow(new_p_pi0,2)+pow(pi0_tau1->M(),2));
-        lvec1_newE.SetPtEtaPhiE(pi0_tau1->pt()*new_p_pi0/pi0_tau1->vector().P(),pi0_tau1->eta(),pi0_tau1->phi(),new_E_pi0);
-
-        aco_angle_1_scaleE_0p5_ = IPAcoAngle(lvec1_newE, lvec2_newE, lvec3, lvec4,false);
-        double cp_sign_scaleE_0p5_ = (lvec1_newE.E() - pi_tau1->energy())/(lvec1_newE.E() + pi_tau1->energy()) * (lvec2_newE.E() - pi_tau2->energy())/(lvec2_newE.E() + pi_tau2->energy());
-        if (cp_sign_scaleE_0p5_<0) {
-          if (aco_angle_1_scaleE_0p5_<M_PI)  aco_angle_1_scaleE_0p5_ = aco_angle_1_scaleE_0p5_+M_PI;
-          else                    aco_angle_1_scaleE_0p5_ = aco_angle_1_scaleE_0p5_-M_PI;
-        }
-
-        // 0.75
-
-        new_p_pi0 = pi0_tau1->vector().P()-dp_pi0_*0.75;
-        new_E_pi0 = sqrt(pow(new_p_pi0,2)+pow(pi0_tau1->M(),2));
-        lvec1_newE.SetPtEtaPhiE(pi0_tau1->pt()*new_p_pi0/pi0_tau1->vector().P(),pi0_tau1->eta(),pi0_tau1->phi(),new_E_pi0);
-
-        aco_angle_1_scaleE_0p75_ = IPAcoAngle(lvec1_newE, lvec2_newE, lvec3, lvec4,false);
-        double cp_sign_scaleE_0p75_ = (lvec1_newE.E() - pi_tau1->energy())/(lvec1_newE.E() + pi_tau1->energy()) * (lvec2_newE.E() - pi_tau2->energy())/(lvec2_newE.E() + pi_tau2->energy());
-        if (cp_sign_scaleE_0p75_<0) {
-          if (aco_angle_1_scaleE_0p75_<M_PI)  aco_angle_1_scaleE_0p75_ = aco_angle_1_scaleE_0p75_+M_PI;
-          else                    aco_angle_1_scaleE_0p75_ = aco_angle_1_scaleE_0p75_-M_PI;
-        }
-
-        // 0.9
-
-        new_p_pi0 = pi0_tau1->vector().P()-dp_pi0_*0.9;
-        new_E_pi0 = sqrt(pow(new_p_pi0,2)+pow(pi0_tau1->M(),2));
-        lvec1_newE.SetPtEtaPhiE(pi0_tau1->pt()*new_p_pi0/pi0_tau1->vector().P(),pi0_tau1->eta(),pi0_tau1->phi(),new_E_pi0);
-
-        aco_angle_1_scaleE_0p9_ = IPAcoAngle(lvec1_newE, lvec2_newE, lvec3, lvec4,false);
-        double cp_sign_scaleE_0p9_ = (lvec1_newE.E() - pi_tau1->energy())/(lvec1_newE.E() + pi_tau1->energy()) * (lvec2_newE.E() - pi_tau2->energy())/(lvec2_newE.E() + pi_tau2->energy());
-        if (cp_sign_scaleE_0p9_<0) {
-          if (aco_angle_1_scaleE_0p9_<M_PI)  aco_angle_1_scaleE_0p9_ = aco_angle_1_scaleE_0p9_+M_PI;
-          else                    aco_angle_1_scaleE_0p9_ = aco_angle_1_scaleE_0p9_-M_PI;
-        }
-
-        // 1.0
-
-        new_p_pi0 = pi0_tau1->vector().P()-dp_pi0_*1.;
-        new_E_pi0 = sqrt(pow(new_p_pi0,2)+pow(pi0_tau1->M(),2));
-        lvec1_newE.SetPtEtaPhiE(pi0_tau1->pt()*new_p_pi0/pi0_tau1->vector().P(),pi0_tau1->eta(),pi0_tau1->phi(),new_E_pi0);
-
-        aco_angle_1_scaleE_1p0_ = IPAcoAngle(lvec1_newE, lvec2_newE, lvec3, lvec4,false);
-        double cp_sign_scaleE_1p0_ = (lvec1_newE.E() - pi_tau1->energy())/(lvec1_newE.E() + pi_tau1->energy()) * (lvec2_newE.E() - pi_tau2->energy())/(lvec2_newE.E() + pi_tau2->energy());
-        if (cp_sign_scaleE_1p0_<0) {
-          if (aco_angle_1_scaleE_1p0_<M_PI)  aco_angle_1_scaleE_1p0_ = aco_angle_1_scaleE_1p0_+M_PI;
-          else                    aco_angle_1_scaleE_1p0_ = aco_angle_1_scaleE_1p0_-M_PI;
-        }
-
-
-        TLorentzVector lvec1_new;
-        double new_phi_pi0, new_eta_pi0, new_pt_pi0, dphi_pi0_=0., deta_pi0_=0.;
-
-        if(gen_neutral_phi>-100&&gen_neutral_eta==gen_neutral_eta) {
-          dphi_pi0_ = pi0_tau1->phi() - gen_neutral_phi;
-          while (dphi_pi0_ >= M_PI) dphi_pi0_ -= 2*M_PI;
-          while (dphi_pi0_ < -M_PI) dphi_pi0_ += 2*M_PI;
-        }
-
-        if(gen_neutral_eta>-100&&gen_neutral_eta==gen_neutral_eta) {
-          deta_pi0_ = pi0_tau1->eta() - gen_neutral_eta;
-        }
-
-        TLorentzVector lvec2_new;
-        double new_phi_pi0_2, new_eta_pi0_2, new_pt_pi0_2, dphi_pi0_2_=0., deta_pi0_2_=0.;
-
-        if(gen_neutral_phi_2>-100&&gen_neutral_eta_2==gen_neutral_eta_2) {
-          dphi_pi0_2_ = pi0_tau2->phi() - gen_neutral_phi_2;
-          while (dphi_pi0_2_ >= M_PI) dphi_pi0_2_ -= 2*M_PI;
-          while (dphi_pi0_2_ < -M_PI) dphi_pi0_2_ += 2*M_PI;
-        }
-
-        if(gen_neutral_eta_2>-100&&gen_neutral_eta_2==gen_neutral_eta_2) {
-          deta_pi0_2_ = pi0_tau2->eta() - gen_neutral_eta_2;
-        }
-
-        // 0.025
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.025;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.025;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.025;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.025;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p025_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p025_<M_PI)  aco_angle_1_scale_0p025_ = aco_angle_1_scale_0p025_+M_PI;
-          else                    aco_angle_1_scale_0p025_ = aco_angle_1_scale_0p025_-M_PI;
-        }
-
-        // 0.05
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.05;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.05;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.05;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.05;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p05_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p05_<M_PI)  aco_angle_1_scale_0p05_ = aco_angle_1_scale_0p05_+M_PI;
-          else                    aco_angle_1_scale_0p05_ = aco_angle_1_scale_0p05_-M_PI;
-        }
-
-        // 0.075
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.075;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.075;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.075;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.075;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p075_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p075_<M_PI)  aco_angle_1_scale_0p075_ = aco_angle_1_scale_0p075_+M_PI;
-          else                    aco_angle_1_scale_0p075_ = aco_angle_1_scale_0p075_-M_PI;
-        }
-
-
-        // 0.1
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.1;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.1;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.1;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.1;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p1_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p1_<M_PI)  aco_angle_1_scale_0p1_ = aco_angle_1_scale_0p1_+M_PI;
-          else                    aco_angle_1_scale_0p1_ = aco_angle_1_scale_0p1_-M_PI;
-        }
-
-        // 0.25
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.25;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.25;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.25;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.25;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p25_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p25_<M_PI)  aco_angle_1_scale_0p25_ = aco_angle_1_scale_0p25_+M_PI;
-          else                    aco_angle_1_scale_0p25_ = aco_angle_1_scale_0p25_-M_PI;
-        }
-
-        // 0.5
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.5;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.5;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.5;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.5;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p5_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p5_<M_PI)  aco_angle_1_scale_0p5_ = aco_angle_1_scale_0p5_+M_PI;
-          else                    aco_angle_1_scale_0p5_ = aco_angle_1_scale_0p5_-M_PI;
-        }
-
-        // 0.75
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.75;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.75;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.75;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.75;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p75_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p75_<M_PI)  aco_angle_1_scale_0p75_ = aco_angle_1_scale_0p75_+M_PI;
-          else                    aco_angle_1_scale_0p75_ = aco_angle_1_scale_0p75_-M_PI;
-        }
-
-        // 0.9
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*0.9;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*0.9;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*0.9;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*0.9;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_0p9_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_0p9_<M_PI)  aco_angle_1_scale_0p9_ = aco_angle_1_scale_0p9_+M_PI;
-          else                    aco_angle_1_scale_0p9_ = aco_angle_1_scale_0p9_-M_PI;
-        }
-
-        // 1.0
-
-        new_phi_pi0 = pi0_tau1->phi()-dphi_pi0_*1.;
-        new_eta_pi0 = pi0_tau1->eta()-deta_pi0_*1.;
-        new_pt_pi0 = pi0_tau1->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0),2));
-        while (new_phi_pi0 >= M_PI) new_phi_pi0 -= 2*M_PI;
-        while (new_phi_pi0 < -M_PI) new_phi_pi0 += 2*M_PI;
-        lvec1_new.SetPtEtaPhiE(new_pt_pi0,new_eta_pi0,new_phi_pi0,pi0_tau1->energy());
-
-        new_phi_pi0_2 = pi0_tau2->phi()-dphi_pi0_2_*1.;
-        new_eta_pi0_2 = pi0_tau2->eta()-deta_pi0_2_*1.;
-        new_pt_pi0_2 = pi0_tau2->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_2),2));
-        while (new_phi_pi0_2 >= M_PI) new_phi_pi0_2 -= 2*M_PI;
-        while (new_phi_pi0_2 < -M_PI) new_phi_pi0_2 += 2*M_PI;
-        lvec2_new.SetPtEtaPhiE(new_pt_pi0_2,new_eta_pi0_2,new_phi_pi0_2,pi0_tau2->energy());
-
-        aco_angle_1_scale_1p0_ = IPAcoAngle(lvec1_new, lvec2_new, lvec3, lvec4,false);
-        if (cp_sign_<0) {
-          if (aco_angle_1_scale_1p0_<M_PI)  aco_angle_1_scale_1p0_ = aco_angle_1_scale_1p0_+M_PI;
-          else                    aco_angle_1_scale_1p0_ = aco_angle_1_scale_1p0_-M_PI;
-        }
-
         alpha2_1_ = AlphaAngleRho(lvec3.Vect(), lvec1.Vect());
         alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect()); 
       }
@@ -5013,8 +4414,7 @@ namespace ic {
                 TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
                 TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
 
-                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_2, lvec3, tau_new_lvec_2,false);
-                pv_angle_new_3_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
 
             }
           }
@@ -5143,23 +4543,12 @@ namespace ic {
                 TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
                 TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
 
-                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_2, lvec3, tau_new_lvec_2,false);
-                pv_angle_new_3_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
-
-
-                Candidate *tau_new_1 = new PFCandidate();
-                tau_new_1->set_charge(tau_1->charge());
-                tau_new_1->set_vector(tau_undecay_1.vector());
-                TLorentzVector tau_new_pv_lvec_1 = PolarimetricVector(std::vector<Candidate*>({pi}), std::vector<Candidate*>({pi0}), tau_new_1, true);
-                pv_angle_new_4_ = IPAcoAngle(tau_new_pv_lvec_1, tau_new_pv_lvec_2, ConvertToLorentz(tau_undecay_1.vector()), tau_new_lvec_2,false);
-                pv_angle_new_5_ = IPAcoAngle(tau_new_pv_lvec_1, tau_new_pv_lvec_rot_2, ConvertToLorentz(tau_undecay_1.vector()), tau_new_lvec_rot_2,false);
+                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
 
 
                 if (y_1_1_<0) {
                   if (pv_angle_new_2_<M_PI) pv_angle_new_2_ += M_PI;
                   else                   pv_angle_new_2_ -= M_PI;
-                  if (pv_angle_new_3_<M_PI) pv_angle_new_3_ += M_PI;
-                  else                   pv_angle_new_3_ -= M_PI;
                 }
 
             }
@@ -5895,8 +5284,7 @@ namespace ic {
                 TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
                 TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
 
-                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_2, lvec3, tau_new_lvec_2,false);
-                pv_angle_new_3_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+                pv_angle_new_2_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
                 }
 
           }
