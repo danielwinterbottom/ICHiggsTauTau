@@ -150,17 +150,27 @@ namespace ic {
           double      svfit_mass    = 0;
           double      svfit_transverse_mass = 0;
           Candidate * svfit_vector  = nullptr;
+          Candidate *reco_tau1 = nullptr;
+          Candidate *reco_tau2 = nullptr;
           otree->SetBranchAddress("event"  , &event);
           otree->SetBranchAddress("lumi"  , &lumi);
           otree->SetBranchAddress("run"  , &run);
           otree->SetBranchAddress("objects_hash", &objects_hash);
           otree->SetBranchAddress("svfit_mass"  , &svfit_mass);
+
+          do_taus_ = do_taus_ && otree->GetListOfBranches()->FindObject("svfit_tau1_vector") && otree->GetListOfBranches()->FindObject("svfit_tau2_vector");
+
+          if(do_taus_) {
+            otree->SetBranchAddress("svfit_tau1_vector"  , &reco_tau1);
+            otree->SetBranchAddress("svfit_tau2_vector"  , &reco_tau2);
+          }
           if(read_svfit_mt_){
             otree->SetBranchAddress("svfit_transverse_mass",&svfit_transverse_mass);
           }
           otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
+            if(do_taus_) taus_map_light[tri_unsigned(run, lumi, event)] = std::make_pair(*reco_tau1, *reco_tau2);
             if(do_light_) mass_map_light[tri_unsigned(run, lumi, event)] = (float)svfit_mass;
             else if(!MC_) mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
             else{
@@ -474,6 +484,16 @@ if(!do_preselection_ || (pass_presel&&!lepton_veto_)){
 
   if (run_mode_ == 2) {
     bool fail_state = false;
+
+    if(do_taus_){
+        auto it = taus_map_light.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
+        if (it != taus_map_light.end()) {
+          event->ForceAdd("svfitTaus", it->second);
+        } else {
+          fail_state = true;
+        }
+    }
+
     //Different actions for Markov-Chain or Vegas integration
      if(do_light_) {
         auto it = mass_map_light.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
