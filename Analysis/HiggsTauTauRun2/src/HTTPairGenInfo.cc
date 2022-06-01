@@ -355,30 +355,6 @@ TVector3 GenSV (ic::GenParticle *h, ic::GenParticle *t) {
    if(gen_match_1 == mcorigin::tauHad) event->Add("leading_gen_tau", new ic::GenJet(*(leading_tau_match.at(0).second)));
    if(gen_match_2 == mcorigin::tauHad) event->Add("subleading_gen_tau", new ic::GenJet(*(subleading_tau_match.at(0).second)));
 
-   //if(gen_match_1==mcorigin::promptE&&gen_match_2==mcorigin::promptMu) {
-   //  std::cout << "-------" << std::endl;
-   //  std::cout << "matching pt:  " <<  leading_lepton_match.at(0).second->pt() << "  " << subleading_lepton_match.at(0).second->pt() << std::endl;
-   //  std::cout << " " << std::endl;
-   //  std::cout << "mothers (lep1):" << std::endl;
-   //  for (auto x : leading_lepton_match.at(0).second->mothers()) {
-   //    std::cout << particles[x]->pdgid() << "    " << particles[particles[x]->mothers()[0]]->pdgid() << std::endl;
-   //    std::cout << "    siblings (lep1):" << std::endl;
-   //    for (auto x : particles[x]->daughters()) std::cout << "    " << particles[x]->pdgid() << "  " << particles[x]->phi() << "  " << particles[x]->eta() << "  " << particles[x]->pt() << std::endl;
-   //  }
-
-   //  std::cout << " " << std::endl;
-   //  std::cout << "mothers (lep2):" << std::endl;
-   //  for (auto x : subleading_lepton_match.at(0).second->mothers()) {
-   //    std::cout << particles[x]->pdgid() << "    " << particles[particles[x]->mothers()[0]]->pdgid() << std::endl;
-   //    std::cout << "    siblings (lep2):" << std::endl;
-   //    for (auto x : particles[x]->daughters()) std::cout << "    " << particles[x]->pdgid() << "  " << particles[x]->phi() << "  " << particles[x]->eta() << "  " << particles[x]->pt() << std::endl;
-   //  }
-   //  std::cout << " " << std::endl;
-   //  std::cout << "pT  charge  pdgid  mother-pdgid" << std::endl; 
-   //  for(auto p :  sel_particles) { std::cout << p->pt() << "  " << p->charge() << "  " << p->pdgid() << "  " << particles[p->mothers()[0]]->pdgid() << std::endl;  };
-   //}
-
-
    event->Add("gen_match_1",gen_match_1);
    event->Add("gen_match_2",gen_match_2);
    event->Add("gen_match_1_pt", gen_match_1_pt);

@@ -124,8 +124,6 @@ no_shift_systs = options.no_shift_systs
 # create separate output folder for scheme and year
 output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
 os.system('mkdir -p {}'.format(output_folder))
-os.system('mkdir -p {}/{}'.format(output_folder, SCHEME))
-os.system('mkdir -p {}/{}/{}'.format(output_folder, SCHEME, YEAR))
 
 ########## Set up schemes and options
 
@@ -249,9 +247,9 @@ if SCHEME == 'cpdecay':
   VAR_0A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
   VAR_0A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
 
-  VAR_A1RHO_PolVec ="IC_01Jun2020_max_score,pv_angle_new_3[0.,0.7,0.8,0.9],(4,0,6.28319)"
-  VAR_0A1A1_PolVec ="IC_01Jun2020_max_score,pv_angle_new_3[0.,0.7,0.8],(4,0,6.28319)"
-  VAR_PIA1_PolVec ="IC_01Jun2020_max_score,pv_angle_new_3[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_A1RHO_PolVec ="IC_01Jun2020_max_score,pv_angle[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_0A1A1_PolVec ="IC_01Jun2020_max_score,pv_angle[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIA1_PolVec ="IC_01Jun2020_max_score,pv_angle[0.,0.7,0.8,0.9],(4,0,6.28319)"
 
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
