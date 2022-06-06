@@ -988,7 +988,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     .set_legacy_svfit(true)
     .set_do_preselection(false)
     .set_MC(true)
-    .set_do_light(true)
+    .set_do_light(false)
     .set_do_taus(true)
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
    svFitTest.set_legacy_svfit(false);
