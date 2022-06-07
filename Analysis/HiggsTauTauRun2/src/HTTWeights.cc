@@ -36,6 +36,7 @@ namespace ic {
     ditau_label_                = "emtauCandidates";
     scalefactor_file_           = "";
     scalefactor_file_ggh_       = "";
+    scalefactor_file_UL         = "";
     do_tau_id_sf_               = false;
     mssm_higgspt_file_          = "";
     do_mssm_higgspt_            = false;

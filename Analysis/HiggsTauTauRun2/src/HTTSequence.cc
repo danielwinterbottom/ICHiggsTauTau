@@ -723,6 +723,7 @@ if(!is_data) {
 
 std::string scalefactor_file;
 std::string scalefactor_file_ggh;
+std::string scalefactor_file_UL;
 if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
@@ -731,10 +732,16 @@ if(era_type == era::data_2017 || era_type == era::data_2017UL) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
-if(era_type == era::data_2018 || era_type == era::data_2018UL) {
+if(era_type == era::data_2018) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
+if(era_type == era::data_2018UL) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2018.root";
+}
+
 
 TH2F embed_pt_weights_ic;
 
@@ -758,6 +765,7 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
 httWeights.set_strategy(strategy_type);
 httWeights.set_scalefactor_file_ggh(scalefactor_file_ggh);
 httWeights.set_scalefactor_file(scalefactor_file);
+httWeights.set_scalefactor_file_UL(scalefactor_file_UL);
 httWeights.set_is_embedded(is_embedded);
 if (!is_data ) {
   httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);

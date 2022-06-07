@@ -291,6 +291,7 @@ namespace ic {
           else if (wp_to_check_ == "loose") tight_wp = 0.1241; // loose deepCSV wp
         }
         else if ((era_ == era::data_2018 || era_ == era::data_2018UL) && use_deep_jet_) tight_wp = 0.2770; //medium deepJet wp
+	//else if (era_ == era::data_2018UL && use_deep_jet_) tight_wp = 0.2783; //medium deepJet wp
         if(jet_flavour == 5){
           if((era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018) || ((era_ != era::data_2016 || era_ != era::data_2016UL_preVFP || era_ != era::data_2016UL_preVFP) && era_ != era::data_2017UL && era_ != era::data_2018UL)){
             sf = reader_mujets->eval_auto_bounds("central",BTagEntry::FLAV_B, eta, pt);

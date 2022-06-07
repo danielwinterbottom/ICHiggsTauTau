@@ -30,9 +30,9 @@ options, remaining_argv = conf_parser.parse_known_args()
 
 defaults = {
     "channel":"tpzmm" , 
-    "outputfolder":"tagandprobe", 
-    "folder":"/vols/cms/ks1021/output/UL/2017UL_SF",
-    "era":"UL_17", 
+    "outputfolder":"tagandprobe/2018UL/tpzmm/dimu_dz", 
+    "folder":"/vols/cms/ks1021/output/UL/2018UL_SF",
+    "era":"UL_18", 
     "embedded":False, 
     "em_iso":False, 
     "aiso1":False, 
@@ -41,7 +41,7 @@ defaults = {
     "draw_hists":1,
     "veto_FSR":False,
     "trg_only":False,
-    "tree_name":"tagandprobe",
+    "tree_name":"tagandprobe_dimu_dz",
     }
 
 if options.cfg:
@@ -102,6 +102,7 @@ print 'draw_hists        =', options.draw_hists
 print 'embed_sel         =', options.embed_sel
 print 'embed_dz          =', options.embed_dz
 print 'veto_FSR          =', options.veto_FSR
+print 'tree              =', options.tree_name
 print '###############################################'
 print ''
 

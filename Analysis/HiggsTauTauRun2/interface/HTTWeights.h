@@ -40,6 +40,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_em_qcd_weights)
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file_ggh)
+  CLASS_MEMBER(HTTWeights, std::string, scalefactor_file_UL)
   CLASS_MEMBER(HTTWeights, std::string, mssm_higgspt_file)
   CLASS_MEMBER(HTTWeights, bool, do_mssm_higgspt)
   CLASS_MEMBER(HTTWeights, bool, do_quarkmass_higgspt)
