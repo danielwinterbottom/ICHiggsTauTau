@@ -60,6 +60,7 @@ class HTTWeights : public ModuleBase {
   TGraph *ggh_ph_2jet_;
   TGraph *ggh_ph_3jet_;
   std::shared_ptr<RooWorkspace> w_;
+  std::shared_ptr<RooWorkspace> w_UL_;
   std::shared_ptr<RooWorkspace> w_ggh_;
   std::shared_ptr<RooWorkspace> mssm_w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;

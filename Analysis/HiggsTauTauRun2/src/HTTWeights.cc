@@ -36,7 +36,7 @@ namespace ic {
     ditau_label_                = "emtauCandidates";
     scalefactor_file_           = "";
     scalefactor_file_ggh_       = "";
-    scalefactor_file_UL         = "";
+    scalefactor_file_UL_        = "";
     do_tau_id_sf_               = false;
     mssm_higgspt_file_          = "";
     do_mssm_higgspt_            = false;
@@ -76,6 +76,7 @@ int HTTWeights::PreAnalysis() {
   std::cout << boost::format(param_fmt()) % "ditau_label"         % ditau_label_;
   std::cout << boost::format(param_fmt()) % "scalefactor_file"    % scalefactor_file_;
   std::cout << boost::format(param_fmt()) % "scalefactor_file_ggh" % scalefactor_file_ggh_;
+  std::cout << boost::format(param_fmt()) % "scalefactor_file_UL" % scalefactor_file_UL_;
 
   std::string MVADM2017;
   if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
@@ -111,6 +112,14 @@ int HTTWeights::PreAnalysis() {
     w_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
     f.Close();
 
+
+    if (scalefactor_file_UL_!= "") {
+      TFile f_UL(scalefactor_file_UL_.c_str());
+      w_UL_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
+      f_UL.Close();
+    }
+
+ 
     if (scalefactor_file_ggh_ != "") {
       TFile f_ggh(scalefactor_file_ggh_.c_str());
       w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
@@ -945,6 +954,153 @@ int HTTWeights::PreAnalysis() {
       	  w_ggh_->function("ggH_mg_ue_up")->functor(w_ggh_->argSet("ngenjets")));
       fns_["ggH_mg_ue_down"] = std::shared_ptr<RooFunctor>(
       	  w_ggh_->function("ggH_mg_ue_down")->functor(w_ggh_->argSet("ngenjets")));
+    }
+    // TEST ONLY WORKS FOR 18 REVIEW
+    if(scalefactor_file_UL_!=""){
+      fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("m_trk_ratio")->functor(w_UL_->argSet("m_eta")));
+      fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("e_trk_ratio")->functor(w_UL_->argSet("e_pt,e_eta")));
+     
+      fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_mc"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio")->functor(w_UL_->argSet("t_pt,t_dm")));
+
+      fns_["t_trg_27_data"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_data")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_mc"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_mc")->functor(w_UL_->argSet("t_pt,t_dm")));  
+      fns_["t_trg_27_ratio"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm0_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm1_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm10_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm11_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm0_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm1_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm10_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_27_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_mutau_ratio_dm11_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm0_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm1_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm10_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_30_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_etau_ratio_dm11_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+
+      fns_["t_trg_35_ratio_dm0_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm0_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio_dm1_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm1_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio_dm10_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm10_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio_dm11_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm11_up")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio_dm0_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm0_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio_dm1_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm1_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio_dm10_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm10_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+      fns_["t_trg_35_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm11_down")->functor(w_UL_->argSet("t_pt,t_dm")));
+
+
+      fns_["t_deeptauid_dm_medium"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_vvvloose")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_medium_dm0_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm0_up")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_medium_dm1_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm1_up")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_medium_dm10_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm10_up")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_medium_dm11_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm11_up")->functor(w_UL_->argSet("t_dm")));
+
+      fns_["t_deeptauid_dm_medium_dm0_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm0_down")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_medium_dm1_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm1_down")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_medium_dm10_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm10_down")->functor(w_UL_->argSet("t_dm")));
+      fns_["t_deeptauid_dm_medium_dm11_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_dm_medium_dm11_down")->functor(w_UL_->argSet("t_dm")));
+
+
+      fns_["t_deeptauid_pt_vvvloose"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_vvvloose")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin1_up")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin2_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin2_up")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin3_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin3_up")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin4_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin4_up")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin5_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin5_up")->functor(w_UL_->argSet("t_pt")));
+
+      fns_["t_deeptauid_pt_medium_bin1_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin1_down")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin2_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin2_down")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin3_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin3_down")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin4_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin4_down")->functor(w_UL_->argSet("t_pt")));
+      fns_["t_deeptauid_pt_medium_bin5_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_deeptauid_pt_medium_bin5_down")->functor(w_UL_->argSet("t_pt")));
+
+
+      fns_["t_id_vs_e_eta_vvloose"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_e_eta_vvloose")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_vvloose_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_e_eta_vvloose_up")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_vvloose_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_e_eta_vvloose_down")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_tight"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_e_eta_tight")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_tight_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_e_eta_tight_up")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_e_eta_tight_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_e_eta_tight_down")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_vloose"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_mu_eta_vloose")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_vloose_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_mu_eta_vloose_up")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_vloose_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_mu_eta_vloose_down")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_tight"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_mu_eta_tight")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_tight_up"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_mu_eta_tight_up")->functor(w_UL_->argSet("t_eta")));
+      fns_["t_id_vs_mu_eta_tight_down"] = std::shared_ptr<RooFunctor>(
+          w_UL_->function("t_id_vs_mu_eta_tight_down")->functor(w_UL_->argSet("t_eta")));
+
     }
   }
       
