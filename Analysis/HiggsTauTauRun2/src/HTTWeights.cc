@@ -133,8 +133,6 @@ int HTTWeights::PreAnalysis() {
         w_->function("e_trk_embed_ratio")->functor(w_->argSet("e_pt,e_eta")));
     fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
         w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
-    //std::cout << "TEST0 : " << fns_["m_trk_ratio"]->eval(0.1) << std::endl;
-
 
     // triggers for muon legs in mt and zmm channels
     
@@ -663,6 +661,7 @@ int HTTWeights::PreAnalysis() {
     fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_dm_vvvloose")->functor(w_->argSet("t_dm")));
 
+    std::cout << "TEST 0: " << fns_["t_deeptauid_dm_medium"]->eval(1) << std::endl;
 
     fns_["t_deeptauid_pt_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_pt_medium_bin1_up")->functor(w_->argSet("t_pt")));
@@ -965,7 +964,7 @@ int HTTWeights::PreAnalysis() {
       // electron reco efficiency from EGammaPOG
       fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
           w_UL_->function("e_trk_ratio")->functor(w_UL_->argSet("e_pt,e_eta")));
-
+      
       // deepTau Trigger SFs from TauPOG
       // triggers for tau legs in et, mt and tt channels
       if (era_ != era::data_2018) {
