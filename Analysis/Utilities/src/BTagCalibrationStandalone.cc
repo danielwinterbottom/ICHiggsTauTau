@@ -71,19 +71,41 @@ std::cerr << "ERROR in BTagCalibration: "
           << csvLine;
 throw std::exception();
   }
-
-  // make parameters
-  unsigned op = stoi(vec[0]);
-  if (op > 3) {
+  unsigned op;
+  if (vec[0] == "L"){
+    op = 0;
+  } else if (vec[0] == "M"){
+     op = 1;
+  } else if (vec[0] == "T"){
+      op = 2;
+  } else if (vec[0] == "0" || vec[0] == "1" || vec[0] == "2" || vec[0] == "3"){
+      op = stoi(vec[0]);
+  } else{
 std::cerr << "ERROR in BTagCalibration: "
-          << "Invalid csv line; OperatingPoint > 3: "
+          << "Invalid csv line; OperatingPoint: "
           << csvLine;
 throw std::exception();
   }
-  unsigned jf = stoi(vec[3]);
-  if (jf > 2) {
+
+  //if (op > 3) {
+//std::cerr << "ERROR in BTagCalibration: "
+  //        << "Invalid csv line; OperatingPoint > 3: "
+  //        << csvLine;
+//throw std::exception();
+//  }
+  unsigned jf;
+  //enable this for rereco
+  //if (jf > 2){
+  if (stoi(vec[3]) == 5){ 
+    jf = 2;
+  } else if(stoi(vec[3]) == 4){ 
+    jf = 1;
+  } else {
+    jf = stoi(vec[3]);
+  }
+  if (jf != 2 && jf != 1 && jf != 0) {
 std::cerr << "ERROR in BTagCalibration: "
-          << "Invalid csv line; JetFlavor > 2: "
+          << "Invalid csv line; JetFlavor: "
           << csvLine;
 throw std::exception();
   }
@@ -440,6 +462,7 @@ void BTagCalibrationReader::BTagCalibrationReaderImpl::load(
                                              std::string measurementType)
 {
   if (tmpData_[jf].size()) {
+std::cout << tmpData_[jf].size() << std::endl;
 std::cerr << "ERROR in BTagCalibration: "
           << "Data for this jet-flavor is already loaded: "
           << jf;

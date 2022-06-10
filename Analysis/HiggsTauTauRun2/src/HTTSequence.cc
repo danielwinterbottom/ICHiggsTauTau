@@ -103,7 +103,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   metcl_mode=json["baseline"]["metcl_mode"].asUInt();
   metuncl_mode=json["baseline"]["metuncl_mode"].asUInt();
   do_reshape=json["baseline"]["do_reshape"].asBool(); 
-  use_deep_csv=json["baseline"]["use_deep_csv"].asBool(); 
+  use_deep_csv=json["baseline"]["use_deep_csv"].asBool();
+  use_deep_jet=json["baseline"]["use_deep_jet"].asBool(); 
   wp_to_check=json["baseline"]["wp_to_check"].asString(); 
   btag_mode=json["baseline"]["btag_mode"].asUInt();
   bfake_mode=json["baseline"]["bfake_mode"].asUInt();
@@ -1027,6 +1028,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       .set_strategy(strategy_type)
       .set_do_legacy(false)
       .set_use_deep_csv(use_deep_csv)
+      .set_use_deep_jet(use_deep_jet)
       .set_wp_to_check(wp_to_check)
       .set_jet_label(shift_jets_label));
   }

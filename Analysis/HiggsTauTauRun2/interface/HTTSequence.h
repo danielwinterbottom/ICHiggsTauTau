@@ -33,7 +33,7 @@ class HTTSequence {
   unsigned min_taus, lead_min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
   unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, jer_mode, jes_corr_mode, ztautau_mode, vh_filter_mode, metscale_mode, metres_mode, metuncl_mode, metcl_mode;
   std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
-  bool bjet_regr_correction, tau_scale_mode, e_scale_mode, mu_scale_mode, make_sync_ntuple, moriond_tau_scale, do_reshape, use_deep_csv;
+  bool bjet_regr_correction, tau_scale_mode, e_scale_mode, mu_scale_mode, make_sync_ntuple, moriond_tau_scale, do_reshape, use_deep_csv, use_deep_jet ,use_deep_tau;
   std::string wp_to_check;
   bool is_data, is_embedded, real_tau_sample, do_met_filters, jlepton_fake, do_recoil;
   double pair_dr, tau_shift, mass_shift, elec_shift_barrel, elec_shift_endcap, muon_shift;
