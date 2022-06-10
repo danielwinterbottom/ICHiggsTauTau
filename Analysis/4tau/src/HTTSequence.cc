@@ -369,19 +369,12 @@ if(!is_data && js["do_gen_analysis"].asBool()){
   BuildModule(HTTGenAnalysis("HTTGenAnalysis")
     .set_fs(fs.get())
     .set_channel_str(channel_str)
-    .set_min_jet_pt(30.)
-    .set_max_jet_eta(4.7)
     .set_min_e_pt(0)
     .set_min_mu_pt(0)
-    .set_min_tau1_pt(0)
-    .set_min_tau2_pt(0)
+    .set_min_tau_pt(0)
     .set_max_e_eta(1000)
     .set_max_mu_eta(1000)
     .set_max_tau_eta(1000)
-    .set_do_theory_uncert(true)
-    .set_mssm_mass(mass_str)
-    .set_make_mva_ntuple(js["make_mva_ntuple"].asBool())
-    .set_mva_output_name(js["output_folder"].asString()+"/MVAFILE_"+output_name)
   );
   return;  
 }
@@ -413,26 +406,26 @@ HTTFourTauSelector httFourTauSelector = HTTFourTauSelector("HTTFourTauSelector")
   .set_strategy(strategy_type)
   .set_mc(mc_type)
   .set_use_most_isolated(true)
-  .set_use_charge_preference(false)
+  .set_use_charge_preference(true)
   .set_allowed_tau_modes(allowed_tau_modes);
     
 BuildModule(httFourTauSelector);
 
 // TO DO: Update for 4tau UL
-BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-    .set_channel(channel)
-    .set_mc(mc_type)
-    .set_era(era_type)
-    .set_strategy(strategy_type)
-    .set_is_data(is_data)
-    .set_pair_label("4tau"));
+//BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+//    .set_channel(channel)
+//    .set_mc(mc_type)
+//    .set_era(era_type)
+//    .set_strategy(strategy_type)
+//    .set_is_data(is_data)
+//    .set_pair_label("4tau"));
 
 // TO DO: Implement extra lepton vetos for leptonic decay channels
 // Lepton Vetoes
 //if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
 //if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
 //if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
-//if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
+if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 
 
 if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
@@ -831,6 +824,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   }
  
   BuildModule(HTTCategories("HTTCategories")
+      .set_met_label(shift_met_label)
+      .set_jets_label(shift_jets_label)
       .set_fs(fs_vec[i].get())
       .set_channel(channel)
       .set_era(era_type)
@@ -1179,7 +1174,6 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->charge())           == 1          &&
                t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
                t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
-
      }));
  
   if (tau_scale_mode > 0 && !is_data){
@@ -1364,51 +1358,50 @@ void HTTSequence::BuildTauSelection(){
               fabs(t->lead_dz_vertex())   <  tau_dz     &&
               fabs(t->charge())           == 1          &&
               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
-              t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5; 
-
+              t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
     }));
 
  }
 
- //void HTTSequence::BuildDiElecVeto() {
-
- //  BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
- //      js["electrons"].asString(), "veto_elecs"));
-
- //  BuildModule(GenericModule("VetoElecIDIsoFilter")
- //     .set_function([=](ic::TreeEvent *event){
- //     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
- //     std::vector<Electron*> & vec = event->GetPtrVec<Electron>("veto_elecs");
- //     ic::erase_if(vec,!boost::bind(VetoElectronIDFall17,_1, eventInfo->jet_rho())); //lepton_rho
- //     ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3));
- //     return 0;
- //  }));    
-
- //  SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
- //     .set_input_label("veto_elecs");
- //  vetoElecFilter.set_predicate([=](Electron const* e) {
- //    return  e->pt()                 > veto_dielec_pt    &&
- //           fabs(e->eta())          < veto_dielec_eta   &&
- //           fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
- //           fabs(e->dz_vertex())    < veto_dielec_dz;
- //  });
-
- //  BuildModule(vetoElecFilter);
-
- //  BuildModule(OneCollCompositeProducer<Electron>("VetoElecPairProducer")
- //     .set_input_label("veto_elecs").set_output_label("elec_veto_pairs")
- //     .set_candidate_name_first("elec1").set_candidate_name_second("elec2"));
-
- //  HTTFilter<CompositeCandidate> vetoElecPairFilter = HTTFilter<CompositeCandidate>("VetoElecPairFilter")
- //     .set_veto_name("dielec_veto")
- //     .set_no_filter(true)
- //     .set_input_label("elec_veto_pairs").set_min(0).set_max(0)
- //     .set_predicate([=](CompositeCandidate const* c) {
- //       return  c->DeltaR("elec1", "elec2") > 0.15 &&
- //               c->charge() == 0;
- //     });
- //  BuildModule(vetoElecPairFilter);
- //}
+// void HTTSequence::BuildDiElecVeto() {
+//
+//   BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
+//       js["electrons"].asString(), "veto_elecs"));
+//
+//   BuildModule(GenericModule("VetoElecIDIsoFilter")
+//      .set_function([=](ic::TreeEvent *event){
+//      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+//      std::vector<Electron*> & vec = event->GetPtrVec<Electron>("veto_elecs");
+//      ic::erase_if(vec,!boost::bind(VetoElectronIDFall17,_1, eventInfo->jet_rho())); //lepton_rho
+//      ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3));
+//      return 0;
+//   }));    
+//
+//   SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
+//      .set_input_label("veto_elecs");
+//   vetoElecFilter.set_predicate([=](Electron const* e) {
+//     return  e->pt()                 > veto_dielec_pt    &&
+//            fabs(e->eta())          < veto_dielec_eta   &&
+//            fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
+//            fabs(e->dz_vertex())    < veto_dielec_dz;
+//   });
+//
+//   BuildModule(vetoElecFilter);
+//
+//   BuildModule(OneCollCompositeProducer<Electron>("VetoElecPairProducer")
+//      .set_input_label("veto_elecs").set_output_label("elec_veto_pairs")
+//      .set_candidate_name_first("elec1").set_candidate_name_second("elec2"));
+//
+//   HTTFilter<CompositeCandidate> vetoElecPairFilter = HTTFilter<CompositeCandidate>("VetoElecPairFilter")
+//      .set_veto_name("dielec_veto")
+//      .set_no_filter(true)
+//      .set_input_label("elec_veto_pairs").set_min(0).set_max(0)
+//      .set_predicate([=](CompositeCandidate const* c) {
+//        return  c->DeltaR("elec1", "elec2") > 0.15 &&
+//                c->charge() == 0;
+//      });
+//   BuildModule(vetoElecPairFilter);
+// }
 
  //void HTTSequence::BuildDiMuonVeto() {
 
@@ -1445,56 +1438,55 @@ void HTTSequence::BuildTauSelection(){
 
  //}
 
- //void HTTSequence::BuildExtraElecVeto(){
- //
- //  BuildModule(CopyCollection<Electron>("CopyToExtraElecs",
- //      js["electrons"].asString(), "extra_elecs"));
- //
- //  BuildModule(GenericModule("ExtraElecIsoFilter")
- //    .set_function([=](ic::TreeEvent *event){
- //       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
- //       std::vector<Electron*> & vec = event->GetPtrVec<Electron>("extra_elecs");
- //       ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3)); //lepton_rho
- //       return 0;
- //  }));
- // 
- //  HTTFilter<Electron> extraElecFilter = HTTFilter<Electron>("ExtraElecFilter")
- //      .set_input_label("extra_elecs")
- //      .set_veto_name("extra_elec_veto")
- //      .set_min(0).set_max(js["baseline"]["max_extra_elecs"].asUInt());
- //  extraElecFilter.set_no_filter(true);
- //  extraElecFilter.set_predicate([=](Electron const* e) {
- //     return  e->pt()                 > veto_elec_pt    &&
- //             fabs(e->eta())          < veto_elec_eta   &&
- //             fabs(e->dxy_vertex())   < veto_elec_dxy   &&
- //             fabs(e->dz_vertex())    < veto_elec_dz    &&
- //             ElectronHTTIdFall17V2(e, true);
- //   });
- //  BuildModule(extraElecFilter);
- //}
- //
- //
- //void HTTSequence::BuildExtraMuonVeto(){
- //
- //  BuildModule(CopyCollection<Muon>("CopyToExtraMuons",
- //      js["muons"].asString(), "extra_muons"));
- //
- //  HTTFilter<Muon> extraMuonFilter = HTTFilter<Muon>("ExtraMuonFilter")
- //      .set_input_label("extra_muons")
- //      .set_veto_name("extra_muon_veto")
- //      .set_min(0).set_max(js["baseline"]["max_extra_muons"].asUInt());
- //  std::function<bool(Muon const*)> ExtraMuonID = [](Muon const* m) {return MuonMedium(m); };
- //  extraMuonFilter.set_no_filter(true);
- //  extraMuonFilter.set_predicate([=](Muon const* m) {
- //    return  m->pt()                 > veto_muon_pt    &&
- //            fabs(m->eta())          < veto_muon_eta   &&
- //            fabs(m->dxy_vertex())   < veto_muon_dxy   &&
- //            fabs(m->dz_vertex())    < veto_muon_dz    &&
- //            ExtraMuonID(m)                     &&
- //            PF04IsolationVal(m, 0.5,0) < 0.3;
- //  });
- //  BuildModule(extraMuonFilter);
- //
- //
- //}
+ void HTTSequence::BuildExtraElecVeto(){
+ 
+   BuildModule(CopyCollection<Electron>("CopyToExtraElecs",
+       js["electrons"].asString(), "extra_elecs"));
+ 
+   BuildModule(GenericModule("ExtraElecIsoFilter")
+     .set_function([=](ic::TreeEvent *event){
+        EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+        std::vector<Electron*> & vec = event->GetPtrVec<Electron>("extra_elecs");
+        ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3)); //lepton_rho
+        return 0;
+   }));
+  
+   HTTFilter<Electron> extraElecFilter = HTTFilter<Electron>("ExtraElecFilter")
+       .set_input_label("extra_elecs")
+       .set_veto_name("extra_elec_veto")
+       .set_min(0).set_max(js["baseline"]["max_extra_elecs"].asUInt());
+   extraElecFilter.set_no_filter(true);
+   extraElecFilter.set_predicate([=](Electron const* e) {
+      return  e->pt()                 > veto_elec_pt    &&
+              fabs(e->eta())          < veto_elec_eta   &&
+              fabs(e->dxy_vertex())   < veto_elec_dxy   &&
+              fabs(e->dz_vertex())    < veto_elec_dz    &&
+              ElectronHTTIdFall17V2(e, true);
+    });
+   BuildModule(extraElecFilter);
+ }
+ 
+ 
+ void HTTSequence::BuildExtraMuonVeto(){
+ 
+   BuildModule(CopyCollection<Muon>("CopyToExtraMuons",
+       js["muons"].asString(), "extra_muons"));
+ 
+   HTTFilter<Muon> extraMuonFilter = HTTFilter<Muon>("ExtraMuonFilter")
+       .set_input_label("extra_muons")
+       .set_veto_name("extra_muon_veto")
+       .set_min(0).set_max(js["baseline"]["max_extra_muons"].asUInt());
+   std::function<bool(Muon const*)> ExtraMuonID = [](Muon const* m) {return MuonMedium(m); };
+   extraMuonFilter.set_no_filter(true);
+   extraMuonFilter.set_predicate([=](Muon const* m) {
+     return  m->pt()                 > veto_muon_pt    &&
+             fabs(m->eta())          < veto_muon_eta   &&
+             fabs(m->dxy_vertex())   < veto_muon_dxy   &&
+             fabs(m->dz_vertex())    < veto_muon_dz    &&
+             ExtraMuonID(m)                     &&
+             PF04IsolationVal(m, 0.5,0) < 0.3;
+   });
+   BuildModule(extraMuonFilter);
+ 
+ }
 }

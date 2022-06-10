@@ -17,6 +17,8 @@ class HTTCategories : public ModuleBase {
 
  private:
   CLASS_MEMBER(HTTCategories, std::string, fourtau_label)
+  CLASS_MEMBER(HTTCategories, std::string, met_label)
+  CLASS_MEMBER(HTTCategories, std::string, jets_label)
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
   CLASS_MEMBER(HTTCategories, ic::era, era)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
@@ -55,6 +57,7 @@ class HTTCategories : public ModuleBase {
 
   double wt_wsoup_;
   double wt_dysoup_;
+  double wt_mc_sign_; 
 
   double gen_match_1_;
   double gen_match_2_;
@@ -218,7 +221,54 @@ class HTTCategories : public ModuleBase {
   branch_var q_2_;
   branch_var q_3_;
   branch_var q_4_;
+  branch_var mt_1_;
+  branch_var mt_2_;
+  branch_var mt_3_;
+  branch_var mt_4_;
+  branch_var mt_lep_12_;
+  branch_var mt_lep_13_;
+  branch_var mt_lep_14_;
+  branch_var mt_lep_23_;
+  branch_var mt_lep_24_;
+  branch_var mt_lep_34_;
 
+  branch_var mvis_12_;
+  branch_var mvis_13_;
+  branch_var mvis_14_;
+  branch_var mvis_23_;
+  branch_var mvis_24_;
+  branch_var mvis_34_;
+  branch_var mvis_min_dphi_1_;
+  branch_var mvis_min_dphi_2_;
+  branch_var mvis_min_sum_dphi_1_;
+  branch_var mvis_min_sum_dphi_2_;
+  branch_var mvis_min_dR_1_;
+  branch_var mvis_min_dR_2_;
+  branch_var mvis_min_sum_dR_1_;
+  branch_var mvis_min_sum_dR_2_;
+  branch_var pt_min_dphi_1_;
+  branch_var pt_min_dphi_2_;
+  branch_var pt_min_sum_dphi_1_;
+  branch_var pt_min_sum_dphi_2_;
+  branch_var pt_min_dR_1_;
+  branch_var pt_min_dR_2_;
+  branch_var pt_min_sum_dR_1_;
+  branch_var pt_min_sum_dR_2_;
+
+
+  int p_min_dphi_1_;
+  int p_min_dR_1_;
+  int p_min_sum_dphi_1_;
+  int p_min_sum_dR_1_;
+  int p_min_dphi_2_;
+  int p_min_dR_2_;
+  int p_min_sum_dphi_2_;
+  int p_min_sum_dR_2_;
+
+  int pdgid_mother_1_;
+  int pdgid_mother_2_;
+  int pdgid_mother_3_;
+  int pdgid_mother_4_;  
 
   double deepTauVsEle_iso_1_;
   double deepTauVsEle_iso_2_;
@@ -353,6 +403,8 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsMu_vvtight_3_;
   bool deepTauVsMu_vvtight_4_;
 
+  int n_deepbjets_;
+  int n_jets_;
 
  public:
   HTTCategories(std::string const& name);

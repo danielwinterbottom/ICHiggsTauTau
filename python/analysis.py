@@ -96,7 +96,7 @@ class Shape(object):
         self._rate = rate
         integral = self._Int()
         if integral == 0.:
-            print 'Error, histogram integral is zero'
+            #print 'Error, histogram integral is zero'
             return
         self._hist.Scale(rate.n / integral)
 

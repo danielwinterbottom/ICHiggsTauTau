@@ -74,8 +74,15 @@ namespace ic {
       if ( ((abs(particles[i]->pdgid()) == 12 )||(abs(particles[i]->pdgid()) == 14 /*&& particles[i]->status()==1*/)||(abs(particles[i]->pdgid()) == 16)) && particles[i]->pt() > 8. && (status_flags_start[IsPrompt] || status_flags_start[IsDirectPromptTauDecayProduct] /*|| status_flags_start[IsDirectHadronDecayProduct]*/)) neutrinos+=particles[i]->vector();
       if(status_flags_start[IsPrompt] && status_flags_start[IsLastCopy] && abs(particles[i]->pdgid()) == 15) undecayed_taus.push_back(particles[i]);
 
+      // Get parent bosons per tau
+      if(status_flags_start[IsFirstCopy] && abs(particles[i]->pdgid()) == 15) {
+        for (unsigned j=1; j<5; ++j){
+          if (DR(fourtau->GetCandidate("lepton"+std::to_string(j)),particles[i])< 0.05 && !event->Exists("pdgid_mother_"+std::to_string(j))) {
+            event->Add("pdgid_mother_"+std::to_string(j),particles[particles[i]->mothers()[0]]->pdgid()); 
+          }
+        }
+      }
     }
-
     gen_met=neutrinos.Pt();
 
     event->Add("gen_met",gen_met);
@@ -188,7 +195,6 @@ namespace ic {
    double gen_match_2_pt = -1;
    double gen_match_3_pt = -1;
    double gen_match_4_pt = -1;
-
 
    // LEPTON1
    if(leptonsize_1!=0&&tausize_1!=0){

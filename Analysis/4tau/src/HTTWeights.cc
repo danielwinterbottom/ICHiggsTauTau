@@ -120,6 +120,8 @@ int HTTWeights::Execute(TreeEvent *event) {
   std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
   EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
+
+
   /// IDISO SCALE FACTORS
   if (do_tau_id_sf_) {
     double total_id_sf = 1.0;

@@ -66,10 +66,14 @@ namespace ic {
         all_multilepton.push_back(multilepton[i]);
       }
     }
+    
 
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
     // initiate variables
+    if (all_multilepton.size() == 0) {
+      return 1;
+    }
     Candidate * lep1 = all_multilepton[0]->GetCandidate("lepton1");
     Candidate * lep2 = all_multilepton[0]->GetCandidate("lepton2");
     Candidate * lep3 = all_multilepton[0]->GetCandidate("lepton3");
