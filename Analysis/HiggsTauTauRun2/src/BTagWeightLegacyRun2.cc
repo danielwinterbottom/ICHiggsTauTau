@@ -37,8 +37,8 @@ namespace ic {
       std::string csv_file_path = "";
       if (era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
       else if (era_==era::data_2017 || era_ == era::data_2017UL) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
-      else if (era_==era::data_2018 || era_ == era::data_2018UL) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
-  
+      else if (era_==era::data_2018) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+      else if (era_ == era::data_2018UL) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv"; 
       calib  = new const BTagCalibration("deepcsv",csv_file_path);
   
       reader_comb_tight = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"}); 

@@ -30,16 +30,10 @@ public:
     OP_RESHAPING=3,
   };
   enum JetFlavor {
-    FLAV_B=2,
+    FLAV_B=0,
     FLAV_C=1,
-    FLAV_UDSG=0,
+    FLAV_UDSG=2,
   };
-// enable this for rereco
-//  enum JetFlavor {
-//    FLAV_B=0,
-//    FLAV_C=1,
-//    FLAV_UDSG=2,
-//  };
   struct Parameters {
     OperatingPoint operatingPoint;
     std::string measurementType;

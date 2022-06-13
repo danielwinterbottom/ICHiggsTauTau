@@ -1096,20 +1096,20 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
      .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt));
 
-    // for MSSM we use deepjet and use promote demote method
-    BuildModule(BTagWeightRun2("DeepJetBTagWeightRun2")
-      .set_channel(channel)
-      .set_era(era_type)
-      .set_strategy(strategy_type)
-      .set_jet_label(shift_jets_label)
-      .set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
-      .set_cbtag_eff((TH2F*)(new TH2D(deepjet_cbtag_eff)))
-      .set_othbtag_eff((TH2F*)(new TH2D(deepjet_othbtag_eff)))
-      .set_do_reshape(do_reshape)
-      .set_use_deep_jet(true)
-      .set_use_deep_csv(false)
-      .set_btag_mode(btag_mode)
-      .set_bfake_mode(bfake_mode));
+   // for MSSM we use deepjet and use promote demote method
+   // BuildModule(BTagWeightRun2("DeepJetBTagWeightRun2")
+    // .set_channel(channel)
+    // .set_era(era_type)
+     //.set_strategy(strategy_type)
+    // .set_jet_label(shift_jets_label)
+     //.set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
+    // .set_cbtag_eff((TH2F*)(new TH2D(deepjet_cbtag_eff)))
+     //.set_othbtag_eff((TH2F*)(new TH2D(deepjet_othbtag_eff)))
+     //.set_do_reshape(do_reshape)
+     //.set_use_deep_jet(true)
+     //.set_use_deep_csv(false)
+     //.set_btag_mode(btag_mode)
+     //.set_bfake_mode(bfake_mode));
 
     if((era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) && (output_name.find("TTTo2L2Nu") != output_name.npos || output_name.find("TTToHadronic") != output_name.npos || output_name.find("TTToSemiLeptonic") != output_name.npos)) {
       BTagWeight.set_do_cp5_2016(true);

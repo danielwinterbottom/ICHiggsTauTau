@@ -97,18 +97,19 @@ throw std::exception();
   //enable this for rereco
   //if (jf > 2){
   if (stoi(vec[3]) == 5){ 
-    jf = 2;
+    jf = 0;
   } else if(stoi(vec[3]) == 4){ 
     jf = 1;
+  } else if(stoi(vec[3]) == 0){
+    jf = 2;
   } else {
-    jf = stoi(vec[3]);
-  }
-  if (jf != 2 && jf != 1 && jf != 0) {
 std::cerr << "ERROR in BTagCalibration: "
           << "Invalid csv line; JetFlavor: "
           << csvLine;
 throw std::exception();
   }
+//std::cout << "1: " << jf << " 2: " << vec[3] << std::endl;
+
   params = BTagEntry::Parameters(
     BTagEntry::OperatingPoint(op),
     vec[1],

@@ -91,10 +91,11 @@ namespace ic {
     else if((era_ == era::data_2018 || era_ == era::data_2018UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
     else if(era_ == era::data_2018 && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepJet_102XSF_V1.csv";
     else if(era_ == era::data_2018UL && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv"; 
-    std::cout << "SF: " << csv_file_path << std::endl;
     /* calib  = new const BTagCalibration("csvv2",csv_file_path); */
     if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
     else if (use_deep_csv_) calib  = new const BTagCalibration("deepcsv",csv_file_path);
+    std::cout << "SF: " << csv_file_path << std::endl;
+
     reader_incl = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_mujets = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
     reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{});
@@ -268,6 +269,7 @@ namespace ic {
           csv_b    = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probb");
           csv_bb   = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
           csv_lepb = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+          //csv = csv_b + csv_bb + csv_lepb;
         }
         else {
           csv = embed_jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
