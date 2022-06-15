@@ -269,7 +269,7 @@ namespace ic {
           csv_b    = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probb");
           csv_bb   = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
           csv_lepb = embed_jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
-          //csv = csv_b + csv_bb + csv_lepb;
+          csv = csv_b + csv_bb + csv_lepb;
         }
         else {
           csv = embed_jets[i]->GetBDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
