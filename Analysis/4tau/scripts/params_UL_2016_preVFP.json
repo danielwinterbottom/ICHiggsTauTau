@@ -1,0 +1,134 @@
+{
+  "DY1JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 92023543
+  },
+  "DY2JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 92023543
+  },
+  "DY3JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 92023543
+  },
+  "DY4JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 92023543
+  },
+  "DYJetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 92023543
+  },
+  "DYJetsToLL_M-10to50-LO": {
+    "xs": 18610,
+    "evt": 32305345
+  },
+  "EWKWMinus2Jets_WToLNu": {
+    "xs": 20.25,
+    "evt": 2248000
+  },
+  "EWKWPlus2Jets_WToLNu": {
+    "xs": 25.62,
+    "evt": 2185000
+  },
+  "EWKZ2Jets_ZToLL": {
+    "xs": 3.987,
+    "evt": 487800
+  },
+  "T-t": {
+    "xs": 136.02,
+    "evt": 52308122
+  },
+  "T-tW": {
+    "xs": 35.6,
+    "evt": 2218567
+  },
+  "TTTo2L2Nu": {
+    "xs": 88.29,
+    "evt": 36056407
+  },
+  "TTToHadronic": {
+    "xs": 377.96,
+    "evt": 92046787
+  },
+  "TTToSemiLeptonic": {
+    "xs": 365.34,
+    "evt": 124579435
+  },
+  "Tbar-t": {
+    "xs": 80.95,
+    "evt": 30760512
+  },
+  "Tbar-tW": {
+    "xs": 35.6,
+    "evt": 2253510
+  },
+  "W1JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 74355906
+  },
+  "W2JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 74355906
+  },
+  "W3JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 74355906
+  },
+  "W4JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 74355906
+  },
+  "WGToLNuG": {
+    "xs": 489,
+    "evt": 9710293
+  },
+  "WJetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 74355906
+  },
+  "WWTo1L1Nu2Q": {
+    "xs": 49.997,
+    "evt": 5733496
+  },
+  "WZTo3LNu": {
+    "xs": 5.213,
+    "evt": 6366314
+  },
+  "WWTo2L2Nu": {
+    "xs": 11.09,
+    "evt": 2987346
+  },
+  "ZZTo2L2Nu": {
+    "xs": 0.9738,
+    "evt": 16766154
+  },
+  "WZTo1L1Nu2Q": {
+    "xs": 10.71,
+    "evt": 5893164
+  },
+  "ZZTo4L": {
+    "xs": 1.212,
+    "evt": 18614121
+  },
+  "GluGluHToTauTau_M125": {
+    "xs": 3.045966,
+    "evt": 6379900
+  },
+  "ZHToTauTau_M125": {
+    "xs": 0.05542,
+    "evt": 2235654
+  },
+  "SingleElectron": {
+    "lumi": 19520
+  },
+  "SingleMuon": {
+    "lumi": 19520
+  },
+  "Tau": {
+    "lumi": 19520
+  },
+  "MuonEG": {
+    "lumi": 19520
+  }
+}

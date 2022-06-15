@@ -392,7 +392,7 @@ z_sels = {
           }
 
 z_sels = {
-          "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+				  "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZTT1F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZTT2F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZTT3F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
@@ -407,7 +407,7 @@ z_sels = {
           "ZEE2F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZEE3F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZEE4F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZO"   :"((({mgm} > 0) + ({egm} > 0) + ({tgm} > 0)) > 0)".format(mgm=summed_m_gen_matches,egm=summed_e_gen_matches,tgm=summed_t_gen_matches),
+          "ZO"   :"((({mgm} > 0) + ({egm} > 0) + ({tgm} > 0)) > 1)".format(mgm=summed_m_gen_matches,egm=summed_e_gen_matches,tgm=summed_t_gen_matches),
           }
 
 
