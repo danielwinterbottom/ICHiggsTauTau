@@ -107,7 +107,6 @@ int HTTGenMatchSelector<T>::Execute(TreeEvent *event) {
       gen_match_1 = mcorigin::tauHad;
     }
     
-
     if(gen_match_1 == gen_match_){
       output_vec.push_back(input_vec[i]);
     }

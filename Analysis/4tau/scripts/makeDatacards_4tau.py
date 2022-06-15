@@ -69,30 +69,30 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
 all_ch_variables = [
-                    GetBinning('mvis_min_dphi_1',0,500,10,round=1),
-                    GetBinning('mvis_min_dphi_2',0,300,10,round=1),
-                    GetBinning('pt_min_dphi_1',0,300,10,round=1),
-                    GetBinning('pt_min_dphi_2',0,300,10,round=1),
+                    GetBinning('mvis_min_dphi_1',0,500,100,round=1),
+                    GetBinning('mvis_min_dphi_2',0,300,60,round=1),
+                    GetBinning('pt_min_dphi_1',0,300,60,round=1),
+                    GetBinning('pt_min_dphi_2',0,300,60,round=1),
                     ]
 
 ch_dep_var = {"mttt":[
-                    GetBinning('mt_1',0,300,10,round=1),
+                    GetBinning('mt_1',0,300,60,round=1),
                     ],
               "ettt":[
-                    GetBinning('mt_1',0,300,10,round=1),
+                    GetBinning('mt_1',0,300,60,round=1),
                     ],
               "mmtt":[
-                    GetBinning('mt_1',0,300,10,round=1),
-                    GetBinning('mt_2',0,300,10,round=1),
+                    GetBinning('mt_1',0,300,60,round=1),
+                    GetBinning('mt_2',0,300,60,round=1),
                     ],
               "eett":[
-                    GetBinning('mt_1',0,300,10,round=1),
-                    GetBinning('mt_2',0,300,10,round=1),
+                    GetBinning('mt_1',0,300,60,round=1),
+                    GetBinning('mt_2',0,300,60,round=1),
                     ],
               "tttt": [],
               "emtt":[
-                    GetBinning('mt_1',0,300,10,round=1),
-                    GetBinning('mt_2',0,300,10,round=1),
+                    GetBinning('mt_1',0,300,60,round=1),
+                    GetBinning('mt_2',0,300,60,round=1),
                     ],
               }
 
@@ -110,7 +110,7 @@ categories = {
               "mmtt":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
               }
 
-add_options = '--ratio_range=\'0,2\' --plot_signals=\'phi200A100To4Tau,phi200A200To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.3'
+add_options = '--ratio_range=\'0,2\' --plot_signals=\'phi200A100To4Tau,phi200A200To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --vsjets=\'medium\' --ratio_range=0,5'
  
 wt = "wt_dysoup*wt_wsoup*wt_mc_sign" 
 

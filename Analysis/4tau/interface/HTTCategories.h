@@ -254,7 +254,8 @@ class HTTCategories : public ModuleBase {
   branch_var pt_min_dR_2_;
   branch_var pt_min_sum_dR_1_;
   branch_var pt_min_sum_dR_2_;
-
+  branch_var met_;
+  branch_var st_;
 
   int p_min_dphi_1_;
   int p_min_dR_1_;

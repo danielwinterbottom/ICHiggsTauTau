@@ -2140,6 +2140,13 @@ def Norm2DBins(h):
     h.SetBinContent(i,content/scale)
     h.SetBinError(i,error/scale)
 
+def NonZeroMinimum(h):
+  min_value = 9999
+  for i in range(1,h.GetNbinsX()+1):
+    if h.GetBinContent(i) > 0 and h.GetBinContent(i)<min_value:
+      min_value = h.GetBinContent(i)
+  return min_value
+
 def HTTPlot(nodename, 
             infile=None, 
             signal_scale=1, 
@@ -2419,7 +2426,7 @@ def HTTPlot(nodename,
     background_schemes[channel].reverse()
     num_leg = 0
     for legi,hists in enumerate(bkg_histos):
-        if hists.GetEntries()>1:
+        if hists.Integral()/bkghist.Integral() > 0.01:
           legend.AddEntry(hists,background_schemes[channel][legi]['leg_text'],"f")
           num_leg += 1
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
@@ -2427,10 +2434,10 @@ def HTTPlot(nodename,
     if plot_signals != [""]:
       for i in range(0,len(plot_signals)):
         if plot_signals[i] in plot_signals_dict.keys():
-          #legend.AddEntry(0, "", "")
-          legend.AddEntry(h[i],plot_signals_dict[plot_signals[i]],"l")
-          #legend.AddEntry(0, "", "")
-          #if num_leg > 6: legend.AddEntry(0, "", "")
+          if signal_scale == 1:
+            legend.AddEntry(h[i],plot_signals_dict[plot_signals[i]],"l")
+          else:
+            legend.AddEntry(h[i],str(signal_scale) + " #times " + plot_signals_dict[plot_signals[i]],"l")
         else:
           legend.AddEntry(h[i],plot_signals[i],"l")
 
@@ -2470,7 +2477,7 @@ def HTTPlot(nodename,
         if plot_signals != [""]:
           for i in range(0,len(plot_signals)):
             h_ratio.append(h[i].Clone())
-            h_ratio[i].Scale(1/signal_scale)
+            #h_ratio[i].Scale(1/signal_scale)
             h_ratio[i].Add(bkghist)
             h_ratio[i].Divide(bkghist)
             h_ratio[i].SetLineColor(colours[i])

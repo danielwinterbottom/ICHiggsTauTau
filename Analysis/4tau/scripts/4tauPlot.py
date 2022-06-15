@@ -152,6 +152,8 @@ parser.add_argument("--bin_threshold", dest="bin_threshold", type=float, default
     help="Threshold for bin auto rebin value")
 parser.add_argument("--bin_uncert_fraction", dest="bin_uncert_fraction", type=float, default=0.5,
     help="Threshold for bin auto rebin fractional uncertainty")
+parser.add_argument("--signal_scale", dest="signal_scale", type=float, default=1.0,
+    help="Scale the signal by this amount")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -342,6 +344,9 @@ if options.year == "2018":
 ROOT.TH1.SetDefaultSumw2(True)
 
 correct_gen_matches = []
+t_gen_matches = []
+e_gen_matches = []
+m_gen_matches = []
 for in0,ch in enumerate(options.channel):
   ind = in0+1
   if ch == "e":
@@ -350,29 +355,84 @@ for in0,ch in enumerate(options.channel):
     correct_gen_matches.append("(gen_match_%(ind)i==2 || gen_match_%(ind)i==4)" % vars())
   elif ch == "t":
     correct_gen_matches.append("(gen_match_%(ind)i==5)" % vars())
+  t_gen_matches.append("(gen_match_%(ind)i==5 || gen_match_%(ind)i==3 || gen_match_%(ind)i==4)" % vars())
+  e_gen_matches.append("(gen_match_%(ind)i==1)" % vars())
+  m_gen_matches.append("(gen_match_%(ind)i==2)" % vars())
 
+summed_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3])
+summed_t_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=t_gen_matches[0],gm2=t_gen_matches[1],gm3=t_gen_matches[2],gm4=t_gen_matches[3])
+summed_e_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=e_gen_matches[0],gm2=e_gen_matches[1],gm3=e_gen_matches[2],gm4=e_gen_matches[3])
+summed_m_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=m_gen_matches[0],gm2=m_gen_matches[1],gm3=m_gen_matches[2],gm4=m_gen_matches[3])
+
+#z_sels = {
+#          "ZR":"({gm1} && {gm2} && {gm3} && {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
+#          "Z1F":"((!{gm1} && {gm2} && {gm3} && {gm4}) ||"\
+#                 "({gm1} && !{gm2} && {gm3} && {gm4}) ||"\
+#                 "({gm1} && {gm2} && !{gm3} && {gm4}) ||"\
+#                 "({gm1} && {gm2} && {gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
+#          "Z2F":"((!{gm1} && !{gm2} && {gm3} && {gm4}) ||"\
+#                 "(!{gm1} && {gm2} && !{gm3} && {gm4}) ||"\
+#                 "(!{gm1} && {gm2} && {gm3} && !{gm4}) ||"\
+#                 "({gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
+#                 "({gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
+#                 "({gm1} && {gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
+#          "Z3F":"((!{gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
+#                 "(!{gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
+#                 "(!{gm1} && {gm2} && !{gm3} && !{gm4}) ||"\
+#                 "({gm1} && !{gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
+#          "Z4F":"(!{gm1} && !{gm2} && !{gm3} && !{gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
+#          }
 
 z_sels = {
-          "ZR":"({gm1} && {gm2} && {gm3} && {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "Z1F":"((!{gm1} && {gm2} && {gm3} && {gm4}) ||"\
+          "ZR":"({sgm} == 4)".format(sgm=summed_gen_matches),
+          "Z1F":"({sgm} == 3)".format(sgm=summed_gen_matches),
+          "Z2F":"({sgm} == 2)".format(sgm=summed_gen_matches),
+          "Z3F":"({sgm} == 1)".format(sgm=summed_gen_matches),
+          "Z4F":"({sgm} == 0)".format(sgm=summed_gen_matches),
+          }
+
+z_sels = {
+          "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTT1F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTT2F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTT3F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTT4F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMMR" :"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMM1F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMM2F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMM3F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMM4F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEER" :"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEE1F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEE2F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEE3F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEE4F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZO"   :"((({mgm} > 0) + ({egm} > 0) + ({tgm} > 0)) > 0)".format(mgm=summed_m_gen_matches,egm=summed_e_gen_matches,tgm=summed_t_gen_matches),
+          }
+
+
+top_sels = {
+          "TTR":"({gm1} && {gm2} && {gm3} && {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
+          "TT1F":"((!{gm1} && {gm2} && {gm3} && {gm4}) ||"\
                  "({gm1} && !{gm2} && {gm3} && {gm4}) ||"\
                  "({gm1} && {gm2} && !{gm3} && {gm4}) ||"\
                  "({gm1} && {gm2} && {gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "Z2F":"((!{gm1} && !{gm2} && {gm3} && {gm4}) ||"\
+          "TT2F":"((!{gm1} && !{gm2} && {gm3} && {gm4}) ||"\
                  "(!{gm1} && {gm2} && !{gm3} && {gm4}) ||"\
                  "(!{gm1} && {gm2} && {gm3} && !{gm4}) ||"\
                  "({gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
                  "({gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
                  "({gm1} && {gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "Z3F":"((!{gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
+          "TT3F":"((!{gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
                  "(!{gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
                  "(!{gm1} && {gm2} && !{gm3} && !{gm4}) ||"\
                  "({gm1} && !{gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "Z4F":"(!{gm1} && !{gm2} && !{gm3} && !{gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
+          "TT4F":"(!{gm1} && !{gm2} && !{gm3} && !{gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
           }
-top_sels = {"TTR":z_sels["ZR"],"TT1F":z_sels["Z1F"],"TT2F":z_sels["Z2F"],"TT3F":z_sels["Z3F"],"TT4F":z_sels["Z4F"]}
-vv_sels = {"VVR":z_sels["ZR"],"VV1F":z_sels["Z1F"],"VV2F":z_sels["Z2F"],"VV3F":z_sels["Z3F"],"VV4F":z_sels["Z4F"]}
-w_sels = {"WR":z_sels["ZR"],"W1F":z_sels["Z1F"],"W2F":z_sels["Z2F"],"W3F":z_sels["Z3F"],"W4F":z_sels["Z4F"]}
+
+top_sels = {"TTR":top_sels["TTR"],"TT1F":top_sels["TT1F"],"TT2F":top_sels["TT2F"],"TT3F":top_sels["TT3F"],"TT4F":top_sels["TT4F"]}
+vv_sels = {"VVR":top_sels["TTR"],"VV1F":top_sels["TT1F"],"VV2F":top_sels["TT2F"],"VV3F":top_sels["TT3F"],"VV4F":top_sels["TT4F"]}
+w_sels = {"WR":top_sels["TTR"],"W1F":top_sels["TT1F"],"W2F":top_sels["TT2F"],"W3F":top_sels["TT3F"],"W4F":top_sels["TT4F"]}
 vvv_sels = {}
 
 
@@ -636,7 +696,9 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
 
   # left to right
   finished = False
-  while finished == False:
+  k = 0
+  while finished == False and k < 1000:
+    k += 1
     for i in range(1,hist.GetNbinsX()):
       if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
       else: uncert_frac = BinUncertFraction+1
@@ -649,7 +711,9 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
 
   # right to left
   finished = False
-  while finished == False:
+  k = 0
+  while finished == False and k < 1000:
+    k+= 1
     for i in reversed(range(2,hist.GetNbinsX()+1)):
       if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
       else: uncert_frac = BinUncertFraction+1
@@ -659,6 +723,7 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
         break
       elif i == 2:
         finished = True
+    
 
   return binning  
 
@@ -716,7 +781,7 @@ if not options.no_plot:
     plotting.HTTPlot(
       nodename=nodename, 
       infile=plot_file, 
-      signal_scale=1,
+      signal_scale=options.signal_scale,
       norm_bins=options.norm_bins,
       channel=options.channel,
       blind=options.blind,

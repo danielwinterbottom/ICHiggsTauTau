@@ -270,6 +270,8 @@ namespace ic {
       outtree_->Branch("pt_min_sum_dphi_2",    &pt_min_sum_dphi_2_.var_double);
       outtree_->Branch("pt_min_sum_dR_1",      &pt_min_sum_dR_1_.var_double);
       outtree_->Branch("pt_min_sum_dR_2",      &pt_min_sum_dR_2_.var_double);
+      outtree_->Branch("st",                   &st_.var_double);
+      outtree_->Branch("met",                  &met_.var_double);
 
       outtree_->Branch("p_min_dphi_1",      &p_min_dphi_1_);
       outtree_->Branch("p_min_dphi_2",      &p_min_dphi_2_);
@@ -604,6 +606,7 @@ namespace ic {
     m_4_ = lep4->M();
     Met const* mets = NULL;
     mets = event->GetPtr<Met>(met_label_);
+    met_ = mets->vector().pt();
     mt_1_ = MT(lep1, mets);
     mt_2_ = MT(lep2, mets);
     mt_3_ = MT(lep3, mets);
@@ -618,6 +621,7 @@ namespace ic {
     q_2_ = lep2->charge();
     q_3_ = lep3->charge();
     q_4_ = lep4->charge();
+    st_ = lep1->pt()+lep2->pt()+lep3->pt()+lep4->pt()+mets->vector().pt();
 
     // get ditau mass of all combinations:
     CompositeCandidate *pair12 = new CompositeCandidate();
