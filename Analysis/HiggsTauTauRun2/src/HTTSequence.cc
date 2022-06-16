@@ -1094,7 +1094,9 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_othbtag_eff(new TH2F(othbtag_eff))
      .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
      .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
-     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt));
+     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt))
+	 .set_use_deep_jet(true)
+     .set_use_deep_csv(false);
 
    // for MSSM we use deepjet and use promote demote method
    // BuildModule(BTagWeightRun2("DeepJetBTagWeightRun2")
