@@ -20,6 +20,9 @@ namespace ic {
     bbtag_eff_cp5_alt_ = nullptr;
     cbtag_eff_cp5_alt_ = nullptr;
     othbtag_eff_cp5_alt_ = nullptr;
+	use_deep_csv_ = false;
+    use_deep_jet_ = false;
+	
   }
   BTagWeightLegacyRun2::~BTagWeightLegacyRun2() {
    ;
@@ -35,11 +38,17 @@ namespace ic {
       reader_comb_loose = GetProduct<BTagCalibrationReader*>(name+"_reader_comb_loose");
     } else {
       std::string csv_file_path = "";
-      if (era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
-      else if (era_==era::data_2017 || era_ == era::data_2017UL) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
-      else if (era_==era::data_2018) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
-      else if (era_ == era::data_2018UL) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv"; 
-      calib  = new const BTagCalibration("deepcsv",csv_file_path);
+      if (era_==era::data_2016 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+      // not properly set up yet
+      else if ((era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+	  else if (era_==era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+	  // not properly set up yet
+	  else if (era_==era::data_2017UL && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+      else if (era_==era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+      else if (era_ == era::data_2018UL && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv"; 
+      
+	  if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
+      else if (use_deep_csv_) calib  = new const BTagCalibration("deepcsv",csv_file_path);
   
       reader_comb_tight = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"}); 
       reader_comb_tight->load(*calib,BTagEntry::FLAV_B,"comb");
@@ -165,9 +174,12 @@ namespace ic {
         sf_tight[6] = sf_tight[2]; // tight up
         sf_loose[6] = sf_loose[2]; // loose up
       }
-
+      
+	  
       double csv = jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") +
         jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb");
+		
+	  if (use_deep_jet_) csv = jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probb") + jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probbb") + jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
 
       double tight_wp = 0.5;
       double loose_wp = 0.1;
@@ -179,9 +191,13 @@ namespace ic {
         tight_wp = 0.4941; // medium deepCSV wp
         loose_wp = 0.1522; // loose deepCSV wp
       }
-      else if (era_ == era::data_2018 || era_ == era::data_2018UL){
+      else if (era_ == era::data_2018){
         tight_wp = 0.4184; // medium deepCSV wp
         loose_wp = 0.1241; // loose deepCSV wp
+      }
+	  else if (era_ == era::data_2018UL && use_deep_jet_){
+        tight_wp = 0.2783; // medium deepJet wp
+        loose_wp = 0.0490; // loose deepJet wp
       }
       for (unsigned j = 0; j < sf_tight.size(); j++) {
         double p_mc = 1.;
@@ -212,10 +228,21 @@ namespace ic {
         if (result[j] < 0) result[j] = 1.;
 
       }
-      if (verbose) {
+      if (verbose && use_deep_csv_) {
         std::cout << "Jet " << i << " " << jets[i]->vector() << " deep csv: " << 
             jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probb") + 
             jets[i]->GetBDiscriminator("pfDeepCSVJetTags:probbb") << 
+            "  hadron flavour: " << jets[i]->hadron_flavour() << std::endl;
+        std::cout << "-- efficiency loose: " << eff_loose << std::endl;
+        std::cout << "-- efficiency tight: " << eff_tight << std::endl;
+        std::cout << "-- scale factor central loose: " << sf_loose[0] << std::endl;
+        std::cout << "-- scale factor central tight: " << sf_tight[0] << std::endl;
+      }
+	  if (verbose && use_deep_jet_) {
+        std::cout << "Jet " << i << " " << jets[i]->vector() << " deep Jet: " << 
+            jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probb") + 
+            jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:probbb") +
+			jets[i]->GetBDiscriminator("pfDeepFlavourJetTags:problepb") << 
             "  hadron flavour: " << jets[i]->hadron_flavour() << std::endl;
         std::cout << "-- efficiency loose: " << eff_loose << std::endl;
         std::cout << "-- efficiency tight: " << eff_tight << std::endl;
