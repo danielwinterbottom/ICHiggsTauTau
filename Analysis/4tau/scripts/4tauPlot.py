@@ -148,7 +148,7 @@ parser.add_argument("--vsele", default="vvloose", type=str,
       help="vs electron deep tau working point")
 parser.add_argument("--auto_rebinning", dest="auto_rebinning", action='store_true',
     help="Do auto rebinning")
-parser.add_argument("--bin_threshold", dest="bin_threshold", type=float, default=100.0,
+parser.add_argument("--bin_threshold", dest="bin_threshold", type=float, default=100000.0,
     help="Threshold for bin auto rebin value")
 parser.add_argument("--bin_uncert_fraction", dest="bin_uncert_fraction", type=float, default=0.5,
     help="Threshold for bin auto rebin fractional uncertainty")
@@ -339,7 +339,8 @@ if options.year == "2018":
       wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
       wgam_samples = ['WGToLNuG']
       ewkz_samples = ['EWKZ2Jets_ZToLL']
-      signal_samples = ["phi200A100To4Tau","phi200A200To4Tau"]
+      #signal_samples = ["phi200A100To4Tau","phi200A200To4Tau"]
+      signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -659,9 +660,11 @@ while len(systematics) > 0:
           ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
       
       # Add all MC background files
-      for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + signal_samples:
+      for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples:
           ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-          
+      for sample_name in signal_samples:
+          ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)         
+ 
       ana.AddInfo(options.paramfile, scaleTo='data_obs')
   
       # Add data only for default
@@ -689,6 +692,7 @@ plot_file = ROOT.TFile(output_name, 'READ')
 
 # do rebinning
 def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
+
   # getting binning
   binning = []
   for i in range(1,hist.GetNbinsX()+2):

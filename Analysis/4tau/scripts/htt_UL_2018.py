@@ -404,15 +404,28 @@ if options.proc_bkg or options.proc_all:
 if options.proc_sig:
 
     signal_mc = [
+    #"phi200A100To4Tau",
+    #"phi200A200To4Tau",
+    "phi100A100To4Tau",
+    "phi100A150To4Tau",
+    "phi100A60To4Tau",
     "phi200A100To4Tau",
-    "phi200A200To4Tau"
+    "phi200A150To4Tau",
+    "phi200A20To4Tau",
+    "phi200A60To4Tau",
+    "phi300A100To4Tau",
+    "phi300A150To4Tau",
+    "phi300A20To4Tau",
+    "phi300A60To4Tau"
     ]
 
     for sa in signal_mc:
 
         print sa
-        SIG_DIR = 'June03_Signal_106X_2018'
-        SIG_FILELIST = "filelists/June03_2018_MC_106X"
+        #SIG_DIR = 'June03_Signal_106X_2018'
+        #SIG_FILELIST = "filelists/June03_2018_MC_106X"
+        SIG_DIR = 'Jun15_Signal_106X_2018'
+        SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
         user='guttley'
 
         JOB='%s_2018' % (sa)
@@ -423,7 +436,7 @@ if options.proc_sig:
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
             FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
-            print '%(SIG_FILELIST)s_%(sa)s.dat' %vars(), os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars())
+            #print '%(SIG_FILELIST)s_%(sa)s.dat' %vars(), os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars())
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
                 nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
                 nperjob = 5

@@ -2185,23 +2185,97 @@ def HTTPlot(nodename,
 
    
     plot_signals_dict = {
-        "phi200A100To4Tau":"H(200)A(100) #rightarrow 4#tau (tan#beta=100)",
-        "phi200A200To4Tau":"H(200)A(200) #rightarrow 4#tau (tan#beta=100)"
+        "phi200A200To4Tau":"H(200)A(200) #rightarrow 4#tau (XS)",
+        "phi100A100To4Tau":"H(100)A(100) #rightarrow 4#tau (XS)",
+        "phi100A150To4Tau":"H(100)A(150) #rightarrow 4#tau (XS)",
+        "phi100A60To4Tau" :"H(100)A(60) #rightarrow 4#tau (XS)",
+        "phi200A100To4Tau":"H(200)A(100) #rightarrow 4#tau (XS)",
+        "phi200A150To4Tau":"H(200)A(150) #rightarrow 4#tau (XS)",
+        "phi200A20To4Tau" :"H(200)A(20) #rightarrow 4#tau (XS)",
+        "phi200A60To4Tau" :"H(200)A(60) #rightarrow 4#tau (XS)",
+        "phi300A100To4Tau":"H(300)A(100) #rightarrow 4#tau (XS)",
+        "phi300A150To4Tau":"H(300)A(150) #rightarrow 4#tau (XS)",
+        "phi300A20To4Tau" :"H(300)A(20) #rightarrow 4#tau (XS)",
+        "phi300A60To4Tau" :"H(300)A(60) #rightarrow 4#tau (XS)",
     }
 
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
 
+    #background_schemes = {
+    #  'mttt': [
+    #    backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
+    #    backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
+    #    backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(255,127,0)),
+    #    backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(197,5,12)),
+    #    backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(255,0,0)),
+    #    backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
+    #    backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
+    #    backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
+    #  'ettt': [
+    #    backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
+    #    backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
+    #    backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(255,127,0)),
+    #    backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(197,5,12)),
+    #    backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(255,0,0)),
+    #    backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
+    #    backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
+    #    backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
+    #  'tttt': [
+    #    backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
+    #    backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
+    #    backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(255,127,0)),
+    #    backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(197,5,12)),
+    #    backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(255,0,0)),
+    #    backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
+    #    backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
+    #    backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
+    #  'eett': [
+    #    backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
+    #    backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
+    #    backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(255,127,0)),
+    #    backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(197,5,12)),
+    #    backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(255,0,0)),
+    #    backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
+    #    backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
+    #    backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
+    #  'mmtt': [
+    #    backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
+    #    backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
+    #    backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(255,127,0)),
+    #    backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(197,5,12)),
+    #    backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(255,0,0)),
+    #    backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
+    #    backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
+    #    backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
+    #  'emtt': [
+    #    backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
+    #    backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
+    #    backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(255,127,0)),
+    #    backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(197,5,12)),
+    #    backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(255,0,0)),
+    #    backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
+    #    backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
+    #    backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
+
+    #}
+
     background_schemes = {
       'mttt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
-        backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(255,127,0)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(197,5,12)),
-        backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(255,0,0)),
-        backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
-        backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
-        backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
+        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
+        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("W (4 fakes)",["W4F"],R.TColor.GetColor(203,201,226)),
+        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
+        backgroundComp("W (2 fakes)",["W2F"],R.TColor.GetColor(106,81,163)),
+        backgroundComp("Z#rightarrow#tau#tau (4 fakes)",["ZTT4F"],R.TColor.GetColor(253,190,133)),
+        backgroundComp("Z#rightarrow#tau#tau (3 fakes)",["ZTT3F"],R.TColor.GetColor(253,141,60)),
+        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Z#rightarrow#mu#mu (4 fakes)",["ZMM4F"],R.TColor.GetColor(255,255,178)),
+        backgroundComp("Z#rightarrow#mu#mu (3 fakes)",["ZMM3F"],R.TColor.GetColor(254,204,92)),
+        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
+        backgroundComp("Z#rightarrow ee (4 fakes)",["ZEE4F"],R.TColor.GetColor(186,228,179)),
+        backgroundComp("Z#rightarrow ee (3 fakes)",["ZEE3F"],R.TColor.GetColor(116,196,118)),
+        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
       'ettt': [
         backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(155,152,204)),
         backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(100,192,232)),
@@ -2247,11 +2321,11 @@ def HTTPlot(nodename,
         backgroundComp("Z (4 fakes)",["Z4F"],R.TColor.GetColor(128,0,128)),
         backgroundComp("Z (3 fakes)",["Z3F"],R.TColor.GetColor(0,219,188)),
         backgroundComp("Z (2 fakes)",["Z2F"],R.TColor.GetColor(0,0,255))],
-
     }
 
+
     #total_datahist = infile.Get(nodename+'/data_obs').Clone()
-    total_datahist = infile.Get(nodename+'/ZR').Clone()
+    total_datahist = infile.Get(nodename+'/ZTTR').Clone()
  
     blind_datahist = total_datahist.Clone()
     total_datahist.SetMarkerStyle(20)
@@ -2363,7 +2437,7 @@ def HTTPlot(nodename,
     
     stack.Draw("histsame")
        
-    colours = [8,2,3,4,5,6,7]
+    colours = [8,2,3,4,5,6,7,9,11,12,13,14,16]
     h = []
     h_hist = []
     h_ratio = []
