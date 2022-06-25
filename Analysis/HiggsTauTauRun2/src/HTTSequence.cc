@@ -1045,6 +1045,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     TH2D deepjet_bbtag_eff;
     TH2D deepjet_cbtag_eff;
     TH2D deepjet_othbtag_eff;
+	
  
     if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP){
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
@@ -1070,7 +1071,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
       deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
       deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
-    } else if (era_type == era::data_2018 || era_type == era::data_2018UL) {
+    } else if (era_type == era::data_2018) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_oth");
@@ -1082,6 +1083,15 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
       deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
       deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2018UL) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_oth");
+	  
     }
 
     BTagWeightLegacyRun2 BTagWeight = BTagWeightLegacyRun2("BTagWeightLegacyRun2")
@@ -1089,14 +1099,14 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_era(era_type)
      .set_strategy(strategy_type)
      .set_jet_label(shift_jets_label)
-     .set_bbtag_eff(new TH2F(bbtag_eff))
+ 	 .set_bbtag_eff(new TH2F(bbtag_eff))
      .set_cbtag_eff(new TH2F(cbtag_eff))
      .set_othbtag_eff(new TH2F(othbtag_eff))
      .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
      .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
-     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt))
-	 .set_use_deep_jet(true)
-     .set_use_deep_csv(false);
+     .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt)) 
+	 .set_use_deep_jet(use_deep_jet)
+     .set_use_deep_csv(use_deep_csv);
 
    // for MSSM we use deepjet and use promote demote method
    // BuildModule(BTagWeightRun2("DeepJetBTagWeightRun2")
