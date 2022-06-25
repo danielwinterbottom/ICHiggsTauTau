@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
     //"channels": ["zee"],
-    "channels":      ["et","mt","tt","em","zmm","zee"],
+    "channels":      ["tpzmm","tpzee"],
    // "channels":      ["mt"],
     "sequences": {
       "all":  ["default"]
@@ -60,7 +60,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/ks1021/output/UL/2016UL_postVFP_pu_fix/",
+    "output_folder" : "/vols/cms/ks1021/output/trees/UL_tp/2016_postVFP",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2016_tres1_v2_svfit/",
@@ -92,6 +92,7 @@
       "btag_mode"         : 0,
       "do_reshape"        : false,
       "use_deep_csv"      : true,
+	  "use_deep_jet"      : false,
       "wp_to_check"       : "tight",
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
