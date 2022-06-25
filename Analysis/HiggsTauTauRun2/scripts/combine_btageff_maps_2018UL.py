@@ -26,7 +26,7 @@ dywt = 6077.22/97808057.
 
 channels = ['mt','tt','et','em']
 counter = 0
-path = "/vols/cms/ks1021/output/trees/UL_btag/2018"
+path = "/vols/cms/ks1021/output/trees/UL_btag_eff/wp_loose/2018/"
 
 #channels = ['em']
 
@@ -155,7 +155,7 @@ comb_btag_b.Divide(comb_tot_b)
 comb_btag_c.Divide(comb_tot_c)
 comb_btag_oth.Divide(comb_tot_oth)
 
-outfile = ROOT.TFile("tagging_efficiencies_deepCSV_2018UL_loose.root","RECREATE")
+outfile = ROOT.TFile("tagging_efficiencies_deepJet_2018UL_loose.root","RECREATE")
 outfile.WriteObject(comb_btag_b,"btag_eff_b")
 outfile.WriteObject(comb_btag_c,"btag_eff_c")
 outfile.WriteObject(comb_btag_oth,"btag_eff_oth")
