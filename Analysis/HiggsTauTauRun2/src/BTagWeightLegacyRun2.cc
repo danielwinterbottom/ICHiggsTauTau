@@ -38,12 +38,12 @@ namespace ic {
       reader_comb_loose = GetProduct<BTagCalibrationReader*>(name+"_reader_comb_loose");
     } else {
       std::string csv_file_path = "";
-      if (era_==era::data_2016 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+      if ((era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
       // not properly set up yet
-      else if ((era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
-	  else if (era_==era::data_2017 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+      //else if ((era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_2016LegacySF_V1.csv";
+	  else if ((era_==era::data_2017 || era_==era::data_2017UL) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
 	  // not properly set up yet
-	  else if (era_==era::data_2017UL && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
+	  //else if (era_==era::data_2017UL && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
       else if (era_==era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
       else if (era_ == era::data_2018UL && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv"; 
       
