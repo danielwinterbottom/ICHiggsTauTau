@@ -93,21 +93,28 @@ throw std::exception();
   //        << csvLine;
 //throw std::exception();
 //  }
-  unsigned jf;
-  //enable this for rereco
-  //if (jf > 2){
-  if (stoi(vec[3]) == 5){ 
-    jf = 0;
-  } else if(stoi(vec[3]) == 4){ 
-    jf = 1;
-  } else if(stoi(vec[3]) == 0){
-    jf = 2;
-  } else {
+
+
+  unsigned jf = stoi(vec[3]);
+  if (jf > 2) {
 std::cerr << "ERROR in BTagCalibration: "
-          << "Invalid csv line; JetFlavor: "
+          << "Invalid csv line; JetFlavor > 2: "
           << csvLine;
 throw std::exception();
   }
+//  unsigned jf;
+//  if (stoi(vec[3]) == 5){ 
+//    jf = 0;
+//  } else if(stoi(vec[3]) == 4){ 
+//    jf = 1;
+//  } else if(stoi(vec[3]) == 0){
+//    jf = 2;
+//  } else {
+//std::cerr << "ERROR in BTagCalibration: "
+//          << "Invalid csv line; JetFlavor: "
+//          << csvLine;
+//throw std::exception();
+//  }
 //std::cout << "1: " << jf << " 2: " << vec[3] << std::endl;
 
   params = BTagEntry::Parameters(
