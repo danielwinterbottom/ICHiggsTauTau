@@ -10,7 +10,7 @@ import ConfigParser
 import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
-
+import sys
 ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
 ROOT.TH1.AddDirectory(0)
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -29,10 +29,10 @@ conf_parser.add_argument("--cfg",
 options, remaining_argv = conf_parser.parse_known_args()
 
 defaults = {
-    "channel":"tpzmm" , 
-    "outputfolder":"tagandprobe/2018UL/tpzmm/dimu_dz", 
-    "folder":"/vols/cms/ks1021/output/UL/2018UL_SF",
-    "era":"UL_18", 
+    "channel":"tpzee" , 
+    "outputfolder":"tagandprobe/2017UL/tpzee/single",
+    "folder":"/vols/cms/ks1021/output/trees/UL_tp/2017",
+    "era":"UL_17", 
     "embedded":False, 
     "em_iso":False, 
     "aiso1":False, 
@@ -41,7 +41,7 @@ defaults = {
     "draw_hists":1,
     "veto_FSR":False,
     "trg_only":False,
-    "tree_name":"tagandprobe_dimu_dz",
+    "tree_name":"tagandprobe",
     }
 
 if options.cfg:
@@ -369,6 +369,8 @@ def Get1DHistsFrom3D(passhist3d,failhist3d):
         passhist1d = passhist3d.ProjectionX(passname1d,j,j,k,k)
         failhist1d = failhist3d.ProjectionX(failname1d,j,j,k,k)
         hists.append((passhist1d,failhist1d,ymin,ymax,zmin,zmax))
+  print("NIAOU")
+  print(hists)
   return hists
       
 def CreateWorkspace(name,infile,outfile):
@@ -742,19 +744,19 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      if options.era in ['summer17','sm18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+      if options.era in ['UL_17','UL_18','summer17','sm18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
           if xmin >= 50: ForceEventCount = True
       if options.era in ['summer18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
           if xmin >= 50: ForceEventCount = True
       if options.era in ['summer18'] and ('_id' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
           if xmin >= 30: ForceEventCount = True
-      if options.era in ['sm18'] and ('_iso' in name) and options.channel == 'tpzmm' and not options.aiso1 and not options.aiso2:
+      if options.era in ['UL_18','sm18'] and ('_iso' in name) and options.channel == 'tpzmm' and not options.aiso1 and not options.aiso2:
           if xmin >= 50: ForceEventCount = True
 
       if options.charge_flip or options.mutoele: ForceEventCount=False
  
+    
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
-  
       yield_tot = wsp.data(dat).sumEntries()
       yield_pass = wsp.data(dat).sumEntries("cat==cat::pass")
       wsp.var("numTot").setVal(yield_tot)
@@ -766,7 +768,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         wsp.var("efficiency").setError(0.) 
         ForceEventCount = True # dont do fit if yield is 0 anyway
     
-      if options.channel=='tpzee' and 'id' in name and options.era == 'summer17':
+      if options.channel=='tpzee' and 'id' in name and (options.era == 'summer17' or options.era == 'UL_17'):
         if xmin>=100: 
           print 'changing sigma2f parameter'
           wsp.var('sigma1f').setRange(0.2,4)
@@ -942,6 +944,10 @@ if options.channel == 'tpzmm':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     elif options.era == 'legacy16':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
+    elif options.era == 'UL_16preVFP':
+        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+    elif options.era == 'UL_16postVFP':
+        data_samples = ['SingleMuonF','SingleMuonG','SingleMuonH']
     elif options.era == 'UL_17':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'UL_18':
@@ -952,6 +958,8 @@ if  options.channel == 'tpzee':
     if options.era in ['summer18','sm18']: data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'legacy16': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
+    elif options.era == 'UL_16preVFP': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    elif options.era == 'UL_16postVFP': data_samples = ['SingleElectronF','SingleElectronG','SingleElectronH']    
     elif options.era == 'UL_17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'UL_18': data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
@@ -962,6 +970,8 @@ if  options.channel == 'tpzee':
 if options.era == 'summer17': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 elif options.era in ['summer18','sm18']: ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'legacy16': ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
+elif options.era == 'UL_16preVFP':  ztt_samples = ['DYJetsToLL-LO']
+elif options.era == 'UL_16postVFP': ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO']
 else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
@@ -1029,7 +1039,7 @@ if options.channel == 'tpzmm':
     iso_cut_2="1"
   
 if options.channel == 'tpzee':
-  if options.era in ['UL_17','UL_18','summer17','summer18','legacy16','sm18']:
+  if options.era in ['UL_16preVFP','UL_16postVFP','UL_17','UL_18','summer17','summer18','legacy16','sm18']:
     iso_cut_1='iso_1<0.15'
     iso_cut_2='iso_2<0.15'
     if options.aiso1:
@@ -1182,6 +1192,9 @@ else:
 if options.embedded: 
   if options.trg_only: wsnames += ['embed_trg']
   else: wsnames += ['embed_id', 'embed_iso', 'embed_trg']
+  
+print(wsnames)
+
 for name in wsnames: CreateWorkspace(name, outfile, wsfile)  
 
 sffile_name = options.outputfolder+'/muon_SFs.root'
@@ -1241,6 +1254,12 @@ for name in wsnames:
   if options.mutoele:  
     sig_model='DoubleVUncorr'
 
+  print("HERE")
+  print(name)
+  print(sig_model)
+  print(bkg_model)
+  print()
+  
   #sig_model='BWCBConvUncorr'
   if (not (options.embed_dz or options.charge_flip) or 'trg' in name or not options.trg_only):
     FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,True)#'data' in name)
@@ -1254,12 +1273,12 @@ if options.trg_only: sf_types = ['trg']
 for i in sf_types:
   hist2d = sffile.Get('data_%s_eff' % i)
   for j in range(1,hist2d.GetNbinsY()+1):
+    
     ymin = hist2d.GetYaxis().GetBinLowEdge(j)    
     ymax = hist2d.GetYaxis().GetBinUpEdge(j)
     if not options.embed_sel:
       leg_labels=['data','MC']
-    else: leg_labels=['data']
-    
+    else: leg_labels=['data'] 
     if not options.embed_sel:
       graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')),sffile.Get(('gr_ZLL_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
     else: graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
@@ -1275,9 +1294,9 @@ for i in sf_types:
     if options.charge_flip: 
       label=''
       ratio_range="0.85,2"
-    plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='mssmsummer16',ratio_range,True,100,10,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
+    #plotting.TagAndProbePlot(graphs,leg_labels,"",False,False,options.era=='UL_17',ratio_range,True,100,10,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
+
 
 outfile.Close()  
 wsfile.Close()
 sffile.Close()
-
