@@ -70,6 +70,8 @@ namespace ic {
       outtree_->Branch("pdgid_mother_2",         &pdgid_mother_2_);
       outtree_->Branch("pdgid_mother_3",         &pdgid_mother_3_);
       outtree_->Branch("pdgid_mother_4",         &pdgid_mother_4_);
+      outtree_->Branch("all_taus_from_bosons",   &all_taus_from_bosons_);
+      outtree_->Branch("pair_number",            &pair_number_);
 
       // idiso weights
       outtree_->Branch("idisoweight_1", &idisoweight_1_);
@@ -270,6 +272,12 @@ namespace ic {
       outtree_->Branch("pt_min_sum_dphi_2",    &pt_min_sum_dphi_2_.var_double);
       outtree_->Branch("pt_min_sum_dR_1",      &pt_min_sum_dR_1_.var_double);
       outtree_->Branch("pt_min_sum_dR_2",      &pt_min_sum_dR_2_.var_double);
+      outtree_->Branch("pt_tt_12",             &pt_tt_12_.var_double);
+      outtree_->Branch("pt_tt_13",             &pt_tt_13_.var_double);
+      outtree_->Branch("pt_tt_14",             &pt_tt_14_.var_double);
+      outtree_->Branch("pt_tt_23",             &pt_tt_23_.var_double);
+      outtree_->Branch("pt_tt_24",             &pt_tt_24_.var_double);
+      outtree_->Branch("pt_tt_34",             &pt_tt_34_.var_double);
       outtree_->Branch("st",                   &st_.var_double);
       outtree_->Branch("met",                  &met_.var_double);
 
@@ -287,6 +295,7 @@ namespace ic {
       outtree_->Branch("q_2",              &q_2_.var_double);
       outtree_->Branch("q_3",              &q_3_.var_double);
       outtree_->Branch("q_4",              &q_4_.var_double);
+      outtree_->Branch("q_sum",            &q_sum_.var_double);
 
       // DeepTau scores
       outtree_->Branch("deepTauVsEle_iso_1",       &deepTauVsEle_iso_1_);
@@ -469,6 +478,16 @@ namespace ic {
     pdgid_mother_3_ = event->Exists("pdgid_mother_3") ? event->Get<int>("pdgid_mother_3") : 0; 
     pdgid_mother_4_ = event->Exists("pdgid_mother_4") ? event->Get<int>("pdgid_mother_4") : 0; 
 
+    all_taus_from_bosons_ = (((((pdgid_mother_1_ == 25) + (pdgid_mother_2_ == 25) + (pdgid_mother_3_ == 25) + (pdgid_mother_4_ == 25)) == 2) + (((pdgid_mother_1_ == 35) + (pdgid_mother_2_ == 35) + (pdgid_mother_3_ == 35) + (pdgid_mother_4_ == 35)) == 2) + (((pdgid_mother_1_ == 36) + (pdgid_mother_2_ == 36) + (pdgid_mother_3_ == 36) + (pdgid_mother_4_ == 36)) == 2)) == 2);
+    pair_number_ = -9999;
+    if ((pdgid_mother_1_ == pdgid_mother_2_) && (pdgid_mother_3_ == pdgid_mother_4_)) {
+      pair_number_ = 0;
+    } else if ((pdgid_mother_1_ == pdgid_mother_3_) && (pdgid_mother_2_ == pdgid_mother_4_)) {
+      pair_number_ = 1;
+    } else if ((pdgid_mother_1_ == pdgid_mother_4_) && (pdgid_mother_2_ == pdgid_mother_3_)) {
+      pair_number_ = 2;
+    }
+
     idisoweight_1_ = event->Exists("idisoweight_1") ? event->Get<double>("idisoweight_1") : 1.0;
     idisoweight_2_ = event->Exists("idisoweight_2") ? event->Get<double>("idisoweight_2") : 1.0;
     idisoweight_3_ = event->Exists("idisoweight_3") ? event->Get<double>("idisoweight_3") : 1.0;
@@ -621,6 +640,7 @@ namespace ic {
     q_2_ = lep2->charge();
     q_3_ = lep3->charge();
     q_4_ = lep4->charge();
+    q_sum_ = lep1->charge()+lep2->charge()+lep3->charge()+lep4->charge();
     st_ = lep1->pt()+lep2->pt()+lep3->pt()+lep4->pt()+mets->vector().pt();
 
     // get ditau mass of all combinations:
@@ -655,6 +675,13 @@ namespace ic {
     mvis_23_ = pair23->M();
     mvis_24_ = pair24->M();
     mvis_34_ = pair34->M();
+
+    pt_tt_12_ = pair12->pt();
+    pt_tt_13_ = pair13->pt();
+    pt_tt_14_ = pair12->pt();
+    pt_tt_23_ = pair23->pt();
+    pt_tt_24_ = pair24->pt();
+    pt_tt_34_ = pair34->pt();
 
     // select closest tau pairs
     p_min_dphi_1_ = 1;

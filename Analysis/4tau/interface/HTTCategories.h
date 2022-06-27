@@ -221,6 +221,7 @@ class HTTCategories : public ModuleBase {
   branch_var q_2_;
   branch_var q_3_;
   branch_var q_4_;
+  branch_var q_sum_;
   branch_var mt_1_;
   branch_var mt_2_;
   branch_var mt_3_;
@@ -246,6 +247,12 @@ class HTTCategories : public ModuleBase {
   branch_var mvis_min_dR_2_;
   branch_var mvis_min_sum_dR_1_;
   branch_var mvis_min_sum_dR_2_;
+  branch_var pt_tt_12_;
+  branch_var pt_tt_13_;
+  branch_var pt_tt_14_;
+  branch_var pt_tt_23_;
+  branch_var pt_tt_24_;
+  branch_var pt_tt_34_;
   branch_var pt_min_dphi_1_;
   branch_var pt_min_dphi_2_;
   branch_var pt_min_sum_dphi_1_;
@@ -270,6 +277,9 @@ class HTTCategories : public ModuleBase {
   int pdgid_mother_2_;
   int pdgid_mother_3_;
   int pdgid_mother_4_;  
+
+  int all_taus_from_bosons_;
+  int pair_number_;
 
   double deepTauVsEle_iso_1_;
   double deepTauVsEle_iso_2_;

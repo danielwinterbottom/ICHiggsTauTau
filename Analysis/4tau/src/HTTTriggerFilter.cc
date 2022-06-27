@@ -35,230 +35,239 @@ namespace ic {
 
   int HTTTriggerFilter::Execute(TreeEvent *event) {
 
-    std::string trig_obj_label;
-    std::string alt_trig_obj_label="";
-    std::string alt_trig_obj_label_2;
-    std::string alt_trig_obj_label_3;
-    std::string leg1_filter;
-    std::string leg2_filter;
-    std::string alt_leg1_filter;
-    std::string alt_jetleg1_filter;
-    std::string alt_jetleg2_filter;
-    std::string alt_leg1_filter_2;
-    std::string alt_leg2_filter_2;
-    std::string alt_leg1_filter_3;
-    std::string alt_leg2_filter_3;
-    std::string alt_leg2_filter;
-   
-    if (is_data_) { 
-      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    bool passed_doubletau_12 = false;
+    bool passed_doubletau_13 = false;
+    bool passed_doubletau_14 = false;
+    bool passed_doubletau_23 = false;
+    bool passed_doubletau_24 = false;
+    bool passed_doubletau_34 = false;
+    bool passed_singlemuon_1 = false;
+    bool passed_singlemuon_2 = false;
+    bool passed_singleelectron_1 = false;
+    bool passed_singleelectron_2 = false;
+    bool passed_doublemuon_12 = false;
+    bool passed_doubleelectron_12 = false;
+    bool passed_mutaucross_12 = false;
+    bool passed_mutaucross_13 = false;
+    bool passed_mutaucross_14 = false;
+    bool passed_mutaucross_23 = false;
+    bool passed_mutaucross_24 = false;
+    bool passed_etaucross_12 = false;
+    bool passed_etaucross_13 = false;
+    bool passed_etaucross_14 = false;
+    bool passed_etaucross_23 = false;
+    bool passed_etaucross_24 = false;
+    bool passed_emucross_12 = false;
 
-      unsigned run = eventInfo->run();
-      bool path_found     = false;
-      auto const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");
+    std::vector<std::string> trg_obj_label_doubletau;
+    std::vector<std::string> trg_obj_label_doubleelectron; 
+    std::vector<std::string> trg_obj_label_doublemuon;
+    std::vector<std::string> trg_obj_label_singleelectron;
+    std::vector<std::string> trg_obj_label_singlemuon;
+    std::vector<std::string> trg_obj_label_emucross;
+    std::vector<std::string> trg_obj_label_etaucross;
+    std::vector<std::string> trg_obj_label_mutaucross;
 
-      for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
-        std::string name = triggerPathPtrVec[i]->name();
+    std::vector<std::string> leg_doubletau_1;
+    std::vector<std::string> leg_doubletau_2;
+    std::vector<std::string> leg_doubleelectron_1;
+    std::vector<std::string> leg_doubleelectron_2;
+    std::vector<std::string> leg_doublemuon_1;
+    std::vector<std::string> leg_doublemuon_2;
+    std::vector<std::string> leg_singleelectron;
+    std::vector<std::string> leg_singlemuon;
+    std::vector<std::string> leg_emucross_1;
+    std::vector<std::string> leg_emucross_2;
+    std::vector<std::string> leg_emucross_dZ;
+    std::vector<std::string> leg_etaucross_1;
+    std::vector<std::string> leg_etaucross_2;
+    std::vector<std::string> leg_etaucross_overlap;
+    std::vector<std::string> leg_mutaucross_1;
+    std::vector<std::string> leg_mutaucross_2;
+    std::vector<std::string> leg_mutaucross_overlap;
 
-        if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt){
-          if (run >= 250985 && run <= 284044 && (name.find("HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true; // 2016
-          if (run >= 294927 && run < 314472 && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos)) path_found=true; // 2017
-          // only added vbf tau trg for 2018 here
-          if (run >= 314472 && run < 317509 && (name.find("HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v") != name.npos || name.find("HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_VBF_DoubleLooseChargedIsoPFTau20_Trk1_eta2p1_v") != name.npos)) path_found=true; // 2018 no HPS
-          if (run >= 317509 /*&& run < xxxxx*/ && (name.find("HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v") != name.npos || name.find("HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_v") != name.npos )) path_found=true; //2018 HPS
+    //doubletau
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      trg_obj_label_doubletau = {"triggerObjectsDoubleMediumTau35","triggerObjectsDoubleMediumCombinedIsoTau35Reg"};
+      leg_doubletau_1 = {"hltDoublePFTau35TrackPt1MediumIsolationDz02Reg","hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg"};
+      leg_doubletau_2 = {"hltDoublePFTau35TrackPt1MediumIsolationDz02Reg","hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg"};
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_doubletau = {"triggerObjectsDoubleTightIsoTau35","triggerObjectsDoubleMediumIsoTau40"};
+      leg_doubletau_1 = {"hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg","hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg"};
+      leg_doubletau_2 = {"hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg","hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg"};
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      if(is_data_) {
+        if(run >= 314472 && run < 317509){ // pre HPS
+          trg_obj_label_doubletau = {"triggerObjectsDoubleTightIsoTau35","triggerObjectsDoubleMediumIsoTau40"};
+          leg_doubletau_1 = {"hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg","hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg"};
+          leg_doubletau_2 = {"hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg","hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg"};
+        } else if (run >= 317509) { // post HPS
+          trg_obj_label_doubletau = {"triggerObjectsDoubleMediumIsoTauHPS35"};
+          leg_doubletau_1 = {"hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg"};
+          leg_doubletau_2 = {"hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg"};
         }
-
-         if (path_found) break;
-      }
-      if (!path_found) return 1;
-
-      if(channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt){
-        if(run >= 271036 && run <= 284044){
-          trig_obj_label = "triggerObjectsDoubleMediumTau35";
-          leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-          leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
-            alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
-            alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-            alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-          }
-        }
-        if(run >= 294927 && run < 314472){
-          trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
-          leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_trig_obj_label = "triggerObjectsDoubleMediumIsoTau40";
-          alt_leg1_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_leg2_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
-          alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-          alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-        }
-        if(run >= 314472 && run < 317509){
-          trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
-          leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_trig_obj_label = "triggerObjectsDoubleMediumIsoTau40TightID";
-          alt_leg1_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_leg2_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
-          alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-          alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-          alt_trig_obj_label_3 = "triggerObjectsVBFDoubleLooseChargedIsoPFTau20";
-          alt_leg1_filter_3 = "hltDoublePFTau20TrackLooseChargedIsoAgainstMuon";
-          alt_leg2_filter_3 = "hltDoublePFTau20TrackLooseChargedIsoAgainstMuon";
-          alt_jetleg1_filter = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleLooseChargedIsoPFTau20"; // leading 
-          //subleading from following (but contains leading as well)
-          alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleLooseChargedIsoPFTau20"; 
-        }
-        if (run >= 317509) {
-          trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35";
-          leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
-          leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
-          alt_trig_obj_label_3 = "triggerObjectsVBFDoubleLooseChargedIsoPFTauHPS20";
-          alt_leg1_filter_3 = "hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon";
-          alt_leg2_filter_3 = "hltHpsDoublePFTau20TrackLooseChargedIsoAgainstMuon";
-          alt_jetleg1_filter = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleLooseChargedIsoPFTauHPS20"; // leading 
-          //subleading from following (but contains leading as well)
-          alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleLooseChargedIsoPFTauHPS20"; 
-        }
-      }
-    } else { 
-      if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt){
-       if ((era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)){
-         trig_obj_label = "triggerObjectsDoubleMediumTau35";
-         alt_trig_obj_label = "triggerObjectsDoubleMediumCombinedIsoTau35Reg";
-         leg1_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-         leg2_filter = "hltDoublePFTau35TrackPt1MediumIsolationDz02Reg";
-         alt_leg1_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-         alt_leg2_filter = "hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg";
-      } else if((era_ == era::data_2017 || era_ == era::data_2017UL)){
-          trig_obj_label = "triggerObjectsDoubleTightIsoTau35";
-          leg1_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          leg2_filter = "hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_trig_obj_label = "triggerObjectsDoubleMediumIsoTau40";
-          alt_leg1_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_leg2_filter = "hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg";
-          alt_trig_obj_label_2 = "triggerObjectsDoubleTightIsoTau40";
-          alt_leg1_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-          alt_leg2_filter_2 = "hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg";
-      } else if ((era_ == era::data_2018 || era_ == era::data_2018UL)) {
-          trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35"; //HPS only
-          leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
-          leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
-          alt_trig_obj_label_3 = "triggerObjectsVBFDoubleMediumChargedIsoPFTauHPS20";
-          alt_leg1_filter_3 = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon";
-          alt_leg2_filter_3 = "hltHpsDoublePFTau20TrackMediumChargedIsoAgainstMuon";
-          alt_jetleg1_filter = "hltMatchedVBFOnePFJet2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; // leading 
-          //subleading from following (but contains leading as well)
-          alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleMediumChargedIsoPFTauHPS20"; 
+      } else {
+          trg_obj_label_doubletau = {"triggerObjectsDoubleMediumIsoTauHPS35"};
+          leg_doubletau_1 = {"hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg"};
+          leg_doubletau_2 = {"hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg"};
       }
     }
+
+    //doubleelectron
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      trg_obj_label_doubleelectron = {"triggerObjectsEle23Ele12DZ"};
+      leg_doubleelectron_1 = {""};
+      leg_doubleelectron_2 = {""};
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_doubleelectron = {"triggerObjectsEle24Ele12"};
+      leg_doubleelectron_1 = {""};
+      leg_doubleelectron_2 = {""};
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      trg_obj_label_doubleelectron = {"triggerObjectsEle24Ele12"};
+      leg_doubleelectron_1 = {""};
+      leg_doubleelectron_2 = {""};
+    }
+
+    //doublemuon
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      trg_obj_label_doublemuon = {"triggerObjectsMu17Mu8","triggerObjectsMu17Mu8DZ","triggerObjectsMu17TkMu8","triggerObjectsMu17TkMu8DZ","triggerObjectsTkMu17TkMu8","triggerObjectsTkMu17TkMu8DZ"};
+      leg_doublemuon_1 = {""};
+      leg_doublemuon_2 = {""};
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_doublemuon = {"trigggerObjectsMu17Mu8DZmass3p8","triggerObjectsMu17Mu8DZmass8"};
+      leg_doublemuon_1 = {""};
+      leg_doublemuon_2 = {""};
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      trg_obj_label_doublemuon = {"triggerObjectsDoubleMu178"};
+      leg_doublemuon_1 = {""};
+      leg_doublemuon_2 = {""};
+    }
+
+    //singleelectron
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      trg_obj_label_singleelectron = {"triggerObjectsEle25GsfTightEta2p1"};
+      leg_singleelectron = {"hltEle25erWPTightGsfTrackIsoFilter"};
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_singleelectron = {"triggerObjectsEle32L1DoubleEG","HLT_Ele35_WPTight_Gsf_v","HLT_Ele27_WPTight_Gsf_v"};
+      leg_singleelectron = {"triggerObjectsEle32L1DoubleEG","triggerObjectsEle35","triggerObjectsEle27"};
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      trg_obj_label_singleelectron = {"triggerObjectsEle32","triggerObjectsEle35"};
+      leg_singleelectron = {"hltEle32WPTightGsfTrackIsoFilter","hltEle35noerWPTightGsfTrackIsoFilter"};
+    }
+
+    //singlemuon
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      trg_obj_label_singlemuon = {"triggerObjectsIsoMu22","triggerObjectsIsoTkMu22","triggerObjectsIsoMu22Eta2p1","triggerObjectsIsoTkMu22Eta2p1"};
+      leg_singlemuon = {"hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09","hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09","hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09","hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09"};
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_singlemuon = {"triggerObjectsIsoMu24","triggerObjectsIsoMu27"};
+      leg_singlemuon = {"hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07","hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07"};
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      trg_obj_label_singlemuon = {"triggerObjectsIsoMu24","triggerObjectsIsoMu27"};
+      leg_singlemuon = {"hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07","hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07"};
+    }
+
+    //etaucross
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      if(is_data_) {
+        if(run < 276215) { 
+          trg_obj_label_etaucross = {"triggerObjectsEle24LooseTau20SingleL1"};
+          leg_etaucross_1 = {"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"};
+          leg_etaucross_2 = {"hltPFTau20TrackLooseIso"};
+          leg_etaucross_overlap = {"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20"};
+        } else if (run >= 276215 && run < 278270) {
+          trg_obj_label_etaucross = {"triggerObjectsEle24LooseTau20"};
+          leg_etaucross_1 = {"hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter"};
+          leg_etaucross_2 = {"hltPFTau20TrackLooseIso"};
+          leg_etaucross_overlap = {"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20"};
+        } else if (run >= 278270) {
+          trg_obj_label_etaucross = {""}; // currently missing
+          leg_etaucross_1 = {""};
+          leg_etaucross_2 = {""};
+          leg_etaucross_overlap = {""};
+        }
+      } else {
+        trg_obj_label_etaucross = {"triggerObjectsEle24LooseTau20SingleL1"};
+        leg_etaucross_1 = {"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"};
+        leg_etaucross_2 = {"hltPFTau20TrackLooseIso"};
+        leg_etaucross_overlap = {"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20"};
+      }
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_etaucross = {"triggerObjectsEle24Tau30"};
+      leg_etaucross_1 = {"hltSelectedPFTau30LooseChargedIsolationL1HLTMatched"};
+      leg_etaucross_2 = {"hltEle24erWPTightGsfTrackIsoFilterForTau"};
+      leg_etaucross_overlap = {"hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30"};
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      trg_obj_label_etaucross = {"triggerObjectsEle24TauHPS30"};
+      leg_etaucross_1 = {"hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched"};
+      leg_etaucross_2 = {"hltEle24erWPTightGsfTrackIsoFilterForTau"};
+      leg_etaucross_overlap = {"hltHpsOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30"};
+    }
+
+    //mutaucross
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
+      trg_obj_label_mutaucross = {"triggerObjectsIsoMu19LooseTau20SingleL1"};
+      leg_mutaucross_1 = {"hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09"};
+      leg_mutaucross_2 = {"hltPFTau20TrackLooseIsoAgainstMuon"};
+      leg_mutaucross_overlap = {"hltOverlapFilterSingleIsoMu19LooseIsoPFTau20"};
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_mutaucross = {"triggerObjectsIsoMu20Tau27"};
+      leg_mutaucross_1 = {"hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched"};
+      leg_mutaucross_2 = {"hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07"};
+      leg_mutaucross_overlap = {"hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded"};
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      trg_obj_label_mutaucross = {"triggerObjectsIsoMu20TauHPS27"};
+      leg_mutaucross_1 = {"hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched","hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched"};
+      leg_mutaucross_2 = {"hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07","hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07"};
+      leg_mutaucross_overlap = {"hltHpsOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded"};
+    }
+
+    //emucross
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      trg_obj_label_emucross = {"triggerObjectsEle12Mu23","triggerObjectsEle23Mu8"};
+      leg_emucross_1 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"};
+      leg_emucross_2 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"};
+      leg_emucross_dZ = {}
+    } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
+      trg_obj_label_emucross = {"triggerObjectsMu23Ele12DZ","triggerObjectsMu8Ele23DZ"};
+      leg_emucross_1 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"};
+      leg_emucross_2 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"};
+      leg_emucross_dZ = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"}
+    } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+      trg_obj_label_emucross = {"triggerObjectsMu23Ele12DZ","triggerObjectsMu8Ele23DZ"};
+      leg_emucross_1 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"};
+      leg_emucross_2 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"};
+      leg_emucross_dZ = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"}
+    }
+
+    std::vector<CompositeCandidate *> & multileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
+    std::vector<CompositeCandidate *> multileptons_pass;
+
+    // doubletau trigger
+    for (unsigned i = 0; i < trg_obj_label_doubletau.size(); ++i) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_doubletau[i]);
+      if (channel_ == channel::tttt) {
+        passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first))
+        passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first))
+        passed_doubletau_14 =  passed_doubletau_14 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first))
+      }
+      if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt) {
+        passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first))
+        passed_doubletau_24 =  passed_doubletau_24 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first))
+      }
+      if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt ||  channel_ == channel::eett || channel_ == channel::mmtt || channel_ == channel::emtt) {
+        passed_doubletau_34 =  passed_doubletau_34 || ((IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first))
+      }
+    }
+
+    event->Add("trg_doubletau_12", passed_doubletau_12);
+    event->Add("trg_doubletau_13", passed_doubletau_13);
+    event->Add("trg_doubletau_14", passed_doubletau_14);
+    event->Add("trg_doubletau_23", passed_doubletau_23);
+    event->Add("trg_doubletau_24", passed_doubletau_24);
+    event->Add("trg_doubletau_34", passed_doubletau_34);
+
   }
-
-    std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
-    std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
-
-    std::vector<CompositeCandidate *> dileptons_pass;
-   
-   bool passed_doubletau = false;
-   bool passed_vbfdoubletau = false;
-   bool match_l1_parts = false;
-   bool jetleg1_match = false;
-   bool jetleg2_match = false;
-   if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt){
-     for(unsigned i = 0; i < dileptons.size(); ++i){
-       bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
-       bool leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), objs, leg2_filter, 0.5).first;
-       
-       if (leg1_match && leg2_match){
-         passed_doubletau = true;  
-         dileptons_pass.push_back(dileptons[i]);
-        } else if(alt_trig_obj_label!=""){
-           std::vector<TriggerObject *> alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);  
-           leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs, alt_leg1_filter, 0.5).first;
-           leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs, alt_leg2_filter, 0.5).first;
-           if (leg1_match && leg2_match){
-             passed_doubletau = true;  
-             dileptons_pass.push_back(dileptons[i]);
-          }
-        }
-        if(!passed_doubletau && alt_trig_obj_label_2!=""){
-            std::vector<TriggerObject *> alt_objs_2 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_2);
-            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs_2, alt_leg1_filter_2, 0.5).first;
-            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs_2, alt_leg2_filter_2, 0.5).first;
-            if (leg1_match && leg2_match){
-              passed_doubletau = true;  
-              dileptons_pass.push_back(dileptons[i]);
-            }
-        }
-        if(!passed_doubletau && alt_trig_obj_label_3!=""){
-            std::vector<TriggerObject *> alt_objs_3 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_3);
-            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), alt_objs_3, alt_leg1_filter_3, 0.5).first;
-            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), alt_objs_3, alt_leg2_filter_3, 0.5).first;
-            if (leg1_match && leg2_match){
-              passed_vbfdoubletau = true;  
-              dileptons_pass.push_back(dileptons[i]);
-            }
-        }
-        
-        if((era_ == era::data_2017 || era_ == era::data_2017UL)){
-          // For 2017 MC we have to match the taus to L1 iso taus with pT>32 GeV to fit with how the SFs were measured
-              
-          std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
-          std::vector<ic::L1TObject*> passed_l1_taus;
-          for(unsigned ta=0; ta<l1taus.size(); ++ta){
-            if(l1taus[ta]->isolation()!=0 && l1taus[ta]->vector().Pt() >= 32.) passed_l1_taus.push_back(l1taus[ta]);  
-          }
-          std::vector<Candidate *> match_taus;
-          match_taus.push_back(dileptons[i]->At(0));
-          match_taus.push_back(dileptons[i]->At(1));
-          match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
-          passed_doubletau = passed_doubletau && match_l1_parts;
-        }
-      }
-
-      // 2018 vbf trg jet matching after double tau trg part
-      if ((era_ == era::data_2018 || era_ == era::data_2018UL) && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
-        std::vector<TriggerObject *> alt_objs_3 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_3);  
-        std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
-        // first need to find jets with maximum mjj and cross clean from taus?
-        if (jets.size() >= 2) {
-          unsigned int i1 = 0;
-          unsigned int j1 = 0;
-          double mjj_max = 0;
-          
-          for (unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
-            for (unsigned int jjet = ijet+1; jjet < jets.size(); ++jjet){
-              double mjj_test = (jets[ijet]->vector()+jets[jjet]->vector()).M();
-
-              if (mjj_test > mjj_max){
-                mjj_max = mjj_test;
-                i1 = ijet;
-                j1 = jjet;
-              }
-            } 
-          }
-
-          // add VBF trig here, need to do jet matching
-          jetleg1_match = IsFilterMatchedWithIndex(jets[i1], alt_objs_3, alt_jetleg1_filter, 0.5).first;
-          jetleg2_match = IsFilterMatchedWithIndex(jets[j1], alt_objs_3, alt_jetleg2_filter, 0.5).first;
-          if (jetleg1_match && jetleg2_match) passed_vbfdoubletau = true;
-          else passed_vbfdoubletau = false;
-        }
-      }
-    }
-    event->Add("trg_doubletau", passed_doubletau);
-    event->Add("trg_vbfdoubletau", passed_vbfdoubletau);
-    
-    
-    dileptons = dileptons_pass;
-    if (dileptons.size() >= 1) {
-      return 0;
-    } else {
-      return 1;
-    }
-}
 
   int HTTTriggerFilter::PostAnalysis() {
     return 0;
