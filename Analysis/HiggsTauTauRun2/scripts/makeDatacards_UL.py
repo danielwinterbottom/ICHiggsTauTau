@@ -126,8 +126,8 @@ for year in years:
   BINS_test = '[0,1.0,2.0,3.0,4.0,5.0]'
 
   var = [['mt_tot', BINS],
-        ['m_vis', BINS],
-        ['n_deepbjets',BINS_test]]
+        ['m_vis', BINS]]
+#	['n_deepbjets',BINS_test]]
        # ['met',BINSlt200],
        # ['mt_1',BINSlt400],
        # ['mt_2',BINSlt200],

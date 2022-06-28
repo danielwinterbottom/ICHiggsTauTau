@@ -725,13 +725,28 @@ if(!is_data) {
 std::string scalefactor_file;
 std::string scalefactor_file_ggh;
 std::string scalefactor_file_UL;
-if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
+if(era_type == era::data_2016) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
 }
-if(era_type == era::data_2017 || era_type == era::data_2017UL) {
+if(era_type == era::data_2016UL_preVFP) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2016preVFP.root";
+}
+if(era_type == era::data_2016UL_postVFP) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2016postVFP.root";
+}
+if(era_type == era::data_2017) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
+}
+if(era_type == era::data_2017UL) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2017.root";   
 }
 if(era_type == era::data_2018) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
