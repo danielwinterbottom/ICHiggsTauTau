@@ -525,9 +525,10 @@ namespace ic {
     double mt = 2. * cand1->pt() * cand2->pt() * (1. - cos(ROOT::Math::VectorUtil::DeltaPhi(cand1->vector(), cand2->vector())));
     if (mt > 0) {
       return std::sqrt(mt);
-    } else {
-      std::cerr << "Transverse mass would be negative! Returning 0.0" << std::endl;
-    }
+    } 
+    //else {
+    //  std::cerr << "Transverse mass would be negative! Returning 0.0" << std::endl;
+    //}
     return 0.0;
   }
 

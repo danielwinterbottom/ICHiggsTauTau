@@ -73,6 +73,31 @@ namespace ic {
       outtree_->Branch("all_taus_from_bosons",   &all_taus_from_bosons_);
       outtree_->Branch("pair_number",            &pair_number_);
 
+      // trigger booleans
+      outtree_->Branch("trg_doubletau_12",      &trg_doubletau_12_);
+      outtree_->Branch("trg_doubletau_13",      &trg_doubletau_13_);
+      outtree_->Branch("trg_doubletau_14",      &trg_doubletau_14_);
+      outtree_->Branch("trg_doubletau_23",      &trg_doubletau_23_);
+      outtree_->Branch("trg_doubletau_24",      &trg_doubletau_24_);
+      outtree_->Branch("trg_doubletau_34",      &trg_doubletau_34_);
+      outtree_->Branch("trg_doubleelectron_12", &trg_doubleelectron_12_);
+      outtree_->Branch("trg_doublemuon_12",     &trg_doublemuon_12_);
+      outtree_->Branch("trg_singlemuon_1",      &trg_singlemuon_1_);
+      outtree_->Branch("trg_singlemuon_2",      &trg_singlemuon_2_);
+      outtree_->Branch("trg_singleelectron_1",  &trg_singleelectron_1_);
+      outtree_->Branch("trg_singleelectron_2",  &trg_singleelectron_2_);
+      outtree_->Branch("trg_mutaucross_12",     &trg_mutaucross_12_);
+      outtree_->Branch("trg_mutaucross_13",     &trg_mutaucross_13_);
+      outtree_->Branch("trg_mutaucross_14",     &trg_mutaucross_14_);
+      outtree_->Branch("trg_mutaucross_23",     &trg_mutaucross_23_);
+      outtree_->Branch("trg_mutaucross_24",     &trg_mutaucross_24_);
+      outtree_->Branch("trg_etaucross_12",      &trg_etaucross_12_);
+      outtree_->Branch("trg_etaucross_13",      &trg_etaucross_13_);
+      outtree_->Branch("trg_etaucross_14",      &trg_etaucross_14_);
+      outtree_->Branch("trg_etaucross_23",      &trg_etaucross_23_);
+      outtree_->Branch("trg_etaucross_24",      &trg_etaucross_24_);
+      outtree_->Branch("trg_emucross_12",       &trg_emucross_12_);
+
       // idiso weights
       outtree_->Branch("idisoweight_1", &idisoweight_1_);
       outtree_->Branch("idisoweight_2", &idisoweight_2_);
@@ -487,6 +512,32 @@ namespace ic {
     } else if ((pdgid_mother_1_ == pdgid_mother_4_) && (pdgid_mother_2_ == pdgid_mother_3_)) {
       pair_number_ = 2;
     }
+
+
+    trg_doubletau_12_ = event->Exists("trg_doubletau_12") ? event->Get<bool>("trg_doubletau_12") : false;
+    trg_doubletau_13_ = event->Exists("trg_doubletau_13") ? event->Get<bool>("trg_doubletau_13") : false;
+    trg_doubletau_14_ = event->Exists("trg_doubletau_14") ? event->Get<bool>("trg_doubletau_14") : false;
+    trg_doubletau_23_ = event->Exists("trg_doubletau_23") ? event->Get<bool>("trg_doubletau_23") : false;
+    trg_doubletau_24_ = event->Exists("trg_doubletau_24") ? event->Get<bool>("trg_doubletau_24") : false;
+    trg_doubletau_34_ = event->Exists("trg_doubletau_34") ? event->Get<bool>("trg_doubletau_34") : false;
+    trg_doubleelectron_12_ = event->Exists("trg_doubleelectron_12") ? event->Get<bool>("trg_doubleelectron_12") : false;
+    trg_doublemuon_12_ = event->Exists("trg_doublemuon_12") ? event->Get<bool>("trg_doublemuon_12") : false;
+    trg_singlemuon_1_ = event->Exists("trg_singlemuon_1") ? event->Get<bool>("trg_singlemuon_1") : false;
+    trg_singlemuon_2_ = event->Exists("trg_singlemuon_2") ? event->Get<bool>("trg_singlemuon_2") : false;
+    trg_singleelectron_1_ = event->Exists("trg_singleelectron_1") ? event->Get<bool>("trg_singleelectron_1") : false;
+    trg_singleelectron_2_ = event->Exists("trg_singleelectron_2") ? event->Get<bool>("trg_singleelectron_2") : false;
+    trg_mutaucross_12_ = event->Exists("trg_mutaucross_12") ? event->Get<bool>("trg_mutaucross_12") : false;
+    trg_mutaucross_13_ = event->Exists("trg_mutaucross_13") ? event->Get<bool>("trg_mutaucross_13") : false;
+    trg_mutaucross_14_ = event->Exists("trg_mutaucross_14") ? event->Get<bool>("trg_mutaucross_14") : false;
+    trg_mutaucross_23_ = event->Exists("trg_mutaucross_23") ? event->Get<bool>("trg_mutaucross_23") : false;
+    trg_mutaucross_24_ = event->Exists("trg_mutaucross_24") ? event->Get<bool>("trg_mutaucross_24") : false;
+    trg_etaucross_12_ = event->Exists("trg_etaucross_12") ? event->Get<bool>("trg_etaucross_12") : false;
+    trg_etaucross_13_ = event->Exists("trg_etaucross_13") ? event->Get<bool>("trg_etaucross_13") : false;
+    trg_etaucross_14_ = event->Exists("trg_etaucross_14") ? event->Get<bool>("trg_etaucross_14") : false;
+    trg_etaucross_23_ = event->Exists("trg_etaucross_23") ? event->Get<bool>("trg_etaucross_23") : false;
+    trg_etaucross_24_ = event->Exists("trg_etaucross_24") ? event->Get<bool>("trg_etaucross_24") : false;
+    trg_emucross_12_ = event->Exists("trg_emucross_12") ? event->Get<bool>("trg_emucross_12") : false;
+
 
     idisoweight_1_ = event->Exists("idisoweight_1") ? event->Get<double>("idisoweight_1") : 1.0;
     idisoweight_2_ = event->Exists("idisoweight_2") ? event->Get<double>("idisoweight_2") : 1.0;

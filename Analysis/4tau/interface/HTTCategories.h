@@ -417,6 +417,31 @@ class HTTCategories : public ModuleBase {
   int n_deepbjets_;
   int n_jets_;
 
+  bool trg_doubletau_12_;
+  bool trg_doubletau_13_;
+  bool trg_doubletau_14_;
+  bool trg_doubletau_23_;
+  bool trg_doubletau_24_;
+  bool trg_doubletau_34_;
+  bool trg_doubleelectron_12_;
+  bool trg_doublemuon_12_;
+  bool trg_singlemuon_1_;
+  bool trg_singlemuon_2_;
+  bool trg_singleelectron_1_;
+  bool trg_singleelectron_2_;
+  bool trg_mutaucross_12_;
+  bool trg_mutaucross_13_;
+  bool trg_mutaucross_14_;
+  bool trg_mutaucross_23_;
+  bool trg_mutaucross_24_;
+  bool trg_etaucross_12_;
+  bool trg_etaucross_13_;
+  bool trg_etaucross_14_;
+  bool trg_etaucross_23_;
+  bool trg_etaucross_24_;
+  bool trg_emucross_12_;
+
+
  public:
   HTTCategories(std::string const& name);
   virtual ~HTTCategories();

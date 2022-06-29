@@ -35,6 +35,9 @@ namespace ic {
 
   int HTTTriggerFilter::Execute(TreeEvent *event) {
 
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    unsigned run = eventInfo->run();
+
     bool passed_doubletau_12 = false;
     bool passed_doubletau_13 = false;
     bool passed_doubletau_14 = false;
@@ -139,8 +142,8 @@ namespace ic {
       leg_doublemuon_2 = {""};
     } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       trg_obj_label_doublemuon = {"triggerObjectsDoubleMu178"};
-      leg_doublemuon_1 = {""};
-      leg_doublemuon_2 = {""};
+      leg_doublemuon_1 = {"hltDiMuon178RelTrkIsoFiltered0p4"};
+      leg_doublemuon_2 = {"hltDiMuon178RelTrkIsoFiltered0p4"};
     }
 
     //singleelectron
@@ -227,17 +230,17 @@ namespace ic {
       trg_obj_label_emucross = {"triggerObjectsEle12Mu23","triggerObjectsEle23Mu8"};
       leg_emucross_1 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"};
       leg_emucross_2 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"};
-      leg_emucross_dZ = {}
+      leg_emucross_dZ = {};
     } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       trg_obj_label_emucross = {"triggerObjectsMu23Ele12DZ","triggerObjectsMu8Ele23DZ"};
       leg_emucross_1 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"};
       leg_emucross_2 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"};
-      leg_emucross_dZ = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"}
+      leg_emucross_dZ = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter","hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"};
     } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       trg_obj_label_emucross = {"triggerObjectsMu23Ele12DZ","triggerObjectsMu8Ele23DZ"};
       leg_emucross_1 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"};
       leg_emucross_2 = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23","hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"};
-      leg_emucross_dZ = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"}
+      leg_emucross_dZ = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter","hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"};
     }
 
     std::vector<CompositeCandidate *> & multileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
@@ -247,16 +250,94 @@ namespace ic {
     for (unsigned i = 0; i < trg_obj_label_doubletau.size(); ++i) {
       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_doubletau[i]);
       if (channel_ == channel::tttt) {
-        passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first))
-        passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first))
-        passed_doubletau_14 =  passed_doubletau_14 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first))
+        passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_14 =  passed_doubletau_14 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
       }
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt) {
-        passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first))
-        passed_doubletau_24 =  passed_doubletau_24 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first))
+        passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_24 =  passed_doubletau_24 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
       }
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt ||  channel_ == channel::eett || channel_ == channel::mmtt || channel_ == channel::emtt) {
-        passed_doubletau_34 =  passed_doubletau_34 || ((IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first))
+        passed_doubletau_34 =  passed_doubletau_34 || ((IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
+      }
+    }
+
+    //doubleelectron
+    for (unsigned i = 0; i < trg_obj_label_doubleelectron.size(); ++i) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_doubleelectron[i]);
+      if (channel_ == channel::eett) {
+        passed_doubleelectron_12 =  passed_doubleelectron_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubleelectron_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubleelectron_2[i], 0.5).first));
+      }  
+    }
+
+    //doublemuon
+    for (unsigned i = 0; i < trg_obj_label_doublemuon.size(); ++i) { 
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_doublemuon[i]);
+      if (channel_ == channel::mmtt) {
+        passed_doublemuon_12 =  passed_doublemuon_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doublemuon_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doublemuon_2[i], 0.5).first));
+      }
+    }
+
+    //singleelectron
+    for (unsigned i = 0; i < trg_obj_label_singleelectron.size(); ++i) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_singleelectron[i]);
+      if (channel_ == channel::eett || channel_ == channel::ettt || channel_ == channel::emtt) {
+        passed_singleelectron_1 =  passed_singleelectron_1 || (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_singleelectron[i], 0.5).first);
+      }
+      if (channel_ == channel::eett) {
+        passed_singleelectron_2 =  passed_singleelectron_2 || (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_singleelectron[i], 0.5).first);
+      }
+    }
+
+    //singlemuon
+    for (unsigned i = 0; i < trg_obj_label_singlemuon.size(); ++i) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_singlemuon[i]);
+      if (channel_ == channel::mmtt || channel_ == channel::mttt) {
+        passed_singlemuon_1 =  passed_singlemuon_1 || (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_singlemuon[i], 0.5).first);
+      }
+      if (channel_ == channel::mmtt || channel_ == channel::emtt) {
+        passed_singlemuon_2 =  passed_singlemuon_2 || (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_singlemuon[i], 0.5).first);
+      }
+    }
+
+    //etaucross
+    for (unsigned i = 0; i < trg_obj_label_etaucross.size(); ++i) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_etaucross[i]);
+      if (channel_ == channel::ettt) {
+        passed_etaucross_12 =  passed_etaucross_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_etaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_etaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_etaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_etaucross_overlap[i], 0.5).first));
+      }
+      if (channel_ == channel::ettt || channel_ == channel::eett || channel_ == channel::emtt) {
+        passed_etaucross_13 =  passed_etaucross_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_etaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_etaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_etaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_etaucross_overlap[i], 0.5).first));
+        passed_etaucross_14 =  passed_etaucross_14 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_etaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_etaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_etaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_etaucross_overlap[i], 0.5).first));
+      }
+      if (channel_ == channel::eett) {
+        passed_etaucross_23 =  passed_etaucross_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_etaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_etaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_etaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_etaucross_overlap[i], 0.5).first));
+        passed_etaucross_24 =  passed_etaucross_24 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_etaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_etaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_etaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_etaucross_overlap[i], 0.5).first));
+      }
+    }
+
+    //mutaucross
+    for (unsigned i = 0; i < trg_obj_label_mutaucross.size(); ++i) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_mutaucross[i]);
+      if (channel_ == channel::mttt) {
+        passed_mutaucross_12 =  passed_mutaucross_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_mutaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_mutaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_mutaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_mutaucross_overlap[i], 0.5).first));
+      }
+      if (channel_ == channel::mttt || channel_ == channel::mmtt) {
+        passed_mutaucross_13 =  passed_mutaucross_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_mutaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_mutaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_mutaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_mutaucross_overlap[i], 0.5).first));
+        passed_mutaucross_14 =  passed_mutaucross_14 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_mutaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_mutaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_mutaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_mutaucross_overlap[i], 0.5).first));
+      }
+      if (channel_ == channel::mmtt || channel_ == channel::emtt) {
+        passed_mutaucross_23 =  passed_mutaucross_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_mutaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_mutaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_mutaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_mutaucross_overlap[i], 0.5).first));
+        passed_mutaucross_24 =  passed_mutaucross_24 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_mutaucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_mutaucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_mutaucross_overlap[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_mutaucross_overlap[i], 0.5).first));
+      }
+    }
+
+    //emucross
+    for (unsigned i = 0; i < trg_obj_label_emucross.size(); ++i) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_emucross[i]);
+      if (channel_ == channel::emtt) {
+        passed_emucross_12 =  passed_emucross_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_emucross_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_emucross_2[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_emucross_dZ[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_emucross_dZ[i], 0.5).first));
       }
     }
 
@@ -266,7 +347,26 @@ namespace ic {
     event->Add("trg_doubletau_23", passed_doubletau_23);
     event->Add("trg_doubletau_24", passed_doubletau_24);
     event->Add("trg_doubletau_34", passed_doubletau_34);
+    event->Add("trg_doubleelectron_12", passed_doubleelectron_12);
+    event->Add("trg_doublemuon_12", passed_doublemuon_12);
+    event->Add("trg_singlemuon_1", passed_singlemuon_1);
+    event->Add("trg_singlemuon_2", passed_singlemuon_2);
+    event->Add("trg_singleelectron_1", passed_singleelectron_1);
+    event->Add("trg_singleelectron_2", passed_singleelectron_2);
+    event->Add("trg_mutaucross_12", passed_mutaucross_12);
+    event->Add("trg_mutaucross_13", passed_mutaucross_13);
+    event->Add("trg_mutaucross_14", passed_mutaucross_14);
+    event->Add("trg_mutaucross_23", passed_mutaucross_23);
+    event->Add("trg_mutaucross_24", passed_mutaucross_24);
+    event->Add("trg_etaucross_12", passed_etaucross_12);
+    event->Add("trg_etaucross_13", passed_etaucross_13);
+    event->Add("trg_etaucross_14", passed_etaucross_14);
+    event->Add("trg_etaucross_23", passed_etaucross_23);
+    event->Add("trg_etaucross_24", passed_etaucross_24);
+    event->Add("trg_emucross_12", passed_emucross_12);
 
+
+    return 0;
   }
 
   int HTTTriggerFilter::PostAnalysis() {

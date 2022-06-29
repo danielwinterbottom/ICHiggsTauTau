@@ -412,19 +412,19 @@ HTTFourTauSelector httFourTauSelector = HTTFourTauSelector("HTTFourTauSelector")
 BuildModule(httFourTauSelector);
 
 // TO DO: Update for 4tau UL
-//BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-//    .set_channel(channel)
-//    .set_mc(mc_type)
-//    .set_era(era_type)
-//    .set_strategy(strategy_type)
-//    .set_is_data(is_data)
-//    .set_pair_label("4tau"));
+BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+    .set_channel(channel)
+    .set_mc(mc_type)
+    .set_era(era_type)
+    .set_strategy(strategy_type)
+    .set_is_data(is_data)
+    .set_pair_label("4tau"));
 
 // TO DO: Implement extra lepton vetos for leptonic decay channels
 // Lepton Vetoes
 //if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
 //if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
-//if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
+if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
 if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 
 
