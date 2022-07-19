@@ -8,17 +8,20 @@ import sys
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/vols/cms/dw515/minlo_hjj/CMSSW_9_2_8/src/gen.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/minlo_sm_lhe_v2/gen.root', parser.VarParsing.multiplicity.singleton,
-parser.VarParsing.varType.string, "input file")
+#opts.register('file', 'root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/minlo_sm_lhe_v2/gen.root', parser.VarParsing.multiplicity.singleton,
+#parser.VarParsing.varType.string, "input file")
 opts.register('output', 'EventTree.root', parser.VarParsing.multiplicity.singleton,parser.VarParsing.varType.string, "output file")
-#opts.register('file', 'root://xrootd.unl.edu//store/user/dwinterb/MG5MC/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/GluGluToHToTauTauPlusTwoJets_M125_13TeV_amcatnloFXFX_pythia8_2017-GEN/180702_190927/0001/test_gen_1412.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', '/store/user/dwinterb/ggHjj_minlo_Jun09_SM/ggHjj_minlo_Jun09_SM/ggHjj_minlo_Jun09_SM/220609_110828/0000/output_128.root', parser.VarParsing.multiplicity.singleton,
+parser.VarParsing.varType.string, "input file")
 
-opts.register('globalTag', '102X_mc2017_realistic_v7', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '106X_upgrade2018_realistic_v16_L1v1', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('LHEWeights', True, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
-opts.register('LHETag', 'source', parser.VarParsing.multiplicity.singleton,
+opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
+opts.register('tauSpinner', True, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.bool, "Compute weights using tauspinner")
 
 opts.parseArguments()
 infile      = opts.file
@@ -34,7 +37,7 @@ print 'globalTag   : '+str(tag)
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('PAT',eras.Run2_2017)
+process = cms.Process('PAT',eras.Run2_2018)
 
 # import of standard configurations
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
@@ -208,7 +211,24 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventInfoSequence = cms.Sequence(
   process.icEventInfoProducer
 )
-  
+ 
+
+################################################################
+# TauSpinner
+################################################################
+
+process.icTauSpinnerProducer = cms.EDProducer("ICTauSpinnerProducer",
+    branch                  = cms.string("tauspinner"),
+    input                   = cms.InputTag("genParticles"),
+    theta                   = cms.string("0,0.25,0.5,-0.25,0.375")
+)
+
+if opts.tauSpinner:
+    process.icTauSpinnerSequence = cms.Sequence(
+        process.icTauSpinnerProducer
+    )
+else: process.icTauSpinnerSequence = cms.Sequence()
+ 
 ################################################################
 # Event
 ################################################################
@@ -218,6 +238,7 @@ process.icEventProducer = producers.icEventProducer.clone()
 process.path = cms.Path(
     process.icVertexSequence+
     process.icGenSequence+
+    process.icTauSpinnerSequence+
     process.icEventInfoSequence+
     process.icEventProducer
 )
