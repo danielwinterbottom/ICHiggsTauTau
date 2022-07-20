@@ -60,7 +60,7 @@ namespace ic {
 
     // Remove duplicate decay products from multilepton
     for (unsigned i = 0; i < multilepton.size(); ++i) {
-      if (NoDuplicateParticle(multilepton[i])) {
+      if (NoDuplicateParticle(multilepton[i],0.3)) {
         if (TotalZeroChargeFourParticles(multilepton[i])) zero_charge.push_back(multilepton[i]);
         if (TotalNonZeroChargeFourParticles(multilepton[i])) non_zero_charge.push_back(multilepton[i]);
         all_multilepton.push_back(multilepton[i]);

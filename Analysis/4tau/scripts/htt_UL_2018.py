@@ -217,14 +217,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             if 'mttt' in chn:
                 data_samples+=['SingleMuon'+era]
             if 'mmtt' in chn:
-                data_samples+=['DoubleMuon'+era]
+                data_samples+=['SingleMuon'+era, 'DoubleMuon'+era]
             if 'ettt' in chn or 'eett' in chn:
                 data_samples+=['EGamma'+era]
             if 'emtt' in chn:
                 data_samples+=['MuonEG'+era]
             if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn:
                 data_samples+=['Tau'+era]
-
+    data_samples = list(set(data_samples))
 
     DATAFILELIST="./filelists/Apr22_2018_Data_106X"
 
@@ -295,9 +295,9 @@ if options.proc_bkg or options.proc_all:
  	  #'DY3JetsToLL_M-10to50-LO',
  	  #'DY4JetsToLL_M-10to50-LO',
 	  # Drell-Yan NLO
- 	  #'DYJetsToLL_0J-NLO',
-    #'DYJetsToLL_1J-NLO',
-	  #'DYJetsToLL_2J-NLO',
+ 	  'DYJetsToLL_0J-NLO',
+    'DYJetsToLL_1J-NLO',
+	  'DYJetsToLL_2J-NLO',
 	  # Electroweak W and Z
  	  'EWKWMinus2Jets_WToLNu',
  	  'EWKWPlus2Jets_WToLNu',
@@ -315,7 +315,7 @@ if options.proc_bkg or options.proc_all:
     #'WJetsToLNu-NLO',
 	  # ttbar
  	  'TTTo2L2Nu',
- 	  'TTToHadronic',
+	  'TTToHadronic',
  	  'TTToSemiLeptonic',
 	  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
  	  'WZTo1L1Nu2Q',

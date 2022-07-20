@@ -30,12 +30,17 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, std::string, ditau_label)
   CLASS_MEMBER(HTTWeights, bool, do_tau_id_sf)
   CLASS_MEMBER(HTTWeights, std::string, scalefactor_file)
-  CLASS_MEMBER(HTTWeights, bool, do_ditau_trg)
   CLASS_MEMBER(HTTWeights, bool, do_etau_fakerate)
   CLASS_MEMBER(HTTWeights, bool, do_mtau_fakerate)
+  CLASS_MEMBER(HTTWeights, bool, do_ditau_trg)
+  CLASS_MEMBER(HTTWeights, bool, do_etaucross_trg) 
+  CLASS_MEMBER(HTTWeights, bool, do_singlee_trg) 
+  CLASS_MEMBER(HTTWeights, bool, do_mtaucross_trg)
+  CLASS_MEMBER(HTTWeights, bool, do_singlem_trg) 
+  CLASS_MEMBER(HTTWeights, bool, do_emucross_trg)
+
   std::shared_ptr<RooWorkspace> w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
-
 
  public:
   HTTWeights(std::string const& name);

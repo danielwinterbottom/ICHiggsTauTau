@@ -101,7 +101,7 @@ namespace ic {
     } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       if(is_data_) {
         if(run >= 314472 && run < 317509){ // pre HPS
-          trg_obj_label_doubletau = {"triggerObjectsDoubleTightIsoTau35","triggerObjectsDoubleMediumIsoTau40"};
+          trg_obj_label_doubletau = {"triggerObjectsDoubleTightIsoTau35","triggerObjectsDoubleMediumIsoTau40TightID"};
           leg_doubletau_1 = {"hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg","hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg"};
           leg_doubletau_2 = {"hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg","hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg"};
         } else if (run >= 317509) { // post HPS
@@ -175,53 +175,53 @@ namespace ic {
       if(is_data_) {
         if(run < 276215) { 
           trg_obj_label_etaucross = {"triggerObjectsEle24LooseTau20SingleL1"};
-          leg_etaucross_1 = {"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"};
-          leg_etaucross_2 = {"hltPFTau20TrackLooseIso"};
+          leg_etaucross_2 = {"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"};
+          leg_etaucross_1 = {"hltPFTau20TrackLooseIso"};
           leg_etaucross_overlap = {"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20"};
         } else if (run >= 276215 && run < 278270) {
           trg_obj_label_etaucross = {"triggerObjectsEle24LooseTau20"};
-          leg_etaucross_1 = {"hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter"};
-          leg_etaucross_2 = {"hltPFTau20TrackLooseIso"};
+          leg_etaucross_2 = {"hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter"};
+          leg_etaucross_1 = {"hltPFTau20TrackLooseIso"};
           leg_etaucross_overlap = {"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20"};
         } else if (run >= 278270) {
           trg_obj_label_etaucross = {""}; // currently missing
-          leg_etaucross_1 = {""};
           leg_etaucross_2 = {""};
+          leg_etaucross_1 = {""};
           leg_etaucross_overlap = {""};
         }
       } else {
         trg_obj_label_etaucross = {"triggerObjectsEle24LooseTau20SingleL1"};
-        leg_etaucross_1 = {"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"};
-        leg_etaucross_2 = {"hltPFTau20TrackLooseIso"};
+        leg_etaucross_2 = {"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"};
+        leg_etaucross_1 = {"hltPFTau20TrackLooseIso"};
         leg_etaucross_overlap = {"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20"};
       }
     } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       trg_obj_label_etaucross = {"triggerObjectsEle24Tau30"};
-      leg_etaucross_1 = {"hltSelectedPFTau30LooseChargedIsolationL1HLTMatched"};
-      leg_etaucross_2 = {"hltEle24erWPTightGsfTrackIsoFilterForTau"};
+      leg_etaucross_2 = {"hltSelectedPFTau30LooseChargedIsolationL1HLTMatched"};
+      leg_etaucross_1 = {"hltEle24erWPTightGsfTrackIsoFilterForTau"};
       leg_etaucross_overlap = {"hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30"};
     } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       trg_obj_label_etaucross = {"triggerObjectsEle24TauHPS30"};
-      leg_etaucross_1 = {"hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched"};
-      leg_etaucross_2 = {"hltEle24erWPTightGsfTrackIsoFilterForTau"};
+      leg_etaucross_2 = {"hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched"};
+      leg_etaucross_1 = {"hltEle24erWPTightGsfTrackIsoFilterForTau"};
       leg_etaucross_overlap = {"hltHpsOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30"};
     }
 
     //mutaucross
     if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       trg_obj_label_mutaucross = {"triggerObjectsIsoMu19LooseTau20SingleL1"};
-      leg_mutaucross_1 = {"hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09"};
-      leg_mutaucross_2 = {"hltPFTau20TrackLooseIsoAgainstMuon"};
+      leg_mutaucross_2 = {"hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09"};
+      leg_mutaucross_1 = {"hltPFTau20TrackLooseIsoAgainstMuon"};
       leg_mutaucross_overlap = {"hltOverlapFilterSingleIsoMu19LooseIsoPFTau20"};
     } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       trg_obj_label_mutaucross = {"triggerObjectsIsoMu20Tau27"};
-      leg_mutaucross_1 = {"hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched"};
-      leg_mutaucross_2 = {"hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07"};
+      leg_mutaucross_2 = {"hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched"};
+      leg_mutaucross_1 = {"hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07"};
       leg_mutaucross_overlap = {"hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded"};
     } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       trg_obj_label_mutaucross = {"triggerObjectsIsoMu20TauHPS27"};
-      leg_mutaucross_1 = {"hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched","hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched"};
-      leg_mutaucross_2 = {"hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07","hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07"};
+      leg_mutaucross_2 = {"hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched","hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched"};
+      leg_mutaucross_1 = {"hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07","hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07"};
       leg_mutaucross_overlap = {"hltHpsOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded"};
     }
 
@@ -261,6 +261,7 @@ namespace ic {
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt ||  channel_ == channel::eett || channel_ == channel::mmtt || channel_ == channel::emtt) {
         passed_doubletau_34 =  passed_doubletau_34 || ((IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
       }
+      std::cout << passed_doubletau_12 << " " << passed_doubletau_13 << " " << passed_doubletau_14 << " " << passed_doubletau_23 << " " << passed_doubletau_24 << " " << passed_doubletau_34 << std::endl;
     }
 
     //doubleelectron

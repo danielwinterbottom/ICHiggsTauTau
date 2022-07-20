@@ -19,8 +19,10 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, std::string, fourtau_label)
   CLASS_MEMBER(HTTCategories, std::string, met_label)
   CLASS_MEMBER(HTTCategories, std::string, jets_label)
+  CLASS_MEMBER(HTTCategories, std::string, filename)
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
   CLASS_MEMBER(HTTCategories, ic::era, era)
+  CLASS_MEMBER(HTTCategories, bool, is_data)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
   CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
@@ -164,8 +166,47 @@ class HTTCategories : public ModuleBase {
   double trackingweight_3_;
   double trackingweight_4_;
 
-  double trigweight_tau_1_;
-  double trigweight_tau_2_;
+  double trigeff_doubletau_data_1_;
+  double trigeff_doubletau_data_2_;
+  double trigeff_doubletau_data_3_;
+  double trigeff_doubletau_data_4_;
+  double trigeff_etaucross_data_1_;
+  double trigeff_etaucross_data_2_;
+  double trigeff_etaucross_data_3_;
+  double trigeff_etaucross_data_4_;
+  double trigeff_mutaucross_data_1_;
+  double trigeff_mutaucross_data_2_;
+  double trigeff_mutaucross_data_3_;
+  double trigeff_mutaucross_data_4_;
+  double trigeff_singlee_data_1_;
+  double trigeff_singlee_data_2_;
+  double trigeff_singlem_data_1_;
+  double trigeff_singlem_data_2_;
+  double trigeff_emucross_high_data_1_;
+  double trigeff_emucross_high_data_2_;
+  double trigeff_emucross_low_data_1_;
+  double trigeff_emucross_low_data_2_;
+
+  double trigeff_doubletau_mc_1_;
+  double trigeff_doubletau_mc_2_;
+  double trigeff_doubletau_mc_3_;
+  double trigeff_doubletau_mc_4_;
+  double trigeff_etaucross_mc_1_;
+  double trigeff_etaucross_mc_2_;
+  double trigeff_etaucross_mc_3_;
+  double trigeff_etaucross_mc_4_;
+  double trigeff_mutaucross_mc_1_;
+  double trigeff_mutaucross_mc_2_;
+  double trigeff_mutaucross_mc_3_;
+  double trigeff_mutaucross_mc_4_;
+  double trigeff_singlee_mc_1_;
+  double trigeff_singlee_mc_2_;
+  double trigeff_singlem_mc_1_;
+  double trigeff_singlem_mc_2_;
+  double trigeff_emucross_high_mc_1_;
+  double trigeff_emucross_high_mc_2_;
+  double trigeff_emucross_low_mc_1_;
+  double trigeff_emucross_low_mc_2_;
 
   branch_var d0_1_;
   branch_var d0_2_;
@@ -247,6 +288,8 @@ class HTTCategories : public ModuleBase {
   branch_var mvis_min_dR_2_;
   branch_var mvis_min_sum_dR_1_;
   branch_var mvis_min_sum_dR_2_;
+  branch_var mvis_phi_;
+  branch_var mvis_A_;
   branch_var pt_tt_12_;
   branch_var pt_tt_13_;
   branch_var pt_tt_14_;
@@ -261,6 +304,8 @@ class HTTCategories : public ModuleBase {
   branch_var pt_min_dR_2_;
   branch_var pt_min_sum_dR_1_;
   branch_var pt_min_sum_dR_2_;
+  branch_var pt_phi_;
+  branch_var pt_A_;
   branch_var met_;
   branch_var st_;
 
@@ -416,6 +461,7 @@ class HTTCategories : public ModuleBase {
 
   int n_deepbjets_;
   int n_jets_;
+  int n_jetfakes_;
 
   bool trg_doubletau_12_;
   bool trg_doubletau_13_;
@@ -440,6 +486,11 @@ class HTTCategories : public ModuleBase {
   bool trg_etaucross_23_;
   bool trg_etaucross_24_;
   bool trg_emucross_12_;
+
+  bool isTau_;
+  bool isSingleElectron_;
+  bool isSingleMuon_;
+  bool isMuonEG_;
 
 
  public:

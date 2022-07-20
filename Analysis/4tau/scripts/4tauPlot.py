@@ -154,6 +154,8 @@ parser.add_argument("--bin_uncert_fraction", dest="bin_uncert_fraction", type=fl
     help="Threshold for bin auto rebin fractional uncertainty")
 parser.add_argument("--signal_scale", dest="signal_scale", type=float, default=1.0,
     help="Scale the signal by this amount")
+parser.add_argument("--do_trg_sf", dest="do_trg_sf", action='store_true',
+    help="Derive and apply trigger scale factors here.")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -185,7 +187,18 @@ VsMu_wp = options.vsmu
 VsEle_wp = options.vsele
 lepton_iso = "0.15"
 
-t_sel = "deepTauVsJets_%(VsJets_wp)s_X>0.5 && deepTauVsMu_%(VsMu_wp)s_X>0.5 && deepTauVsEle_%(VsEle_wp)s_X>0.5" % vars()
+t_sel = ""
+if VsJets_wp != "None":
+  t_sel += "deepTauVsJets_%(VsJets_wp)s_X>0.5" % vars()
+if VsMu_wp != "None":
+  if t_sel != "": t_sel += " && "
+  t_sel += "deepTauVsMu_%(VsMu_wp)s_X>0.5" % vars()
+if VsEle_wp != "None":
+  if t_sel != "": t_sel += " && "
+  t_sel += "deepTauVsEle_%(VsEle_wp)s_X>0.5" % vars()
+
+if t_sel == "": t_sel = "(1)"
+
 e_sel = "iso_X<%(lepton_iso)s" % vars()
 m_sel = "iso_X<%(lepton_iso)s" % vars()
 
@@ -195,20 +208,54 @@ if options.charges_non_zero:
 else:
 	charge_sel = "(q_1+q_2+q_3+q_4)==0"
 
-if options.channel == "tttt":
-	cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-elif options.channel == "ettt":
-	cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-elif options.channel == "mttt":
-	cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-elif options.channel == "emtt":
-	cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-elif options.channel == "mmtt":
-	cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-elif options.channel == "eett":
-	cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=e_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
 
-cats['baseline'] = "(({charge_sel}) && {current_baseline})".format(charge_sel=charge_sel,current_baseline=cats['baseline'])
+if options.channel == "tttt":
+  cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
+  cats['trigger'] = "(trg_doubletau_12 || trg_doubletau_13 || trg_doubletau_14 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
+  cats['trigger'] = "(1)"
+  cats['data_veto'] = "(1)"
+elif options.channel == "ettt":
+  cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
+  cats['trigger'] = "(trg_singleelectron_1 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
+  cats['data_veto'] = "!(isTau && (trg_singleelectron_1))"
+elif options.channel == "mttt":
+  cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
+  cats['trigger'] = "(trg_singlemuon_1 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
+  cats['data_veto'] = "!(isTau && (trg_singlemuon_1))"
+elif options.channel == "emtt":
+  cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
+  cats['trigger'] = "(trg_singleelectron_1 || trg_singlemuon_2 || trg_doubletau_34)"
+  cats['data_veto'] = "(!(isTau && (trg_singlemuon_2))) && (!(isSingleElectron && (trg_singleelectron_1 || trg_doubletau_34)))"
+elif options.channel == "mmtt":
+  cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
+  cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_doubletau_12)"
+  cats['data_veto'] = "!(isTau && (trg_singlemuon_1 || trg_singlemuon_2))"
+elif options.channel == "eett":
+  cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=e_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
+  cats['trigger'] = "(trg_singleelectron_1 || trg_singleelectron_2 || trg_doubletau_12)"
+  cats['data_veto'] = "!(isTau && (trg_singleelectron_1 || trg_singleelectron_2))"
+
+cats['baseline'] = "(({charge_sel}) && {current_baseline} && {trigger_sel})".format(charge_sel=charge_sel,current_baseline=cats['baseline'],trigger_sel=cats['trigger'])
+
+if options.do_trg_sf:
+  if options.channel == "tttt":
+    sf_string = "(1)" # string too long to do here
+  if options.channel == "ettt":
+    #sf_string = "((trigeff_singlee_data_1 + trigeff_doubletau_data_2*trigeff_doubletau_data_3 + trigeff_doubletau_data_2*trigeff_doubletau_data_4 + trigeff_doubletau_data_3*trigeff_doubletau_data_4 - (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3) - (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_4) - (trigeff_singlee_data_1*trigeff_doubletau_data_3*trigeff_doubletau_data_4) - (trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4) - (trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_3*trigeff_doubletau_data_4) - (trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4) + (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4) + (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_3*trigeff_doubletau_data_4) + (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4) + (trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4) - (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4)) / (trigeff_singlee_mc_1 + trigeff_doubletau_mc_2*trigeff_doubletau_mc_3 + trigeff_doubletau_mc_2*trigeff_doubletau_mc_4 + trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 - (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3) - (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4) - (trigeff_singlee_mc_1*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) - (trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4) - (trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) - (trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) + (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4) + (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) + (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) + (trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) - (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4)))"
+    sf_string = "(1)"
+  if options.channel == "mttt":
+    sf_string = "(1)"
+  if options.channel == "emtt":
+    sf_string = "(1)"
+  if options.channel == "eett":
+    sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlee_data_1 + trigeff_singlee_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_2) - (trigeff_singlee_data_1*trigeff_singlee_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1*trigeff_singlee_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlee_mc_1 + trigeff_singlee_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_2) - (trigeff_singlee_mc_1*trigeff_singlee_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1*trigeff_singlee_mc_2)))"
+  if options.channel == "mmtt":
+    sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlem_data_1 + trigeff_singlem_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_2) - (trigeff_singlem_data_1*trigeff_singlem_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1*trigeff_singlem_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlem_mc_1 + trigeff_singlem_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_2) - (trigeff_singlem_mc_1*trigeff_singlem_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1*trigeff_singlem_mc_2)))"
+  
+  if options.add_wt == "":
+    options.add_wt = "(" + sf_string + ")"
+  else:
+    options.add_wt = "((" + options.add_wt + ")*(" + sf_string + "))"
 
 cats['inclusive'] = '(1)' 
 cats['btag'] = '(n_bjets>=1)'
@@ -292,26 +339,28 @@ elif options.channel == 'eett':
 		data_samples = ['TauA','TauB','TauC','TauD','EGammaA','EGammaB','EGammaC','EGammaD']
 
 elif options.channel == 'mmtt':
-	if options.year == "2016-preVFP":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
-	elif options.year == "2016-postVFP":
-		data_samples = ['TauF','TauG','TauH','DoubleMuonF','DoubleMuonG','DoubleMuonH']
-	elif options.year == "2017":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
-	elif options.year == "2018":
-		data_samples = ['TauA','TauB','TauC','TauD','DoubleMuonA','DoubleMuonB','DoubleMuonC','DoubleMuonD']
+  if options.year == "2016-preVFP":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
+  elif options.year == "2016-postVFP":
+	  data_samples = ['TauF','TauG','TauH','DoubleMuonF','DoubleMuonG','DoubleMuonH']
+  elif options.year == "2017":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
+  elif options.year == "2018":
+	  #data_samples = ['TauA','TauB','TauC','TauD','DoubleMuonA','DoubleMuonB','DoubleMuonC','DoubleMuonD']
+    data_samples = ['TauA','TauB','TauC','TauD','SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
+    data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
 
 elif options.channel == 'emtt':
-	if options.year == "2016-preVFP":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
-	elif options.year == "2016-postVFP":
-		data_samples = ['TauF','TauG','TauH','MuonEGF','MuonEGG','MuonEGH']
-	elif options.year == "2016":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','TauG','TauH','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
-	elif options.year == "2017":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
-	elif options.year == "2018":
-		data_samples = ['TauA','TauB','TauC','TauD','MuonEGA','MuonEGB','MuonEGC','MuonEGD']
+  if options.year == "2016-preVFP":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
+  elif options.year == "2016-postVFP":
+	  data_samples = ['TauF','TauG','TauH','MuonEGF','MuonEGG','MuonEGH']
+  elif options.year == "2016":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','TauG','TauH','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
+  elif options.year == "2017":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
+  elif options.year == "2018":
+    data_samples = ['TauA','TauB','TauC','TauD','SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD','EGammaA','EGammaB','EGammaC','EGammaD']
 
 if options.year == "2018":
     if options.campaign == "ReReco":
@@ -365,32 +414,6 @@ summed_t_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=t_gen_matche
 summed_e_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=e_gen_matches[0],gm2=e_gen_matches[1],gm3=e_gen_matches[2],gm4=e_gen_matches[3])
 summed_m_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=m_gen_matches[0],gm2=m_gen_matches[1],gm3=m_gen_matches[2],gm4=m_gen_matches[3])
 
-#z_sels = {
-#          "ZR":"({gm1} && {gm2} && {gm3} && {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-#          "Z1F":"((!{gm1} && {gm2} && {gm3} && {gm4}) ||"\
-#                 "({gm1} && !{gm2} && {gm3} && {gm4}) ||"\
-#                 "({gm1} && {gm2} && !{gm3} && {gm4}) ||"\
-#                 "({gm1} && {gm2} && {gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-#          "Z2F":"((!{gm1} && !{gm2} && {gm3} && {gm4}) ||"\
-#                 "(!{gm1} && {gm2} && !{gm3} && {gm4}) ||"\
-#                 "(!{gm1} && {gm2} && {gm3} && !{gm4}) ||"\
-#                 "({gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
-#                 "({gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
-#                 "({gm1} && {gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-#          "Z3F":"((!{gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
-#                 "(!{gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
-#                 "(!{gm1} && {gm2} && !{gm3} && !{gm4}) ||"\
-#                 "({gm1} && !{gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-#          "Z4F":"(!{gm1} && !{gm2} && !{gm3} && !{gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-#          }
-
-z_sels = {
-          "ZR":"({sgm} == 4)".format(sgm=summed_gen_matches),
-          "Z1F":"({sgm} == 3)".format(sgm=summed_gen_matches),
-          "Z2F":"({sgm} == 2)".format(sgm=summed_gen_matches),
-          "Z3F":"({sgm} == 1)".format(sgm=summed_gen_matches),
-          "Z4F":"({sgm} == 0)".format(sgm=summed_gen_matches),
-          }
 
 z_sels = {
 				  "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
@@ -547,12 +570,13 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
 def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
     # produce template for observed data
     if do_data:
-      weight='wt'
-      if options.add_wt : weight+='*'+options.add_wt
-      full_selection = BuildCutString(wt, sel, cat_data)
+      weight='(1)'
+      sel = "((" +cats["data_veto"] + ") && (" + sel + "))"
+      #if options.add_wt : weight+='*'+options.add_wt
+      full_selection = BuildCutString(weight, sel, cat_data)
       ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
-    else:
-      if options.add_wt : wt+='*'+options.add_wt
+    #else:
+    if options.add_wt : wt+='*'+options.add_wt
      
     # produce templates for backgrounds
     if 'ZTT' not in samples_to_skip:
@@ -672,8 +696,8 @@ while len(systematics) > 0:
       else: do_data = False
               
       #Run default plot
-      do_data=False 
-      weight="(1)"
+      #do_data=False 
+      weight="wt"
       RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile)
       del systematics[systematic]
 

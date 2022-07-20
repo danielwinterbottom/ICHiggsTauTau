@@ -161,6 +161,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   }
   if (channel_str == "tttt"){
    min_taus = 4;
+   tau_pt = 35;
   }
 
 
@@ -427,13 +428,13 @@ BuildModule(HTTTriggerFilter("HTTTriggerFilter")
 if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
 if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 
-
-if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
-  BuildModule(PreselectionFilter("PreselectionFilter")
-   .set_channel(channel)
-   .set_do_preselection(true)
-   .set_dilepton_label("4tau"));
-}
+// do not need in this analysis as stats are low enough
+//if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
+//  BuildModule(PreselectionFilter("PreselectionFilter")
+//   .set_channel(channel)
+//   .set_do_preselection(true)
+//   .set_dilepton_label("4tau"));
+//}
 
 // Pileup Weighting
 TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
@@ -553,19 +554,19 @@ if(!is_data) {
 
 // TO DO: Change and rederive scale factors for UL and 4tau search
 std::string scalefactor_file;
-std::string scalefactor_file_ggh;
 if((era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP)) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
-   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
 }
 if((era_type == era::data_2017 || era_type == era::data_2017UL)) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
-   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
-if((era_type == era::data_2018 || era_type == era::data_2018UL)) {
+if(era_type == era::data_2018UL) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
-   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
+if(era_type == era::data_2018UL) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_UL_2018.root";
+}
+
 
 HTTWeights httWeights = HTTWeights("HTTWeights")   
  .set_channel(channel)
@@ -580,10 +581,14 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_do_tracking_eff(!is_data)
  .set_do_ditau_trg(!is_data)
  .set_do_etau_fakerate(!is_data)
- .set_do_mtau_fakerate(!is_data);
+ .set_do_mtau_fakerate(!is_data)
+ .set_do_etaucross_trg(!is_data)
+ .set_do_singlee_trg(!is_data)
+ .set_do_mtaucross_trg(!is_data)
+ .set_do_singlem_trg(!is_data)  
+ .set_do_emucross_trg(!is_data); 
 
 BuildModule(httWeights);
-
 
 // TO DO: Update stitching for UL samples
 if(channel!=channel::tpzee&&channel!=channel::tpzmm){
@@ -824,11 +829,13 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   }
  
   BuildModule(HTTCategories("HTTCategories")
+      .set_is_data(is_data)
       .set_met_label(shift_met_label)
       .set_jets_label(shift_jets_label)
       .set_fs(fs_vec[i].get())
       .set_channel(channel)
       .set_era(era_type)
+      .set_filename(output_name)
       .set_fourtau_label("4tau"));
 
  
@@ -1172,8 +1179,8 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->eta())              <  tau_eta    &&
                fabs(t->lead_dz_vertex())   <  tau_dz     &&
                fabs(t->charge())           == 1          &&
-               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
-               t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
+               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
+               //t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
      }));
  
   if (tau_scale_mode > 0 && !is_data){
@@ -1357,8 +1364,8 @@ void HTTSequence::BuildTauSelection(){
               fabs(t->eta())              <  tau_eta    &&
               fabs(t->lead_dz_vertex())   <  tau_dz     &&
               fabs(t->charge())           == 1          &&
-              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
-              t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
+              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
+              //t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
     }));
 
  }
@@ -1455,7 +1462,7 @@ void HTTSequence::BuildTauSelection(){
        .set_input_label("extra_elecs")
        .set_veto_name("extra_elec_veto")
        .set_min(0).set_max(js["baseline"]["max_extra_elecs"].asUInt());
-   extraElecFilter.set_no_filter(true);
+   extraElecFilter.set_no_filter(false);
    extraElecFilter.set_predicate([=](Electron const* e) {
       return  e->pt()                 > veto_elec_pt    &&
               fabs(e->eta())          < veto_elec_eta   &&
@@ -1477,7 +1484,7 @@ void HTTSequence::BuildTauSelection(){
        .set_veto_name("extra_muon_veto")
        .set_min(0).set_max(js["baseline"]["max_extra_muons"].asUInt());
    std::function<bool(Muon const*)> ExtraMuonID = [](Muon const* m) {return MuonMedium(m); };
-   extraMuonFilter.set_no_filter(true);
+   extraMuonFilter.set_no_filter(false);
    extraMuonFilter.set_predicate([=](Muon const* m) {
      return  m->pt()                 > veto_muon_pt    &&
              fabs(m->eta())          < veto_muon_eta   &&

@@ -69,32 +69,53 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
 all_ch_variables = [
-                    GetBinning('mvis_min_dphi_1',0,500,100,round=1),
-                    GetBinning('mvis_min_dphi_2',0,300,60,round=1),
-                    GetBinning('pt_min_dphi_1',0,300,60,round=1),
-                    GetBinning('pt_min_dphi_2',0,300,60,round=1),
+                    #GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
+                    #GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
+                    #GetBinning('pt_min_dphi_1',0,300,60,round=1),
+                    #GetBinning('pt_min_dphi_2',0,300,60,round=1),
                     ]
 
-ch_dep_var = {"mttt":[
-                    GetBinning('mt_1',0,300,60,round=1),
-                    ],
-              "ettt":[
-                    GetBinning('mt_1',0,300,60,round=1),
-                    ],
-              "mmtt":[
-                    GetBinning('mt_1',0,300,60,round=1),
-                    GetBinning('mt_2',0,300,60,round=1),
-                    ],
-              "eett":[
-                    GetBinning('mt_1',0,300,60,round=1),
-                    GetBinning('mt_2',0,300,60,round=1),
-                    ],
-              "tttt": [],
-              "emtt":[
-                    GetBinning('mt_1',0,300,60,round=1),
-                    GetBinning('mt_2',0,300,60,round=1),
-                    ],
+#ch_dep_var = {"mttt":[
+#                    GetBinning('mt_1',0,300,60,round=1),
+#                    ],
+#              "ettt":[
+#                    GetBinning('mt_1',0,300,60,round=1),
+#                    ],
+#              "mmtt":[
+#                    GetBinning('mt_1',0,300,60,round=1),
+#                    GetBinning('mt_2',0,300,60,round=1),
+#                    ],
+#              "eett":[
+#                    GetBinning('mt_1',0,300,60,round=1),
+#                    GetBinning('mt_2',0,300,60,round=1),
+#                    ],
+#              "tttt": [],
+#              "emtt":[
+#                    GetBinning('mt_1',0,300,60,round=1),
+#                    GetBinning('mt_2',0,300,60,round=1),
+#                    ],
+#              }
+
+ch_dep_var = {"mttt":[],
+              "ettt":[],
+              "mmtt":[],
+              "eett":[],
+              "tttt":[],
+              "emtt":[],
               }
+
+unb_ch_dep_var = {"mttt":[],
+              "ettt":[],
+              "mmtt":[
+                      GetBinning('mvis_12',0,300,60,round=1),
+                      ],
+              "eett":[
+                      GetBinning('mvis_12',0,300,60,round=1),
+                      ],
+              "tttt":[],
+              "emtt":[],
+              }
+
 
 config_files = {'2016':'scripts/plot_UL_2016.cfg',
                 '2017':'scripts/plot_UL_2017.cfg',
@@ -110,9 +131,10 @@ categories = {
               "mmtt":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
               }
 
-add_options = '--ratio_range=\'0,2\' --plot_signals=\'phi200A100To4Tau,phi200A200To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --vsjets=\'medium\' --ratio_range=0,5'
+#add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10'
+add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10 --vsjets=None --add_wt=\'1/(idisoweight_3*idisoweight_4)\''
  
-wt = "wt_dysoup*wt_wsoup*wt_mc_sign" 
+blind_options = '--blind --x_blind_min=-999 --x_blind_max=999'
 
 # Set up output directories
 
@@ -137,13 +159,16 @@ for channel in channels:
 for year in years:
   for channel in channels:
     for cat in categories[channel]:
-      variables = all_ch_variables+ch_dep_var[channel]
+      variables = all_ch_variables+ch_dep_var[channel]+unb_ch_dep_var[channel]
       for var in variables:
         if '[' in var: var_string = var.split('[')[0]
         elif '(' in var: var_string = var.split('(')[0]
+        if var in unb_ch_dep_var[channel] and "control" not in cat: continue
+        if var not in unb_ch_dep_var[channel]:
+          add_options += " " + blind_options
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()
         cfg = config_files[year]
-        run_cmd = 'python %(cmssw_base)s/scripts/4tauPlot.py --cfg=\'%(cfg)s\' --channel=\'%(channel)s\' --var=\'%(var)s\' %(add_options)s --outputfolder=\'%(output_folder)s\' --add_wt=\'%(wt)s\' --cat=\'%(cat)s\'' % vars()
+        run_cmd = 'python %(cmssw_base)s/scripts/4tauPlot.py --cfg=\'%(cfg)s\' --channel=\'%(channel)s\' --var=\'%(var)s\' %(add_options)s --outputfolder=\'%(output_folder)s\' --cat=\'%(cat)s\'' % vars()
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(year)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
         SubmitBatchJob(job_file,time=180,memory=24,cores=1)

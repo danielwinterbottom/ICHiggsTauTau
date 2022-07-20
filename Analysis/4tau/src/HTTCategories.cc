@@ -26,6 +26,8 @@ namespace ic {
       write_tree_ = true;
       met_label_ = "pfMVAMetNoLeptons";
       jets_label_ = "pfJetsPFlow";
+      filename_ = "Tau";
+      is_data_ = false;
   }
 
   HTTCategories::~HTTCategories() {
@@ -203,8 +205,47 @@ namespace ic {
       outtree_->Branch("trackingweight_4", &trackingweight_4_);
 
       // trigger weights
-      outtree_->Branch("trigweight_tau_1", &trigweight_tau_1_);
-      outtree_->Branch("trigweight_tau_2", &trigweight_tau_2_);
+      outtree_->Branch("trigeff_doubletau_data_1",     &trigeff_doubletau_data_1_);
+      outtree_->Branch("trigeff_doubletau_data_2",     &trigeff_doubletau_data_2_);
+      outtree_->Branch("trigeff_doubletau_data_3",     &trigeff_doubletau_data_3_);
+      outtree_->Branch("trigeff_doubletau_data_4",     &trigeff_doubletau_data_4_);
+      outtree_->Branch("trigeff_etaucross_data_1",     &trigeff_etaucross_data_1_);
+      outtree_->Branch("trigeff_etaucross_data_2",     &trigeff_etaucross_data_2_);
+      outtree_->Branch("trigeff_etaucross_data_3",     &trigeff_etaucross_data_3_);
+      outtree_->Branch("trigeff_etaucross_data_4",     &trigeff_etaucross_data_4_);
+      outtree_->Branch("trigeff_mutaucross_data_1",    &trigeff_mutaucross_data_1_);
+      outtree_->Branch("trigeff_mutaucross_data_2",    &trigeff_mutaucross_data_2_);
+      outtree_->Branch("trigeff_mutaucross_data_3",    &trigeff_mutaucross_data_3_);
+      outtree_->Branch("trigeff_mutaucross_data_4",    &trigeff_mutaucross_data_4_);
+      outtree_->Branch("trigeff_singlee_data_1",       &trigeff_singlee_data_1_);
+      outtree_->Branch("trigeff_singlee_data_2",       &trigeff_singlee_data_2_);
+      outtree_->Branch("trigeff_singlem_data_1",       &trigeff_singlem_data_1_);
+      outtree_->Branch("trigeff_singlem_data_2",       &trigeff_singlem_data_2_);
+      outtree_->Branch("trigeff_emucross_high_data_1", &trigeff_emucross_high_data_1_);
+      outtree_->Branch("trigeff_emucross_high_data_2", &trigeff_emucross_high_data_2_);
+      outtree_->Branch("trigeff_emucross_low_data_1",  &trigeff_emucross_low_data_1_);
+      outtree_->Branch("trigeff_emucross_low_data_2",  &trigeff_emucross_low_data_2_);
+
+      outtree_->Branch("trigeff_doubletau_mc_1",     &trigeff_doubletau_mc_1_);
+      outtree_->Branch("trigeff_doubletau_mc_2",     &trigeff_doubletau_mc_2_);
+      outtree_->Branch("trigeff_doubletau_mc_3",     &trigeff_doubletau_mc_3_);
+      outtree_->Branch("trigeff_doubletau_mc_4",     &trigeff_doubletau_mc_4_);
+      outtree_->Branch("trigeff_etaucross_mc_1",     &trigeff_etaucross_mc_1_);
+      outtree_->Branch("trigeff_etaucross_mc_2",     &trigeff_etaucross_mc_2_);
+      outtree_->Branch("trigeff_etaucross_mc_3",     &trigeff_etaucross_mc_3_);
+      outtree_->Branch("trigeff_etaucross_mc_4",     &trigeff_etaucross_mc_4_);
+      outtree_->Branch("trigeff_mutaucross_mc_1",    &trigeff_mutaucross_mc_1_);
+      outtree_->Branch("trigeff_mutaucross_mc_2",    &trigeff_mutaucross_mc_2_);
+      outtree_->Branch("trigeff_mutaucross_mc_3",    &trigeff_mutaucross_mc_3_);
+      outtree_->Branch("trigeff_mutaucross_mc_4",    &trigeff_mutaucross_mc_4_);
+      outtree_->Branch("trigeff_singlee_mc_1",       &trigeff_singlee_mc_1_);
+      outtree_->Branch("trigeff_singlee_mc_2",       &trigeff_singlee_mc_2_);
+      outtree_->Branch("trigeff_singlem_mc_1",       &trigeff_singlem_mc_1_);
+      outtree_->Branch("trigeff_singlem_mc_2",       &trigeff_singlem_mc_2_);
+      outtree_->Branch("trigeff_emucross_high_mc_1", &trigeff_emucross_high_mc_1_);
+      outtree_->Branch("trigeff_emucross_high_mc_2", &trigeff_emucross_high_mc_2_);
+      outtree_->Branch("trigeff_emucross_low_mc_1",  &trigeff_emucross_low_mc_1_);
+      outtree_->Branch("trigeff_emucross_low_mc_2",  &trigeff_emucross_low_mc_2_);
 
       // dxy and dz
       outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
@@ -289,6 +330,8 @@ namespace ic {
       outtree_->Branch("mvis_min_sum_dphi_2",  &mvis_min_sum_dphi_2_.var_double);
       outtree_->Branch("mvis_min_sum_dR_1",    &mvis_min_sum_dR_1_.var_double);
       outtree_->Branch("mvis_min_sum_dR_2",    &mvis_min_sum_dR_2_.var_double);
+      outtree_->Branch("mvis_phi",             &mvis_phi_.var_double);
+      outtree_->Branch("mvis_A",               &mvis_A_.var_double);
       outtree_->Branch("pt_min_dphi_1",        &pt_min_dphi_1_.var_double);
       outtree_->Branch("pt_min_dphi_2",        &pt_min_dphi_2_.var_double);
       outtree_->Branch("pt_min_dR_1",          &pt_min_dR_1_.var_double);
@@ -303,6 +346,8 @@ namespace ic {
       outtree_->Branch("pt_tt_23",             &pt_tt_23_.var_double);
       outtree_->Branch("pt_tt_24",             &pt_tt_24_.var_double);
       outtree_->Branch("pt_tt_34",             &pt_tt_34_.var_double);
+      outtree_->Branch("pt_phi",               &pt_phi_.var_double);
+      outtree_->Branch("pt_A",                 &pt_A_.var_double);
       outtree_->Branch("st",                   &st_.var_double);
       outtree_->Branch("met",                  &met_.var_double);
 
@@ -466,6 +511,15 @@ namespace ic {
       // jets properties
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_deepbjets_);
+
+      // data filenames
+      outtree_->Branch("isTau",              &isTau_);
+      outtree_->Branch("isSingleElectron",   &isSingleElectron_);
+      outtree_->Branch("isSingleMuon",       &isSingleMuon_);
+      outtree_->Branch("isMuonEG",           &isMuonEG_);
+
+      // other 
+      outtree_->Branch("n_jetfakes",         &n_jetfakes_);
     }
 
     return 0;
@@ -497,6 +551,16 @@ namespace ic {
     gen_match_2_ = event->Exists("gen_match_2") ? MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_2")) : 0.0;
     gen_match_3_ = event->Exists("gen_match_3") ? MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_3")) : 0.0;
     gen_match_4_ = event->Exists("gen_match_4") ? MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_4")) : 0.0;
+
+    if (channel_ == channel::tttt) {
+      n_jetfakes_ = (gen_match_1_==6) + (gen_match_2_==6) + (gen_match_3_==6) + (gen_match_4_==6);
+    }
+    if (channel_ == channel::mttt || channel_ == channel::ettt) {
+      n_jetfakes_ = (gen_match_2_==6) + (gen_match_3_==6) + (gen_match_4_==6);
+    }
+    if (channel_ == channel::mmtt || channel_ == channel::eett || channel_ == channel::emtt) {
+      n_jetfakes_ = (gen_match_3_==6) + (gen_match_4_==6);
+    }
 
     pdgid_mother_1_ = event->Exists("pdgid_mother_1") ? event->Get<int>("pdgid_mother_1") : 0;
     pdgid_mother_2_ = event->Exists("pdgid_mother_2") ? event->Get<int>("pdgid_mother_2") : 0;
@@ -639,8 +703,79 @@ namespace ic {
     trackingweight_3_ = event->Exists("trackingweight_3") ? event->Get<double>("trackingweight_3") : 1.0;
     trackingweight_4_ = event->Exists("trackingweight_4") ? event->Get<double>("trackingweight_4") : 1.0;
 
-    trigweight_tau_1_ = event->Exists("trigweight_tau_1") ? event->Get<double>("trigweight_tau_1") : 1.0;
-    trigweight_tau_2_ = event->Exists("trigweight_tau_2") ? event->Get<double>("trigweight_tau_2") : 1.0;
+    trigeff_doubletau_data_1_ = event->Exists("trigeff_t_doubletau_data_1") ? event->Get<double>("trigeff_t_doubletau_data_1") : 1.0;
+    trigeff_doubletau_data_2_ = event->Exists("trigeff_t_doubletau_data_2") ? event->Get<double>("trigeff_t_doubletau_data_2") : 1.0;
+    trigeff_doubletau_data_3_ = event->Exists("trigeff_t_doubletau_data_3") ? event->Get<double>("trigeff_t_doubletau_data_3") : 1.0;
+    trigeff_doubletau_data_4_ = event->Exists("trigeff_t_doubletau_data_4") ? event->Get<double>("trigeff_t_doubletau_data_4") : 1.0;
+
+    trigeff_etaucross_data_1_ = event->Exists("trigeff_e_etaucross_data_1") ? event->Get<double>("trigeff_e_etaucross_data_1") : 1.0;
+    if(channel_ == channel::ettt) {
+      trigeff_etaucross_data_2_ = event->Exists("trigeff_t_etaucross_data_2") ? event->Get<double>("trigeff_t_etaucross_data_2") : 1.0;
+    } else if(channel_ == channel::eett) {
+      trigeff_etaucross_data_2_ = event->Exists("trigeff_e_etaucross_data_2") ? event->Get<double>("trigeff_e_etaucross_data_2") : 1.0;
+    } else {
+      trigeff_etaucross_data_2_ = 1.0;
+    }
+    trigeff_etaucross_data_3_ = event->Exists("trigeff_t_etaucross_data_3") ? event->Get<double>("trigeff_t_etaucross_data_3") : 1.0;
+    trigeff_etaucross_data_4_ = event->Exists("trigeff_t_etaucross_data_4") ? event->Get<double>("trigeff_t_etaucross_data_4") : 1.0;
+
+    trigeff_mutaucross_data_1_ = event->Exists("trigeff_m_mutaucross_data_1") ? event->Get<double>("trigeff_m_mutaucross_data_1") : 1.0;
+    if(channel_ == channel::mttt) {
+      trigeff_mutaucross_data_2_ =  event->Exists("trigeff_t_mutaucross_data_2") ? event->Get<double>("trigeff_t_mutaucross_data_2") : 1.0;
+    } else if(channel_ == channel::mmtt || channel_ == channel::emtt) {
+      trigeff_mutaucross_data_2_ =  event->Exists("trigeff_m_mutaucross_data_2") ? event->Get<double>("trigeff_m_mutaucross_data_2") : 1.0;
+    } else {
+      trigeff_mutaucross_data_2_ = 1.0;
+    }
+    trigeff_mutaucross_data_3_ = event->Exists("trigeff_t_mutaucross_data_3") ? event->Get<double>("trigeff_t_mutaucross_data_3") : 1.0;
+    trigeff_mutaucross_data_4_ = event->Exists("trigeff_t_mutaucross_data_4") ? event->Get<double>("trigeff_t_mutaucross_data_4") : 1.0;
+
+    trigeff_singlee_data_1_ = event->Exists("trigeff_e_singlee_data_1") ? event->Get<double>("trigeff_e_singlee_data_1") : 1.0;
+    trigeff_singlee_data_2_ = event->Exists("trigeff_e_singlee_data_2") ? event->Get<double>("trigeff_e_singlee_data_2") : 1.0;
+    trigeff_singlem_data_1_ = event->Exists("trigeff_m_singlem_data_1") ? event->Get<double>("trigeff_m_singlem_data_1") : 1.0;
+    trigeff_singlem_data_2_ = event->Exists("trigeff_m_singlem_data_2") ? event->Get<double>("trigeff_m_singlem_data_2") : 1.0;
+
+    trigeff_emucross_high_data_1_ = event->Exists("trigeff_e_emucross_high_data_1") ? event->Get<double>("trigeff_e_emucross_high_data_1") : 1.0;
+    trigeff_emucross_high_data_2_ = event->Exists("trigeff_m_emucross_high_data_2") ? event->Get<double>("trigeff_m_emucross_high_data_2") : 1.0;
+    trigeff_emucross_low_data_1_ = event->Exists("trigeff_e_emucross_low_data_1") ? event->Get<double>("trigeff_e_emucross_low_data_1") : 1.0;
+    trigeff_emucross_low_data_2_ = event->Exists("trigeff_e_emucross_low_data_2") ? event->Get<double>("trigeff_e_emucross_low_data_2") : 1.0;
+
+    trigeff_doubletau_mc_1_ = event->Exists("trigeff_t_doubletau_mc_1") ? event->Get<double>("trigeff_t_doubletau_mc_1") : 1.0;
+    trigeff_doubletau_mc_2_ = event->Exists("trigeff_t_doubletau_mc_2") ? event->Get<double>("trigeff_t_doubletau_mc_2") : 1.0;
+    trigeff_doubletau_mc_3_ = event->Exists("trigeff_t_doubletau_mc_3") ? event->Get<double>("trigeff_t_doubletau_mc_3") : 1.0;
+    trigeff_doubletau_mc_4_ = event->Exists("trigeff_t_doubletau_mc_4") ? event->Get<double>("trigeff_t_doubletau_mc_4") : 1.0;
+
+    trigeff_etaucross_mc_1_ = event->Exists("trigeff_e_etaucross_mc_1") ? event->Get<double>("trigeff_e_etaucross_mc_1") : 1.0;
+    if(channel_ == channel::ettt) {
+      trigeff_etaucross_mc_2_ = event->Exists("trigeff_t_etaucross_mc_2") ? event->Get<double>("trigeff_t_etaucross_mc_2") : 1.0;
+    } else if(channel_ == channel::eett) {
+      trigeff_etaucross_mc_2_ = event->Exists("trigeff_e_etaucross_mc_2") ? event->Get<double>("trigeff_e_etaucross_mc_2") : 1.0;
+    } else {
+      trigeff_etaucross_mc_2_ = 1.0;
+    }
+    trigeff_etaucross_mc_3_ = event->Exists("trigeff_t_etaucross_mc_3") ? event->Get<double>("trigeff_t_etaucross_mc_3") : 1.0;
+    trigeff_etaucross_mc_4_ = event->Exists("trigeff_t_etaucross_mc_4") ? event->Get<double>("trigeff_t_etaucross_mc_4") : 1.0;
+
+    trigeff_mutaucross_mc_1_ = event->Exists("trigeff_m_mutaucross_mc_1") ? event->Get<double>("trigeff_m_mutaucross_mc_1") : 1.0;
+    if(channel_ == channel::mttt) {
+      trigeff_mutaucross_mc_2_ =  event->Exists("trigeff_t_mutaucross_mc_2") ? event->Get<double>("trigeff_t_mutaucross_mc_2") : 1.0;
+    } else if(channel_ == channel::mmtt || channel_ == channel::emtt) {
+      trigeff_mutaucross_mc_2_ =  event->Exists("trigeff_m_mutaucross_mc_2") ? event->Get<double>("trigeff_m_mutaucross_mc_2") : 1.0;
+    } else {
+      trigeff_mutaucross_mc_2_ = 1.0;
+    }
+    trigeff_mutaucross_mc_3_ = event->Exists("trigeff_t_mutaucross_mc_3") ? event->Get<double>("trigeff_t_mutaucross_mc_3") : 1.0;
+    trigeff_mutaucross_mc_4_ = event->Exists("trigeff_t_mutaucross_mc_4") ? event->Get<double>("trigeff_t_mutaucross_mc_4") : 1.0;
+
+    trigeff_singlee_mc_1_ = event->Exists("trigeff_e_singlee_mc_1") ? event->Get<double>("trigeff_e_singlee_mc_1") : 1.0;
+    trigeff_singlee_mc_2_ = event->Exists("trigeff_e_singlee_mc_2") ? event->Get<double>("trigeff_e_singlee_mc_2") : 1.0;
+    trigeff_singlem_mc_1_ = event->Exists("trigeff_m_singlem_mc_1") ? event->Get<double>("trigeff_m_singlem_mc_1") : 1.0;
+    trigeff_singlem_mc_2_ = event->Exists("trigeff_m_singlem_mc_2") ? event->Get<double>("trigeff_m_singlem_mc_2") : 1.0;
+
+    trigeff_emucross_high_mc_1_ = event->Exists("trigeff_e_emucross_high_mc_1") ? event->Get<double>("trigeff_e_emucross_high_mc_1") : 1.0;
+    trigeff_emucross_high_mc_2_ = event->Exists("trigeff_m_emucross_high_mc_2") ? event->Get<double>("trigeff_m_emucross_high_mc_2") : 1.0;
+    trigeff_emucross_low_mc_1_ = event->Exists("trigeff_e_emucross_low_mc_1") ? event->Get<double>("trigeff_e_emucross_low_mc_1") : 1.0;
+    trigeff_emucross_low_mc_2_ = event->Exists("trigeff_e_emucross_low_mc_2") ? event->Get<double>("trigeff_e_emucross_low_mc_2") : 1.0;
 
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
@@ -648,12 +783,12 @@ namespace ic {
     pt_4_ = lep4->pt();
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
-    eta_3_ = lep1->eta();
-    eta_4_ = lep2->eta();
+    eta_3_ = lep3->eta();
+    eta_4_ = lep4->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
-    phi_3_ = lep1->phi();
-    phi_4_ = lep2->phi();
+    phi_3_ = lep3->phi();
+    phi_4_ = lep4->phi();
     dphi_12_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector());
     dphi_13_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep3->vector());
     dphi_14_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep4->vector());
@@ -722,17 +857,63 @@ namespace ic {
 
     mvis_12_ = pair12->M();
     mvis_13_ = pair13->M();
-    mvis_14_ = pair12->M();
+    mvis_14_ = pair14->M();
     mvis_23_ = pair23->M();
     mvis_24_ = pair24->M();
     mvis_34_ = pair34->M();
 
     pt_tt_12_ = pair12->pt();
     pt_tt_13_ = pair13->pt();
-    pt_tt_14_ = pair12->pt();
+    pt_tt_14_ = pair14->pt();
     pt_tt_23_ = pair23->pt();
     pt_tt_24_ = pair24->pt();
     pt_tt_34_ = pair34->pt();
+
+    mvis_phi_ = 0.0;
+    mvis_A_ = 0.0;
+    pt_phi_ = 0.0;
+    pt_A_ = 0.0;
+  
+    if (((pdgid_mother_1_ == 25) && (pdgid_mother_2_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_2_ == 35))) {
+      mvis_phi_ = pair12->M();
+      pt_phi_ = pair12->pt();
+    } else if (((pdgid_mother_1_ == 25) && (pdgid_mother_3_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_3_ == 35))) {
+      mvis_phi_ = pair13->M();
+      pt_phi_ = pair13->pt();
+    } else if (((pdgid_mother_1_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_4_ == 35))) {
+      mvis_phi_ = pair14->M();
+      pt_phi_ = pair14->pt();
+    } else if (((pdgid_mother_2_ == 25) && (pdgid_mother_3_ == 25)) || ((pdgid_mother_2_ == 35) && (pdgid_mother_3_ == 35))) {
+      mvis_phi_ = pair23->M();
+      pt_phi_ = pair23->pt();
+    } else if (((pdgid_mother_2_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_2_ == 35) && (pdgid_mother_4_ == 35))) {
+      mvis_phi_ = pair24->M();
+      pt_phi_ = pair24->pt();
+    } else if (((pdgid_mother_3_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_3_ == 35) && (pdgid_mother_4_ == 35))) {
+      mvis_phi_ = pair34->M();
+      pt_phi_ = pair34->pt();
+    }
+
+    if ((pdgid_mother_1_ == 36) && (pdgid_mother_2_ == 36)) {
+      mvis_A_ = pair12->M();
+      pt_A_ = pair12->pt();
+    } else if ((pdgid_mother_1_ == 36) && (pdgid_mother_3_ == 36)) {
+      mvis_A_ = pair13->M();
+      pt_A_ = pair13->pt();
+    } else if ((pdgid_mother_1_ == 36) && (pdgid_mother_4_ == 36)) {
+      mvis_A_ = pair14->M();
+      pt_A_ = pair14->pt();
+    } else if ((pdgid_mother_2_ == 36) && (pdgid_mother_3_ == 36)) {
+      mvis_A_ = pair23->M();
+      pt_A_ = pair23->pt();
+    } else if ((pdgid_mother_2_ == 36) && (pdgid_mother_4_ == 36)) {
+      mvis_A_ = pair24->M();
+      pt_A_ = pair24->pt();
+    } else if ((pdgid_mother_3_ == 36) && (pdgid_mother_4_ == 36)) {
+      mvis_A_ = pair34->M();
+      pt_A_ = pair34->pt();
+    }
+
 
     // select closest tau pairs
     p_min_dphi_1_ = 1;
@@ -1551,6 +1732,25 @@ namespace ic {
 
     n_deepbjets_ = deepbjets.size();
     n_jets_ = jets.size();
+
+    isTau_ = 0;
+    isSingleElectron_ = 0;
+    isSingleMuon_ = 0;
+    isMuonEG_ = 0;
+    if (is_data_) {
+      if (filename_.find("Tau") != filename_.npos) {
+        isTau_ = true;
+      }
+      if (filename_.find("SingleElectron") != filename_.npos || filename_.find("EGamma") != filename_.npos) {
+        isSingleElectron_ = true;
+      }
+      if (filename_.find("SingleMuon") != filename_.npos) {
+        isSingleMuon_ = true;
+      }
+      if (filename_.find("MuonEG") != filename_.npos) {
+        isMuonEG_ = true;
+      }
+    }
 
     if (write_tree_ && fs_) outtree_->Fill();
     return 0;

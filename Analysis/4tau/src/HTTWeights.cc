@@ -27,7 +27,12 @@ namespace ic {
     do_tau_id_sf_               = false;
     do_ditau_trg_               = false;
     do_etau_fakerate_           = false;
+    do_etaucross_trg_           = false;
+    do_singlee_trg_             = false;
     do_mtau_fakerate_           = false;
+    do_mtaucross_trg_           = false;
+    do_singlem_trg_             = false;
+    do_emucross_trg_           = false;
     }
 HTTWeights::~HTTWeights() {
   ;
@@ -40,7 +45,7 @@ int HTTWeights::PreAnalysis() {
   std::cout << boost::format(param_fmt()) % "channel"             % Channel2String(channel_);
   std::cout << boost::format(param_fmt()) % "era"                 % Era2String(era_);
   std::cout << boost::format(param_fmt()) % "mc"                  % MC2String(mc_);
-  std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
+  std::cout << boost::format(param_fmt()) % "strategy"            % Strategy2String(strategy_);
   std::cout << boost::format(param_fmt()) % "do_trg_weights"      % do_trg_weights_;
   std::cout << boost::format(param_fmt()) % "do_tau_id_sf"        % do_tau_id_sf_;
   std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
@@ -110,6 +115,58 @@ int HTTWeights::PreAnalysis() {
         w_->function("t_id_vs_e_eta_tight")->functor(w_->argSet("t_eta")));
     fns_["t_id_vs_e_eta_vtight"] = std::shared_ptr<RooFunctor>(
         w_->function("t_id_vs_e_eta_vtight")->functor(w_->argSet("t_eta")));
+
+    // Trigger functions
+    fns_["t_doubletau_trg_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_pog_deeptau_medium_ditau_data")->functor(w_->argSet("t_pt,t_dm"))); // double tau leg data
+    fns_["t_doubletau_trg_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_pog_deeptau_medium_ditau_mc")->functor(w_->argSet("t_pt,t_dm"))); // double tau leg mc
+
+    fns_["t_mutaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_pog_deeptau_medium_mutau_data")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for mutaucross data
+    fns_["t_mutaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_pog_deeptau_medium_mutau_mc")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for mutaucross mc
+    fns_["m_mutaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("m_trg_23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // muon leg for mutaucross data
+    fns_["m_mutaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("m_trg_23_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // muon leg for mutaucross mc
+
+    fns_["t_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));  // tau leg for etaucross data
+    fns_["t_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for etaucross mc
+    fns_["e_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("e_trg_24_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));  // electron leg for etaucross data
+    fns_["e_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("e_trg_24_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // electron leg for etaucross mc
+
+    fns_["m_singlem_trg_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("m_trg_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // single muon mc
+    fns_["m_singlem_trg_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("m_trg_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // single muon data
+    fns_["e_singlee_trg_mc"] = std::shared_ptr<RooFunctor>(
+        w_->function("e_trg_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // single electron mc
+    fns_["e_singlee_trg_data"] = std::shared_ptr<RooFunctor>(
+        w_->function("e_trg_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // single electron data
+
+
+    fns_["e_high_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+       w_->function("e_trg_23_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // high electron leg for emucross mc
+    fns_["e_high_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+       w_->function("e_trg_23_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // high electron leg for emucross data
+    fns_["e_low_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+       w_->function("e_trg_12_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // low electron leg for emucross mc
+    fns_["e_low_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+       w_->function("e_trg_12_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // low electron leg for emucross data
+    fns_["m_high_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+       w_->function("m_trg_23_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // high muon leg for emucross mc
+    fns_["m_high_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+       w_->function("m_trg_23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // high muon leg for emucross data
+    fns_["m_low_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+       w_->function("m_trg_8_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // low muon leg for emucross mc
+    fns_["m_low_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+       w_->function("m_trg_8_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // low muon leg for emucross data
+
   }
       
   return 0;
@@ -119,6 +176,11 @@ int HTTWeights::Execute(TreeEvent *event) {
 
   std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
   EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
+  std::string po = Channel2String(channel_);
+  std::string e_string = "e";
+  std::string m_string = "m";
+  std::string t_string = "t";
 
 
 
@@ -151,11 +213,6 @@ int HTTWeights::Execute(TreeEvent *event) {
       double mtau_fakerate_tight = 1.0;
 
       int pn = i + 1; // define to use to get particle information
-
-      std::string po = Channel2String(channel_);
-      std::string e_string = "e";
-      std::string m_string = "m";
-      std::string t_string = "t";
 
       if ( e_string == po[i] ) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
@@ -236,12 +293,12 @@ int HTTWeights::Execute(TreeEvent *event) {
     for (int i = 0; i < 4; i = i + 1) {
       double trk_sf = 1.0;
       int pn = i + 1; // define to use to get particle information
-      if ( strcmp(&Channel2String(channel_)[i],"e") == 0 ) {
+      if ( e_string == po[i] ) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_trk_sf = std::vector<double>{elec->pt(),elec->sc_eta()};
         trk_sf *= fns_["e_trk_ratio"]->eval(args_trk_sf.data());
       }
-      if ( strcmp(&Channel2String(channel_)[i],"m") == 0 ) {
+      if ( m_string == po[i] ) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_trk_sf = std::vector<double>{muon->eta()};
         trk_sf *= fns_["m_trk_ratio"]->eval(args_trk_sf.data());
@@ -252,36 +309,64 @@ int HTTWeights::Execute(TreeEvent *event) {
     eventInfo->set_weight("wt_tracking_sf",total_trk_sf);
   }
 
-  /// TRIGGER SCALE FACTORS - SETTING UP JUST FOR DOUBLE TAU TO START WITH HIGHEST PT TAUS IN CHANNELS WITH >2 HADRONIC TAUS
+  /// TRIGGER SCALE FACTORS
   if (do_trg_weights_) {
-    if (do_ditau_trg_){
-      Tau const* tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-      Tau const* tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
-      if (channel_== channel::tttt) {
-        tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton1"));
-        tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+    for (int i = 0; i < 4; i = i + 1) {
+      int pn = i + 1; // define to use to get particle information
+      if ( e_string == po[i] ) {
+        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
+        auto args_e = std::vector<double>{elec->pt(),elec->eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
+        if (do_singlee_trg_){
+          event->Add("trigeff_e_singlee_data_"+std::to_string(pn), fns_["e_singlee_trg_data"]->eval(args_e.data()));
+          event->Add("trigeff_e_singlee_mc_"+std::to_string(pn), fns_["e_singlee_trg_mc"]->eval(args_e.data()));
+        }
+        if (do_etaucross_trg_){
+          event->Add("trigeff_e_etaucross_data_"+std::to_string(pn), fns_["e_etaucross_trg_data"]->eval(args_e.data()));
+          event->Add("trigeff_e_etaucross_mc_"+std::to_string(pn), fns_["e_etaucross_trg_mc"]->eval(args_e.data()));
+        }
+        if (do_emucross_trg_){
+          event->Add("trigeff_e_high_emucross_data_"+std::to_string(pn), fns_["e_high_emucross_trg_data"]->eval(args_e.data()));
+          event->Add("trigeff_e_high_emucross_mc_"+std::to_string(pn), fns_["e_high_emucross_trg_mc"]->eval(args_e.data()));
+          event->Add("trigeff_e_low_emucross_data_"+std::to_string(pn), fns_["e_low_emucross_trg_data"]->eval(args_e.data()));
+          event->Add("trigeff_e_low_emucross_mc_"+std::to_string(pn), fns_["e_low_emucross_trg_mc"]->eval(args_e.data()));
+        }
       }
-      if (channel_== channel::ettt || channel_== channel::mttt) {
-        tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
-        tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton3"));
+      if ( m_string == po[i] ) {
+        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
+        auto args_m = std::vector<double>{muon->pt(),muon->eta(),PF03IsolationVal(muon,0.5,0)};
+        if (do_singlem_trg_){
+          event->Add("trigeff_m_singlem_data_"+std::to_string(pn), fns_["m_singlem_trg_data"]->eval(args_m.data()));
+          event->Add("trigeff_m_singlem_mc_"+std::to_string(pn), fns_["m_singlem_trg_mc"]->eval(args_m.data()));
+        }
+        if (do_mtaucross_trg_){
+          event->Add("trigeff_m_mutaucross_data_"+std::to_string(pn), fns_["m_mutaucross_trg_data"]->eval(args_m.data()));
+          event->Add("trigeff_m_mutaucross_mc_"+std::to_string(pn), fns_["m_mutaucross_trg_mc"]->eval(args_m.data()));
+        }
+        if (do_emucross_trg_){
+          event->Add("trigeff_m_high_emucross_data_"+std::to_string(pn), fns_["m_high_emucross_trg_data"]->eval(args_m.data()));
+          event->Add("trigeff_m_high_emucross_mc_"+std::to_string(pn), fns_["m_high_emucross_trg_mc"]->eval(args_m.data()));
+          event->Add("trigeff_m_low_emucross_data_"+std::to_string(pn), fns_["m_low_emucross_trg_data"]->eval(args_m.data()));
+          event->Add("trigeff_m_low_emucross_mc_"+std::to_string(pn), fns_["m_low_emucross_trg_mc"]->eval(args_m.data()));
+        }
       }
-      if (channel_== channel::eett || channel_== channel::mmtt || channel_== channel::emtt) {
-        tau1 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton3"));
-        tau2 = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton4"));
+      if ( t_string == po[i] ) {
+        Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
+        auto args_t = std::vector<double>{tau->pt(),static_cast<double>(tau->decay_mode())};
+        if (do_ditau_trg_){
+          event->Add("trigeff_t_doubletau_data_"+std::to_string(pn), fns_["t_doubletau_trg_data"]->eval(args_t.data()));
+          event->Add("trigeff_t_doubletau_mc_"+std::to_string(pn), fns_["t_doubletau_trg_mc"]->eval(args_t.data()));
+        }
+        if (do_mtaucross_trg_){
+          event->Add("trigeff_t_mutaucross_data_"+std::to_string(pn), fns_["t_mutaucross_trg_data"]->eval(args_t.data()));
+          event->Add("trigeff_t_mutaucross_mc_"+std::to_string(pn), fns_["t_mutaucross_trg_mc"]->eval(args_t.data()));
+        }
+        if (do_etaucross_trg_){
+          event->Add("trigeff_t_etaucross_data_"+std::to_string(pn), fns_["t_etaucross_trg_data"]->eval(args_t.data()));
+          event->Add("trigeff_t_etaucross_mc_"+std::to_string(pn), fns_["t_etaucross_trg_mc"]->eval(args_t.data()));
+        }
       }
+    }
 
-      auto args_tau_1 = std::vector<double>{tau1->pt(),static_cast<double>(tau1->decay_mode())};
-      auto args_tau_2 = std::vector<double>{tau2->pt(),static_cast<double>(tau2->decay_mode())};
-
-      double tau1_trg = fns_["t_trg_35_ratio"]->eval(args_tau_1.data());
-      double tau2_trg = fns_["t_trg_35_ratio"]->eval(args_tau_2.data());
-
-      double trg_tot = (tau1_trg*tau2_trg);
-
-      event->Add("trigweight_tau_1", tau1_trg);
-      event->Add("trigweight_tau_2", tau2_trg);
-      eventInfo->set_weight("wt_trigger_sf",trg_tot);
-    } 
   }
   return 0;
 }
