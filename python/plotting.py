@@ -123,6 +123,7 @@ def SetAxisTitles(plot, channel):
   if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
+  titles['n_jetfakes'] = ['N_{jetfakes}','Events', 'dN/dN_{jetfakes}']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}']
   titles['n_btag'] = ['N_{b-tag}^{tight}','Events', 'dN/dN_{b-tag}^{tight}']
   titles['n_loose_btag'] = ['N_{b-tag}^{loose}','Events', 'dN/dN_{b-tag}^{loose}']
@@ -241,6 +242,7 @@ def SetAxisTitles2D(plot, channel):
   if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)','GeV']
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{#tau#tau} (1/GeV)','GeV']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}','']
+  titles['n_jetfakes'] = ['N_{jetfakes}','Events', 'dN/dN_{jetfakes}','']
   titles['n_bjets'] = ['N_{b-jets}','Events', 'dN/dN_{b-jets}','']
   titles['IC_lowMjj_Sep25_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
   titles['IC_highMjj_Oct05_max_score'] = ['MVA Score','Events', 'dN/d(MVA Score)','']
@@ -2184,7 +2186,8 @@ def HTTPlot(nodename,
             custom_uncerts_up_name="total_bkg_custom_uncerts_up",
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
             cat="",
-            plot_signals=[""]
+            plot_signals=[""],
+            draw_data=True
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2311,7 +2314,8 @@ def HTTPlot(nodename,
         backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
         backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69)),
+        backgroundComp("jetFakes",["jetFakes","jetFakes_mc_subtract"],R.TColor.GetColor(192,232,100))],
       'emtt': [
         backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
         backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
@@ -2324,16 +2328,15 @@ def HTTPlot(nodename,
     }
 
 
-    total_datahist = infile.Get(nodename+'/data_obs').Clone()
-    #total_datahist = infile.Get(nodename+'/ZTTR').Clone()
- 
-    blind_datahist = total_datahist.Clone()
-    total_datahist.SetMarkerStyle(20)
-    blind_datahist.SetMarkerStyle(20)
-    blind_datahist.SetLineColor(1)
+    if draw_data: 
+      total_datahist = infile.Get(nodename+'/data_obs').Clone()
+      blind_datahist = total_datahist.Clone()
+      total_datahist.SetMarkerStyle(20)
+      blind_datahist.SetMarkerStyle(20)
+      blind_datahist.SetLineColor(1)
 
     #Blinding by hand using requested range, set to 200-4000 by default:
-    if blind:
+    if blind and draw_data:
         for i in range(0,total_datahist.GetNbinsX()):
             low_edge = total_datahist.GetBinLowEdge(i+1)
             high_edge = low_edge+total_datahist.GetBinWidth(i+1)
@@ -2455,7 +2458,7 @@ def HTTPlot(nodename,
         h[i].SetMarkerSize(0)
         h_hist[i].Draw("hist same")
     
-    if norm_bins:
+    if norm_bins and draw_data:
         blind_datahist.Scale(1.0,"width")
         total_datahist.Scale(1.0,"width")
         
@@ -2485,7 +2488,7 @@ def HTTPlot(nodename,
           error_hist.SetBinError(i,error)
           
     error_hist.Draw("e2same")
-    blind_datahist.Draw("E same")
+    if draw_data: blind_datahist.Draw("E same")
     axish[0].Draw("axissame")
     
     #Setup legend
@@ -2496,7 +2499,7 @@ def HTTPlot(nodename,
     legend.SetFillColor(0)
 #    legend.SetTextAlign(13);
     #else: legend.AddEntry(blind_datahist,"Observation","PE")
-    legend.AddEntry(blind_datahist,"Observation","PE")
+    if draw_data: legend.AddEntry(blind_datahist,"Observation","PE")
     #Drawn on legend in reverse order looks better
     bkg_histos.reverse()
     background_schemes[channel].reverse()
@@ -2542,7 +2545,7 @@ def HTTPlot(nodename,
 
     if ratio:
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
-        blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
+        if draw_data: blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
         pads[1].cd()
         pads[1].SetGrid(0,1)
         axish[1].Draw("axis")
@@ -2556,12 +2559,15 @@ def HTTPlot(nodename,
             #h_ratio[i].Scale(1/signal_scale)
             h_ratio[i].Add(bkghist)
             h_ratio[i].Divide(bkghist)
+            for b in range(0,h_ratio[i].GetNbinsX()+2):
+              if h_ratio[i].GetBinContent(b) == 0 and h_ratio[i].GetBinError(b) == 0:
+                h_ratio[i].SetBinContent(b,1)
             h_ratio[i].SetLineColor(colours[i])
             h_ratio[i].SetLineWidth(2)
             h_ratio[i].Draw("hist same")
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
-        blind_ratio.DrawCopy("e0same")
+        if draw_data: blind_ratio.DrawCopy("e0same")
 
         ## lines below will show seperate lines indicating systematic up and down bands
         if do_custom_uncerts:

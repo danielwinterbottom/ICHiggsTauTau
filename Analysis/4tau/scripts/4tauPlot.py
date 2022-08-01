@@ -27,7 +27,7 @@ defaults = {
     "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "embed_folder":"",
     "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016",
     "campaign":"UL", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)",
-    "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
+    "method":1 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
     "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"",
     "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
     "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_tau_scale_3prong1pi0":"", "syst_eff_t":"", "syst_tquark":"",
@@ -49,7 +49,7 @@ defaults = {
     "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"",
     "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"", "syst_quarkmass":"",
     "syst_ps":"", "syst_ue":"", "doNLOScales":False, "gen_signal":False, "doPDF":False,
-    "doMSSMReWeighting":False, "do_unrolling":1, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"",
+    "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"",
     "syst_tau_id_dm10":"", "syst_lfake_dm0":"","syst_lfake_dm1":"","syst_qcd_shape_wsf":"",
     "syst_scale_met_unclustered":"","syst_scale_met_clustered":"",
     "extra_name":"", "no_default":False, "no_systs":False, "embedding":False,"syst_embedding_tt":"",
@@ -156,6 +156,12 @@ parser.add_argument("--signal_scale", dest="signal_scale", type=float, default=1
     help="Scale the signal by this amount")
 parser.add_argument("--do_trg_sf", dest="do_trg_sf", action='store_true',
     help="Derive and apply trigger scale factors here.")
+parser.add_argument("--method", dest="method", type=int,
+    help="Method to model backgrouns.")
+parser.add_argument("--no_data", dest="no_data", action='store_true',
+    help="Do not draw data.")
+parser.add_argument("--do_unrolling", dest="do_unrolling", action='store_true',
+    help="If argument is set to true will unroll 2D histograms into 1D histogram.")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -510,6 +516,41 @@ def GenerateW(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', w_se
       w_node = GetNode(ana, key, add_name, samples, plot, wt, "("+val+"&&"+sel+")", cat)
       ana.nodes[nodename].AddNode(w_node)
 
+def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None):
+  vj = "deepTauVsJets_" + VsJets_wp
+  if options.channel == "tttt":
+    ff_sel = cat.replace("%(vj)s_1>0.5" % vars(),"%(vj)s_1<0.5" % vars()) + sel.replace("%(vj)s_2>0.5" % vars(),"%(vj)s_2<0.5" % vars()) + sel.replace("%(vj)s_3>0.5" % vars(),"%(vj)s_3<0.5" % vars())
+    ff_wt_mc = "("+wt+")/3"
+    ff_wt_data = "1/3"
+    mc_sel = "gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6"
+  elif options.channel in ["mttt","ettt"]:
+    ff_sel = cat.replace("%(vj)s_2>0.5","%(vj)s_2<0.5" % vars()) + sel.replace("%(vj)s_3>0.5" % vars(),"%(vj)s_3<0.5" % vars())
+    ff_wt_mc = "("+wt+")/2"
+    ff_wt_data = "1/2"
+    mc_sel = "gen_match_2<6 && gen_match_3<6 && gen_match_4<6"
+  elif options.channel in ["emtt","eett","mmtt"]:
+    ff_sel = cat.replace("%(vj)s_3>0.5" % vars(), "%(vj)s_3<0.5" % vars())
+    ff_wt_mc = wt[:]
+    ff_wt_data = "1"
+    mc_sel = "gen_match_3<6 && gen_match_4<6"
+
+  if charges_non_zero:
+    ff_wt_mc = "wt_ff_raw*("+ff_wt_mc+")"
+    ff_wt_data = "wt_ff_raw*("+ff_wt_data+")"
+  else:
+    #ff_wt_mc = "wt_ff_raw*wt_ff_correction*("+ff_wt_mc+")"
+    #ff_wt_data = "wt_ff_raw*wt_ff_correction*("+ff_wt_data+")"
+    ff_wt_mc = "wt_ff_raw*("+ff_wt_mc+")"
+    ff_wt_data = "wt_ff_raw*("+ff_wt_data+")"
+
+  if data_veto == None:
+    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_wt_data, sel, ff_sel)
+  else:
+    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_wt_data, sel, "("+ff_sel+")&&("+data_veto+")")
+  ana.nodes[nodename].AddNode(ff_data)
+  ff_mc = GetNode(ana, 'jetFakes_mc_subtract', add_name, mc_samples, plot, "-"+ff_wt_mc, sel, "("+ff_sel+")&&("+mc_sel+")")
+  ana.nodes[nodename].AddNode(ff_mc)
+
 def GenerateSignal(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     for i in samples:
       signal_node = GetNode(ana, i, add_name, [i], plot, wt, sel, cat)
@@ -571,26 +612,92 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     # produce template for observed data
     if do_data:
       weight='(1)'
-      sel = "((" +cats["data_veto"] + ") && (" + sel + "))"
-      #if options.add_wt : weight+='*'+options.add_wt
-      full_selection = BuildCutString(weight, sel, cat_data)
+      data_sel = "((" +cats["data_veto"] + ") && (" + sel + "))"
+      full_selection = BuildCutString(weight, data_sel, cat_data)
       ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
     #else:
     if options.add_wt : wt+='*'+options.add_wt
      
     # produce templates for backgrounds
-    if 'ZTT' not in samples_to_skip:
-        GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
-    if 'TT' not in samples_to_skip:    
-        GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels) 
-    if 'VV' not in samples_to_skip:
-        GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
-    if 'VVV' not in samples_to_skip:
-        GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels) 
-    if 'W' not in samples_to_skip:
-        GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
-    if 'signal' not in samples_to_skip:
-        GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
+    if options.method == 1:
+      if 'ZTT' not in samples_to_skip:
+          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
+      if 'TT' not in samples_to_skip:    
+          GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels) 
+      if 'VV' not in samples_to_skip:
+          GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
+      if 'VVV' not in samples_to_skip:
+          GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels) 
+      if 'W' not in samples_to_skip:
+          GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      if 'signal' not in samples_to_skip:
+          GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
+    elif options.method == 2:
+      if 'jetFakes' not in samples_to_skip:
+        mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples
+        GenerateFakeTaus(ana, add_name, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"]) 
+ 
+      if options.channel == "tttt":
+        cat = "("+cat+")&&(gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6)"
+      elif options.channel in ["ettt","mttt"]:
+        cat = "("+cat+")&&(gen_match_2<6 && gen_match_3<6 && gen_match_4<6)"
+      elif options.channel in ["eett","mmtt","emtt"]:
+        cat = "("+cat+")&&(gen_match_3<6 && gen_match_4<6)"
+
+      if 'ZTT' not in samples_to_skip:
+          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
+      if 'TT' not in samples_to_skip:
+          GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
+      if 'VV' not in samples_to_skip:
+          GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
+      if 'VVV' not in samples_to_skip:
+          GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
+      if 'W' not in samples_to_skip:
+          GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      if 'signal' not in samples_to_skip:
+          GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
+
+def Get1DBinNumFrom2D(h2d,xbin,ybin):
+    Nxbins = h2d.GetNbinsX()
+    return (ybin-1)*Nxbins + xbin -1
+
+def Get1DBinNumFrom3D(h3d,xbin,ybin,zbin):
+    Nxbins = h3d.GetNbinsX()
+    Nybins = h3d.GetNbinsY()
+    return (zbin-1)*Nxbins*Nybins + (ybin-1)*Nxbins + xbin -1
+
+def UnrollHist2D(h2d,inc_y_of=True):
+    # inc_y_of = True includes the y over-flow bins
+    if inc_y_of: n = 1
+    else: n = 0
+    Nbins = (h2d.GetNbinsY()+n)*(h2d.GetNbinsX())
+    h1d = ROOT.TH1D(h2d.GetName(), '', Nbins, 0, Nbins)
+    for i in range(1,h2d.GetNbinsX()+1):
+      for j in range(1,h2d.GetNbinsY()+1+n):
+        glob_bin = Get1DBinNumFrom2D(h2d,i,j)
+        content = h2d.GetBinContent(i,j)
+        error = h2d.GetBinError(i,j)
+        h1d.SetBinContent(glob_bin+1,content)
+        h1d.SetBinError(glob_bin+1,error)
+    return h1d
+
+def UnrollHist3D(h3d,inc_y_of=False,inc_z_of=True):
+    if inc_y_of: ny = 1
+    else: ny = 0
+    if inc_z_of: nz = 1
+    else: nz = 0
+
+    Nbins = (h3d.GetNbinsZ()+nz)*(h3d.GetNbinsY()+ny)*(h3d.GetNbinsX())
+    h1d = ROOT.TH1D(h3d.GetName(), '', Nbins, 0, Nbins)
+    for i in range(1,h3d.GetNbinsX()+1):
+      for j in range(1,h3d.GetNbinsY()+1+ny):
+        for k in range(1,h3d.GetNbinsZ()+1+nz):
+          glob_bin = Get1DBinNumFrom3D(h3d,i,j,k)
+          content = h3d.GetBinContent(i,j,k)
+          error = h3d.GetBinError(i,j,k)
+          h1d.SetBinContent(glob_bin+1,content)
+          h1d.SetBinError(glob_bin+1,error)
+    return h1d
 
 
 # Create output file
@@ -605,6 +712,7 @@ if var_name.count(',') == 2:
     is_3d = True
     var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]+'_vs_'+var_name.split(',')[2]    
 
+
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
 if options.extra_name != "": 
@@ -612,7 +720,7 @@ if options.extra_name != "":
 else: 
   output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
-    
+  
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
 sel = options.sel
 plot = options.var
@@ -696,7 +804,7 @@ while len(systematics) > 0:
       else: do_data = False
               
       #Run default plot
-      #do_data=False 
+      do_data=(not options.no_data)
       weight="wt"
       RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile)
       del systematics[systematic]
@@ -709,10 +817,6 @@ while len(systematics) > 0:
   for n in add_names: 
     GetTotals(ana,n,outfile)
   PrintSummary(nodename, ['data_obs'], add_names)
-
-outfile.Close()
-
-plot_file = ROOT.TFile(output_name, 'READ')
 
 # do rebinning
 def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
@@ -751,7 +855,6 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
         break
       elif i == 2:
         finished = True
-    
 
   return binning  
 
@@ -770,6 +873,65 @@ def RebinHist(hist,binning):
         hout.SetBinError(i,(hout.GetBinError(i)**2+hist.GetBinError(j)**2)**0.5)
   return hout
 
+if is_2d and options.do_unrolling:
+  x_lines = []
+  y_labels = []
+  first_hist = True
+  # loop over all TH2Ds and for each one unroll to produce TH1D and add to datacard
+  directory = outfile.Get(nodename)
+  outfile.cd(nodename)
+  hists_to_add = []
+  for key in directory.GetListOfKeys():
+    hist_name = key.GetName()
+    hist = directory.Get(hist_name).Clone()
+
+    if not isinstance(hist,ROOT.TDirectory):
+      include_of = True
+      if 'dijet' in options.cat: include_of = False
+
+      if options.symmetrise: Symmetrise(hist)
+      if options.mergeXbins: MergeXBins(hist)
+
+      h1d = UnrollHist2D(hist,include_of)
+      hists_to_add.append(h1d)
+      if first_hist:
+        first_hist=False
+        Nxbins = hist.GetNbinsX()
+        for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
+        for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
+        if include_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
+  for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+
+# sm 3D unrolling
+if is_3d and options.do_unrolling:
+  x_lines = []
+  y_labels = []
+  z_labels = []
+  first_hist = True
+  # loop over all TH3Ds and for each one unroll to produce TH1D and add to datacard
+  directory = outfile.Get(nodename)
+  outfile.cd(nodename)
+  hists_to_add = []
+  for key in directory.GetListOfKeys():
+    hist_name = key.GetName()
+    hist = directory.Get(hist_name).Clone()
+    if not isinstance(hist,ROOT.TDirectory):
+      include_y_of = False
+      include_z_of = True
+      h1d = UnrollHist3D(hist,include_y_of,include_z_of)
+      hists_to_add.append(h1d)
+      if first_hist:
+        first_hist=False
+        Nxbins = hist.GetNbinsX()
+        for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
+        for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
+        if include_y_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
+        for j in range(1,hist.GetNbinsZ()+1): z_labels.append([hist.GetZaxis().GetBinLowEdge(j),hist.GetZaxis().GetBinLowEdge(j+1)])
+        if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
+  for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+
+outfile.Close()
+plot_file = ROOT.TFile(output_name, 'READ')
 
 if options.auto_rebinning:
   outfile_rebin = ROOT.TFile(output_name.replace(".root","_rebinned.root"), 'RECREATE')
@@ -794,6 +956,7 @@ if not options.no_plot:
 
     if options.datacard != "": plot_name = options.outputfolder+'/'+vname+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+vname+'_'+options.cat+'_'+options.channel+'_'+options.year
+    if options.charges_non_zero: plot_name += "_cnz"
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
     titles = plotting.SetAxisTitles(options.var,options.channel)
@@ -804,7 +967,6 @@ if not options.no_plot:
     if options.y_title == "": 
         y_title = titles[1]
     else: y_title = options.y_title
-
 
     plotting.HTTPlot(
       nodename=nodename, 
@@ -830,7 +992,8 @@ if not options.no_plot:
       lumi=options.lumi,
       plot_name=plot_name,
       cat=options.cat,
-      plot_signals=options.plot_signals.split(",")
+      plot_signals=options.plot_signals.split(","),
+      draw_data=(not options.no_data)
       )
 
 
