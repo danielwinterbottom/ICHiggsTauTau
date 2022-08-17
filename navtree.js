@@ -59,6 +59,12 @@ var NAVTREE =
       [ "Selection of events ", "higgs-to-tau-tau-run2.html#htt-event-selection-run2", null ],
       [ "Producing plots and datacards ", "higgs-to-tau-tau-run2.html#htt-datacards-run2", null ]
     ] ],
+    [ "HiggsToTauTau -UL", "higgs-to-tau-tau-UL.html", [
+      [ "CMSSW Set Up ", "#htt-cmssw-UL.html##htt-cmssw-UL", null ],
+      [ "Ntuple Production ", "higgs-to-tau-tau-UL.html#htt-ntuple-production-UL", null ],
+      [ "Selection of events ", "higgs-to-tau-tau-UL.html#htt-event-selection-UL", null ],
+      [ "Producing plots and datacards ", "higgs-to-tau-tau-UL.html#htt-datacards-UL", null ]
+    ] ],
     [ "Todo List", "todo.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Namespaces", null, [
