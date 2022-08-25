@@ -73,6 +73,26 @@ namespace ic {
       return fourVec;
     }
 
+  template <class T, class U, class V>
+    std::vector< std::tuple<T,U,V> > MakeThreeParticles(std::vector<T> const& collection1,
+                                                         std::vector<U> const& collection2,
+                                                         std::vector<V> const& collection3){
+      unsigned n = collection1.size();
+      unsigned m = collection2.size();
+      unsigned o = collection3.size();
+      std::vector< std::tuple<T,U,V> > threeVec;
+      threeVec.resize(n*m*o);
+      unsigned vecIndex = 0;
+      for (unsigned i1 = 0; i1 < n; ++i1) {
+        for (unsigned i2 = 0; i2 < m; ++i2) {
+          for (unsigned i3 = 0; i3 < o; ++i3,++vecIndex) {
+            threeVec[vecIndex] = (std::tuple<T,U,V>(collection1[i1],collection2[i2],collection3[i3])); 
+          }
+        }
+      }
+      return threeVec;
+    }
+
 
   template<class T, class U>
     std::vector< std::pair<T,U> > MatchByDR(std::vector<T> const& c1,
