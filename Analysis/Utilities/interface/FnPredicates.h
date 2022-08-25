@@ -598,8 +598,11 @@ namespace ic {
   bool PairOppSign(CompositeCandidate const* cand);
   bool PairSameSign(CompositeCandidate const* cand);
   bool TotalZeroChargeFourParticles(CompositeCandidate const* cand);
+  bool TotalZeroChargeThreeParticles(CompositeCandidate const* cand);
   bool NoDuplicateParticle(CompositeCandidate const* cand, double const& dR_sep);
+  bool NoDuplicateParticle_(CompositeCandidate const* cand, double const& dR_sep);
   bool TotalNonZeroChargeFourParticles(CompositeCandidate const* cand);
+  bool TotalNonZeroChargeThreeParticles(CompositeCandidate const* cand);
   double PairMass(CompositeCandidate const* cand);
   double PairMassDiff(CompositeCandidate const* cand, double const &mass);
 
