@@ -77,6 +77,11 @@ def SetAxisTitles(plot, channel):
     lep2_label = '#tau_{2}'
     lep3_label = '#tau_{3}'
     lep4_label = '#tau_{4}'
+  elif channel == 'ttt':
+    chan_label = '#tau#tau#tau'
+    lep1_label = '#tau_{1}'
+    lep2_label = '#tau_{2}'
+    lep3_label = '#tau_{3}'
   elif channel == 'eett':
     chan_label = 'ee#tau#tau'
     lep1_label = 'e_{1}'
@@ -2297,6 +2302,15 @@ def HTTPlot(nodename,
         backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
         backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+      'ttt': [
+        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F"],R.TColor.GetColor(107,174,214)),
+        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VVV"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
+        backgroundComp("W (other)",["WR","W1F","W2F","Wgam"],R.TColor.GetColor(106,81,163)),
+        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZMMR","ZMM1F","ZMM3F","ZEER","ZEE1F","ZEE3F","ZO"],R.TColor.GetColor(253,190,133)),
+        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
+        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
       'eett': [
         backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
         backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
@@ -2522,6 +2536,7 @@ def HTTPlot(nodename,
 
     legend.Draw("same")
     if channel == "tttt": channel_label = "#tau_{h}#tau_{h}#tau_{h}#tau_{h}"
+    if channel == "ttt": channel_label = "#tau_{h}#tau_{h}#tau_{h}"
     if channel == "mttt": channel_label = "#mu_{}#tau_{h}#tau_{h}#tau_{h}"
     if channel == "ettt": channel_label = "e_{}#tau_{h}#tau_{h}#tau_{h}"
     if channel == "mmtt": channel_label = "#mu_{}#mu_{}#tau_{h}#tau_{h}"
