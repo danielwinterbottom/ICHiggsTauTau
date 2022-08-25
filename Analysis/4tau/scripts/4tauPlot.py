@@ -11,7 +11,7 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
 import copy
 
-CHANNELS= ['tttt','ettt','mttt','tttt','eett','mmtt']
+CHANNELS= ['tttt','ettt','mttt','tttt','eett','mmtt',"ttt"]
 
 conf_parser = argparse.ArgumentParser(
     description=__doc__,
@@ -214,11 +214,17 @@ if options.charges_non_zero:
 else:
 	charge_sel = "(q_1+q_2+q_3+q_4)==0"
 
+if options.channel == 'ttt':
+   charge_sel = "(1)"
 
 if options.channel == "tttt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
   cats['trigger'] = "(trg_doubletau_12 || trg_doubletau_13 || trg_doubletau_14 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
   cats['trigger'] = "(1)"
+  cats['data_veto'] = "(1)"
+if options.channel == "ttt":
+  cats['baseline'] = "({sel_1} && {sel_2} && {sel_3})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"))
+  cats['trigger'] = "(trg_doubletau_12 || trg_doubletau_13 || trg_doubletau_23)"
   cats['data_veto'] = "(1)"
 elif options.channel == "ettt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
@@ -244,7 +250,7 @@ elif options.channel == "eett":
 cats['baseline'] = "(({charge_sel}) && {current_baseline} && {trigger_sel})".format(charge_sel=charge_sel,current_baseline=cats['baseline'],trigger_sel=cats['trigger'])
 
 if options.do_trg_sf:
-  if options.channel == "tttt":
+  if options.channel in ["tttt","ttt"]:
     sf_string = "(1)" # string too long to do here
   if options.channel == "ettt":
     #sf_string = "((trigeff_singlee_data_1 + trigeff_doubletau_data_2*trigeff_doubletau_data_3 + trigeff_doubletau_data_2*trigeff_doubletau_data_4 + trigeff_doubletau_data_3*trigeff_doubletau_data_4 - (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3) - (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_4) - (trigeff_singlee_data_1*trigeff_doubletau_data_3*trigeff_doubletau_data_4) - (trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4) - (trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_3*trigeff_doubletau_data_4) - (trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4) + (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4) + (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_3*trigeff_doubletau_data_4) + (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4) + (trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4) - (trigeff_singlee_data_1*trigeff_doubletau_data_2*trigeff_doubletau_data_3*trigeff_doubletau_data_2*trigeff_doubletau_data_4*trigeff_doubletau_data_3*trigeff_doubletau_data_4)) / (trigeff_singlee_mc_1 + trigeff_doubletau_mc_2*trigeff_doubletau_mc_3 + trigeff_doubletau_mc_2*trigeff_doubletau_mc_4 + trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 - (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3) - (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4) - (trigeff_singlee_mc_1*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) - (trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4) - (trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) - (trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) + (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4) + (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) + (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) + (trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4) - (trigeff_singlee_mc_1*trigeff_doubletau_mc_2*trigeff_doubletau_mc_3*trigeff_doubletau_mc_2*trigeff_doubletau_mc_4*trigeff_doubletau_mc_3*trigeff_doubletau_mc_4)))"
@@ -298,7 +304,7 @@ for i in options.set_alias:
 				cats[cat_to_overwrite] = overwrite_with
 		
 # Add data sample names
-if options.channel == 'tttt':
+if (options.channel == 'tttt' or options.channel == 'ttt'):
 	if options.year == "2016-preVFP":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF']
 	elif options.year == "2016-postVFP":
@@ -415,13 +421,51 @@ for in0,ch in enumerate(options.channel):
   e_gen_matches.append("(gen_match_%(ind)i==1)" % vars())
   m_gen_matches.append("(gen_match_%(ind)i==2)" % vars())
 
-summed_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3])
-summed_t_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=t_gen_matches[0],gm2=t_gen_matches[1],gm3=t_gen_matches[2],gm4=t_gen_matches[3])
-summed_e_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=e_gen_matches[0],gm2=e_gen_matches[1],gm3=e_gen_matches[2],gm4=e_gen_matches[3])
-summed_m_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=m_gen_matches[0],gm2=m_gen_matches[1],gm3=m_gen_matches[2],gm4=m_gen_matches[3])
+if options.channel == "ttt":
+   summed_gen_matches = "({gm1} + {gm2} + {gm3})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2])
+   summed_t_gen_matches = "({gm1} + {gm1} + {gm3})".format(gm1=t_gen_matches[0],gm2=t_gen_matches[1],gm3=t_gen_matches[2])
+   summed_e_gen_matches = "({gm1} + {gm2} + {gm3})".format(gm1=e_gen_matches[0],gm2=e_gen_matches[1],gm3=e_gen_matches[2])
+   summed_m_gen_matches = "({gm1} + {gm2} + {gm3})".format(gm1=m_gen_matches[0],gm2=m_gen_matches[1],gm3=m_gen_matches[2])
+
+   z_sels = {
+          "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTT1F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTT2F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTT3F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMMR" :"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMM1F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMM2F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZMM3F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEER" :"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEE1F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEE2F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZEE3F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZO"   :"((({mgm} > 0) + ({egm} > 0) + ({tgm} > 0)) > 1)".format(mgm=summed_m_gen_matches,egm=summed_e_gen_matches,tgm=summed_t_gen_matches),
+          }
+
+   top_sels = {
+          "TTR":"({gm1} && {gm2} && {gm3})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2]),
+          "TT1F":"((!{gm1} && {gm2} && {gm3} ) ||"\
+                 "({gm1} && !{gm2} && {gm3}) ||"\
+                 "({gm1} && {gm2} && !{gm3}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2]),
+          "TT2F":"((!{gm1} && !{gm2} && {gm3} ) ||"\
+                 "(!{gm1} && {gm2} && !{gm3} ) ||"\
+                 "({gm1} && !{gm2} && !{gm3}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2]),
+          "TT3F":"((!{gm1} && !{gm2} && !{gm3} ))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2]),
+          }
+   top_sels = {"TTR":top_sels["TTR"],"TT1F":top_sels["TT1F"],"TT2F":top_sels["TT2F"],"TT3F":top_sels["TT3F"]}
+   vv_sels = {"VVR":top_sels["TTR"],"VV1F":top_sels["TT1F"],"VV2F":top_sels["TT2F"],"VV3F":top_sels["TT3F"]}
+   w_sels = {"WR":top_sels["TTR"],"W1F":top_sels["TT1F"],"W2F":top_sels["TT2F"],"W3F":top_sels["TT3F"]}
+   vvv_sels = {}
+
+else:
+   summed_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3])
+   summed_t_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=t_gen_matches[0],gm2=t_gen_matches[1],gm3=t_gen_matches[2],gm4=t_gen_matches[3])
+   summed_e_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=e_gen_matches[0],gm2=e_gen_matches[1],gm3=e_gen_matches[2],gm4=e_gen_matches[3])
+   summed_m_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=m_gen_matches[0],gm2=m_gen_matches[1],gm3=m_gen_matches[2],gm4=m_gen_matches[3])
 
 
-z_sels = {
+   z_sels = {
 				  "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZTT1F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZTT2F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
@@ -441,7 +485,7 @@ z_sels = {
           }
 
 
-top_sels = {
+   top_sels = {
           "TTR":"({gm1} && {gm2} && {gm3} && {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
           "TT1F":"((!{gm1} && {gm2} && {gm3} && {gm4}) ||"\
                  "({gm1} && !{gm2} && {gm3} && {gm4}) ||"\
@@ -460,10 +504,11 @@ top_sels = {
           "TT4F":"(!{gm1} && !{gm2} && !{gm3} && !{gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
           }
 
-top_sels = {"TTR":top_sels["TTR"],"TT1F":top_sels["TT1F"],"TT2F":top_sels["TT2F"],"TT3F":top_sels["TT3F"],"TT4F":top_sels["TT4F"]}
-vv_sels = {"VVR":top_sels["TTR"],"VV1F":top_sels["TT1F"],"VV2F":top_sels["TT2F"],"VV3F":top_sels["TT3F"],"VV4F":top_sels["TT4F"]}
-w_sels = {"WR":top_sels["TTR"],"W1F":top_sels["TT1F"],"W2F":top_sels["TT2F"],"W3F":top_sels["TT3F"],"W4F":top_sels["TT4F"]}
-vvv_sels = {}
+   top_sels = {"TTR":top_sels["TTR"],"TT1F":top_sels["TT1F"],"TT2F":top_sels["TT2F"],"TT3F":top_sels["TT3F"],"TT4F":top_sels["TT4F"]}
+   vv_sels = {"VVR":top_sels["TTR"],"VV1F":top_sels["TT1F"],"VV2F":top_sels["TT2F"],"VV3F":top_sels["TT3F"],"VV4F":top_sels["TT4F"]}
+   w_sels = {"WR":top_sels["TTR"],"W1F":top_sels["TT1F"],"W2F":top_sels["TT2F"],"W3F":top_sels["TT3F"],"W4F":top_sels["TT4F"]}
+   vvv_sels = {}
+
 
 
 # All functions defined here
@@ -523,6 +568,11 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
     ff_wt_mc = "("+wt+")/3"
     ff_wt_data = "1/3"
     mc_sel = "gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6"
+  elif options.channel == "ttt":
+    ff_sel = cat.replace("%(vj)s_1>0.5" % vars(),"%(vj)s_1<0.5" % vars()) + sel.replace("%(vj)s_2>0.5" % vars(),"%(vj)s_2<0.5" % vars())
+    ff_wt_mc = "("+wt+")/3"
+    ff_wt_data = "1/3"
+    mc_sel = "gen_match_1<6 && gen_match_2<6 && gen_match_3<6"
   elif options.channel in ["mttt","ettt"]:
     ff_sel = cat.replace("%(vj)s_2>0.5","%(vj)s_2<0.5" % vars()) + sel.replace("%(vj)s_3>0.5" % vars(),"%(vj)s_3<0.5" % vars())
     ff_wt_mc = "("+wt+")/2"
@@ -639,6 +689,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
  
       if options.channel == "tttt":
         cat = "("+cat+")&&(gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6)"
+      elif options.channel == "ttt":
+        cat = "("+cat+")&&(gen_match_1<6 && gen_match_2<6 && gen_match_3<6)"
       elif options.channel in ["ettt","mttt"]:
         cat = "("+cat+")&&(gen_match_2<6 && gen_match_3<6 && gen_match_4<6)"
       elif options.channel in ["eett","mmtt","emtt"]:
@@ -753,7 +805,7 @@ while len(systematics) > 0:
       ana.remaps['DoubleEG'] = 'data_obs'
   elif options.year == '2018' and options.channel in ['eett','ettt']:
       ana.remaps['EGamma'] = 'data_obs'
-  elif options.channel == 'tttt':
+  elif options.channel in ['tttt','ttt']:
       ana.remaps['Tau'] = 'data_obs'  
       
   ana.nodes.AddNode(ListNode(nodename))
