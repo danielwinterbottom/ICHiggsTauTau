@@ -87,9 +87,9 @@ sample_list = [
 	 'DY3JetsToLL_M-10to50-LO',
 	 'DY4JetsToLL_M-10to50-LO',
 	  # Drell-Yan NLO
-#	 'DYJetsToLL_0J-NLO',
-#	 'DYJetsToLL_1J-NLO',
-#	 'DYJetsToLL_2J-NLO',
+	 'DYJetsToLL_0J-NLO',
+	 'DYJetsToLL_1J-NLO',
+	 'DYJetsToLL_2J-NLO',
 	  # Electroweak W and Z
 	 'EWKWMinus2Jets_WToLNu',
 	 'EWKWPlus2Jets_WToLNu',
@@ -162,7 +162,7 @@ sample_list = list(set(sample_list))
 out=''
 for s in sorted(sample_list): out+='    - %s\n' %s
 
-channel = ["tttt","mttt","ettt","emtt","eett","mmtt"]
+channel = ["tttt","mttt","ettt","emtt","eett","mmtt","ttt"]
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
