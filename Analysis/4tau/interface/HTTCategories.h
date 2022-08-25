@@ -208,6 +208,31 @@ class HTTCategories : public ModuleBase {
   double trigeff_emucross_low_mc_1_;
   double trigeff_emucross_low_mc_2_;
 
+  double jet_probb_1_;
+  double jet_probb_2_;
+  double jet_probb_3_;
+  double jet_probb_4_;
+  double jet_probbb_1_;
+  double jet_probbb_2_;
+  double jet_probbb_3_;
+  double jet_probbb_4_;
+  double jet_problepb_1_;
+  double jet_problepb_2_;
+  double jet_problepb_3_;
+  double jet_problepb_4_;
+  double jet_probc_1_;
+  double jet_probc_2_;
+  double jet_probc_3_;
+  double jet_probc_4_;
+  double jet_probuds_1_;
+  double jet_probuds_2_;
+  double jet_probuds_3_;
+  double jet_probuds_4_;
+  double jet_probg_1_;
+  double jet_probg_2_;
+  double jet_probg_3_;
+  double jet_probg_4_;
+
   branch_var d0_1_;
   branch_var d0_2_;
   branch_var d0_3_;
@@ -229,7 +254,10 @@ class HTTCategories : public ModuleBase {
   branch_var pt_2_;
   branch_var pt_3_;
   branch_var pt_4_;
-
+  branch_var jet_pt_1_;
+  branch_var jet_pt_2_;
+  branch_var jet_pt_3_;
+  branch_var jet_pt_4_;
   branch_var eta_1_;
   branch_var eta_2_;
   branch_var eta_3_;

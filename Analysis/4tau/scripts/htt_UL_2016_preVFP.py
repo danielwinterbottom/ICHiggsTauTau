@@ -78,8 +78,14 @@ parser.add_option("--condor", action='store_true', default=False,
 
 parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
                   help="Do JES, JER, and MET uncertainties")
+
+parser.add_option("--batch", dest="batch", action='store_true', default=False,
+                  help="Submit to imperial batch")
+
 # ----------------------------------------
 (options,args) = parser.parse_args()
+if options.batch: options.submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"'
+
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
@@ -203,20 +209,20 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       if 'mttt' in chn:
           data_samples+=['SingleMuon'+era]
       if 'mmtt' in chn:
-          data_samples+=['DoubleMuon'+era]
+          data_samples+=['SingleMuon'+era]
       if 'ettt' in chn: 
           data_samples+=['SingleElectron'+era]
       if 'eett' in chn:
-          data_samples+=['DoubleEG'+era]
+          data_samples+=['SingleElectron'+era]
       if 'emtt' in chn:
-          data_samples+=['MuonEG'+era]
+          data_samples+=['SingleElectron'+era,'SingleMuon'+era]
       if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn:
           data_samples+=['Tau'+era]
 
   DATAFILELIST="./filelists/Apr22_2016-preVFP_Data_106X"
 
   for sa in data_samples:
-      JOB='%s_2016preVFP' % (sa)
+      JOB='%s_2016_preVFP' % (sa)
       DATAFILELIST_ = DATAFILELIST
       user='guttley'
       prefix='Apr22_Data_106X_2016-preVFP'
@@ -315,7 +321,7 @@ if options.proc_bkg or options.proc_all:
   ] 
 
   for sa in central_samples:
-      JOB='%s_2016preVFP' % (sa)
+      JOB='%s_2016_preVFP' % (sa)
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
       job_num=0
       for FLATJSONPATCH in flatjsons: 

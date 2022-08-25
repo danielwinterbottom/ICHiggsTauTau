@@ -164,14 +164,14 @@ nfiles={}
 
 
 def FindMissingFiles(outf, d, samp, chan, infiles):
-  files=fnmatch.filter(infiles,'%(samp)s_2016_%(chan)s_*'%vars())
+  files=fnmatch.filter(infiles,'%(samp)s_2016_postVFP_%(chan)s_*'%vars())
   nums = [int(x.split('_')[-1].replace('.root','')) for x in files]
   nums.sort()
   res = [ele for ele in range(max(nums)+1) if ele not in nums]
 
   if len(res) !=0:
-    print "Some files are missing for sample %(samp)s_2016_%(chan)s! in %(d)s:"%vars()
-    for x in res: print '%(samp)s_2016_%(chan)s_%(x)i.root' % vars()
+    print "Some files are missing for sample %(samp)s_2016_postVFP_%(chan)s! in %(d)s:"%vars()
+    for x in res: print '%(samp)s_2016_postVFP_%(chan)s_%(x)i.root' % vars()
     return False
   else:
     return True
@@ -190,17 +190,17 @@ for sa in sample_list:
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
-      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_0.root'%vars()):
+      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2016_postVFP_%(ch)s_0.root'%vars()):
 #	print(nfiles)
-        if "%(sa)s_2016"%vars() in nfiles or ignore==True:
-#	  print("%(sa)s_2016"%vars())
-#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*.root'%vars())
+        if "%(sa)s_2016_postVFP"%vars() in nfiles or ignore==True:
+#	  print("%(sa)s_2016_postVFP"%vars())
+#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2016_postVFP_%(ch)s_*.root'%vars())
           no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles)  
-          if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2016_%(ch)s_*'%vars())) == nfiles["%(sa)s_2016"%vars()]):
+          if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2016_postVFP_%(ch)s_*'%vars())) == nfiles["%(sa)s_2016_postVFP"%vars()]):
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()
               print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
-              os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./haddout.txt'% vars()) 
+              os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_postVFP.root %(outputf)s/%(sdir)s/%(sa)s_2016_postVFP_%(ch)s_* &> ./haddout.txt'% vars()) 
               os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
               filetext = open("./haddout.txt").read()
               if 'Warning' in filetext or 'Error' in filetext:
@@ -208,13 +208,13 @@ for sa in sample_list:
                 print filetext 
                 remove=False
               else :
-                to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())
+                to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_postVFP_%(ch)s_*' %vars())
             else:
               haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
-              hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_*' %vars())) 
-              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016.root %(outputf)s/%(sdir)s/%(sa)s_2016_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
+              hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_postVFP_%(ch)s_*' %vars())) 
+              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_postVFP.root %(outputf)s/%(sdir)s/%(sa)s_2016_postVFP_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
           else :
-            print "Incorrect number of files for sample %(sa)s_2016_%(ch)s! in %(sdir)s"%vars()
+            print "Incorrect number of files for sample %(sa)s_2016_postVFP_%(ch)s! in %(sdir)s"%vars()
             remove=False
 
   if not batch and remove:

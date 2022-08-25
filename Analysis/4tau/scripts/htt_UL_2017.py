@@ -81,8 +81,14 @@ parser.add_option("--condor", action='store_true', default=False,
 
 parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
                   help="Do JES, JER, and MET uncertainties")
+
+parser.add_option("--batch", dest="batch", action='store_true', default=False,
+                  help="Submit to imperial batch")
+
 # ----------------------------------------
 (options, args) = parser.parse_args()
+if options.batch: options.submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"'
+
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
@@ -206,13 +212,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       if 'mttt' in chn:
           data_samples+=['SingleMuon'+era]
       if 'mmtt' in chn:
-          data_samples+=['DoubleMuon'+era]
+          data_samples+=['SingleMuon'+era]
       if 'ettt' in chn: 
           data_samples+=['SingleElectron'+era]
       if 'eett' in chn:
-          data_samples+=['DoubleEG'+era]
+          data_samples+=['SingleElectron'+era]
       if 'emtt' in chn:
-          data_samples+=['MuonEG'+era]
+          data_samples+=['SingleElectron'+era,'SingleMuon'+era]
       if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn:
           data_samples+=['Tau'+era]
  
@@ -224,7 +230,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   if options.calc_lumi:
     for sa in data_samples:
-        JOB='%s_2017UL' % (sa)
+        JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
@@ -239,7 +245,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   else:
     for sa in data_samples:
-        JOB='%s_2017UL' % (sa)
+        JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
@@ -336,7 +342,7 @@ if options.proc_bkg or options.proc_all:
  	# 'ttHToTauTau_M125',    
   	]
   for sa in central_samples:
-      JOB='%s_2017UL' % (sa)
+      JOB='%s_2017' % (sa)
       PREFIX='Feb16_MC_106X_2017'
 
 

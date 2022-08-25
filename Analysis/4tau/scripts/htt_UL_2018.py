@@ -302,9 +302,9 @@ if options.proc_bkg or options.proc_all:
  	  #'DY3JetsToLL_M-10to50-LO',
  	  #'DY4JetsToLL_M-10to50-LO',
 	  # Drell-Yan NLO
- 	  'DYJetsToLL_0J-NLO',
-    'DYJetsToLL_1J-NLO',
-	  'DYJetsToLL_2J-NLO',
+ 	  #'DYJetsToLL_0J-NLO',
+    #'DYJetsToLL_1J-NLO',
+	  #'DYJetsToLL_2J-NLO',
 	  # Electroweak W and Z
  	  'EWKWMinus2Jets_WToLNu',
  	  'EWKWPlus2Jets_WToLNu',

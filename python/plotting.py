@@ -2319,7 +2319,8 @@ def HTTPlot(nodename,
         backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
         backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69)),
+        backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
       'mmtt': [
         backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
         backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
@@ -2329,7 +2330,7 @@ def HTTPlot(nodename,
         backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
         backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69)),
-        backgroundComp("jetFakes",["jetFakes","jetFakes_mc_subtract"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
       'emtt': [
         backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
         backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
@@ -2506,10 +2507,11 @@ def HTTPlot(nodename,
     axish[0].Draw("axissame")
     
     #Setup legend
-    legend = PositionedLegend(0.37,0.4,3,0.03) 
-    #legend = PositionedLegend(0.37,0.37,3,0.03) # when showing plots of signal
+    #legend = PositionedLegend(0.37,0.4,3,0.03) 
+    legend = PositionedLegend(0.25,0.37,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
-    legend.SetTextSize(0.02)
+    #legend.SetTextSize(0.02)
+    legend.SetTextSize(0.018)
     legend.SetFillColor(0)
 #    legend.SetTextAlign(13);
     #else: legend.AddEntry(blind_datahist,"Observation","PE")

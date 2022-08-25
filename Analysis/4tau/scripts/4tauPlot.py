@@ -142,6 +142,8 @@ parser.add_argument("--plot_signals", dest="plot_signals", type=str,
 			help="Comma separated list of what signals to plot")
 parser.add_argument("--vsjets", default="vvvloose", type=str,
       help="vs jets deep tau working point")
+parser.add_argument("--vsjets_fail", default=None, type=str,
+      help="vs jets deep tau working point for fail FF")
 parser.add_argument("--vsmu", default="vloose", type=str,
       help="vs muon deep tau working point")
 parser.add_argument("--vsele", default="vvloose", type=str,
@@ -188,6 +190,7 @@ if (options.campaign == "ReReco" and options.year not in ["2016","2017","2018"])
 
 cats = {}
 
+VsJets_wp_fail = options.vsjets_fail
 VsJets_wp = options.vsjets
 VsMu_wp = options.vsmu
 VsEle_wp = options.vsele
@@ -237,14 +240,14 @@ elif options.channel == "mttt":
 elif options.channel == "emtt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
   cats['trigger'] = "(trg_singleelectron_1 || trg_singlemuon_2 || trg_doubletau_34)"
-  cats['data_veto'] = "(!(isTau && (trg_singlemuon_2))) && (!(isSingleElectron && (trg_singleelectron_1 || trg_doubletau_34)))"
+  cats['data_veto'] = "(!(isTau && (trg_singlemuon_2))) && (!(isSingleElectron && (trg_singlemuon_1 || trg_doubletau_34)))"
 elif options.channel == "mmtt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_doubletau_12)"
+  cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_doubletau_34)"
   cats['data_veto'] = "!(isTau && (trg_singlemuon_1 || trg_singlemuon_2))"
 elif options.channel == "eett":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=e_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singleelectron_1 || trg_singleelectron_2 || trg_doubletau_12)"
+  cats['trigger'] = "(trg_singleelectron_1 || trg_singleelectron_2 || trg_doubletau_34)"
   cats['data_veto'] = "!(isTau && (trg_singleelectron_1 || trg_singleelectron_2))"
 
 cats['baseline'] = "(({charge_sel}) && {current_baseline} && {trigger_sel})".format(charge_sel=charge_sel,current_baseline=cats['baseline'],trigger_sel=cats['trigger'])
@@ -262,7 +265,8 @@ if options.do_trg_sf:
   if options.channel == "eett":
     sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlee_data_1 + trigeff_singlee_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_2) - (trigeff_singlee_data_1*trigeff_singlee_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1*trigeff_singlee_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlee_mc_1 + trigeff_singlee_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_2) - (trigeff_singlee_mc_1*trigeff_singlee_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1*trigeff_singlee_mc_2)))"
   if options.channel == "mmtt":
-    sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlem_data_1 + trigeff_singlem_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_2) - (trigeff_singlem_data_1*trigeff_singlem_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1*trigeff_singlem_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlem_mc_1 + trigeff_singlem_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_2) - (trigeff_singlem_mc_1*trigeff_singlem_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1*trigeff_singlem_mc_2)))"
+    #sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlem_data_1 + trigeff_singlem_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_2) - (trigeff_singlem_data_1*trigeff_singlem_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1*trigeff_singlem_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlem_mc_1 + trigeff_singlem_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_2) - (trigeff_singlem_mc_1*trigeff_singlem_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1*trigeff_singlem_mc_2)))"
+    sf_string = "(1)"
   
   if options.add_wt == "":
     options.add_wt = "(" + sf_string + ")"
@@ -360,7 +364,7 @@ elif options.channel == 'mmtt':
   elif options.year == "2018":
 	  #data_samples = ['TauA','TauB','TauC','TauD','DoubleMuonA','DoubleMuonB','DoubleMuonC','DoubleMuonD']
     data_samples = ['TauA','TauB','TauC','TauD','SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-    data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
+    #data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
 
 elif options.channel == 'emtt':
   if options.year == "2016-preVFP":
@@ -391,17 +395,14 @@ if options.year == "2018":
       ewkz_samples = ['EWKZ2Jets']
     elif options.campaign == "UL":
       ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
-      #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']
       top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
       vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WWTo1L1Nu2Q','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','Tbar-t','Tbar-tW','T-t','T-tW']
-      #vv_samples = ['WW','WZ','ZZ']
       vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
-      #wjets_samples = ['WJetsToLNu-LO']
       wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
       wgam_samples = ['WGToLNuG']
       ewkz_samples = ['EWKZ2Jets_ZToLL']
-      #signal_samples = ["phi200A100To4Tau","phi200A200To4Tau"]
       signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
+
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -563,43 +564,38 @@ def GenerateW(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', w_se
 
 def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None):
   vj = "deepTauVsJets_" + VsJets_wp
-  if options.channel == "tttt":
-    ff_sel = cat.replace("%(vj)s_1>0.5" % vars(),"%(vj)s_1<0.5" % vars()) + sel.replace("%(vj)s_2>0.5" % vars(),"%(vj)s_2<0.5" % vars()) + sel.replace("%(vj)s_3>0.5" % vars(),"%(vj)s_3<0.5" % vars())
-    ff_wt_mc = "("+wt+")/3"
-    ff_wt_data = "1/3"
-    mc_sel = "gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6"
-  elif options.channel == "ttt":
-    ff_sel = cat.replace("%(vj)s_1>0.5" % vars(),"%(vj)s_1<0.5" % vars()) + sel.replace("%(vj)s_2>0.5" % vars(),"%(vj)s_2<0.5" % vars())
-    ff_wt_mc = "("+wt+")/3"
-    ff_wt_data = "1/3"
-    mc_sel = "gen_match_1<6 && gen_match_2<6 && gen_match_3<6"
-  elif options.channel in ["mttt","ettt"]:
-    ff_sel = cat.replace("%(vj)s_2>0.5","%(vj)s_2<0.5" % vars()) + sel.replace("%(vj)s_3>0.5" % vars(),"%(vj)s_3<0.5" % vars())
-    ff_wt_mc = "("+wt+")/2"
-    ff_wt_data = "1/2"
-    mc_sel = "gen_match_2<6 && gen_match_3<6 && gen_match_4<6"
-  elif options.channel in ["emtt","eett","mmtt"]:
-    ff_sel = cat.replace("%(vj)s_3>0.5" % vars(), "%(vj)s_3<0.5" % vars())
-    ff_wt_mc = wt[:]
-    ff_wt_data = "1"
-    mc_sel = "gen_match_3<6 && gen_match_4<6"
-
-  if charges_non_zero:
-    ff_wt_mc = "wt_ff_raw*("+ff_wt_mc+")"
-    ff_wt_data = "wt_ff_raw*("+ff_wt_data+")"
+  if VsJets_wp_fail == None:
+    vjf = "1"
   else:
-    #ff_wt_mc = "wt_ff_raw*wt_ff_correction*("+ff_wt_mc+")"
-    #ff_wt_data = "wt_ff_raw*wt_ff_correction*("+ff_wt_data+")"
-    ff_wt_mc = "wt_ff_raw*("+ff_wt_mc+")"
-    ff_wt_data = "wt_ff_raw*("+ff_wt_data+")"
+    vjf = "deepTauVsJets_" + VsJets_wp_fail
+  
+  if options.channel in ["emtt","eett","mmtt"]:
+    ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1")
+    ff_raw_3 = "(wt_ff_None_"+VsJets_wp+"_raw_3)"
+    ff_raw_4 = "(wt_ff_None_"+VsJets_wp+"_raw_4)"
+    ff_raw_34 = "(wt_ff_None_"+VsJets_wp+"_raw_34)"
+    ff_corr_3 = "(wt_ff_None_"+VsJets_wp+"_corr_3)"
+    ff_corr_4 = "(wt_ff_None_"+VsJets_wp+"_corr_4)"
+    pass_3 = "("+vj+"_3>0.5)"
+    pass_4 = "("+vj+"_4>0.5)"
+    fail_3 = "("+vj+"_3<0.5)"
+    fail_4 = "("+vj+"_4<0.5)"
+    #ff_wt = "((%(ff_raw_3)s * %(ff_corr_3)s * %(pass_4)s * %(fail_3)s) + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s) - (%(ff_raw_34)s * %(ff_corr_3)s * %(ff_corr_4)s * %(fail_3)s * %(fail_4)s))" % vars()
+    #ff_wt = "0.5*((%(ff_raw_3)s * %(ff_corr_3)s * %(pass_4)s * %(fail_3)s) + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s))" % vars()
+    #ff_wt = "((%(ff_raw_3)s * %(pass_4)s * %(fail_3)s) + (%(ff_raw_4)s * %(pass_3)s * %(fail_4)s) - (%(ff_raw_34)s * %(fail_3)s * %(fail_4)s))" % vars()
+    #ff_wt = "((%(ff_raw_34)s * %(fail_3)s * %(fail_4)s))" % vars()
+    #ff_wt = "((%(ff_raw_34)s * %(ff_corr_3)s * %(ff_corr_4)s * %(fail_3)s * %(fail_4)s))" % vars()
+    ff_wt = "(%(ff_raw_3)s * %(ff_corr_3)s * %(pass_4)s * %(fail_3)s)" % vars()
+    #ff_wt = "(%(ff_raw_3)s * %(pass_4)s * %(fail_3)s)" % vars()
+    #ff_wt = "(%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(%(ff_raw_4)s * %(pass_3)s * %(fail_4)s)" % vars()
 
   if data_veto == None:
-    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_wt_data, sel, ff_sel)
+    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, wt, sel, ff_sel)
   else:
-    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_wt_data, sel, "("+ff_sel+")&&("+data_veto+")")
+    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+
   ana.nodes[nodename].AddNode(ff_data)
-  ff_mc = GetNode(ana, 'jetFakes_mc_subtract', add_name, mc_samples, plot, "-"+ff_wt_mc, sel, "("+ff_sel+")&&("+mc_sel+")")
-  ana.nodes[nodename].AddNode(ff_mc)
 
 def GenerateSignal(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     for i in samples:
@@ -887,7 +883,8 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
       if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
       else: uncert_frac = BinUncertFraction+1
       if uncert_frac > BinUncertFraction and hist.GetBinContent(i) < BinThreshold:
-        binning.remove(hist.GetBinLowEdge(i+1))
+        #binning.remove(hist.GetBinLowEdge(i+1))
+        binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i+1))))
         hist = RebinHist(hist,binning)
         break
       elif i+1 == hist.GetNbinsX():
@@ -902,7 +899,8 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
       if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
       else: uncert_frac = BinUncertFraction+1
       if uncert_frac > BinUncertFraction and hist.GetBinContent(i) < BinThreshold:
-        binning.remove(hist.GetBinLowEdge(i))
+#        binning.remove(hist.GetBinLowEdge(i))
+        binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i))))
         hist = RebinHist(hist,binning)
         break
       elif i == 2:
@@ -923,6 +921,7 @@ def RebinHist(hist,binning):
       if hist.GetBinCenter(j) > hout.GetBinLowEdge(i) and hist.GetBinCenter(j) < hout.GetBinLowEdge(i+1):
         hout.SetBinContent(i,hout.GetBinContent(i)+hist.GetBinContent(j))
         hout.SetBinError(i,(hout.GetBinError(i)**2+hist.GetBinError(j)**2)**0.5)
+  #hout.Print("all")
   return hout
 
 if is_2d and options.do_unrolling:
@@ -983,6 +982,10 @@ if is_3d and options.do_unrolling:
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
 outfile.Close()
+
+# can I add some options here to just run plotting, then I combine datacards elsewhere and can pass them to this
+# test on other mmtt jet fake channels when set up
+
 plot_file = ROOT.TFile(output_name, 'READ')
 
 if options.auto_rebinning:

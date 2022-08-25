@@ -78,8 +78,14 @@ parser.add_option("--condor", action='store_true', default=False,
 
 parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
                   help="Do JES, JER, and MET uncertainties")
+
+parser.add_option("--batch", dest="batch", action='store_true', default=False,
+                  help="Submit to imperial batch")
+
 # ----------------------------------------
 (options,args) = parser.parse_args()
+if options.batch: options.submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"'
+
 if options.wrapper: JOBWRAPPER=options.wrapper
 if options.submit:  JOBSUBMIT=options.submit
 if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
@@ -203,13 +209,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       if 'mttt' in chn:
           data_samples+=['SingleMuon'+era]
       if 'mmtt' in chn:
-          data_samples+=['DoubleMuon'+era]
+          data_samples+=['SingleMuon'+era]
       if 'ettt' in chn:
           data_samples+=['SingleElectron'+era]
       if 'eett' in chn:
-          data_samples+=['DoubleEG'+era]
+          data_samples+=['SingleElectron'+era]
       if 'emtt' in chn:
-          data_samples+=['MuonEG'+era]
+          data_samples+=['SingleElectron'+era,'SingleMuon'+era]
       if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn:
           data_samples+=['Tau'+era]
 

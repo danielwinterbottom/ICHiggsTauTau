@@ -135,10 +135,13 @@ int HTTWeights::PreAnalysis() {
         w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));  // tau leg for etaucross data
     fns_["t_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for etaucross mc
-    fns_["e_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
-        w_->function("e_trg_24_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));  // electron leg for etaucross data
-    fns_["e_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-        w_->function("e_trg_24_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // electron leg for etaucross mc
+
+    if(mc_ == mc::mc2017 || mc_ == mc::mc2018) {
+      fns_["e_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+          w_->function("e_trg_24_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));  // electron leg for etaucross data
+      fns_["e_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+          w_->function("e_trg_24_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // electron leg for etaucross mc
+    }
 
     fns_["m_singlem_trg_mc"] = std::shared_ptr<RooFunctor>(
         w_->function("m_trg_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // single muon mc
@@ -323,8 +326,10 @@ int HTTWeights::Execute(TreeEvent *event) {
           event->Add("trigeff_e_singlee_mc_"+std::to_string(pn), fns_["e_singlee_trg_mc"]->eval(args_e.data()));
         }
         if (do_etaucross_trg_){
-          event->Add("trigeff_e_etaucross_data_"+std::to_string(pn), fns_["e_etaucross_trg_data"]->eval(args_e.data()));
-          event->Add("trigeff_e_etaucross_mc_"+std::to_string(pn), fns_["e_etaucross_trg_mc"]->eval(args_e.data()));
+          if(mc_ == mc::mc2017 || mc_ == mc::mc2018) {
+            event->Add("trigeff_e_etaucross_data_"+std::to_string(pn), fns_["e_etaucross_trg_data"]->eval(args_e.data()));
+            event->Add("trigeff_e_etaucross_mc_"+std::to_string(pn), fns_["e_etaucross_trg_mc"]->eval(args_e.data()));
+          }
         }
         if (do_emucross_trg_){
           event->Add("trigeff_e_high_emucross_data_"+std::to_string(pn), fns_["e_high_emucross_trg_data"]->eval(args_e.data()));
