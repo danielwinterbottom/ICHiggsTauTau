@@ -261,7 +261,12 @@ namespace ic {
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt ||  channel_ == channel::eett || channel_ == channel::mmtt || channel_ == channel::emtt) {
         passed_doubletau_34 =  passed_doubletau_34 || ((IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
       }
-      std::cout << passed_doubletau_12 << " " << passed_doubletau_13 << " " << passed_doubletau_14 << " " << passed_doubletau_23 << " " << passed_doubletau_24 << " " << passed_doubletau_34 << std::endl;
+      if (channel_ == channel::ttt){
+        passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
+      }
+     // std::cout << passed_doubletau_12 << " " << passed_doubletau_13 << " " << passed_doubletau_14 << " " << passed_doubletau_23 << " " << passed_doubletau_24 << " " << passed_doubletau_34 << std::endl;
     }
 
     //doubleelectron
