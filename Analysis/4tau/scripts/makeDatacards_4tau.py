@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# python scripts/mssm_control_plots.py --channel='mt,et,tt' --year='2018' --output='control_plots_mssm_new' --control_plots=True --ff_closures=True --add_systs=True --dry_run=True
+# python scripts/makeDatacards_4tau.py --channel=mmtt --year=2018 --output=ff_mmtt_plots
 
 import os
 import argparse
@@ -69,11 +69,11 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
 all_ch_variables = [
-                    GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
-                    GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
-                    GetBinning('pt_min_dphi_1',0,300,60,round=1),
-                    GetBinning('pt_min_dphi_2',0,300,60,round=1),
-                    "mvis_min_sum_dR_1,mvis_min_sum_dR_2[0,50,100,150,200,250,300,350,400],[0,50,100,150,200,250,300,350,400]",
+                    #GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
+                    #GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
+                    #GetBinning('pt_min_dphi_1',0,300,60,round=1),
+                    #GetBinning('pt_min_dphi_2',0,300,60,round=1),
+                    #"mvis_min_sum_dR_1,mvis_min_sum_dR_2[0,50,100,150,200,250,300,350,400],[0,50,100,150,200,250,300,350,400]",
                     ]
 
 ch_dep_var = {"mttt":[],
@@ -84,13 +84,110 @@ ch_dep_var = {"mttt":[],
               "emtt":[],
               }
 
-unb_ch_dep_var = {"mttt":[],
+unb_ch_dep_var = {
+              "mttt":[],
               "ettt":[],
               "mmtt":[
                       GetBinning('mvis_12',0,300,60,round=1),
+                      GetBinning('mvis_13',0,300,60,round=1),
+                      GetBinning('mvis_14',0,300,60,round=1),
+                      GetBinning('mvis_23',0,300,60,round=1),
+                      GetBinning('mvis_24',0,300,60,round=1),
+                      GetBinning('mvis_34',0,300,60,round=1),
+                      GetBinning('mt_lep_12',0,300,60,round=1),
+                      GetBinning('mt_lep_13',0,300,60,round=1),
+                      GetBinning('mt_lep_14',0,300,60,round=1),
+                      GetBinning('mt_lep_23',0,300,60,round=1),
+                      GetBinning('mt_lep_24',0,300,60,round=1),
+                      GetBinning('mt_lep_34',0,300,60,round=1),
+                      GetBinning('pt_tt_12',0,300,60,round=1),
+                      GetBinning('pt_tt_13',0,300,60,round=1),
+                      GetBinning('pt_tt_14',0,300,60,round=1),
+                      GetBinning('pt_tt_23',0,300,60,round=1),
+                      GetBinning('pt_tt_24',0,300,60,round=1),
+                      GetBinning('pt_tt_34',0,300,60,round=1),
+                      GetBinning('mvis_min_sum_dR_1',0,300,60,round=1),
+                      GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
+                      GetBinning('pt_min_dphi_1',0,300,60,round=1),
+                      GetBinning('pt_min_dphi_2',0,300,60,round=1),
+                      GetBinning('mt_1',0,250,50,round=1),
+                      GetBinning('mt_2',0,200,40,round=1),
+                      GetBinning('mt_3',0,150,30,round=1),
+                      GetBinning('mt_4',0,150,30,round=1),
+                      GetBinning('pt_1',0,250,50,round=1),
+                      GetBinning('pt_2',0,200,40,round=1),
+                      GetBinning('pt_3',0,150,30,round=1),
+                      GetBinning('pt_4',0,150,30,round=1),
+                      GetBinning('met',0,250,50,round=1),
+                      "n_jets[0,1,2,3,4,5,6,7,8,9,10]",
+                      "n_bjets[0,1,2,3,4]",
+                      GetBinning('eta_1',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_2',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_3',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_4',-4.0,4.0,40,round=0.05),
+                      GetBinning('dR_12',0,5.0,50,round=0.1),
+                      GetBinning('dR_13',0,5.0,50,round=0.1),
+                      GetBinning('dR_14',0,5.0,50,round=0.1),
+                      GetBinning('dR_23',0,5.0,50,round=0.1),
+                      GetBinning('dR_24',0,5.0,50,round=0.1),
+                      GetBinning('dR_34',0,5.0,50,round=0.1),
+                      GetBinning('dphi_12',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_13',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_14',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_23',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_24',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_34',-3.2,3.2,40,round=0.05),
                       ],
               "eett":[
                       GetBinning('mvis_12',0,300,60,round=1),
+                      GetBinning('mvis_13',0,300,60,round=1),
+                      GetBinning('mvis_14',0,300,60,round=1),
+                      GetBinning('mvis_23',0,300,60,round=1),
+                      GetBinning('mvis_24',0,300,60,round=1),
+                      GetBinning('mvis_34',0,300,60,round=1),
+                      GetBinning('mt_lep_12',0,300,60,round=1),
+                      GetBinning('mt_lep_13',0,300,60,round=1),
+                      GetBinning('mt_lep_14',0,300,60,round=1),
+                      GetBinning('mt_lep_23',0,300,60,round=1),
+                      GetBinning('mt_lep_24',0,300,60,round=1),
+                      GetBinning('mt_lep_34',0,300,60,round=1),
+                      GetBinning('pt_tt_12',0,300,60,round=1),
+                      GetBinning('pt_tt_13',0,300,60,round=1),
+                      GetBinning('pt_tt_14',0,300,60,round=1),
+                      GetBinning('pt_tt_23',0,300,60,round=1),
+                      GetBinning('pt_tt_24',0,300,60,round=1),
+                      GetBinning('pt_tt_34',0,300,60,round=1),
+                      GetBinning('mvis_min_sum_dR_1',0,300,60,round=1),
+                      GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
+                      GetBinning('pt_min_dphi_1',0,300,60,round=1),
+                      GetBinning('pt_min_dphi_2',0,300,60,round=1),
+                      GetBinning('mt_1',0,250,50,round=1),
+                      GetBinning('mt_2',0,200,40,round=1),
+                      GetBinning('mt_3',0,150,30,round=1),
+                      GetBinning('mt_4',0,150,30,round=1),
+                      GetBinning('pt_1',0,250,50,round=1),
+                      GetBinning('pt_2',0,200,40,round=1),
+                      GetBinning('pt_3',0,150,30,round=1),
+                      GetBinning('pt_4',0,150,30,round=1),
+                      GetBinning('met',0,250,50,round=1),
+                      "n_jets[0,1,2,3,4,5,6,7,8,9,10]",
+                      "n_bjets[0,1,2,3,4]",
+                      GetBinning('eta_1',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_2',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_3',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_4',-4.0,4.0,40,round=0.05),
+                      GetBinning('dR_12',0,5.0,50,round=0.1),
+                      GetBinning('dR_13',0,5.0,50,round=0.1),
+                      GetBinning('dR_14',0,5.0,50,round=0.1),
+                      GetBinning('dR_23',0,5.0,50,round=0.1),
+                      GetBinning('dR_24',0,5.0,50,round=0.1),
+                      GetBinning('dR_34',0,5.0,50,round=0.1),
+                      GetBinning('dphi_12',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_13',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_14',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_23',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_24',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_34',-3.2,3.2,40,round=0.05),
                       ],
               "tttt":[],
               "emtt":[],
@@ -102,17 +199,27 @@ config_files = {'2016':'scripts/plot_UL_2016.cfg',
                 '2018':'scripts/plot_UL_2018.cfg'
                }
 
+#categories = {
+#              "tttt":["inclusive","nobtag","btag"],
+#              "ettt":["inclusive","nobtag","btag"],
+#              "mttt":["inclusive","nobtag","btag"],
+#              "emtt":["inclusive","nobtag","btag"],
+#              "eett":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
+#              "mmtt":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
+#              }
+
 categories = {
-              "tttt":["inclusive","nobtag","btag"],
-              "ettt":["inclusive","nobtag","btag"],
-              "mttt":["inclusive","nobtag","btag"],
-              "emtt":["inclusive","nobtag","btag"],
-              "eett":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
-              "mmtt":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
+              "tttt":["inclusive"],
+              "ettt":["inclusive"],
+              "mttt":["inclusive"],
+              "emtt":["inclusive"],
+              "eett":["inclusive"],
+              "mmtt":["inclusive"],
               }
 
+
 add_options = ''
-#add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10'
+add_options = '--ratio_range=\'0.6,1.4\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.08 --method=2'
 #add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10 --vsjets=None --add_wt=\'1/(idisoweight_3*idisoweight_4)\''
  
 blind_options = '--blind --x_blind_min=-999 --x_blind_max=999'
@@ -144,7 +251,7 @@ for year in years:
       for var in variables:
         if '[' in var: var_string = var.split('[')[0]
         elif '(' in var: var_string = var.split('(')[0]
-        if var in unb_ch_dep_var[channel] and "control" not in cat: continue
+        #if var in unb_ch_dep_var[channel] and "control" not in cat: continue
         if var not in unb_ch_dep_var[channel]:
           add_options += " " + blind_options
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()

@@ -266,6 +266,11 @@ namespace ic {
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("pt_3",              &pt_3_.var_double);
       outtree_->Branch("pt_4",              &pt_4_.var_double);
+      outtree_->Branch("jet_pt_1",          &jet_pt_1_.var_double);
+      outtree_->Branch("jet_pt_2",          &jet_pt_2_.var_double);
+      outtree_->Branch("jet_pt_3",          &jet_pt_3_.var_double);
+      outtree_->Branch("jet_pt_4",          &jet_pt_4_.var_double);
+
 
       // masses and energies
       outtree_->Branch("m_1",              &m_1_.var_double);
@@ -520,6 +525,32 @@ namespace ic {
 
       // other 
       outtree_->Branch("n_jetfakes",         &n_jetfakes_);
+
+      // deepjet scores on jet matched to tau
+      outtree_->Branch("jet_probb_1",          &jet_probb_1_);
+      outtree_->Branch("jet_probb_2",          &jet_probb_2_);
+      outtree_->Branch("jet_probb_3",          &jet_probb_3_);
+      outtree_->Branch("jet_probb_4",          &jet_probb_4_);
+      outtree_->Branch("jet_probbb_1",         &jet_probbb_1_);
+      outtree_->Branch("jet_probbb_2",         &jet_probbb_2_);
+      outtree_->Branch("jet_probbb_3",         &jet_probbb_3_);
+      outtree_->Branch("jet_probbb_4",         &jet_probbb_4_);
+      outtree_->Branch("jet_problepb_1",       &jet_problepb_1_);
+      outtree_->Branch("jet_problepb_2",       &jet_problepb_2_);
+      outtree_->Branch("jet_problepb_3",       &jet_problepb_3_);
+      outtree_->Branch("jet_problepb_4",       &jet_problepb_4_);
+      outtree_->Branch("jet_probc_1",          &jet_probc_1_);
+      outtree_->Branch("jet_probc_2",          &jet_probc_2_);
+      outtree_->Branch("jet_probc_3",          &jet_probc_3_);
+      outtree_->Branch("jet_probc_4",          &jet_probc_4_);
+      outtree_->Branch("jet_probuds_1",        &jet_probuds_1_);
+      outtree_->Branch("jet_probuds_2",        &jet_probuds_2_);
+      outtree_->Branch("jet_probuds_3",        &jet_probuds_3_);
+      outtree_->Branch("jet_probuds_4",        &jet_probuds_4_);
+      outtree_->Branch("jet_probg_1",          &jet_probg_1_);
+      outtree_->Branch("jet_probg_2",          &jet_probg_2_);
+      outtree_->Branch("jet_probg_3",          &jet_probg_3_);
+      outtree_->Branch("jet_probg_4",          &jet_probg_4_);
     }
 
     return 0;
@@ -781,6 +812,88 @@ namespace ic {
     pt_2_ = lep2->pt();
     pt_3_ = lep3->pt();
     pt_4_ = lep4->pt();
+    jet_pt_1_ = 0;
+    jet_pt_2_ = 0;
+    jet_pt_3_ = 0;
+    jet_pt_4_ = 0;
+    jet_probb_1_ = 0;
+    jet_probb_2_ = 0;
+    jet_probb_3_ = 0;
+    jet_probb_4_ = 0;
+    jet_probbb_1_ = 0;    
+    jet_probbb_2_ = 0;
+    jet_probbb_3_ = 0;
+    jet_probbb_4_ = 0;
+    jet_problepb_1_ = 0;    
+    jet_problepb_2_ = 0;
+    jet_problepb_3_ = 0;
+    jet_problepb_4_ = 0;
+    jet_probc_1_ = 0;    
+    jet_probc_2_ = 0;
+    jet_probc_3_ = 0;
+    jet_probc_4_ = 0;
+    jet_probuds_1_ = 0;    
+    jet_probuds_2_ = 0;
+    jet_probuds_3_ = 0;
+    jet_probuds_4_ = 0;
+    jet_probg_1_ = 0;
+    jet_probg_2_ = 0;
+    jet_probg_3_ = 0;
+    jet_probg_4_ = 0;
+
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
+    std::vector<Candidate *> lepvec1;
+    std::vector<Candidate *> lepvec2;
+    std::vector<Candidate *> lepvec3;
+    std::vector<Candidate *> lepvec4;
+    lepvec1.push_back(fourtau->GetCandidate("lepton1"));
+    lepvec2.push_back(fourtau->GetCandidate("lepton2"));
+    lepvec3.push_back(fourtau->GetCandidate("lepton3"));
+    lepvec4.push_back(fourtau->GetCandidate("lepton4"));
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_2 = MatchByDR(uncleaned_jets, lepvec2, 0.5, true, true);
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_3 = MatchByDR(uncleaned_jets, lepvec3, 0.5, true, true);
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_4 = MatchByDR(uncleaned_jets, lepvec4, 0.5, true, true);
+    if(channel_ == channel::tttt) {
+      if(tau_matches_1.size() > 0) {
+        jet_pt_1_ = (tau_matches_1.at(0)).first->pt();
+        jet_probb_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+        jet_probbb_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+        jet_problepb_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+        jet_probc_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+        jet_probuds_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+        jet_probg_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+      }
+    }
+    if(channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt) {
+      if(tau_matches_2.size() > 0) {
+        jet_pt_2_ = (tau_matches_2.at(0)).first->pt();
+        jet_probb_2_ = (tau_matches_2.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+        jet_probbb_2_ = (tau_matches_2.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+        jet_problepb_2_ = (tau_matches_2.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+        jet_probc_2_ = (tau_matches_2.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+        jet_probuds_2_ = (tau_matches_2.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+        jet_probg_2_ = (tau_matches_2.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+      }
+    }
+    if(tau_matches_3.size() > 0) {
+      jet_pt_3_ = (tau_matches_3.at(0)).first->pt();
+      jet_probb_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+      jet_probbb_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+      jet_problepb_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+      jet_probc_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+      jet_probuds_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+      jet_probg_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+    }
+    if(tau_matches_4.size() > 0) {
+      jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
+      jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+      jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+      jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+      jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+      jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+      jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+    }
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
     eta_3_ = lep3->eta();
