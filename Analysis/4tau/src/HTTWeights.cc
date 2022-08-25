@@ -280,6 +280,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       total_id_sf *= id_sf;
       total_etau_fakerate *= etau_fakerate;
       total_mtau_fakerate *= mtau_fakerate;
+      if (channel_ == channel::ttt && pn == 3) break;
     }
     eventInfo->set_weight("wt_tau_id_sf",total_id_sf);
     eventInfo->set_weight("wt_etau_fakerate",total_etau_fakerate); 
@@ -305,6 +306,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       }
       event->Add("trackingweight_"+std::to_string(pn),trk_sf);
       total_trk_sf *= trk_sf;
+      if (channel_ == channel::ttt && pn  == 3) break;
     }
     eventInfo->set_weight("wt_tracking_sf",total_trk_sf);
   }
@@ -365,6 +367,7 @@ int HTTWeights::Execute(TreeEvent *event) {
           event->Add("trigeff_t_etaucross_mc_"+std::to_string(pn), fns_["t_etaucross_trg_mc"]->eval(args_t.data()));
         }
       }
+      if (channel_ == channel::ttt && pn ==3) break;
     }
 
   }
