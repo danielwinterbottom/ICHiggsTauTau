@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
     //"channels":      ["tttt","mttt","ettt","emtt","mmtt","eett"],
-    "channels":      ["tttt"],
+    "channels":      ["ttt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -65,7 +65,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/2018_1907_extra",
+    "output_folder" : "/vols/cms/ks1021/4tau/trees/2018UL/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -185,6 +185,15 @@
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 2,
+        "max_extra_muons": 0
+      }
+    },
+    "ttt": {
+      "baseline": {
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "extra_tau_veto": true,
+        "max_extra_elecs": 0,
         "max_extra_muons": 0
       }
     }
