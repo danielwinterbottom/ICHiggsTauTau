@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
-   "channels":     ["tt","mt","et","em"],
+   "channels":     ["tt"],
    // "channels": ["tpzee","tpzmm"],
     "sequences": {
       "all":  ["default"]
@@ -36,7 +36,7 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : false,
+    "get_effective" : true,
     "do_btag_eff": false,
     "trg_in_mc" : true,
     "do_vbftrg" : false,
@@ -66,7 +66,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/ks1021/output/trees/ditau/UL/2018",
+    "output_folder" : "/vols/cms/ks1021/output/trees/ditau/UL/2018_test",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
