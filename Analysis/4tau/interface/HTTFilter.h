@@ -53,6 +53,7 @@ int HTTFilter<T>::PreAnalysis() {
 template <class T>
 int HTTFilter<T>::Execute(TreeEvent *event) {
   std::vector<T *> & vec = event->GetPtrVec<T>(input_label_);
+  //std::cout << input_label_ << " Vector size: " << vec.size() << std::endl;
   ic::erase_if(vec,!boost::bind(predicate_,_1));
 	if(no_filter_){
 	  if(vec.size() >= min_ && vec.size() <= max_){
@@ -69,6 +70,7 @@ int HTTFilter<T>::Execute(TreeEvent *event) {
       return 1;
 	  }
   }
+  std::cout << input_label_ << " After Filter Vector size: " << vec.size() << std::endl;
 }
 
 // template <>
