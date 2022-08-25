@@ -59,7 +59,9 @@ namespace ic {
     std::vector<CompositeCandidate *> result;
 
     // Remove duplicate decay products from multilepton
+    std::cout << multilepton.size() << std::endl;
     for (unsigned i = 0; i < multilepton.size(); ++i) {
+      std::cout << "RE " << i << std::endl;
       if (NoDuplicateParticle(multilepton[i],0.3)) {
         if (TotalZeroChargeFourParticles(multilepton[i])) zero_charge.push_back(multilepton[i]);
         if (TotalNonZeroChargeFourParticles(multilepton[i])) non_zero_charge.push_back(multilepton[i]);
@@ -336,8 +338,8 @@ namespace ic {
     if (m_iso1_1 != m_iso2_1) return m_iso1_1 < m_iso2_1;
     if (m1_1->pt() != m2_1->pt()) return m1_1->pt() > m2_1->pt();
 
-    Muon const* m1_2 = static_cast<Muon const*>(c1->At(0));
-    Muon const* m2_2 = static_cast<Muon const*>(c2->At(0));
+    Muon const* m1_2 = static_cast<Muon const*>(c1->At(1));
+    Muon const* m2_2 = static_cast<Muon const*>(c2->At(1));
     double m_iso1_2;
     m_iso1_2 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_2, 0.5, 0) : PF04IsolationVal(m1_2, 0.5, 0);
     double m_iso2_2;
