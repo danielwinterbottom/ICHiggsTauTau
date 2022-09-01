@@ -33,7 +33,7 @@ ICElectronConversionCalculator::ICElectronConversionCalculator(
 ICElectronConversionCalculator::~ICElectronConversionCalculator() {}
 
 void ICElectronConversionCalculator::produce(edm::Event& event,
-                                 const edm::EventSetup& setup) const {
+                                 const edm::EventSetup& setup) {
   std::unique_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
   // Use an edm::View here so that this will work on a reco::GsfElectron or
   // pat::Electron collection

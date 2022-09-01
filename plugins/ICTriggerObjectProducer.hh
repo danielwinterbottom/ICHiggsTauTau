@@ -25,7 +25,7 @@ class ICTriggerObjectProducer : public edm::stream::EDProducer<> {
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event &, const edm::EventSetup &);
+  virtual void produce(edm::Event&, const edm::EventSetup&);
   virtual void beginRun(edm::Run const& run, edm::EventSetup const& es);
   virtual void endJob();
 

@@ -31,7 +31,7 @@ class ICMetProducer : public edm::stream::EDProducer<> {
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event &, const edm::EventSetup &);
+  virtual void produce(edm::Event&, const edm::EventSetup&);
   virtual void endJob();
   void constructSpecific(edm::Handle<edm::View<T> > const& mets_handle,
                          edm::Event& event, const edm::EventSetup& setup);

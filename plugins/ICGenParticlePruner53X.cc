@@ -30,19 +30,19 @@ public:
   ICGenParticlePruner53X(const edm::ParameterSet&);
 
 private:
-  virtual void produce(edm::Event &, const edm::EventSetup &);
-  mutable bool firstEvent_;
+  void produce(edm::Event&, const edm::EventSetup&);
+  bool firstEvent_;
   edm::InputTag src_;
-  mutable int keepOrDropAll_;
+  int keepOrDropAll_;
   std::vector<std::string> selection_;
-  mutable std::vector<std::pair<StringCutObjectSelector<reco::GenParticle>, helper::SelectCode> > select_;
-  mutable std::vector<int> flags_;
-  mutable std::vector<size_t> indices_;
+  std::vector<std::pair<StringCutObjectSelector<reco::GenParticle>, helper::SelectCode> > select_;
+  std::vector<int> flags_;
+  std::vector<size_t> indices_;
   void parse(const std::string & selection, helper::SelectCode & code, std::string & cut) const;
-  void flagDaughters(const reco::GenParticle &, int) const; 
-  void flagMothers(const reco::GenParticle &, int) const; 
-  void recursiveFlagDaughters(size_t, const reco::GenParticleCollection &, int, std::vector<size_t> &) const; 
-  void recursiveFlagMothers(size_t, const reco::GenParticleCollection &, int, std::vector<size_t> &) const; 
+  void flagDaughters(const reco::GenParticle &, int); 
+  void flagMothers(const reco::GenParticle &, int); 
+  void recursiveFlagDaughters(size_t, const reco::GenParticleCollection &, int, std::vector<size_t> &); 
+  void recursiveFlagMothers(size_t, const reco::GenParticleCollection &, int, std::vector<size_t> &); 
   void addDaughterRefs(std::vector<size_t> &, reco::GenParticle&, reco::GenParticleRefProd, const reco::GenParticleRefVector&) const;
   void addMotherRefs(std::vector<size_t> &, reco::GenParticle&, reco::GenParticleRefProd, const reco::GenParticleRefVector&) const;
 #if CMSSW_MAJOR_VERSION >= 12
@@ -110,20 +110,20 @@ ICGenParticlePruner53X::ICGenParticlePruner53X(const ParameterSet& cfg) :
   produces<GenParticleCollection>();
 }
 
-void ICGenParticlePruner53X::flagDaughters(const reco::GenParticle & gen, int keepOrDrop) const {
+void ICGenParticlePruner53X::flagDaughters(const reco::GenParticle & gen, int keepOrDrop) {
   GenParticleRefVector daughters = gen.daughterRefVector();
   for(GenParticleRefVector::const_iterator i = daughters.begin(); i != daughters.end(); ++i) 
     flags_[i->key()] = keepOrDrop;
 }
 
-void ICGenParticlePruner53X::flagMothers(const reco::GenParticle & gen, int keepOrDrop) const {
+void ICGenParticlePruner53X::flagMothers(const reco::GenParticle & gen, int keepOrDrop) {
   GenParticleRefVector mothers = gen.motherRefVector();
   for(GenParticleRefVector::const_iterator i = mothers.begin(); i != mothers.end(); ++i) 
     flags_[i->key()] = keepOrDrop;
 }
 
 void ICGenParticlePruner53X::recursiveFlagDaughters(size_t index, const reco::GenParticleCollection & src, int keepOrDrop,
-					       std::vector<size_t> & allIndices ) const {
+					       std::vector<size_t> & allIndices ) {
   GenParticleRefVector daughters = src[index].daughterRefVector();
   // avoid infinite recursion if the daughters are set to "this" particle.
   size_t cachedIndex = index;
@@ -142,7 +142,7 @@ void ICGenParticlePruner53X::recursiveFlagDaughters(size_t index, const reco::Ge
 }
 
 void ICGenParticlePruner53X::recursiveFlagMothers(size_t index, const reco::GenParticleCollection & src, int keepOrDrop,
-					     std::vector<size_t> & allIndices ) const {
+					     std::vector<size_t> & allIndices ) {
   GenParticleRefVector mothers = src[index].motherRefVector();
   // avoid infinite recursion if the mothers are set to "this" particle.
   size_t cachedIndex = index;
@@ -160,7 +160,7 @@ void ICGenParticlePruner53X::recursiveFlagMothers(size_t index, const reco::GenP
   }
 }
 
-void ICGenParticlePruner53X::produce(Event& evt, const EventSetup& es) const {
+void ICGenParticlePruner53X::produce(Event& evt, const EventSetup& es) {
   if (firstEvent_) {
 #if CMSSW_MAJOR_VERSION < 12
     PdgEntryReplacer rep(es);

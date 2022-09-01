@@ -92,8 +92,8 @@ void ICPi0SuperClusterProducer::produce(edm::Event& event,
     float r9 = e3x3 / (src.rawEnergy());
     float r9_full5x5 = full5x5_e3x3 / (src.rawEnergy());
 
-    std::vector<float> locCov = EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
-    std::vector<float> full5x5_locCov = noZS::EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
+    std::vector<float> locCov = (std::vector<float>)EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
+    std::vector<float> full5x5_locCov = (std::vector<float>)noZS::EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
     float sigmaIetaIeta = sqrt(locCov[0]);
     float sigmaIetaIeta_full5x5 = sqrt(full5x5_locCov[0]);
   

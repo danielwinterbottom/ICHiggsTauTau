@@ -56,7 +56,7 @@ void ICPhotonElectronVetoCalculator::produce(edm::Event& event,
   std::vector<bool> values(photons_handle->size(), false);
   for (unsigned i = 0; i < photons_handle->size(); ++i) {
     reco::Photon const& src = photons_handle->at(i);
-    #if CMSSW_MAJOR_VERSION >= 10 && CMSSW_MINOR_VERSION >= 6
+    #if CMSSW_MAJOR_VERSION >= 10 && CMSSW_MINOR_VERSION >= 6 || CMSSW_MAJOR_VERSION >= 11
       values[i] = !ConversionTools::hasMatchedPromptElectron(src.superCluster(), *elecs_handle, *conversions_handle,beamspot_handle->position());
     #else
       values[i] = !ConversionTools::hasMatchedPromptElectron(src.superCluster(), elecs_handle, conversions_handle,beamspot_handle->position());

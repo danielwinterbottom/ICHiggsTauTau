@@ -245,7 +245,7 @@ ICJetProducer<T, U>::~ICJetProducer() { delete jets_; }
 // =============
 template <class T, class U>
 void ICJetProducer<T, U>::produce(edm::Event& event,
-                                 const edm::EventSetup& setup) const {
+                                 const edm::EventSetup& setup) {
   
   edm::Handle<edm::View<U> > jets_handle;
   event.getByLabel(input_, jets_handle);

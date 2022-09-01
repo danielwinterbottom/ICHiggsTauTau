@@ -17,7 +17,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 template <class T>
-class RequestByDeltaR : public edm::global::EDProducer {
+class RequestByDeltaR : public edm::stream::EDProducer<> {
  public:
   explicit RequestByDeltaR(const edm::ParameterSet &);
   ~RequestByDeltaR();

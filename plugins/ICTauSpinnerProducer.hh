@@ -35,7 +35,7 @@ enum pdgId {
 /**
  * @brief See documentation [here](\ref objs-candidate)
  */
-class ICTauSpinnerProducer : public edm::global::EDProducer {
+class ICTauSpinnerProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICTauSpinnerProducer(const edm::ParameterSet &);
   ~ICTauSpinnerProducer();

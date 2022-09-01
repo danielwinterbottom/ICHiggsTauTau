@@ -23,7 +23,7 @@ class ICVertexProducer : public edm::stream::EDProducer<> {
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event &, const edm::EventSetup &);
+  virtual void produce(edm::Event&, const edm::EventSetup&);
   virtual void endJob();
 
   std::vector<ic::Vertex> *vertices_;

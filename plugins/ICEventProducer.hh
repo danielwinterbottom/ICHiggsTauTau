@@ -23,7 +23,7 @@ class ICEventProducer : public edm::stream::EDProducer<> {
  private:
   unsigned processed_;
   virtual void beginJob();
-  virtual void produce(edm::Event &, const edm::EventSetup &);
+  virtual void produce(edm::Event&, const edm::EventSetup&);
   virtual void endJob();
 };
 

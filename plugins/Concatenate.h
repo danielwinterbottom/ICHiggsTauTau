@@ -15,7 +15,7 @@
 namespace ic {
 
 template <class T>
-class Concatenate : public edm::global::EDProducer {
+class Concatenate : public edm::stream::EDProducer<> {
  public:
   explicit Concatenate(const edm::ParameterSet &);
   ~Concatenate();

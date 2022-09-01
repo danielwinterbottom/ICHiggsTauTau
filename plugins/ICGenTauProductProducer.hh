@@ -21,14 +21,14 @@ class ICGenTauProductProducer : public edm::stream::EDProducer<> {
 
    private:
       virtual void beginJob() ;
-      virtual void produce(edm::Event &, const edm::EventSetup &);
+      virtual void produce(edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
       
       virtual void beginRun(edm::Run&, edm::EventSetup const&);
       virtual void endRun(edm::Run&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-      virtual void FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container) const;
+      virtual void FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container);
 
       // ----------member data ---------------------------
       edm::InputTag input_label_;

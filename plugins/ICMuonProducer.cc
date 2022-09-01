@@ -86,7 +86,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
 
 ICMuonProducer::~ICMuonProducer() { delete muons_; }
 
-void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) const {
+void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   edm::Handle<edm::View<reco::Muon> > muons_handle;
   edm::Handle<edm::View<reco::PFCandidate> > pfs_handle;
   unsigned n_muons = 0;

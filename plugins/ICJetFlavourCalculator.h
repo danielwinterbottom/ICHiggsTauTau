@@ -7,15 +7,14 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ICJetFlavourCalculator : public edm::one::EDProducer {
+class ICJetFlavourCalculator : public edm::stream::EDProducer<> {
  public:
   explicit ICJetFlavourCalculator(const edm::ParameterSet &);
   ~ICJetFlavourCalculator();
 
  private:
   virtual void beginJob();
-  //virtual void produce(edm::Event &, const edm::EventSetup &)
-  void produce(edm::Event &, const edm::EventSetup &); override;
+  virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
   edm::InputTag input_;

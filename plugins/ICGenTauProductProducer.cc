@@ -39,7 +39,7 @@ ICGenTauProductProducer::~ICGenTauProductProducer() {
  // (e.g. close files, deallocate resources etc.)
 }
 
-void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container) const
+void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container)
 {
   if(theParticle)
   {  
@@ -60,7 +60,7 @@ void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* thePart
 
 
 // ------------ method called to produce the data  ------------
-void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) const {
+void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 
   edm::Handle<reco::GenParticleCollection> partCollection;

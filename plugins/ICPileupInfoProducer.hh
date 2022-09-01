@@ -13,14 +13,14 @@
 /**
  * @brief See documentation [here](\ref objs-pu-info)
  */
-class ICPileupInfoProducer : public edm::global::EDProducer {
+class ICPileupInfoProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICPileupInfoProducer(const edm::ParameterSet&);
   ~ICPileupInfoProducer();
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event &, const edm::EventSetup &);
+  virtual void produce(edm::Event&, const edm::EventSetup&);
   virtual void endJob();
 
   std::vector<ic::PileupInfo> *info_;

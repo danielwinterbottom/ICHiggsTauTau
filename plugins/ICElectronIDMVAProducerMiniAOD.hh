@@ -6,7 +6,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/global/EDFilter.h"
+#include "FWCore/Framework/interface/stream/EDFilter.h"
 #include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -29,7 +29,7 @@ public:
     ~ICElectronIDMVAProducerMiniAOD();
     
 private:
-    virtual void produce(edm::Event &, const edm::EventSetup &);
+    virtual void produce(edm::Event&, const edm::EventSetup&);
     // ----------member data ---------------------------
     bool verbose_;
 //    edm::EDGetTokenT<pat::ElectronCollection> electronToken_;

@@ -21,7 +21,11 @@
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 
+#if CMSSW_MAJOR_VERSION >= 12
+#include "PhysicsTools/PatAlgos/plugins/PATObjectSelector.cc"
+#else
 #include "PhysicsTools/PatAlgos/plugins/PATJetSelector.h"
+#endif
 
 #include <vector>
 

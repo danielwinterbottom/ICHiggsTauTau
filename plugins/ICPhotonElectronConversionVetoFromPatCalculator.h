@@ -11,7 +11,7 @@
  * @brief Produces an edm::ValueMap<bool> for the photon electron conversion veto. The flag is extracted directly from the input PAT candidate 
  *
  */
-class ICPhotonElectronConversionVetoFromPatCalculator : public edm::global::EDProducer {
+class ICPhotonElectronConversionVetoFromPatCalculator : public edm::stream::EDProducer<> {
  public:
   explicit ICPhotonElectronConversionVetoFromPatCalculator(const edm::ParameterSet &);
   ~ICPhotonElectronConversionVetoFromPatCalculator();

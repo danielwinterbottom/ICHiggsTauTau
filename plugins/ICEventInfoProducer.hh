@@ -20,7 +20,7 @@
  * **Example usage**
  * @snippet python/default_producers_cfi.py EventInfo
  */
-class ICEventInfoProducer : public edm::global::EDProducer {
+class ICEventInfoProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICEventInfoProducer(const edm::ParameterSet &);
   ~ICEventInfoProducer();
