@@ -48,6 +48,7 @@ BTagEntry::BTagEntry(const std::string &csvLine)
     vec.push_back(token);
   }
   if (vec.size() != 11) {
+std::cout<< vec.size() << std::endl;
 std::cerr << "ERROR in BTagCalibration: "
           << "Invalid csv line; num tokens != 11: "
           << csvLine;
@@ -71,6 +72,7 @@ std::cerr << "ERROR in BTagCalibration: "
           << csvLine;
 throw std::exception();
   }
+// Updated Version for Ultra Legacy
   unsigned op;
   if (vec[0] == "L"){
     op = 0;
@@ -87,35 +89,31 @@ std::cerr << "ERROR in BTagCalibration: "
 throw std::exception();
   }
 
-  //if (op > 3) {
+// ----------------------
+// Enable this for Rereco
+//  unsigned jf = stoi(vec[3]);
+//  if (jf > 2) {
 //std::cerr << "ERROR in BTagCalibration: "
-  //        << "Invalid csv line; OperatingPoint > 3: "
-  //        << csvLine;
-//throw std::exception();
-//  }
-
-
-  unsigned jf = stoi(vec[3]);
-  if (jf > 2) {
-std::cerr << "ERROR in BTagCalibration: "
-          << "Invalid csv line; JetFlavor > 2: "
-          << csvLine;
-throw std::exception();
-  }
-//  unsigned jf;
-//  if (stoi(vec[3]) == 5){ 
-//    jf = 0;
-//  } else if(stoi(vec[3]) == 4){ 
-//    jf = 1;
-//  } else if(stoi(vec[3]) == 0){
-//    jf = 2;
-//  } else {
-//std::cerr << "ERROR in BTagCalibration: "
-//          << "Invalid csv line; JetFlavor: "
+//          << "Invalid csv line; JetFlavor > 2: "
 //          << csvLine;
 //throw std::exception();
 //  }
-//std::cout << "1: " << jf << " 2: " << vec[3] << std::endl;
+// ----------------------
+// Disable this for Rereco
+unsigned jf;
+if (stoi(vec[3]) == 5){ 
+	jf = 0;
+} else if(stoi(vec[3]) == 4){ 
+   jf = 1;
+} else if(stoi(vec[3]) == 0){
+   jf = 2;
+} else {
+std::cerr << "ERROR in BTagCalibration: "
+          << "Invalid csv line; JetFlavor: "
+          << csvLine;
+throw std::exception();
+}
+// ----------------------
 
   params = BTagEntry::Parameters(
     BTagEntry::OperatingPoint(op),

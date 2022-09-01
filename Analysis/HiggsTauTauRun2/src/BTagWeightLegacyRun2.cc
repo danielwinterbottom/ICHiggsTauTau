@@ -20,7 +20,7 @@ namespace ic {
     bbtag_eff_cp5_alt_ = nullptr;
     cbtag_eff_cp5_alt_ = nullptr;
     othbtag_eff_cp5_alt_ = nullptr;
-	use_deep_csv_ = false;
+    use_deep_csv_ = false;
     use_deep_jet_ = false;
 	
   }
@@ -45,6 +45,10 @@ namespace ic {
 	  // not properly set up yet
 	  //else if (era_==era::data_2017UL && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
       else if (era_==era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+
+      else if (era_ == era::data_2016UL_preVFP && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL16preVFP_v2.csv";
+      else if (era_ == era::data_2016UL_postVFP && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL16postVFP_v3.csv";
+      else if (era_ == era::data_2017UL && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL17_v3.csv";
       else if (era_ == era::data_2018UL && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv"; 
       
 	  if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
@@ -183,19 +187,31 @@ namespace ic {
 
       double tight_wp = 0.5;
       double loose_wp = 0.1;
-      if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+      if(era_ == era::data_2016){
         tight_wp = 0.6321; // medium deepCSV wp
         loose_wp = 0.2217; // loose deepCSV wp
       }
-      else if(era_ == era::data_2017 || era_ == era::data_2017UL) {
+      else if (era_ == era::data_2016UL_preVFP && use_deep_jet_){
+        tight_wp = 0.2598; // medium deepJet wp
+        loose_wp = 0.0508; // loose deepJet wp
+      }
+      else if (era_ == era::data_2016UL_postVFP && use_deep_jet_){
+        tight_wp = 0.2489; // medium deepJet wp
+        loose_wp = 0.0480; // loose deepJet wp
+      }
+      else if(era_ == era::data_2017) {
         tight_wp = 0.4941; // medium deepCSV wp
         loose_wp = 0.1522; // loose deepCSV wp
+      }
+      else if (era_ == era::data_2017UL && use_deep_jet_){
+        tight_wp = 0.3040; // medium deepJet wp
+        loose_wp = 0.0532; // loose deepJet wp
       }
       else if (era_ == era::data_2018){
         tight_wp = 0.4184; // medium deepCSV wp
         loose_wp = 0.1241; // loose deepCSV wp
       }
-	  else if (era_ == era::data_2018UL && use_deep_jet_){
+      else if (era_ == era::data_2018UL && use_deep_jet_){
         tight_wp = 0.2783; // medium deepJet wp
         loose_wp = 0.0490; // loose deepJet wp
       }

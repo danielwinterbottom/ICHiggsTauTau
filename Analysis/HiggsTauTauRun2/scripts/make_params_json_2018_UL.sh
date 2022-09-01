@@ -1,7 +1,7 @@
 input_xs=$1
 input_evt=$2
 lumi=$3
-
+# bash scripts/make_params_json.sh scripts/xs_inputs_2018_UL.txt scripts/evt_UL_2018.txt LUMI &> params_UL_2018.json
 # Input xs file should have format: Sample_name xs
 # Input evt file should have format: Sample_name evt
 
