@@ -7,8 +7,13 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#if CMSSW_MAJOR_VERSION >= 12 
+#include "DataFormats/JetMatching/interface/JetFlavourInfoMatching.h"
+#include "DataFormats/JetMatching/interface/JetFlavourMatching.h"
+#else 
 #include "SimDataFormats/JetMatching/interface/JetFlavourInfoMatching.h"
 #include "SimDataFormats/JetMatching/interface/JetFlavourMatching.h"
+#endif
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICJetFlavourCalculator::ICJetFlavourCalculator(

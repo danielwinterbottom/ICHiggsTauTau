@@ -12,7 +12,11 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#if CMSSW_MAJOR_VERSION >= 12 
+#include "CommonTools/Egamma/interface/ConversionTools.h"
+#else
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#endif
 #include "UserCode/ICHiggsTauTau/plugins/ICFillerStructs.hh"
 
 ICElectronConversionCalculator::ICElectronConversionCalculator(
@@ -29,7 +33,7 @@ ICElectronConversionCalculator::ICElectronConversionCalculator(
 ICElectronConversionCalculator::~ICElectronConversionCalculator() {}
 
 void ICElectronConversionCalculator::produce(edm::Event& event,
-                                 const edm::EventSetup& setup) {
+                                 const edm::EventSetup& setup) const {
   std::unique_ptr<edm::ValueMap<bool> > product(new edm::ValueMap<bool>());
   // Use an edm::View here so that this will work on a reco::GsfElectron or
   // pat::Electron collection
@@ -75,7 +79,7 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
 
   for (unsigned i = 0; i < n; ++i) {
     reco::GsfElectron const& src = elecs_handle->at(i);
-    #if CMSSW_MAJOR_VERSION >= 10 && CMSSW_MINOR_VERSION >= 6
+    #if CMSSW_MAJOR_VERSION >= 10 && CMSSW_MINOR_VERSION >= 6 || CMSSW_MAJOR_VERSION >= 11
       values[i] = ConversionTools::hasMatchedConversion(src, *conversions_handle, beamspot_handle->position(),true, 2.0, 1e-6, 0);
     #else
       values[i] = ConversionTools::hasMatchedConversion(src, conversions_handle, beamspot_handle->position(),true, 2.0, 1e-6, 0);

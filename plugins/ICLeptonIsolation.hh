@@ -1,7 +1,7 @@
 #ifndef UserCode_ICHiggsTauTau_ICLeptonIsolation_h
 #define UserCode_ICHiggsTauTau_ICLeptonIsolation_h
 
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -12,7 +12,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 template <class T>
-class ICLeptonIsolation : public edm::EDProducer {
+class ICLeptonIsolation : public edm::stream::EDProducer<> {
  public:
   explicit ICLeptonIsolation(const edm::ParameterSet &);
   ~ICLeptonIsolation();

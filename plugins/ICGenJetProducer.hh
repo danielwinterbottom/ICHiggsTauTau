@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -17,14 +17,14 @@
 /**
  * @brief See documentation [here](\ref objs-genjet)
  */
-class ICGenJetProducer : public edm::EDProducer {
+class ICGenJetProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICGenJetProducer(const edm::ParameterSet&);
   ~ICGenJetProducer();
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
   std::vector<ic::GenJet>* gen_jets_;

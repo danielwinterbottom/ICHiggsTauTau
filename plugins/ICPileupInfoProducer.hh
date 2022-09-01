@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -13,14 +13,14 @@
 /**
  * @brief See documentation [here](\ref objs-pu-info)
  */
-class ICPileupInfoProducer : public edm::EDProducer {
+class ICPileupInfoProducer : public edm::global::EDProducer {
  public:
   explicit ICPileupInfoProducer(const edm::ParameterSet&);
   ~ICPileupInfoProducer();
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
   std::vector<ic::PileupInfo> *info_;

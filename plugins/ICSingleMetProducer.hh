@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -16,14 +16,14 @@
 /**
  * @brief See documentation [here](\ref objs-met)
  */
-class ICSingleMetProducer : public edm::EDProducer {
+class ICSingleMetProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICSingleMetProducer(const edm::ParameterSet&);
   ~ICSingleMetProducer();
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
   ic::Met* met_;

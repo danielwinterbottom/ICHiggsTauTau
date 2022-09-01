@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -20,14 +20,14 @@
  * **Example usage**
  * @snippet python/default_producers_cfi.py SuperCluster
  */
-class ICSuperClusterProducer : public edm::EDProducer {
+class ICSuperClusterProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICSuperClusterProducer(const edm::ParameterSet&);
   ~ICSuperClusterProducer();
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
   std::vector<ic::SuperCluster>* scs_;

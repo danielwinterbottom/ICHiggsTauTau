@@ -37,13 +37,13 @@ public:
 
 #endif
 
-// class EmbeddingKineReweightProducer : public edm::EDProducer 
+// class EmbeddingKineReweightProducer : public edm::stream::EDProducer<> 
 // {
 //  public:
 //   explicit EmbeddingKineReweightProducer(const edm::ParameterSet&);
 //   ~EmbeddingKineReweightProducer();
 
-//   void produce(edm::Event&, const edm::EventSetup&);
+//   void produce(edm::Event &, const edm::EventSetup &);;
 
 //  private:
 //   edm::InputTag srcGenDiTaus_;

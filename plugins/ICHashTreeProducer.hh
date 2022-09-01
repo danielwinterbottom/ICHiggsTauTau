@@ -3,13 +3,13 @@
 
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 
-class ICHashTreeProducer : public edm::EDProducer {
+class ICHashTreeProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICHashTreeProducer(const edm::ParameterSet&);
   ~ICHashTreeProducer();
@@ -19,7 +19,7 @@ class ICHashTreeProducer : public edm::EDProducer {
  private:
   static std::map<std::size_t, std::string> unhash_map_;
   virtual void beginJob();
-  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 };
 

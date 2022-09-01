@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -13,7 +13,7 @@
 /**
  * @brief See documentation [here](\ref objs-trig-path)
  */
-class ICTriggerPathProducer : public edm::EDProducer {
+class ICTriggerPathProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICTriggerPathProducer(const edm::ParameterSet &);
   ~ICTriggerPathProducer();

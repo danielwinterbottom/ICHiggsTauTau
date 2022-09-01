@@ -5,7 +5,7 @@
 #include <vector>
 #include "boost/functional/hash.hpp"
 #include "boost/format.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -34,7 +34,7 @@
  * @brief See documentation [here](\ref objs-tau)
  */
 template <class T>
-class ICTauProducer : public edm::EDProducer {
+class ICTauProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICTauProducer(const edm::ParameterSet &);
   ~ICTauProducer();

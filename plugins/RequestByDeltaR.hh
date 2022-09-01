@@ -5,7 +5,7 @@
 #include <vector>
 #include "boost/functional/hash.hpp"
 #include "boost/format.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -17,7 +17,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 template <class T>
-class RequestByDeltaR : public edm::EDProducer {
+class RequestByDeltaR : public edm::global::EDProducer {
  public:
   explicit RequestByDeltaR(const edm::ParameterSet &);
   ~RequestByDeltaR();

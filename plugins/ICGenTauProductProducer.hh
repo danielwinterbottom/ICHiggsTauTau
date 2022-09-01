@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -12,7 +12,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 
-class ICGenTauProductProducer : public edm::EDProducer {
+class ICGenTauProductProducer : public edm::stream::EDProducer<> {
    public:
       explicit ICGenTauProductProducer(const edm::ParameterSet&);
       ~ICGenTauProductProducer();
@@ -21,14 +21,14 @@ class ICGenTauProductProducer : public edm::EDProducer {
 
    private:
       virtual void beginJob() ;
-      virtual void produce(edm::Event&, const edm::EventSetup&);
+      virtual void produce(edm::Event &, const edm::EventSetup &);
       virtual void endJob() ;
       
       virtual void beginRun(edm::Run&, edm::EventSetup const&);
       virtual void endRun(edm::Run&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-      virtual void FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container);
+      virtual void FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container) const;
 
       // ----------member data ---------------------------
       edm::InputTag input_label_;

@@ -1,13 +1,13 @@
 #ifndef UserCode_ICHiggsTauTau_ICHttElecIsoCheck_h
 #define UserCode_ICHiggsTauTau_ICHttElecIsoCheck_h
 
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ICHttElecIsoCheck : public edm::EDProducer {
+class ICHttElecIsoCheck : public edm::stream::EDProducer<> {
  public:
   explicit ICHttElecIsoCheck(const edm::ParameterSet &);
   ~ICHttElecIsoCheck();

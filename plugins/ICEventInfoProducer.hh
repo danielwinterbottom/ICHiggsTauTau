@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -20,7 +20,7 @@
  * **Example usage**
  * @snippet python/default_producers_cfi.py EventInfo
  */
-class ICEventInfoProducer : public edm::EDProducer {
+class ICEventInfoProducer : public edm::global::EDProducer {
  public:
   explicit ICEventInfoProducer(const edm::ParameterSet &);
   ~ICEventInfoProducer();

@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -35,7 +35,7 @@ enum pdgId {
 /**
  * @brief See documentation [here](\ref objs-candidate)
  */
-class ICTauSpinnerProducer : public edm::EDProducer {
+class ICTauSpinnerProducer : public edm::global::EDProducer {
  public:
   explicit ICTauSpinnerProducer(const edm::ParameterSet &);
   ~ICTauSpinnerProducer();

@@ -1,7 +1,7 @@
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDFilter.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/global/EDFilter.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -64,7 +64,7 @@ ICElectronIDMVAProducerMiniAOD::~ICElectronIDMVAProducerMiniAOD()
 //
 
 // ------------ method called on each new Event  ------------
-void ICElectronIDMVAProducerMiniAOD::produce(edm::Event& event, const edm::EventSetup& setup) {
+void ICElectronIDMVAProducerMiniAOD::produce(edm::Event& event, const edm::EventSetup& setup) const {
 //	using namespace edm;
     std::unique_ptr<edm::ValueMap<float> > out(new edm::ValueMap<float>() );
     

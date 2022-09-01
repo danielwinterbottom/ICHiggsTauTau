@@ -6,8 +6,8 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDFilter.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/global/EDFilter.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
@@ -23,13 +23,13 @@
 
 //using namespace std;
 //using namespace reco;
-class ICElectronIDMVAProducerMiniAOD : public edm::EDProducer {
+class ICElectronIDMVAProducerMiniAOD : public edm::stream::EDProducer<> {
 public:
     explicit ICElectronIDMVAProducerMiniAOD(const edm::ParameterSet&);
     ~ICElectronIDMVAProducerMiniAOD();
     
 private:
-    virtual void produce(edm::Event&, const edm::EventSetup&);
+    virtual void produce(edm::Event &, const edm::EventSetup &);
     // ----------member data ---------------------------
     bool verbose_;
 //    edm::EDGetTokenT<pat::ElectronCollection> electronToken_;

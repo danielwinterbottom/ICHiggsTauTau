@@ -26,7 +26,7 @@ ICLightTrackProducer::ICLightTrackProducer(const edm::ParameterSet& config)
 
 ICLightTrackProducer::~ICLightTrackProducer() { delete tracks_; }
 
-void ICLightTrackProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
+void ICLightTrackProducer::produce(edm::Event& event, const edm::EventSetup& setup) const {
   edm::Handle<edm::View<reco::Track> > track_handle;
   event.getByLabel(input_, track_handle);
 

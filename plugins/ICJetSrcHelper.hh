@@ -6,7 +6,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
@@ -83,7 +83,7 @@ struct JetSrcHelper {
     }
   }
 
-  void DoSetup(edm::EDProducer * prod) {
+  void DoSetup(edm::stream::EDProducer<> * prod) {
     if (include_sv_info_ids) {
       prod->produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");
     }
@@ -254,7 +254,7 @@ struct JetSrcHelper<pat::Jet> {
         slimmed_puid_label(config.getParameter<std::string>("slimmedPileupIDLabel")) {
          collector.consumes<reco::SecondaryVertexTagInfoCollection>(input_sv_info);
        }
-  void DoSetup(edm::EDProducer * prod) {
+  void DoSetup(edm::stream::EDProducer<> * prod) {
     if (include_sv_info_ids) {
       prod->produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");
     }

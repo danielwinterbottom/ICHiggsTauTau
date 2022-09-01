@@ -2,13 +2,18 @@
 #define UserCode_ICHiggsTauTau_ICFillerStructs_h
 
 #include "DataFormats/Provenance/interface/ProductID.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#if CMSSW_MAJOR_VERSION >= 12 
+#include "CommonTools/Egamma/interface/ConversionTools.h"
+#else
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#endif
+
 
 //These structs make sure the correct ID is passed to filler.insert(handle,...)
 //when producing a ValueMap from an edm::View.

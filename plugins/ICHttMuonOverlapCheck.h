@@ -1,13 +1,13 @@
 #ifndef UserCode_ICHiggsTauTau_ICHttMuonOverlapCheck_h
 #define UserCode_ICHiggsTauTau_ICHttMuonOverlapCheck_h
 
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ICHttMuonOverlapCheck : public edm::EDProducer {
+class ICHttMuonOverlapCheck : public edm::stream::EDProducer<> {
  public:
   explicit ICHttMuonOverlapCheck(const edm::ParameterSet &);
   ~ICHttMuonOverlapCheck();

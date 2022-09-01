@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -13,7 +13,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 
-class ICGenVertexProducer : public edm::EDProducer {
+class ICGenVertexProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICGenVertexProducer(const edm::ParameterSet &);
   ~ICGenVertexProducer();

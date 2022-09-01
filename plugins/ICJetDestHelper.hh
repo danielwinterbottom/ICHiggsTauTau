@@ -6,7 +6,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
@@ -21,7 +21,7 @@
 template <class U>
 struct JetDestHelper {
   explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector) {}
-  void DoSetup(edm::EDProducer * prod) {}
+  void DoSetup(edm::stream::EDProducer<> * prod) {}
   ~JetDestHelper() {}
 };
 
@@ -46,7 +46,7 @@ struct JetDestHelper<ic::CaloJet> {
                                          JetIDSelectionFunctor::TIGHT);
   }
 
-  void DoSetup(edm::EDProducer * prod) {
+  void DoSetup(edm::stream::EDProducer<> * prod) {
     std::cout << "CaloJet specific options:\n";
     PrintOptional(1, do_jet_id, "includeJetID");
     PrintOptional(1, do_n_carrying, "includeTowerCounts");
@@ -90,7 +90,7 @@ struct JetDestHelper<ic::JPTJet> {
                                          JetIDSelectionFunctor::TIGHT);
   }
 
-  void DoSetup(edm::EDProducer * prod) {
+  void DoSetup(edm::stream::EDProducer<> * prod) {
     if (request_trks) {
       prod->produces<reco::TrackRefVector>("requestedTracks");
     }
@@ -146,7 +146,7 @@ struct JetDestHelper<ic::PFJet> {
           collector.consumes<reco::VertexCollection>(input_vtxs);
         }
 
-  void DoSetup(edm::EDProducer * prod) {
+  void DoSetup(edm::stream::EDProducer<> * prod) {
     if (request_trks) {
       prod->produces<reco::TrackRefVector>("requestedTracks");
     }

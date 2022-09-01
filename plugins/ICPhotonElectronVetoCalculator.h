@@ -1,7 +1,7 @@
 #ifndef UserCode_ICHiggsTauTau_ICPhotonElectronVetoCalculator_h
 #define UserCode_ICHiggsTauTau_ICPhotonElectronVetoCalculator_h
 
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -14,7 +14,7 @@
  * **Example usage**
  * @snippet python/default_producers_cfi.py PhotonVetoCalculator
  */
-class ICPhotonElectronVetoCalculator : public edm::EDProducer {
+class ICPhotonElectronVetoCalculator : public edm::stream::EDProducer<> {
  public:
   explicit ICPhotonElectronVetoCalculator(const edm::ParameterSet &);
   ~ICPhotonElectronVetoCalculator();

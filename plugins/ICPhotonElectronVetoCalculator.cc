@@ -14,7 +14,12 @@
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#if CMSSW_MAJOR_VERSION >= 12 
+#include "CommonTools/Egamma/interface/ConversionTools.h"
+#else
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#endif
+
 #include "UserCode/ICHiggsTauTau/plugins/Consumes.h"
 
 ICPhotonElectronVetoCalculator::ICPhotonElectronVetoCalculator(

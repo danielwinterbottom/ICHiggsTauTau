@@ -6,7 +6,7 @@
 #include <string>
 #include <cstdint>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -18,14 +18,14 @@
 /**
  * @brief See documentation [here](\ref objs-trig-obj)
  */
-class ICTriggerObjectProducer : public edm::EDProducer {
+class ICTriggerObjectProducer : public edm::stream::EDProducer<> {
  public:
   explicit ICTriggerObjectProducer(const edm::ParameterSet&);
   ~ICTriggerObjectProducer();
 
  private:
   virtual void beginJob();
-  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void beginRun(edm::Run const& run, edm::EventSetup const& es);
   virtual void endJob();
 

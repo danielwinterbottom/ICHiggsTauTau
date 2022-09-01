@@ -4,7 +4,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -39,7 +39,7 @@ ICGenTauProductProducer::~ICGenTauProductProducer() {
  // (e.g. close files, deallocate resources etc.)
 }
 
-void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container) 
+void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container) const
 {
   if(theParticle)
   {  
@@ -60,7 +60,7 @@ void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* thePart
 
 
 // ------------ method called to produce the data  ------------
-void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) const {
 
 
   edm::Handle<reco::GenParticleCollection> partCollection;
