@@ -86,7 +86,7 @@
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
     "data_pu_file"  : "input/pileup/2018UL/PileupHistogram-goldenJSON-13tev-2018-69200ub-99bins.root",
-    "mc_pu_file"    : "/vols/cms/ks1021/output/UL/2018UL_gen_analysis/pileupDistribution/pileup_2017_DYJetsToLL-LO.root",
+    "mc_pu_file"    : "input/pileup/2018UL/pileup_2018_DYJetsToLL-LO.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
