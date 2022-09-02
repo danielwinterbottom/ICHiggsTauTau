@@ -29,10 +29,10 @@ conf_parser.add_argument("--cfg",
 options, remaining_argv = conf_parser.parse_known_args()
 
 defaults = {
-    "channel":"tpzee" , 
-    "outputfolder":"tagandprobe/2017UL/tpzee/single",
-    "folder":"/vols/cms/ks1021/output/trees/UL_tp/2017",
-    "era":"UL_17", 
+    "channel":"tpzmm" , 
+    "outputfolder":"tagandprobe_3108/UL18/tpzmm/single",
+    "folder":"/vols/cms/ks1021/ditau/trees/2018_2908",
+    "era":"UL_18", 
     "embedded":False, 
     "em_iso":False, 
     "aiso1":False, 
@@ -369,8 +369,6 @@ def Get1DHistsFrom3D(passhist3d,failhist3d):
         passhist1d = passhist3d.ProjectionX(passname1d,j,j,k,k)
         failhist1d = failhist3d.ProjectionX(failname1d,j,j,k,k)
         hists.append((passhist1d,failhist1d,ymin,ymax,zmin,zmax))
-  print("NIAOU")
-  print(hists)
   return hists
       
 def CreateWorkspace(name,infile,outfile):
@@ -952,8 +950,8 @@ if options.channel == 'tpzmm':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'UL_18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
- 
     else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
+    
 if  options.channel == 'tpzee': 
     if options.era in ['summer18','sm18']: data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
     elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
@@ -1234,7 +1232,6 @@ for name in wsnames:
     if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
     if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
 
-
   if options.era == 'summer18' or options.era == 'UL_18':
     if options.channel =='tpzmm':
         if "iso" in name: sig_model = 'DoubleVPartcorr_TwoPeaks_18'
@@ -1253,12 +1250,6 @@ for name in wsnames:
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   if options.mutoele:  
     sig_model='DoubleVUncorr'
-
-  print("HERE")
-  print(name)
-  print(sig_model)
-  print(bkg_model)
-  print()
   
   #sig_model='BWCBConvUncorr'
   if (not (options.embed_dz or options.charge_flip) or 'trg' in name or not options.trg_only):
@@ -1286,15 +1277,16 @@ for i in sf_types:
       graphs.append(sffile.Get(('gr_embed_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')))  
       leg_labels.append('Embedded')
     x_title = 'P_{T}^{#mu} (GeV)'
-    ratio_range="0.85,1.15"
+    ratio_range="0.1,2.0"
     if options.channel == 'tpzee': 
         x_title = 'P_{T}^{e} (GeV)'
-        if 'trg' in i: ratio_range="0.7,1.3"
+        if 'trg' in i: ratio_range="0.1,2.0"
     label = '%s, %.1f < |#eta| < %.1f' % (i, ymin,ymax)
     if options.charge_flip: 
       label=''
-      ratio_range="0.85,2"
-    #plotting.TagAndProbePlot(graphs,leg_labels,"",False,False,options.era=='UL_17',ratio_range,True,100,10,False,0,1,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
+      ratio_range="0.1,2.0"
+    plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='UL_18',ratio_range,True,100,10,False,0,1.5,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
+
 
 
 outfile.Close()  
