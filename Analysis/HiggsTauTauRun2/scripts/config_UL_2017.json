@@ -6,7 +6,7 @@
     "timings":      true,
    // "channels": ["zee"],
    //"channels":     ["et","mt","tt","em","zmm","zee"],
-   "channels":     ["tt"],
+    "channels": ["mt","et","em","tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -33,7 +33,7 @@
     "tau_id_study":true,
     "add_Hhh_variables" : false,
     "get_effective" : false,
-    "do_btag_eff": false,
+    "do_btag_eff": true,
     "trg_in_mc" : true,
     "filter_trg" : false,
     "do_leptonplustau" : false,
@@ -61,7 +61,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "./",
-    "output_folder" : "/vols/cms/ks1021/output/trees/UL/2017",
+    "output_folder" : "/vols/cms/ks1021/ditau/trees/btag/2017tight_0109/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2017_tres1_v2_svfit/",
@@ -85,7 +85,7 @@
     "do_pu_wt"      : true,
     // "data_pu_file"  : "input/pileup/Data_Pileup_2017_69p2mb_Cert_294927-306462_200bins.root",
     "data_pu_file"  : "input/pileup/2017UL/PileupHistogram-goldenJSON-13tev-2017-69200ub-99bins.root",
-    "mc_pu_file"    : "/vols/cms/ks1021/output/UL/2017UL_gen_analysis/pileupDistribution/pileup_2017_DYJetsToLL-LO.root",
+    "mc_pu_file"    : "input/pileup/2017UL/pileup_2017_DYJetsToLL-LO.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
@@ -93,9 +93,9 @@
       "jer_mode"          : 0,
       "btag_mode"         : 0,
       "do_reshape"        : false,
-      "use_deep_csv"      : true,
-	  "use_deep_jet"      : false,	  
-      "wp_to_check"       : "loose",
+      "use_deep_csv"      : false,
+      "use_deep_jet"      : true,	  
+      "wp_to_check"       : "tight",
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
