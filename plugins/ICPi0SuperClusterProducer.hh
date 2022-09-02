@@ -41,9 +41,12 @@ class ICPi0SuperClusterProducer : public edm::stream::EDProducer<> {
   edm::InputTag input_taus_;
   std::string branch_;
 
-  #if (CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 && CMSSW_REVISION > 4) || CMSSW_MAJOR_VERSION >= 10
+  #if ( (CMSSW_MAJOR_VERSION >= 9 && CMSSW_MINOR_VERSION >= 4 && CMSSW_REVISION > 4) || CMSSW_MAJOR_VERSION >= 10 ) && CMSSW_MAJOR_VERSION < 12
   edm::ESHandle<CaloTopology> theCaloTopo_;
+  #elif CMSSW_MAJOR_VERSION >= 12
+  edm::ESGetToken<CaloTopology, CaloTopologyRecord> tok_caloTopology_;
   #endif
+  
 
   boost::hash<reco::SuperCluster const*> sc_hasher_;
 };

@@ -2,6 +2,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "FWCore/Framework/interface/ProducesCollector.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Jet.hh"
 
@@ -13,8 +14,8 @@ ICPFJetProducerFromPatNew::ICPFJetProducerFromPatNew(const edm::ParameterSet& co
       inputSmearDown_(config.getParameter<edm::InputTag>("inputSmearDown")),
       branch_(config.getParameter<std::string>("branch")),
       doSmear_(config.getParameter<bool>("doSmear")),
-      src_(config.getParameterSet("srcConfig"),consumesCollector()),
-      dest_(config.getParameterSet("destConfig"),consumesCollector()) {
+      src_(config.getParameterSet("srcConfig"),consumesCollector(), producesCollector()),
+      dest_(config.getParameterSet("destConfig"),consumesCollector(), producesCollector()) {
   consumes<edm::View<pat::Jet>>(input_);
   consumes<edm::View<pat::Jet>>(inputSmear_);
   consumes<edm::View<pat::Jet>>(inputSmearUp_);
@@ -26,8 +27,8 @@ ICPFJetProducerFromPatNew::ICPFJetProducerFromPatNew(const edm::ParameterSet& co
 
   PrintHeaderWithProduces(config, input_, branch_);
 
-  src_.DoSetup(this);
-  dest_.DoSetup(this);
+  src_.DoSetup();
+  dest_.DoSetup();
 }
 
 ICPFJetProducerFromPatNew::~ICPFJetProducerFromPatNew() { delete jets_; }

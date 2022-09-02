@@ -34,6 +34,9 @@ ICPi0SuperClusterProducer::ICPi0SuperClusterProducer(const edm::ParameterSet& co
   consumes<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >>(input_EERecHits_);
   consumes<edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >>(input_EBRecHits_);
   consumes<edm::View<pat::Tau>>(input_taus_); 
+#if CMSSW_MAJOR_VERSION >= 12
+  tok_caloTopology_ = esConsumes<CaloTopology, CaloTopologyRecord>();
+#endif
   scs_ = new std::vector<ic::SuperCluster>();
   PrintHeaderWithBranch(config, branch_);
 }
@@ -55,8 +58,12 @@ void ICPi0SuperClusterProducer::produce(edm::Event& event,
 
   scs_->clear();
   //scs_->resize(sc_handle->size());
+#if CMSSW_MAJOR_VERSION < 12
   setup.get<CaloTopologyRecord>().get(theCaloTopo_);
   const CaloTopology* topology = theCaloTopo_.product();
+#else
+  const CaloTopology* topology = &setup.getData(tok_caloTopology_); 
+#endif 
 
   for (unsigned i = 0; i < sc_handle->size(); ++i) {
 
@@ -92,8 +99,9 @@ void ICPi0SuperClusterProducer::produce(edm::Event& event,
     float r9 = e3x3 / (src.rawEnergy());
     float r9_full5x5 = full5x5_e3x3 / (src.rawEnergy());
 
-    std::vector<float> locCov = (std::vector<float>)EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
-    std::vector<float> full5x5_locCov = (std::vector<float>)noZS::EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
+    auto locCov = EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
+    auto full5x5_locCov = noZS::EcalClusterTools::localCovariances(*(src.seed()), &(*hits), &(*topology));
+
     float sigmaIetaIeta = sqrt(locCov[0]);
     float sigmaIetaIeta_full5x5 = sqrt(full5x5_locCov[0]);
   

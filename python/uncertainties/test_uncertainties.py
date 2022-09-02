@@ -31,7 +31,7 @@ from uncertainties import umath
 # The following information is useful for making sure that the right
 # version of Python is running the tests (for instance with the Travis
 # Continuous Integration system):
-print "Testing with Python", sys.version
+print("Testing with Python", sys.version)
 
 ###############################################################################
 
@@ -102,7 +102,7 @@ def compare_derivatives(func, numerical_derivatives,
     except AttributeError:
         funcname = func.__name__
 
-    # print "Testing", func.__name__
+    # print("Testing", func.__name__)
 
     if not num_args_list:
 
@@ -185,8 +185,8 @@ def compare_derivatives(func, numerical_derivatives,
                         # This message is useful: the user can see that
                         # tests are really performed (instead of not being
                         # performed, silently):
-                        print "Testing %s at %s, arg #%d" % (
-                            funcname, args, arg_num)
+                        print("Testing %s at %s, arg #%d" % (
+                            funcname, args, arg_num))
 
                         if not numbers_close(fixed_deriv_value,
                                               num_deriv_value, 1e-4):
@@ -201,13 +201,13 @@ def compare_derivatives(func, numerical_derivatives,
                                     % (arg_num, funcname, args,
                                        fixed_deriv_value, num_deriv_value))
 
-            except ValueError, err:  # Arguments out of range, or of wrong type
+            except (ValueError) as err: # Arguments out of range, or of wrong type
                 # Factorial(real) lands here:
                 if str(err).startswith('factorial'):
                     integer_arg_nums = set([0])
                 continue  # We try with different arguments
             # Some arguments might have to be integers, for instance:
-            except TypeError, err:
+            except (TypeError) as err:
                 if len(integer_arg_nums) == num_args:
                     raise Exception("Incorrect testing procedure: unable to "
                                     "find correct argument values for %s: %s"
@@ -677,7 +677,7 @@ def test_comparison_ops():
             try:
                 assert correct_result == getattr(x, op)(y)
             except AssertionError:
-                print "Sampling results:", sampled_results
+                print("Sampling results:", sampled_results)
                 raise Exception("Semantic value of %s %s (%s) %s not"
                                 " correctly reproduced."
                                 % (x, op, y, correct_result))
@@ -1693,7 +1693,7 @@ def test_format():
         # instead of 1.4 for Python 3.1. The problem does not appear
         # with 1.2, so 1.2 is used.
         (-1.2e-12, 0): {
-            '12.2gPL': ur'  -1.2×10⁻¹²±           0',
+            '12.2gPL': u'  -1.2×10⁻¹²±           0',
             # Pure "width" formats are not accepted by the % operator,
             # and only %-compatible formats are accepted, for Python <
             # 2.6:
@@ -1703,7 +1703,7 @@ def test_format():
             # No factored exponent, LaTeX
             '1L': r'-1.2 \times 10^{-12} \pm 0',
             'SL': r'-1.2(0) \times 10^{-12}',
-            'SP': ur'-1.2(0)×10⁻¹²'
+            'SP': u'-1.2(0)×10⁻¹²'
         },
 
         # Python 3.2 and 3.3 give 1.4e-12*1e+12 = 1.4000000000000001
@@ -1726,7 +1726,7 @@ def test_format():
         (3.14e-10, 0.01e-10): {
             # Character (Unicode) strings:
             u'P': u'(3.140±0.010)×10⁻¹⁰',  # PDG rules: 2 digits
-            u'PL': ur'(3.140±0.010)×10⁻¹⁰',  # Pretty-print has higher priority
+            u'PL': u'(3.140±0.010)×10⁻¹⁰',  # Pretty-print has higher priority
             # Truncated non-zero uncertainty:
             '.1e': '(3.1+/-0.0)e-10',
             '.1eS': '3.1(0.0)e-10'
@@ -2001,7 +2001,7 @@ def test_format():
 
         for (format_spec, result) in representations.iteritems():
 
-            # print "FORMATTING {} WITH '{}'".format(repr(value), format_spec)
+            # print("FORMATTING {} WITH '{}'".format(repr(value), format_spec))
 
             # Jython 2.5.2 does not always represent NaN as nan or NAN
             # in the CPython way: for example, '%.2g' % float('nan')

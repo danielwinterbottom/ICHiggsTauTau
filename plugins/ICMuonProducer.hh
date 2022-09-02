@@ -36,6 +36,7 @@ class ICMuonProducer : public edm::stream::EDProducer<> {
   std::string branch_;
   boost::hash<reco::Muon const*> muon_hasher_;
   boost::hash<reco::PFCandidate const*> pf_hasher_;
+  edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> tok_trackBuilder_;
 
 
   bool is_pf_;

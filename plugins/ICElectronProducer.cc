@@ -79,6 +79,9 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
         consumes<edm::View<reco::Vertex>>(input_vertices_);
         consumes<reco::BeamSpot>(input_beamspot_);
         consumes<edm::ValueMap<bool>>(input_conversion_matches_);
+        #if CMSSW_MAJOR_VERSION >= 12
+        tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>();
+        #endif
       
 
      electrons_ = new std::vector<ic::Electron>();
@@ -300,9 +303,15 @@ void ICElectronProducer::produce(edm::Event& event,
       dest.set_vy(track->vy());
       dest.set_vz(track->vz());
 
+
+      #if CMSSW_MAJOR_VERSION < 12
       edm::ESHandle<TransientTrackBuilder> trackBuilder;
       setup.get<TransientTrackRecord>().get("TransientTrackBuilder", trackBuilder);
       double magneticField = (trackBuilder.product() ? trackBuilder.product()->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
+      #else 
+      const TransientTrackBuilder *trackBuilder = &setup.getData(tok_trackBuilder_);
+      double magneticField = (trackBuilder ? trackBuilder->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
+      #endif
       dest.set_bfield(magneticField);
     }
 

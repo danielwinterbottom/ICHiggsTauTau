@@ -53,6 +53,7 @@ class ICTauProducer : public edm::stream::EDProducer<> {
   boost::hash<reco::Track const*> track_hasher_;
   boost::hash<reco::Candidate const*> cand_hasher_;
   edm::InputTag track_input_;
+  edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> tok_trackBuilder_;
   std::vector<std::pair<std::string, edm::InputTag> > tau_ids_;
   edm::InputTag input_vertices_;
   bool do_vertex_ip_;
@@ -84,6 +85,9 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
       is_slimmed_(config.getParameter<bool>("isSlimmed")) {
   consumes<edm::View<T>>(input_);
   consumes<edm::View<reco::Vertex>>(input_vertices_);
+  #if CMSSW_MAJOR_VERSION >= 12
+  tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>();
+  #endif
   taus_ = new std::vector<ic::Tau>();
 
   edm::ParameterSet pset = config.getParameter<edm::ParameterSet>("tauIDs");
@@ -265,9 +269,15 @@ void ICTauProducer<pat::Tau>::constructSpecific(
           auto covariance = track->covariance();
           dest.set_track_params_covariance(covariance);
 
+
+          #if CMSSW_MAJOR_VERSION < 12
           edm::ESHandle<TransientTrackBuilder> trackBuilder;
           setup.get<TransientTrackRecord>().get("TransientTrackBuilder", trackBuilder);
           double magneticField = (trackBuilder.product() ? trackBuilder.product()->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
+          #else
+          const TransientTrackBuilder *trackBuilder = &setup.getData(tok_trackBuilder_);
+          double magneticField = (trackBuilder ? trackBuilder->field()->inInverseGeV(GlobalPoint(track->vx(), track->vy(), track->vz())).z() : 0.0);
+          #endif
           dest.set_bfield(magneticField);
         }
         #endif
@@ -357,8 +367,12 @@ void ICTauProducer<pat::Tau>::constructSpecific(
            #endif
         }
         ///Built transient tracks from tracks
+        #if CMSSW_MAJOR_VERSION < 12
         edm::ESHandle<TransientTrackBuilder> transTrackBuilder;
         setup.get<TransientTrackRecord>().get("TransientTrackBuilder",transTrackBuilder);
+        #else
+        const TransientTrackBuilder *transTrackBuilder = &setup.getData(tok_trackBuilder_);
+        #endif
         std::vector<reco::TransientTrack> transTracks;
         for(auto & trk: svTracks)
         transTracks.push_back(transTrackBuilder->build(trk));

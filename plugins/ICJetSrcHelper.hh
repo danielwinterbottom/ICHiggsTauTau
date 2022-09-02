@@ -18,6 +18,7 @@
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #endif
 #include "CommonTools/Utils/interface/StringCutObjectSelector.h"
+#include "FWCore/Framework/interface/ProducesCollector.h"
 #include "UserCode/ICHiggsTauTau/interface/JPTJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/CaloJet.hh"
@@ -45,7 +46,7 @@
  */
 template <class U>
 struct JetSrcHelper {
-  explicit JetSrcHelper(const edm::ParameterSet &config, edm::ConsumesCollector && collector)
+  explicit JetSrcHelper(const edm::ParameterSet &config, edm::ConsumesCollector && collector, edm::ProducesCollector && producesCollector)
       : input_jet_flavour(
             config.getParameter<edm::InputTag>("inputJetFlavour")),
         include_jet_flavour(config.getParameter<bool>("includeJetFlavour")),
@@ -56,6 +57,9 @@ struct JetSrcHelper {
         apply_post_jec_cut(config.getParameter<bool>("applyCutAfterJECs")),
         input_sv_info((config.getParameter<edm::InputTag>("inputSVInfo"))),
         include_sv_info_ids(config.getParameter<bool>("requestSVInfo")) {
+        if (include_sv_info_ids) {
+            producesCollector.produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");
+        }
         collector.consumes<edm::ValueMap<std::vector<int>>>(input_jet_flavour);
         collector.consumes<reco::SecondaryVertexTagInfoCollection>(input_sv_info);
     if (apply_jec_factors || include_jec_factors) {
@@ -83,10 +87,8 @@ struct JetSrcHelper {
     }
   }
 
-  void DoSetup(edm::stream::EDProducer<> * prod) {
-    if (include_sv_info_ids) {
-      prod->produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");
-    }
+
+  void DoSetup() {
     PrintOptional(1, include_jet_flavour, "includeJetFlavour");
     PrintOptional(1, apply_jec_factors, "applyJECs");
     PrintOptional(1, include_jec_factors, "includeJECs");
@@ -245,19 +247,19 @@ struct JetSrcHelper {
  */
 template <>
 struct JetSrcHelper<pat::Jet> {
-  explicit JetSrcHelper(const edm::ParameterSet &config, edm::ConsumesCollector && collector)
+  explicit JetSrcHelper(const edm::ParameterSet &config, edm::ConsumesCollector && collector, edm::ProducesCollector && producesCollector)
       : include_jet_flavour(config.getParameter<bool>("includeJetFlavour")),
         include_jec_factors(config.getParameter<bool>("includeJECs")),
         input_sv_info((config.getParameter<edm::InputTag>("inputSVInfo"))),
         include_sv_info_ids(config.getParameter<bool>("requestSVInfo")),
         is_slimmed(config.getParameter<bool>("isSlimmed")),
         slimmed_puid_label(config.getParameter<std::string>("slimmedPileupIDLabel")) {
+         if (include_sv_info_ids) {
+           producesCollector.produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");
+         }
          collector.consumes<reco::SecondaryVertexTagInfoCollection>(input_sv_info);
        }
-  void DoSetup(edm::stream::EDProducer<> * prod) {
-    if (include_sv_info_ids) {
-      prod->produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");
-    }
+  void DoSetup() {
     PrintOptional(1, include_jet_flavour, "includeJetFlavour");
     PrintOptional(1, include_jec_factors, "includeJECs");
     PrintOptional(1, include_sv_info_ids, "requestSVInfo");

@@ -45,10 +45,10 @@ trap 'error_exit $?' ERR
 
 def run_command(dry_run, command):
     if not dry_run:
-        print '>> ' + command
+        print('>> ' + command)
         return os.system(command)
     else:
-        print '[DRY-RUN]: ' + command
+        print('[DRY-RUN]: ' + command)
 
 
 class Jobs:
@@ -127,7 +127,7 @@ class Jobs:
             final_cfg['file_step'] = njobs
             cmd = """%s '%s'""" % (prog, json.dumps(final_cfg))
             self.job_queue.append(cmd)
-            # print cmd
+            # print(cmd)
 
     def create_job_script(self, commands, script_filename, do_log=False):
         fname = script_filename
@@ -160,7 +160,7 @@ class Jobs:
                         ))
         st = os.stat(fname)
         os.chmod(fname, st.st_mode | stat.S_IEXEC)
-        print 'Created job script: %s' % script_filename
+        print('Created job script: %s' % script_filename)
         if self.tracking and not self.dry_run:
             trackname = script_filename.replace('.sh', '.status.created')
             open(trackname, 'a').close()
@@ -173,7 +173,7 @@ class Jobs:
             pos = status_f.rfind('status')
             status = (status_f[pos:]).split('.')[1:]
             statuses.append(status)
-        # print statuses
+        # print(statuses)
         return statuses
 
     def flush_queue(self):
@@ -203,7 +203,7 @@ class Jobs:
                        status_result[status] = []
                     status_result[status].append(script_name)
                     if len(statuses) > 0:
-                        # print '%s appears to already be in progress, skipping...' % script_name
+                        # print('%s appears to already be in progress, skipping...' % script_name)
                         continue
 
                 # each job is given a slice from the list of combine commands of length 'merge'
@@ -233,13 +233,13 @@ class Jobs:
                     os.rename(full_script.replace('.sh', '.status.created'), full_script.replace('.sh', '.status.submitted'))
                 run_command(self.dry_run, 'ts bash -c "eval %s"' % (full_script))
         if self.job_mode in ['lxbatch', 'NAF', 'ts'] and self.tracking:
-            print '>> Status summary: %s' % self.task_name
+            print('>> Status summary: %s' % self.task_name)
             for status in status_result:
                 counter = '[%i/%i]' % (len(status_result[status]), njobs)
-                print '%20s %10s' % (status, counter)
+                print('%20s %10s' % (status, counter))
                 if self.tracking == 'long':
                     for f in status_result[status]:
-                        print ' '*20 + '%s' % f
+                        print(' '*20 + '%s' % f)
 
 
 

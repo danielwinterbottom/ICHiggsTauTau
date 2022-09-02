@@ -223,16 +223,16 @@ template <class T, class U>
 ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
-      src_(config.getParameterSet("srcConfig"),consumesCollector()),
-      dest_(config.getParameterSet("destConfig"),consumesCollector()) {
+      src_(config.getParameterSet("srcConfig"),consumesCollector(), producesCollector()),
+      dest_(config.getParameterSet("destConfig"),consumesCollector(), producesCollector()) {
   consumes<edm::View<U>>(input_);
   jets_ = new std::vector<T>();
 
 
   PrintHeaderWithProduces(config, input_, branch_);
 
-  src_.DoSetup(this);
-  dest_.DoSetup(this);
+  src_.DoSetup();
+  dest_.DoSetup();
 }
 
 

@@ -34,6 +34,7 @@ class ICElectronProducer : public edm::stream::EDProducer<> {
   edm::InputTag input_;
   std::string branch_;
   boost::hash<reco::GsfElectron const*> gsf_electron_hasher_;
+  edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> tok_trackBuilder_;
 
   std::vector<std::pair<std::string, edm::InputTag> > input_vmaps_;
   edm::InputTag input_r9_;

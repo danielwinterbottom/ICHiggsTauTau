@@ -557,7 +557,7 @@ def CreateTransparentColor(color, alpha):
 
 def Set(obj, **kwargs):
     for key, value in kwargs.iteritems():
-        if value is None:
+        if value == None:
             getattr(obj, 'Set' + key)()
         elif isinstance(value, (list, tuple)):
             getattr(obj, 'Set' + key)(*value)
@@ -710,7 +710,7 @@ def CreateAxisHists(n, src, at_limits):
 
 def GetAxisHist(pad):
     pad_obs = pad.GetListOfPrimitives()
-    if pad_obs is None:
+    if pad_obs == None:
         return None
     obj = None
     for obj in pad_obs:
@@ -784,7 +784,7 @@ def ParamFromFilename(filename, param):
         num1 = re.findall(param + '\.\d+', filename)[0].replace(param + '.', '')
         return int(num1)
     else:
-        print "Error: parameter " + param + " not found in filename"
+        print("Error: parameter " + param + " not found in filename")
 
 
 ##@}
@@ -908,12 +908,12 @@ def TH2FromTGraph2D(graph, method='BinEdgeAligned',
             x_widths.append(x_vals[i] - x_vals[i - 1])
         for i in xrange(1, len(y_vals)):
             y_widths.append(y_vals[i] - y_vals[i - 1])
-        x_min = min(x_widths) if force_x_width is None else force_x_width
-        y_min = min(y_widths) if force_y_width is None else force_y_width
+        x_min = min(x_widths) if force_x_width == None else force_x_width
+        y_min = min(y_widths) if force_y_width == None else force_y_width
         x_bins = int(((x_vals[-1] - (x_vals[0] - 0.5 * x_min)) / x_min) + 0.5)
         y_bins = int(((y_vals[-1] - (y_vals[0] - 0.5 * y_min)) / y_min) + 0.5)
-        print '[TH2FromTGraph2D] x-axis binning: (%i, %g, %g)' % (x_bins, x_vals[0] - 0.5 * x_min, x_vals[0] - 0.5 * x_min + x_bins * x_min)
-        print '[TH2FromTGraph2D] y-axis binning: (%i, %g, %g)' % (y_bins, y_vals[0] - 0.5 * y_min, y_vals[0] - 0.5 * y_min + y_bins * y_min)
+        print('[TH2FromTGraph2D] x-axis binning: (%i, %g, %g)' % (x_bins, x_vals[0] - 0.5 * x_min, x_vals[0] - 0.5 * x_min + x_bins * x_min))
+        print('[TH2FromTGraph2D] y-axis binning: (%i, %g, %g)' % (y_bins, y_vals[0] - 0.5 * y_min, y_vals[0] - 0.5 * y_min + y_bins * y_min))
         # Use a number slightly smaller than 0.49999 because the TGraph2D interpolation
         # is fussy about evaluating on the boundary
         h_proto = R.TH2F('prototype', '',
@@ -1121,7 +1121,7 @@ def GraphDivide(num, den):
     for i in xrange(num.GetN()):
         if den.Eval(res.GetX()[i]) == 0: res.GetY()[i] = 0
         else: res.GetY()[i] = res.GetY()[i]/den.Eval(res.GetX()[i])
-    if type(res) is R.TGraphAsymmErrors:
+    if type(res) == R.TGraphAsymmErrors:
         for i in xrange(num.GetN()):
             if den.Eval(res.GetX()[i]) == 0: 
               res.GetEYhigh()[i] = 0
@@ -1134,7 +1134,7 @@ def GraphDivide(num, den):
 def GraphDivideErrors(num, den):
     res = num.Clone()
     for i in xrange(num.GetN()):
-        if type(res) is R.TGraphAsymmErrors:
+        if type(res) == R.TGraphAsymmErrors:
           if den.Eval(res.GetX()[i]) == 0: 
               res.GetEYhigh()[i] = 0
               res.GetEYlow()[i] = 0  
@@ -1222,7 +1222,7 @@ def MakePurityHist(sighist, stack, category):
 def RemoveGraphXDuplicates(graph):
     for i in xrange(graph.GetN() - 1):
         if graph.GetX()[i + 1] == graph.GetX()[i]:
-            # print 'Removing duplicate point (%f, %f)' % (graph.GetX()[i+1], graph.GetY()[i+1])
+            # print('Removing duplicate point (%f, %f)' % (graph.GetX()[i+1], graph.GetY()[i+1]))
             graph.RemovePoint(i + 1)
             RemoveGraphXDuplicates(graph)
             break
@@ -1236,7 +1236,7 @@ def ApplyGraphYOffset(graph, y_off):
 def RemoveGraphYAll(graph, val):
     for i in xrange(graph.GetN()):
         if graph.GetY()[i] == val:
-            print '[RemoveGraphYAll] Removing point (%f, %f)' % (graph.GetX()[i], graph.GetY()[i])
+            print('[RemoveGraphYAll] Removing point (%f, %f)' % (graph.GetX()[i], graph.GetY()[i]))
             graph.RemovePoint(i)
             RemoveGraphYAll(graph, val)
             break
@@ -1246,7 +1246,7 @@ def RemoveSmallDelta(graph, val):
     for i in xrange(graph.GetN()):
         diff = abs(graph.GetY()[i])
         if diff < val:
-            print '[RemoveSmallDelta] Removing point (%f, %f)' % (graph.GetX()[i], graph.GetY()[i])
+            print('[RemoveSmallDelta] Removing point (%f, %f)' % (graph.GetX()[i], graph.GetY()[i]))
             graph.RemovePoint(i)
             RemoveSmallDelta(graph, val)
             break
@@ -1255,8 +1255,8 @@ def RemoveSmallDelta(graph, val):
 def RemoveGraphYAbove(graph, val):
     for i in xrange(graph.GetN()):
         if graph.GetY()[i] > val:
-            # print 'Removing point (%f, %f)' % (graph.GetX()[i],
-            # graph.GetY()[i])
+            # print('Removing point (%f, %f)' % (graph.GetX()[i],
+            # graph.GetY()[i]))
             graph.RemovePoint(i)
             RemoveGraphYAbove(graph, val)
             break
@@ -1279,20 +1279,20 @@ def ImproveMinimum(graph, func, doIt=False):
                 before = graph.GetY()[i]
                 graph.GetY()[i] -= min_y
                 after = graph.GetY()[i]
-                print 'Point %i, before=%f, after=%f' % (i, before, after)
+                print('Point %i, before=%f, after=%f' % (i, before, after))
         return (fit_x, fit_y)
     search_min = fit_i - 2 if fit_i >= 2 else fit_i - 1
     search_max = fit_i + 2 if fit_i + 2 < graph.GetN() else fit_i + 1
     min_x = func.GetMinimumX(graph.GetX()[search_min], graph.GetX()[search_max])
     min_y = func.Eval(min_x)
-    print '[ImproveMinimum] Fit minimum was (%f, %f)' % (fit_x, fit_y)
-    print '[ImproveMinimum] Better minimum was (%f, %f)' % (min_x, min_y)
+    print('[ImproveMinimum] Fit minimum was (%f, %f)' % (fit_x, fit_y))
+    print('[ImproveMinimum] Better minimum was (%f, %f)' % (min_x, min_y))
     if doIt:
         for i in xrange(graph.GetN()):
             before = graph.GetY()[i]
             graph.GetY()[i] -= min_y
             after = graph.GetY()[i]
-            print 'Point %i, before=%f, after=%f' % (i, before, after)
+            print('Point %i, before=%f, after=%f' % (i, before, after))
         graph.Set(graph.GetN() + 1)
         graph.SetPoint(graph.GetN() - 1, min_x, 0)
         graph.Sort()
@@ -1306,14 +1306,14 @@ def FindCrossingsWithSpline(graph, func, yval):
     for i in xrange(graph.GetN() - 1):
         if (graph.GetY()[i] - yval) * (graph.GetY()[i + 1] - yval) < 0.:
             cross = func.GetX(yval, graph.GetX()[i], graph.GetX()[i + 1])
-            if (graph.GetY()[i] - yval) > 0. and current is None:
+            if (graph.GetY()[i] - yval) > 0. and current == None:
                 current = {
                     'lo': cross,
                     'hi': graph.GetX()[graph.GetN() - 1],
                     'valid_lo': True,
                     'valid_hi': False
                 }
-            if (graph.GetY()[i] - yval) < 0. and current is None:
+            if (graph.GetY()[i] - yval) < 0. and current == None:
                 current = {
                     'lo': graph.GetX()[0],
                     'hi': cross,
@@ -1322,16 +1322,16 @@ def FindCrossingsWithSpline(graph, func, yval):
                 }
                 intervals.append(current)
                 current = None
-            if (graph.GetY()[i] - yval) < 0. and current is not None:
+            if (graph.GetY()[i] - yval) < 0. and current != None:
                 current['hi'] = cross
                 current['valid_hi'] = True
                 intervals.append(current)
                 current = None
-            # print 'Crossing between: (%f, %f) -> (%f, %f) at %f' %
+            # print('Crossing between: (%f, %f) -> (%f, %f) at %f' %
             # (graph.GetX()[i], graph.GetY()[i], graph.GetX()[i+1],
-            # graph.GetY()[i+1], cross)
+            # graph.GetY()[i+1], cross))
             crossings.append(cross)
-    if current is not None:
+    if current != None:
         intervals.append(current)
     if len(intervals) == 0:
         current = {
@@ -1341,7 +1341,7 @@ def FindCrossingsWithSpline(graph, func, yval):
             'valid_hi': False
         }
         intervals.append(current)
-    print intervals
+    print(intervals)
     return intervals
     # return crossings
 
@@ -1361,14 +1361,14 @@ def ReZeroTGraph(gr, doIt=False):
             min_y = gr.GetY()[i]
             min_x = gr.GetX()[i]
     if min_y < fit_y:
-        print '[ReZeroTGraph] Fit minimum was (%f, %f)' % (fit_x, fit_y)
-        print '[ReZeroTGraph] Better minimum was (%f, %f)' % (min_x, min_y)
+        print('[ReZeroTGraph] Fit minimum was (%f, %f)' % (fit_x, fit_y))
+        print('[ReZeroTGraph] Better minimum was (%f, %f)' % (min_x, min_y))
         if doIt:
             for i in xrange(gr.GetN()):
                 before = gr.GetY()[i]
                 gr.GetY()[i] -= min_y
                 after = gr.GetY()[i]
-                print 'Point %i, before=%f, after=%f' % (i, before, after)
+                print('Point %i, before=%f, after=%f' % (i, before, after))
     return min_y
 
 
@@ -1377,24 +1377,24 @@ def RemoveNearMin(graph, val, spacing=None):
     n = graph.GetN()
     if n < 5:
         return
-    if spacing is None:
+    if spacing == None:
         spacing = (graph.GetX()[n - 1] - graph.GetX()[0]) / float(n - 2)
-        # print '[RemoveNearMin] Graph has spacing of %.3f' % spacing
+        # print('[RemoveNearMin] Graph has spacing of %.3f' % spacing)
     bf_i = None
     for i in xrange(graph.GetN()):
         if graph.GetY()[i] == 0.:
             bf = graph.GetX()[i]
             bf_i = i
-            # print '[RemoveNearMin] Found best-fit at %.3f' % bf
+            # print('[RemoveNearMin] Found best-fit at %.3f' % bf)
             break
-    if bf_i is None:
-        print '[RemoveNearMin] No minimum found!'
+    if bf_i == None:
+        print('[RemoveNearMin] No minimum found!')
         return
     for i in xrange(graph.GetN()):
         if i == bf_i:
             continue
         if abs(graph.GetX()[i] - bf) < (val * spacing):
-            print '[RemoveNearMin] Removing point (%f, %f) close to minimum at %f' % (graph.GetX()[i], graph.GetY()[i], bf)
+            print('[RemoveNearMin] Removing point (%f, %f) close to minimum at %f' % (graph.GetX()[i], graph.GetY()[i], bf))
             graph.RemovePoint(i)
             RemoveNearMin(graph, val, spacing)
             break
@@ -1426,7 +1426,7 @@ def FixTopRange(pad, fix_y, fraction):
     hobj.SetMaximum((fix_y - fraction * ymin) / (1. - fraction))
     if R.gPad.GetLogy():
         if ymin == 0.:
-            print 'Cannot adjust log-scale y-axis range if the minimum is zero!'
+            print('Cannot adjust log-scale y-axis range if the minimum is zero!')
             return
         maxval = (math.log10(fix_y) - fraction * math.log10(ymin)) / \
             (1 - fraction)
@@ -1466,7 +1466,7 @@ def FixBothRanges(pad, fix_y_lo, frac_lo, fix_y_hi, frac_hi):
     ymax = fix_y_hi
     if R.gPad.GetLogy():
         if ymin == 0.:
-            print 'Cannot adjust log-scale y-axis range if the minimum is zero!'
+            print('Cannot adjust log-scale y-axis range if the minimum is zero!')
             return
         ymin = math.log10(ymin)
         ymax = math.log10(ymax)
@@ -1488,7 +1488,7 @@ def FixBothRanges(pad, fix_y_lo, frac_lo, fix_y_hi, frac_hi):
 
 def GetPadYMaxInRange(pad, x_min, x_max, do_min=False):
     pad_obs = pad.GetListOfPrimitives()
-    if pad_obs is None:
+    if pad_obs == None:
         return 0.
     h_max = -99999.
     h_min = +99999.
@@ -1541,12 +1541,12 @@ def GetPadYMaxInRange(pad, x_min, x_max, do_min=False):
                     h_max = y
                 if y < h_min:
                     h_min = y
-    return h_max if do_min is False else h_min
+    return h_max if do_min == False else h_min
 
 
 def GetPadYMax(pad, do_min=False):
     pad_obs = pad.GetListOfPrimitives()
-    if pad_obs is None:
+    if pad_obs == None:
         return 0.
     xmin = GetAxisHist(pad).GetXaxis().GetXmin()
     xmax = GetAxisHist(pad).GetXaxis().GetXmax()
@@ -1786,7 +1786,7 @@ def StyleLimitBand(graph_dict, overwrite_style_dict=None):
             'exp1' : { 'FillColor' : R.kGreen},
             'exp2' : { 'FillColor' : R.kYellow}
             }
-    if overwrite_style_dict is not None:
+    if overwrite_style_dict != None:
         for key in overwrite_style_dict:
             if key in style_dict:
                 style_dict[key].update(overwrite_style_dict[key])
@@ -1803,7 +1803,7 @@ def DrawLimitBand(pad, graph_dict, draw=['exp2', 'exp1', 'exp0', 'obs'], draw_le
         'exp1' : { 'Label' : '#pm1#sigma Expected', 'LegendStyle' : 'F', 'DrawStyle' : '3SAME'},
         'exp2' : { 'Label' : '#pm2#sigma Expected', 'LegendStyle' : 'F', 'DrawStyle' : '3SAME'}
     }
-    if legend_overwrite is not None:
+    if legend_overwrite != None:
         for key in legend_overwrite:
             if key in legend_dict:
                 legend_dict[key].update(legend_overwrite[key])
@@ -1813,8 +1813,8 @@ def DrawLimitBand(pad, graph_dict, draw=['exp2', 'exp1', 'exp0', 'obs'], draw_le
     for key in draw:
         if key in graph_dict:
             graph_dict[key].Draw(legend_dict[key]['DrawStyle'])
-    if legend is not None:
-        if draw_legend is None:
+    if legend != None:
+        if draw_legend == None:
             draw_legend = reversed(draw)
         for key in draw_legend:
             if key in graph_dict: 
@@ -1850,16 +1850,16 @@ def contourFromTH2(h2in, threshold, minPoints=10, frameValue=1000.):
     conts = R.gROOT.GetListOfSpecials().FindObject('contours')
     contLevel = None
 
-    if conts is None or conts.GetSize() == 0:
-        print '*** No Contours Were Extracted!'
+    if conts == None or conts.GetSize() == 0:
+        print('*** No Contours Were Extracted!')
         return None
     ret = R.TList()
     for i in xrange(conts.GetSize()):
         contLevel = conts.At(i)
-        print '>> Contour %d has %d Graphs' % (i, contLevel.GetSize())
+        print('>> Contour %d has %d Graphs' % (i, contLevel.GetSize()))
         for j in xrange(contLevel.GetSize()):
             gr1 = contLevel.At(j)
-            print'\t Graph %d has %d points' % (j, gr1.GetN())
+            print('\t Graph %d has %d points' % (j, gr1.GetN()))
             if gr1.GetN() > minPoints:
                 ret.Add(gr1.Clone())
             # // break;
@@ -1907,8 +1907,8 @@ def frameTH2D(hist, threshold, frameValue=1000):
     for i in xrange(0, len(y_bins)):
         y_new[i + 2] = y_bins[i]
 
-    # print x_new
-    # print y_new
+    # print(x_new)
+    # print(y_new)
 
     framed = R.TH2D('%s framed' % hist.GetName(), '%s framed' % hist.GetTitle(), len(
         x_new) - 1, array('d', x_new), len(y_new) - 1, array('d', y_new))
@@ -2810,13 +2810,13 @@ def CompareHists(hists=[],
      for i in uncert_hist: 
        if norm_bins: i.Scale(1.0,"width")
     else:
-      if norm_bins and uncert_hist is not None: uncert_hist.Scale(1.0,"width")
+      if norm_bins and uncert_hist != None: uncert_hist.Scale(1.0,"width")
 
     for hist in hists:
-        # print hist.GetName()
+        # print(hist.GetName())
         # for bin_ in range(1,hist.GetNbinsX()):
-        #     print hist.GetBinContent(bin_)
-        #     print np.sqrt(hist.GetBinContent(bin_))
+        #     print(hist.GetBinContent(bin_))
+        #     print(np.sqrt(hist.GetBinContent(bin_)))
         if norm_hists: hist.Scale(1.0/hist.Integral(0, hist.GetNbinsX()+1))
         if norm_bins: hist.Scale(1.0,"width")
         h = hist.Clone()
@@ -2889,7 +2889,7 @@ def CompareHists(hists=[],
     hs.Draw("nostack same")
     
     uncert_hs = R.THStack()
-    if uncert_hist is not None:
+    if uncert_hist != None:
       if isinstance(uncert_hist, (list,)):
          col_list = [12,6,4,2,3,4]
          count = 0
@@ -2928,7 +2928,7 @@ def CompareHists(hists=[],
        legend.AddEntry(i,uncert_title[count],'f') 
        count+=1
     else:
-      if uncert_hist is not None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
+      if uncert_hist != None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
     legend.Draw("same")
     
     #CMS label and title
@@ -2972,7 +2972,7 @@ def CompareHists(hists=[],
             #    first_hist=False
             ratio_hs.Add(h.Clone())
             hist_count+=1
-        if uncert_hist is not None:
+        if uncert_hist != None:
            if isinstance(uncert_hist, (list,)):
              ratio_err_hs = R.THStack("ratio_err_hs","")
              count=0
@@ -3304,7 +3304,7 @@ def TagAndProbePlot(graphs=[],
     mg.Draw('p')
     
     mg.Draw('p')
-    if fits is not None:
+    if fits != None:
       fit_count=0  
       for i in fits:
         i.SetLineWidth(2)
@@ -3367,7 +3367,7 @@ def TagAndProbePlot(graphs=[],
         for x in ratio_graphs:  
           x.Draw("p")
           
-        if ratio_fits is not None:
+        if ratio_fits != None:
           fit_count=0  
           for i in ratio_fits:
             i.SetLineWidth(2)
@@ -3525,10 +3525,10 @@ def HTTPlotUnrolled(nodename,
         if not chan in background_schemes: continue  
         schemes = background_schemes[chan]
         for bkg in schemes:
-          if chan != 'zmm' and bkg['leg_text'] is 'Z#rightarrow#tau#tau':
+          if chan != 'zmm' and bkg['leg_text'] == 'Z#rightarrow#tau#tau':
             bkg['plot_list'] = ["EmbedZTT"]
             bkg['leg_text'] = '#mu#rightarrow#tau embedding'
-          if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
+          if chan == 'zmm' and bkg['leg_text'] == 'Z#rightarrow#mu#mu':
             bkg['plot_list'] = ["EmbedZL","ZJ"]
 
     #total_datahist = infile.Get(nodename+'/data_obs').Clone()
@@ -3646,8 +3646,8 @@ def HTTPlotUnrolled(nodename,
     if signal_scheme == 'cpprod_split':
       signal_split_schemes = ['sm_cp','ps_sm']
 
-      print sig_schemes['sm_cp'][1] 
-      print sig_schemes['sm_cp'][1][0] 
+      print(sig_schemes['sm_cp'][1])
+      print(sig_schemes['sm_cp'][1][0])
       h = infile.Get(nodename+'/'+sig_schemes['sm_cp'][1][0]+'125').Clone()
       h2 = infile.Get(nodename+'/'+sig_schemes['ps_cp'][1][0]+'125').Clone()
 
@@ -3844,7 +3844,7 @@ def HTTPlotUnrolled(nodename,
     pads[0].GetFrame().Draw()
     pads[0].RedrawAxis()
     
-    if x_lines is not None:
+    if x_lines != None:
       line = R.TLine()
       line.SetLineWidth(2)
       line.SetLineStyle(2)
@@ -3860,7 +3860,7 @@ def HTTPlotUnrolled(nodename,
           ymin = axish[1].GetMinimum()
           line.DrawLine(x,ymin,x,ymax)
         
-    if y_labels_vec is not None:
+    if y_labels_vec != None:
       pads[0].cd()  
       unit = y_labels_vec[1][2]
       var = y_labels_vec[1][0]

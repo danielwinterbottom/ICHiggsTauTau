@@ -16,12 +16,13 @@
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/CaloJet.hh"
 #include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
+#include "FWCore/Framework/interface/ProducesCollector.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 template <class U>
 struct JetDestHelper {
-  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector) {}
-  void DoSetup(edm::stream::EDProducer<> * prod) {}
+  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector, edm::ProducesCollector && producesCollector) {}
+  void DoSetup() {}
   ~JetDestHelper() {}
 };
 
@@ -33,7 +34,7 @@ struct JetDestHelper<ic::CaloJet> {
   JetIDSelectionFunctor *tight_id;
   bool do_n_carrying;
 
-  explicit JetDestHelper(const edm::ParameterSet &pset,edm::ConsumesCollector && collector)
+  explicit JetDestHelper(const edm::ParameterSet &pset,edm::ConsumesCollector && collector, edm::ProducesCollector && producesCollector)
       : do_jet_id(pset.getParameter<bool>("includeJetID")),
         input_jet_id(pset.getParameter<edm::InputTag>("inputJetID")),
         loose_id(NULL),
@@ -46,7 +47,7 @@ struct JetDestHelper<ic::CaloJet> {
                                          JetIDSelectionFunctor::TIGHT);
   }
 
-  void DoSetup(edm::stream::EDProducer<> * prod) {
+  void DoSetup() {
     std::cout << "CaloJet specific options:\n";
     PrintOptional(1, do_jet_id, "includeJetID");
     PrintOptional(1, do_n_carrying, "includeTowerCounts");
@@ -71,7 +72,7 @@ struct JetDestHelper<ic::JPTJet> {
   edm::InputTag input_vtxs;
   bool do_n_carrying;
 
-  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector)
+  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector, edm::ProducesCollector && producesCollector)
       : do_jet_id(pset.getParameter<bool>("includeJetID")),
         input_jet_id(pset.getParameter<edm::InputTag>("inputJetID")),
         loose_id(NULL),
@@ -81,6 +82,9 @@ struct JetDestHelper<ic::JPTJet> {
         input_trks(pset.getParameter<edm::InputTag>("inputTracks")),
         input_vtxs(pset.getParameter<edm::InputTag>("inputVertices")),
         do_n_carrying(pset.getParameter<bool>("includeTowerCounts")) {
+    if (request_trks) {
+      producesCollector.produces<reco::TrackRefVector>("requestedTracks");
+    }
     collector.consumes<edm::ValueMap<float>>(input_jet_id);
     collector.consumes<reco::TrackCollection>(input_trks);
     collector.consumes<reco::VertexCollection>(input_vtxs);
@@ -90,10 +94,7 @@ struct JetDestHelper<ic::JPTJet> {
                                          JetIDSelectionFunctor::TIGHT);
   }
 
-  void DoSetup(edm::stream::EDProducer<> * prod) {
-    if (request_trks) {
-      prod->produces<reco::TrackRefVector>("requestedTracks");
-    }
+  void DoSetup() {
     std::cout << "JPTJet specific options:\n";
     PrintOptional(1, do_jet_id, "includeJetID");
     PrintOptional(1, do_n_carrying, "includeTowerCounts");
@@ -134,22 +135,22 @@ struct JetDestHelper<ic::PFJet> {
   bool request_trks;
   boost::hash<reco::Track const*> track_hasher;
 
-  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector)
+  explicit JetDestHelper(const edm::ParameterSet &pset, edm::ConsumesCollector && collector, edm::ProducesCollector && producesCollector)
       : do_pu_id(pset.getParameter<bool>("includePileupID")),
         input_pu_id(pset.getParameter<edm::InputTag>("inputPileupID")),
         do_trk_vars(pset.getParameter<bool>("includeTrackBasedVars")),
         input_trks(pset.getParameter<edm::InputTag>("inputTracks")),
         input_vtxs(pset.getParameter<edm::InputTag>("inputVertices")),
         request_trks(pset.getParameter<bool>("requestTracks")) {
+          if (request_trks) {
+            producesCollector.produces<reco::TrackRefVector>("requestedTracks");
+          }
           collector.consumes<edm::ValueMap<float>>(input_pu_id);
           collector.consumes<reco::TrackCollection>(input_trks);
           collector.consumes<reco::VertexCollection>(input_vtxs);
         }
 
-  void DoSetup(edm::stream::EDProducer<> * prod) {
-    if (request_trks) {
-      prod->produces<reco::TrackRefVector>("requestedTracks");
-    }
+  void DoSetup() {
     std::cout << "PFJet specific options:\n";
     PrintOptional(1, do_pu_id, "includePileupID");
     PrintOptional(1, request_trks, "requestTracks");

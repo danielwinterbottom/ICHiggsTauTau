@@ -141,7 +141,7 @@ class Shape(object):
 
     def Print(self):
         # self.hist.Print()
-        print 'rate={:.3f}, entries={:g}, sum={:g}'.format(self.rate, self.hist.GetEntries(), self.hist.GetSumOfWeights())
+        print('rate={:.3f}, entries={:g}, sum={:g}'.format(self.rate, self.hist.GetEntries(), self.hist.GetSumOfWeights()))
 
 
 # def LumiScale(info, data, sample):
@@ -208,7 +208,7 @@ class BaseNode:
         return []
 
     def PrintTree(self, indent=0):
-        print '%s%s%s' % (' ' * indent, self.GetNameStr(), self.GetInfoStr())
+        print('%s%s%s' % (' ' * indent, self.GetNameStr(), self.GetInfoStr()))
         for node in self.SubNodes():
             node.PrintTree(indent=(indent + 2))
 
@@ -432,23 +432,23 @@ class HttWQCDCombinedNode(BaseNode):
             w_data_mc_ss = n_ss_w / self.w_mc_hmt_ss.shape.rate.n
             w_data_mc_os = w_data_mc_ss
 
-            print 'n_hmt_os:  %s' % n_hmt_os
-            print 'n_hmt_ss:  %s' % n_hmt_ss
-            print 'w_os_ss:   %s' % w_os_ss
-            print 'n_ss_w:    %s' % n_ss_w
-            print 'n_ss_qcd:  %s' % n_ss_qcd
-            print 'n_os_w:    %f' % (n_ss_w * w_os_ss.n)
-            print 'n_os_qcd:  %f' % (n_ss_qcd * qcd_os_ss)
-            print 'w_data_mc: %f' % w_data_mc_ss
+            print('n_hmt_os:  %s' % n_hmt_os)
+            print('n_hmt_ss:  %s' % n_hmt_ss)
+            print('w_os_ss:   %s' % w_os_ss)
+            print('n_ss_w:    %s' % n_ss_w)
+            print('n_ss_qcd:  %s' % n_ss_qcd)
+            print('n_os_w:    %f' % (n_ss_w * w_os_ss.n))
+            print('n_os_qcd:  %f' % (n_ss_qcd * qcd_os_ss))
+            print('w_data_mc: %f' % w_data_mc_ss)
         elif self.strategy == 'run1':
             # Assume data-bkg in each high mt region is just W
             w_data_mc_os = n_os.n / self.w_mc_hmt_os.shape.rate.n
             w_data_mc_ss = n_ss.n / self.w_mc_hmt_ss.shape.rate.n
 
-            print 'n_hmt_os:     %s' % n_hmt_os
-            print 'n_hmt_ss:     %s' % n_hmt_ss
-            print 'w_data_mc_os: %f' % w_data_mc_os
-            print 'w_data_mc_ss: %f' % w_data_mc_ss
+            print('n_hmt_os:     %s' % n_hmt_os)
+            print('n_hmt_ss:     %s' % n_hmt_ss)
+            print('w_data_mc_os: %f' % w_data_mc_os)
+            print('w_data_mc_ss: %f' % w_data_mc_ss)
         elif self.strategy == 'mc':
             # MC normalisation as-is
             w_data_mc_os = 1.0
@@ -466,9 +466,9 @@ class HttWQCDCombinedNode(BaseNode):
         # Low mt OS QCD always defined as SS QCD * qcd_os_ss
         self.qcd_lmt_os = self.qcd_os_ss * self.qcd_lmt_ss
 
-        print 'data_lmt_ss:   %s' % self.data_lmt_ss.shape.rate
-        print 'sub_lmt_ss:    %s' % self.sub_lmt_ss.shape.rate
-        print 'w_lmt_ss:      %s' % self.w_lmt_ss.rate
+        print('data_lmt_ss:   %s' % self.data_lmt_ss.shape.rate)
+        print('sub_lmt_ss:    %s' % self.sub_lmt_ss.shape.rate)
+        print('w_lmt_ss:      %s' % self.w_lmt_ss.rate)
 
         if self.strategy == 'simultaneous':
             self.qcd_hmt_ss = self.data_hmt_ss.shape - self.sub_hmt_ss.shape - self.w_hmt_ss
@@ -613,16 +613,16 @@ class Analysis(object):
     def Run(self):
         manifest = []
         self.nodes.AddRequests(manifest)
-        #print manifest
+        #print(manifest)
         drawdict = defaultdict(list)
         outdict = defaultdict(list)
         for entry in manifest:
             drawdict[entry[0]].append(entry[1:3])
             outdict[entry[0]].append(entry[3:5])
-        # print drawdict
-        # print outdict
+        # print(drawdict)
+        # print(outdict)
         for sample in drawdict:
-            print sample
+            print(sample)
             res = self.trees[sample].Draw(drawdict[sample], compiled=self.compiled)
             res = [x for x in res if isinstance(x, ROOT.TH1)]
             for i, hist in enumerate(res):
@@ -644,7 +644,7 @@ class Analysis(object):
                 else:
                     name = os.path.splitext(os.path.basename(f))[0]
                 if name in seen_names:
-                    print '>> Skipping %s because we already loaded it' % f
+                    print('>> Skipping %s because we already loaded it' % f)
                     continue
                 seen_names.add(name)
                 newname = name
@@ -652,7 +652,7 @@ class Analysis(object):
                     newname = self.remaps[name]
                 self.trees[newname] = TTreeEvaluator(tree, f)
             testf.Close()
-            #print self.trees
+            #print(self.trees)
     
     def writeSubnodes(self,WriteSubnodes):
         self.WriteSubnodes = WriteSubnodes
@@ -671,7 +671,7 @@ class Analysis(object):
             lumi = self.info[scaleTo]['lumi']
             for name, data in self.info.iteritems():
                 if 'xs' in data and 'evt' in data:
-                    #print name, data
+                    #print(name, data)
                     data['sf'] = lumi / (float(data['evt']) / float(data['xs']))
                 else:
                     data['sf'] = 1.0

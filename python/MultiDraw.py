@@ -84,7 +84,7 @@ def MultiDraw(self, Formulae, Compiled=False):
 
         split_var = origFormula.split(';')
         origFormula = split_var[0]
-        print "Formula: ", origFormula, weight
+        print("Formula: ", origFormula, weight)
 
         var_binned_x = False
         var_binned_y = False
@@ -98,7 +98,7 @@ def MultiDraw(self, Formulae, Compiled=False):
             var_binned_x = True
             pos_open = origFormula.rfind('[')
             pos_close = origFormula.rfind(']')
-        if pos_open is -1 or pos_close is -1 or pos_open > pos_close:
+        if pos_open == -1 or pos_close == -1 or pos_open > pos_close:
             raise RuntimeError('You bus')
         bin_args_x = GetBinningArgs(origFormula[pos_open+1:pos_close], var_binned_x)
         formula = origFormula[:pos_open].strip()
@@ -114,7 +114,7 @@ def MultiDraw(self, Formulae, Compiled=False):
                 var_binned_y = True
                 pos_open_y = formula.rfind('[')
                 pos_close_y = formula.rfind(']')
-            if pos_open_y is -1 or pos_close_y is -1 or pos_open_y > pos_close_y:
+            if pos_open_y == -1 or pos_close_y == -1 or pos_open_y > pos_close_y:
                 raise RuntimeError('You bus')
             bin_args_y = GetBinningArgs(formula[pos_open_y + 1:pos_close_y], var_binned_y)
             formula = origFormula[:pos_open_y].strip()
@@ -129,7 +129,7 @@ def MultiDraw(self, Formulae, Compiled=False):
                     var_binned_z = True
                     pos_open_z = formula.rfind('[')
                     pos_close_z = formula.rfind(']')
-                if pos_open_z is -1 or pos_close_z is -1 or pos_open_z > pos_close_z:
+                if pos_open_z == -1 or pos_close_z == -1 or pos_open_z > pos_close_z:
                     raise RuntimeError('You bus')
                 bin_args_z = GetBinningArgs(formula[pos_open_z + 1:pos_close_z], var_binned_z)
                 formula = formula[:pos_open_z].split(',') 
@@ -190,30 +190,29 @@ def MultiDraw(self, Formulae, Compiled=False):
         fname = "%sSelector%s" % (self.GetName(), randomword(7))
         self.MakeSelector(fname, "=legacy")
         for line in fileinput.input('%s.h' % fname, inplace=1):
-            print line,
+            print(line),
             if line.startswith('#include <TSelector.h>'):
-                print '#include <TH1F.h>'
-                print '#include <TObjArray.h>'
+                print('#include <TH1F.h>')
+                print('#include <TObjArray.h>')
             if line.startswith('   virtual void    Terminate();'):
-                print '\n   TObjArray *hists;'
+                print('\n   TObjArray *hists;')
 
         for line in fileinput.input('%s.C' % fname, inplace=1):
             if line.startswith('   return kTRUE;'):
-                print '   %s::GetEntry(entry);' % fname
-                print '   double weight_value = 0.;'
+                print('   %s::GetEntry(entry);' % fname)
+                print('   double weight_value = 0.;')
                 for i, f in enumerate(formulaeStr):
-                    print '   weight_value = %s;' % (weightsStr[i])
-                    print '   if (weight_value) static_cast<TH1D*>(hists->UncheckedAt(%i))->Fill(%s, weight_value);' % (i, f)
-                    # print '  std::cout << "%i %s:" << %s << "\\n";' % (i, weightsStr[i], weightsStr[i])
-                print '   if (entry % 50000 == 0) {'
-                print '      std::cout << "Done " << (double(entry) / (double(fChain->GetEntries())) * 100.0) << "%    \\r";'
-                print '      std::cout.flush();'
-                print '   }'
+                    print('   weight_value = %s;' % (weightsStr[i]))
+                    print('   if (weight_value) static_cast<TH1D*>(hists->UncheckedAt(%i))->Fill(%s, weight_value);' % (i, f))
+                print('   if (entry % 50000 == 0) {')
+                print('      std::cout << "Done " << (double(entry) / (double(fChain->GetEntries())) * 100.0) << "%    \\r";')
+                print('      std::cout.flush();')
+                print('   }')
 
-            print line,
+            print(line),
             if line.startswith('#include <TStyle.h>'):
-                print '#include<iostream>'
-                print 'using std::abs;'
+                print('#include<iostream>')
+                print('using std::abs;')
         ROOT.gROOT.LoadMacro('%s.C++' % fname)
         selector = getattr(ROOT, fname)()
         objarr = MakeTObjArray(results, takeOwnership=False)
@@ -244,7 +243,7 @@ def MultiDraw(self, Formulae, Compiled=False):
                MakeTObjArray(results, takeOwnership=False),
                len(formulae))
 
-    print "Took %.2fs" % (time() - start), " " * 20
+    print("Took %.2fs" % (time() - start), " " * 20)
     return results
 
 ROOT.TTree.MultiDraw = MultiDraw
