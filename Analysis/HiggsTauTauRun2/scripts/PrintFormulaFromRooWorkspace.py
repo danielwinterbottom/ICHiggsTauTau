@@ -41,29 +41,40 @@ f = ROOT.TFile(input)
 w = f.Get("w")
 RooFuncList = []
 func = w.function(function)
-it = 0
-func,RooFuncList = GetFormula(func,func.formula().GetExpFormula().Data(),RooFuncList,0)
-for i in RooFuncList:
-  if str(type(i)) == "<class 'ROOT.RooFormulaVar'>":
-    func_new,RooFuncList = GetFormula(i,func,RooFuncList,1)
-    func = func.replace('PAR'+str(it)+'_','('+func_new+')')
-    RooFuncList[it] = None
-  it += 1
+if str(type(func)) == "<class 'ROOT.RooFormulaVar'>":
+  it = 0
+  func,RooFuncList = GetFormula(func,func.formula().GetExpFormula().Data(),RooFuncList,0)
+  for i in RooFuncList:
+    if str(type(i)) == "<class 'ROOT.RooFormulaVar'>":
+      func_new,RooFuncList = GetFormula(i,func,RooFuncList,1)
+      func = func.replace('PAR'+str(it)+'_','('+func_new+')')
+      RooFuncList[it] = None
+    it += 1
+  
+  for i in range(0,len(RooFuncList)):
+    if RooFuncList[i] != None:
+      func = func.replace("PAR"+str(i)+'_',RooFuncList[i].GetName())
+  
+  if replace != None:
+    replace_dict = {}
+    for c,v in replace.items():
+      math_list=['(',')','+','-','*','/','<','>','=',',']
+      for i in [m.start() for m in re.finditer(c, func)]:
+        if func[i-1] in math_list and func[i+len(c)] in math_list:
+          replace_dict[i] = c
+    b = 0
+    for k in sorted(replace_dict):
+      func = func[:k+b] + replace[replace_dict[k]] + func[k+len(replace_dict[k])+b:]
+      b += len(replace[replace_dict[k]]) - len(replace_dict[k])
+  
+  print func
 
-for i in range(0,len(RooFuncList)):
-  if RooFuncList[i] != None:
-    func = func.replace("PAR"+str(i)+'_',RooFuncList[i].GetName())
+elif str(type(func)) == "<class 'ROOT.RooHistFunc'>":
+  func.dataHist().Print("V")
+  a = func.dataHist()
+  var_1 = ROOT.RooRealVar("e_trg_ic_mc_binningvar_e_pt","e_trg_ic_mc_binningvar_e_pt", 108.615)
+  var_2 = ROOT.RooRealVar("e_trg_ic_mc_binningvar_e_abs_eta","e_trg_ic_mc_binningvar_e_abs_eta", 0.180999)
+  a.get(a.getIndex(ROOT.RooArgSet(var_1,var_2)))
+  print func.dataHist().weight()
+  print func.GetName()
 
-if replace != None:
-  replace_dict = {}
-  for c,v in replace.items():
-    math_list=['(',')','+','-','*','/','<','>','=',',']
-    for i in [m.start() for m in re.finditer(c, func)]:
-      if func[i-1] in math_list and func[i+len(c)] in math_list:
-        replace_dict[i] = c
-  b = 0
-  for k in sorted(replace_dict):
-    func = func[:k+b] + replace[replace_dict[k]] + func[k+len(replace_dict[k])+b:]
-    b += len(replace[replace_dict[k]]) - len(replace_dict[k])
-
-print func

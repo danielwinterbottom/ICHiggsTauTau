@@ -526,7 +526,7 @@ namespace ic {
     if (mt > 0) {
       return std::sqrt(mt);
     } else {
-      std::cerr << "Transverse mass would be negative! Returning 0.0" << std::endl;
+      //std::cerr << "Transverse mass would be negative! Returning 0.0" << std::endl;
     }
     return 0.0;
   }

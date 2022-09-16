@@ -62,13 +62,13 @@ defaults = {
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
-    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"","gU":"1","only_sig":False
-
+    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"","gU":"1","only_sig":False,"lines":[],"y_var_titles":[],"y_labels":[]
 }
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
     config.read([options.cfg])
+    old_defaults = defaults.copy()
     defaults.update(dict(config.items("Defaults")))
 
 parser = argparse.ArgumentParser(
@@ -329,6 +329,8 @@ parser.add_argument("--extra_name", dest="extra_name", type=str,
     help="If set, adds an additional string to the output datacard name")
 parser.add_argument("--embedding", dest="embedding", action='store_true',
     help="If option is speficied then use embedded samples for ZTT templates.")
+parser.add_argument("--embedding_zmm", dest="embedding_zmm", action='store_true',
+    help="If option is speficied then use embedded samples for ZMM templates.")
 parser.add_argument("--syst_embedding_tt", dest="syst_embedding_tt", type=str,
     help="If set, adds systematic templates for embedding corresponding to TTbar shift of +/-10\% ")
 parser.add_argument("--vbf_background", dest="vbf_background", action='store_true',
@@ -389,11 +391,79 @@ parser.add_argument("--only_sig", dest="only_sig", action='store_true',
     help="Will only draw signal histograms")
 parser.add_argument("--split_vlq", dest="split_vlq", action='store_true',
     help="Will split vlq signal up into events with bb, sb and ss parents")
+parser.add_argument("--norm_to_one", dest="norm_to_one", action='store_true',
+    help="Normalise data and total bkg histograms to one")
+parser.add_argument("--batch", dest="batch", action='store_true',
+    help="Submit job to batch")
+parser.add_argument("--load", dest="load", action='store_true',
+    help="Load from root file")
+parser.add_argument("--lines", dest="lines", type=list,
+    help="Number of lines, if using load option need")
+parser.add_argument("--y_var_titles", dest="y_var_titles", type=list,
+    help="y_var_titles, if using load option need")
+parser.add_argument("--y_labels", dest="y_labels", type=list,
+    help="y_labels, if using load option need")
+parser.add_argument("--split_fakes", dest="split_fakes", action='store_true',
+    help="Split bkgs into muons fakes and not muon fakes")
+parser.add_argument("--auto_rebinning", dest="auto_rebinning", action='store_true',
+    help="Do auto rebinning")
+parser.add_argument("--bin_threshold", dest="bin_threshold", type=float, default=100000.0,
+    help="Threshold for bin auto rebin value")
+parser.add_argument("--bin_uncert_fraction", dest="bin_uncert_fraction", type=float, default=0.1,
+    help="Threshold for bin auto rebin fractional uncertainty")
 
 
+cfg_name = options.cfg
 
+options = parser.parse_args(remaining_argv)  
 
-options = parser.parse_args(remaining_argv)   
+if options.batch: 
+  cmd = "python scripts/HiggsTauTauPlot.py"
+  if cfg_name != None: cmd += " --cfg={}".format(cfg_name)
+  for key, val in vars(options).items():
+    if key in old_defaults.keys() and not key in ["cfg","batch"]:
+      if val != defaults[key]: 
+        if type(val) == str: val = "'{}'".format(val)
+        if not val in [False,True]:
+          cmd += " --{}={}".format(key,val)
+        elif val == True:
+          cmd += " --{}".format(key)
+    elif not key in ["cfg","batch"]:
+      if type(val) == str: val = "\"{}\"".format(val)
+      if not val in [False,True]:
+        cmd += " --{}={}".format(key,val)
+      elif val == True:
+        cmd += " --{}".format(key)
+
+  def CreateBatchJob(name,cmssw_base,cmd_list):
+    if os.path.exists(job_file): os.system('rm %(name)s' % vars())
+    os.system('echo "#!/bin/bash" >> %(name)s' % vars())
+    os.system('echo "cd %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2" >> %(name)s' % vars())
+    os.system('echo "source /vols/grid/cms/setup.sh" >> %(name)s' % vars())
+    os.system('echo "export SCRAM_ARCH=slc6_amd64_gcc481" >> %(name)s' % vars())
+    os.system('echo "eval \'scramv1 runtime -sh\'" >> %(name)s' % vars())
+    os.system('echo "source %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/setup_libs.sh" >> %(name)s' % vars())
+    os.system('echo "ulimit -c 0" >> %(name)s' % vars())
+    for cmd in cmd_list:
+      os.system('echo "%(cmd)s" >> %(name)s' % vars())
+    os.system('chmod +x %(name)s' % vars())
+    print "Created job:",name
+  
+  def SubmitBatchJob(name,time=180,memory=24,cores=1):
+    error_log = name.replace('.sh','_error.log')
+    output_log = name.replace('.sh','_output.log')
+    if os.path.exists(error_log): os.system('rm %(error_log)s' % vars())
+    if os.path.exists(output_log): os.system('rm %(output_log)s' % vars())
+    if cores>1: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -pe hep.pe %(cores)s -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
+    else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars()) 
+
+  cmssw_base = os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2','')
+  job_file=options.outputfolder+'/batch_job_'+options.var.split('[')[0]+'_'+options.channel+'_'+options.year+'.sh'
+  if options.extra_name != "": job_file = job_file.replace(".sh","_"+options.extra_name+".sh")
+  job_file = job_file.replace("(","_").replace(")","_").replace(",","_")
+  CreateBatchJob(job_file,cmssw_base,[cmd])
+  SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+  exit()
 
 print ''
 print '################### Options ###################'
@@ -533,11 +603,10 @@ elif options.analysis in ['mssmrun2','vlq']:
 
     if options.channel == 'mt':
         if options.singletau:
-          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
           #cats['baseline'] = '(iso_1<0.15 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
-          cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
-
-
+          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
+          #cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && trg_singlemuon)' % vars()
         else:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && pt_2>30 && ((trg_mutaucross&&pt_2>%(t_lowpt_mt)s&&fabs(eta_2)<2.1&&pt_1<%(m_lowpt)s)||(trg_singlemuon&&pt_1>=%(m_lowpt)s)))' % vars()
 
@@ -604,7 +673,10 @@ elif options.channel == 'em':
 elif options.channel == 'zmm':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.15)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
-    if options.era in ['cpsummer17','cp18']: cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
+    if options.era in ['cpsummer17','cp18']: 
+      #cats['baseline'] = '(pt_1>25 && iso_1<0.15 && iso_2<0.15 && trg_singlemuon)'
+      #cats['baseline'] = '((m_vis>70 && m_vis<110) && (pt_1>10 && pt_1<200) && tau_dR_1<0.3 && tau_charge==q_1 && tau_dR_2>0.5 && tau_eta_1<2.3 && pt_2>28 && tau_pt_1>20 && eta_2<2.1 && iso_2<0.15 && trg_singlemuon && tau_dm_1!=-1 && mt_2<30)'
+      cats['baseline'] = '(tau_charge==q_1 && tau_dR_2>0.5 && tau_eta_1<2.3 && pt_2>28 && tau_pt_1>20 && eta_2<2.1 && iso_2<0.15 && trg_singlemuon && tau_dm_1!=-1 && mt_2<30)'
 elif options.channel == 'zee':
     cats['baseline'] = '(iso_1<0.1 && iso_2<0.1)'
     if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'mvadm2016']: cats['baseline'] = '(iso_1<0.1 && iso_2<0.1 && trg_singleelectron && fabs(wt)<2)'
@@ -678,6 +750,8 @@ cats['qcd_shape_comp']=''
 if options.channel == "tt":
   cats['NbtagGt1'] = '(n_deepbjets>0)'
   cats['Nbtag0'] = '(n_deepbjets==0)'
+  cats['Nbtag0_Njets0'] = '(n_deepbjets==0 && !(n_jets>0 && jpt_1>50))'
+  cats['Nbtag0_NjetsGt1'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50)'
   cats['Nbtag0_interference'] = '(n_deepbjets==0 && vlq_s_bdt_multiclass<0.5)'
   cats['NbtagGt1_interference'] = '(n_deepbjets>0 && vlq_s_bdt_multiclass<0.5)'
   cats['Nbtag0_signal'] = '(n_deepbjets==0 && vlq_s_bdt_multiclass>0.5)'
@@ -689,11 +763,21 @@ elif options.channel == "em":
   cats['NbtagGt1'] = '(n_deepbjets>0 && pzeta>-35)'
   cats['Nbtag0'] = '(n_deepbjets==0 && pzeta>-35)'
 
-
-
+cats['Nbtag0_NjetsGt1_STMETGt800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800)'
+cats['Nbtag0_NjetsGt1_STMET400to800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800)'
 
 cats['Nbtag0_MTLt40'] = '(n_deepbjets==0 && mt_1<40)'
 cats['Nbtag0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
+cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_Njets0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && n_jets>0 && jpt_1>50)'
+cats['Nbtag0_NjetsGt1_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && n_jets>0 && jpt_1>50)'
+cats['Nbtag0_Njets0_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_NjetsGt1_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50)'
+
+cats['Nbtag0_NjetsGt1_MTLt70_STMETGt800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800)'
+cats['Nbtag0_NjetsGt1_MTLt70_STMET400to800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800)'
+
 cats['NbtagGt1_MTLt40'] = '(n_deepbjets>0 && mt_1<40)'
 cats['NbtagGt1_MT40To70'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
 
@@ -709,6 +793,13 @@ cats['Nbtag0_MT40To70_MHGt200'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && svfi
 cats['Nbtag0_DZetaGt30'] = '(pzeta>30 && n_deepbjets==0)'
 cats['Nbtag0_DZetam10To30'] = '(pzeta>-10 && pzeta<30 && n_deepbjets==0)'
 cats['Nbtag0_DZetam35Tom10'] = '(pzeta>-35 && pzeta<-10 && n_deepbjets==0)'
+cats['Nbtag0_Njets0_DZetaGt30'] = '(pzeta>30 && n_deepbjets==0 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_Njets0_DZetam10To30'] = '(pzeta>-10 && pzeta<30 && n_deepbjets==0 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_Njets0_DZetam35Tom10'] = '(pzeta>-35 && pzeta<-10 && n_deepbjets==0 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_NjetsGt1_DZetaGt30'] = '(pzeta>30 && n_deepbjets==0 && n_jets>0 && jpt_1>50)'
+cats['Nbtag0_NjetsGt1_DZetam10To30'] = '(pzeta>-10 && pzeta<30 && n_deepbjets==0 && n_jets>0 && jpt_1>50)'
+cats['Nbtag0_NjetsGt1_DZetam35Tom10'] = '(pzeta>-35 && pzeta<-10 && n_deepbjets==0 && n_jets>0 && jpt_1>50)'
+
 cats['NbtagGt1_DZetaGt30'] = '(pzeta>30 && n_deepbjets>0)'
 cats['NbtagGt1_DZetam10To30'] = '(pzeta>-10 && pzeta<30 && n_deepbjets>0)'
 cats['NbtagGt1_DZetam35Tom10'] = '(pzeta>-35 && pzeta<-10 && n_deepbjets>0)'
@@ -1515,10 +1606,19 @@ if options.era in ['cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17',
   if options.channel in ['mt','et']:
     z_sels['zj_sel'] = '(gen_match_2==6)'
     z_sels['zl_sel'] = '(gen_match_2!=6&&!(%s))' % z_sels['ztt_sel']
-    vv_sels['vvt_sel'] = '(gen_match_2<6)'
+    #vv_sels['vvt_sel'] = '(gen_match_2<6)'
+    vv_sels['vvt_sel'] = '(gen_match_2==5)'
     vv_sels['vvj_sel'] = '(gen_match_2==6)'
-    top_sels['ttt_sel'] = '(gen_match_2<6)'
+    #top_sels['ttt_sel'] = '(gen_match_2<6)'
+    top_sels['ttt_sel'] = '(gen_match_2==5)'
     top_sels['ttj_sel'] = '(gen_match_2==6)'
+    vv_sels['vvm_sel'] = '(gen_match_2==2  || gen_match_2==4)'
+    vv_sels['vvnm_sel'] = '!(gen_match_2==2  || gen_match_2==4)'
+    top_sels['ttm_sel'] = '(gen_match_2==2  || gen_match_2==4)'
+    top_sels['ttnm_sel'] = '!(gen_match_2==2  || gen_match_2==4)'
+    vv_sels['vve_sel'] = '(gen_match_2==1  || gen_match_2==3)'
+    top_sels['tte_sel'] = '(gen_match_2==1  || gen_match_2==3)'
+
   elif options.channel == 'tt':
     z_sels['ztt_sel'] = '(gen_match_1==5&&gen_match_2==5)'
     z_sels['zl_sel'] = '(!(gen_match_1==6 || gen_match_2==6) && !(gen_match_1==5&&gen_match_2==5))'
@@ -1556,6 +1656,12 @@ if options.embedding:
       if "ztt_sel" not in sel: top_sels[sel]+='&&'+extra_top_sel
     for sel in vv_sels: 
       if "ztt_sel" not in sel: vv_sels[sel]+='&&'+extra_top_sel
+    top_sels["ttm_sel"] =  top_sels["ttt_sel"]+"&&"+"(gen_match_2==4 || gen_match_2==2)"
+    top_sels["tte_sel"] =  top_sels["ttt_sel"]+"&&"+"(gen_match_2==3 || gen_match_2==1)"
+    top_sels["ttlt_sel"] =  top_sels["ttt_sel"]+"&&"+"(gen_match_2==5 && gen_match_1!=4)"
+    vv_sels["vvm_sel"] = vv_sels["vvt_sel"]+"&&"+"(gen_match_2==4 || gen_match_2==2)"
+    vv_sels["vve_sel"] = vv_sels["vvt_sel"]+"&&"+"(gen_match_2==3 || gen_match_2==1)"
+    vv_sels["vvlt_sel"] =  vv_sels["vvt_sel"]+"&&"+"(gen_match_2==5 && gen_match_1!=4)"
     top_sels_embed["ttt_ztt_sel"] = top_sels["ttt_ztt_sel"]
     top_sels_embed["vvt_ztt_sel"] = vv_sels["vvt_ztt_sel"]
  
@@ -1730,7 +1836,7 @@ if options.era in ['cp18']:
  
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-        if options.analysis in ['mssmrun2','vlq']  and options.channel == 'mt': data_samples += ['TauA','TauB','TauC','TauD']
+        #if options.analysis in ['mssmrun2','vlq']  and options.channel == 'mt': data_samples += ['TauA','TauB','TauC','TauD']
     if options.channel == 'em':
         data_samples = ['MuonEGA','MuonEGB','MuonEGC','MuonEGD']
     if options.channel == 'et' or options.channel == 'zee':
@@ -3106,6 +3212,31 @@ def GetTTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top
   full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttt_sel'])
   return ana.SummedFactory('TTT'+add_name, samples, plot, full_selection)
   
+def GetTTMNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttm_sel'])
+  return ana.SummedFactory('TTM'+add_name, samples, plot, full_selection)
+
+def GetTTNMNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttnm_sel'])
+  return ana.SummedFactory('TTNM'+add_name, samples, plot, full_selection)
+
+
+def GetTTENode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['tte_sel'])
+  return ana.SummedFactory('TTE'+add_name, samples, plot, full_selection)
+
+def GetTTLTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, top_sels['ttlt_sel'])
+  return ana.SummedFactory('TTLT'+add_name, samples, plot, full_selection)
+
 def GetTTTforZTTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', top_sels={}, get_os=True):
   if get_os: OSSS = 'os'
   else: OSSS = '!os'
@@ -3124,6 +3255,16 @@ def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', to
   if doTTT:
       ttt_node = GetTTTNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
       ana.nodes[nodename].AddNode(ttt_node)
+
+      #ttm_node = GetTTMNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
+      #ana.nodes[nodename].AddNode(ttm_node)
+
+      #tte_node = GetTTENode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
+      #ana.nodes[nodename].AddNode(tte_node)
+
+      #ttlt_node = GetTTLTNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
+      #ana.nodes[nodename].AddNode(ttlt_node)
+
       if options.embedding:
         ttt_for_ztt_node = GetTTTforZTTNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
         ana.nodes[nodename].AddNode(ttt_for_ztt_node)
@@ -3142,11 +3283,52 @@ def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', to
       ttj_node = GetTTJNode(ana, add_name, samples, plot, wt_, sel, cat, top_sels, get_os)
       ana.nodes[nodename].AddNode(ttj_node)
 
+  if options.split_fakes:
+    ttm_node = GetTTMNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+    ana.nodes[nodename].AddNode(ttm_node)
+
+    tte_node = GetTTENode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+    ana.nodes[nodename].AddNode(tte_node)
+
+    ttt_node = GetTTTNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+    ana.nodes[nodename].AddNode(ttt_node)
+
+    ttj_node = GetTTJNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+    ana.nodes[nodename].AddNode(ttj_node)
+
+    #ttnm_node = GetTTNMNode(ana, add_name, samples, plot, wt, sel, cat, top_sels, get_os)
+    #ana.nodes[nodename].AddNode(ttnm_node)
+
 def GetVVTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True): 
   if get_os: OSSS = 'os'
   else: OSSS = '!os'  
   full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvt_sel'])
   return ana.SummedFactory('VVT'+add_name, samples, plot, full_selection)
+
+def GetVVMNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvm_sel'])
+  return ana.SummedFactory('VVM'+add_name, samples, plot, full_selection)
+
+def GetVVNMNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvnm_sel'])
+  return ana.SummedFactory('VVNM'+add_name, samples, plot, full_selection)
+
+def GetVVENode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vve_sel'])
+  return ana.SummedFactory('VVE'+add_name, samples, plot, full_selection)
+
+def GetVVLTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True):
+  if get_os: OSSS = 'os'
+  else: OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS, vv_sels['vvlt_sel'])
+  return ana.SummedFactory('VVLT'+add_name, samples, plot, full_selection)
+
 
 def GetVVTforZTTNode(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}, get_os=True):
   if get_os: OSSS = 'os'
@@ -3165,6 +3347,13 @@ def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
   if doVVT:
       vvt_node = GetVVTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
       ana.nodes[nodename].AddNode(vvt_node)
+
+      #vve_node = GetVVENode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+      #ana.nodes[nodename].AddNode(vve_node)
+
+      #vvlt_node = GetVVLTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+      #ana.nodes[nodename].AddNode(vvlt_node)
+
       if options.embedding:
         vvt_for_ztt_node = GetVVTforZTTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
         ana.nodes[nodename].AddNode(vvt_for_ztt_node)
@@ -3181,6 +3370,22 @@ def GenerateVV(ana, add_name ='', samples=[], plot='', wt='', sel='', cat='', vv
   if doVVJ:
       vvj_node = GetVVJNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
       ana.nodes[nodename].AddNode(vvj_node)
+
+  if options.split_fakes:
+    vvm_node = GetVVMNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+    ana.nodes[nodename].AddNode(vvm_node)
+
+    vve_node = GetVVENode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+    ana.nodes[nodename].AddNode(vve_node)
+
+    vvt_node = GetVVTNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+    ana.nodes[nodename].AddNode(vvt_node)
+
+    vvj_node = GetVVJNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+    ana.nodes[nodename].AddNode(vvj_node)
+    #vvnm_node = GetVVNMNode(ana, add_name, samples, plot, wt, sel, cat, vv_sels, get_os)
+    #ana.nodes[nodename].AddNode(vvnm_node)
+
       
 def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
   if get_os:
@@ -3190,6 +3395,57 @@ def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_
   full_selection = BuildCutString(wt, sel, cat, OSSS)
   wg_node = ana.SummedFactory('WGam'+add_name, samples, plot, full_selection)
   return wg_node
+
+def GetWMNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'
+  sel = "(gen_match_2==2  || gen_match_2==4) && (" + sel + ")" 
+  full_selection = BuildCutString(wt, sel, cat, OSSS)
+  wm_node = ana.SummedFactory('WM'+add_name, samples, plot, full_selection)
+  return wm_node
+
+def GetWENode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'
+  sel = "(gen_match_2==1  || gen_match_2==3) && (" + sel + ")"
+  full_selection = BuildCutString(wt, sel, cat, OSSS)
+  we_node = ana.SummedFactory('WE'+add_name, samples, plot, full_selection)
+  return we_node
+
+def GetWTNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'
+  sel = "(gen_match_2==5) && (" + sel + ")"
+  full_selection = BuildCutString(wt, sel, cat, OSSS)
+  wt_node = ana.SummedFactory('WT'+add_name, samples, plot, full_selection)
+  return wt_node
+
+def GetWJNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'
+  sel = "(gen_match_2==6) && (" + sel + ")"
+  full_selection = BuildCutString(wt, sel, cat, OSSS)
+  wj_node = ana.SummedFactory('WJ'+add_name, samples, plot, full_selection)
+  return wj_node
+
+def GetWNMNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'
+  sel = "(!(gen_match_2==2  || gen_match_2==4)) && (" + sel + ")"  
+  full_selection = BuildCutString(wt, sel, cat, OSSS)
+  wnm_node = ana.SummedFactory('WNM'+add_name, samples, plot, full_selection)
+  return wnm_node
+
 
 def GetWNode(ana, name='W', samples=[], data=[], plot='',plot_unmodified='', wt='', sel='', cat='', cat_data='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
   if get_os: OSSS = 'os'
@@ -3349,6 +3605,21 @@ def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', plo
   if options.channel == 'em':
       w_total_node.AddNode(GetWNode(ana, w_node_name+add_name, samples, data, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_factor, get_os))
       ana.nodes[nodename].AddNode(w_total_node)
+  if options.split_fakes:
+    wm_node = GetWMNode(ana, add_name, samples, plot, wt, sel, cat, get_os)
+    ana.nodes[nodename].AddNode(wm_node)
+
+    we_node = GetWENode(ana, add_name, samples, plot, wt, sel, cat, get_os)
+    ana.nodes[nodename].AddNode(we_node)
+
+    wt_node = GetWTNode(ana, add_name, samples, plot, wt, sel, cat, get_os)
+    ana.nodes[nodename].AddNode(wt_node)
+
+    wj_node = GetWJNode(ana, add_name, samples, plot, wt, sel, cat, get_os)
+    ana.nodes[nodename].AddNode(wj_node)
+
+    #wnm_node = GetWNMNode(ana, add_name, samples, plot, wt, sel, cat, get_os)
+    #ana.nodes[nodename].AddNode(wnm_node)
 
 def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,OSSS,includeW=False,w_shift=None):
   subtract_node = SummedNode('total_bkg'+add_name)
@@ -4235,8 +4506,6 @@ def PDFUncerts(nodename, infile):
     alphas_uncert_error = math.sqrt(alphas_down_error**2+alphas_up_error**2)/(alphas_up-alphas_down)*alphas_uncert
     #(alphas_up_nosf-alphas_down_nosf)/2/nominal
     #print alphas_uncert*100, '\\% $\\pm$', alphas_uncert_error*100,'\\%'
-  print outstring1
-  print outstring2
 
 def DONLOUncerts(nodename,infile):
     def LargestDiff(nominal,scales_shifted):
@@ -4325,7 +4594,6 @@ def DONLOUncerts(nodename,infile):
       #outstring3 +=str(round(100*uncert_error/nominal,1))+','
       #outstring4+=mass+','
     outstring+='\\hline\n\\end{tabular}}\n\\end{table}'
-    print outstring
     #print outstring2
     #print outstring3
     #print outstring4
@@ -4515,7 +4783,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     doZJ  = 'ZJ'  not in samples_to_skip
     
     zll_samples=list(ztt_samples)
-    if options.analysis in ['cpdecay','cpprod','mssmrun2','vlq']: zll_samples+=ewkz_samples
+    #zll_samples = ['EmbeddingMuMuA','EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingElElA','EmbeddingElElB','EmbeddingElElC','EmbeddingElElD']
+    #zll_samples = ['EmbeddingMuMuA','EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD']
+    #if options.analysis in ['cpdecay','cpprod','mssmrun2','vlq']: zll_samples+=ewkz_samples
 
     # produce template for observed data
     if do_data:
@@ -4524,7 +4794,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         else:
             OSSS = 'os'
         weight='wt'
-        if options.add_wt : weight+='*'+options.add_wt
+        #if options.add_wt : weight+='*'+options.add_wt
         full_selection = BuildCutString(weight, sel, cat_data, OSSS)
         ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
     
@@ -4582,6 +4852,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
 
     else:
         method = options.method
+        onlyDY = False
         if options.method == 18:
 
             if 'jetFakes' not in samples_to_skip:
@@ -4601,9 +4872,12 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
           GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
+            if options.embedding_zmm:
+              GenerateZLEmbedded(ana, add_name, ['EmbeddingMuMuA','EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD'], plot, wt, sel, cat, z_sels, not options.do_ss)
+            else:
+              GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-        if 'TT' not in samples_to_skip:    
+        if 'TT' not in samples_to_skip and options.channel != "zmm" and not onlyDY:    
             GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ) 
             if 'mvadm' in options.cat:
               cat_mvarho = '('+cats['mvadm_rho']+')*('+cats['baseline']+')'
@@ -4614,7 +4888,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               GenerateTop(ana, '_mvaa1'+add_name, top_samples, plot, wt, sel, cat_mvaa1, top_sels, not options.do_ss, doTTT, False)
               GenerateTop(ana, '_mvapi'+add_name, top_samples, plot, wt, sel, cat_mvapi, top_sels, not options.do_ss, doTTT, False)
               GenerateTop(ana, '_mvanotrho'+add_name, top_samples, plot, wt, sel, cat_mvanotrho, top_sels, not options.do_ss, doTTT, False)             
-        if 'VV' not in samples_to_skip:
+        if 'VV' not in samples_to_skip and options.channel != "zmm" and not onlyDY:
             GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ) 
             if 'mvadm' in options.cat:
               cat_mvarho = '('+cats['mvadm_rho']+')*('+cats['baseline']+')'
@@ -4625,13 +4899,14 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               GenerateVV(ana, '_mvaa1'+add_name, vv_samples, plot, wt, sel, cat_mvaa1, vv_sels, not options.do_ss, doVVT, False)
               GenerateVV(ana, '_mvapi'+add_name, vv_samples, plot, wt, sel, cat_mvapi, vv_sels, not options.do_ss, doVVT, False)
               GenerateVV(ana, '_mvanotrho'+add_name, vv_samples, plot, wt, sel, cat_mvanotrho, vv_sels, not options.do_ss, doVVT, False) 
-        if 'W' not in samples_to_skip:
+        if 'W' not in samples_to_skip and options.channel != "zmm" and not onlyDY:
             sel_mod=sel
             if options.method==0 and True in ['baseline_aisotau1' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_1==6)'
             if options.method==0 and  True in ['baseline_aisotau2' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_2==6)'
             GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel_mod, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
-        if 'QCD' not in samples_to_skip:
-            GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
+        if 'QCD' not in samples_to_skip and options.channel != "zmm" and not onlyDY:
+            #GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
+            GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, "wt", sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
         #if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016'] and options.method!=0: 
         #    GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
         #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis in ['cpprod','mssmrun2'] and options.channel == 'em':
@@ -4824,7 +5099,6 @@ def RenameMSSMrun2Datacards(outfile):
    'scale_embed_met_' : 'scale_embed_met_%s_' % chan,
   }  
   directory = outfile.Get(nodename)
-
   i = 0
   if not str(type(directory)) == "<class 'ROOT.TObject'>":
 
@@ -4848,7 +5122,6 @@ def RenameMSSMrun2Datacards(outfile):
               histo_clone = histo.Clone()
               y = renames[x]
               new_name_2 = new_name.replace(x,y)
-              print new_name,new_name_2
               histo_clone.SetName(new_name_2)
               histo_clone.Write(new_name_2)
               break
@@ -4951,13 +5224,15 @@ def RawFFFromString(string):
 is_2d=False
 is_3d=False
 var_name = options.var.split('[')[0]
-var_name = var_name.split('(')[0]
+#var_name = var_name.split('(')[0]
 if var_name.count(',') == 1:
     is_2d = True
     var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]
 if var_name.count(',') == 2:
     is_3d = True
-    var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]+'_vs_'+var_name.split(',')[2]    
+    var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]+'_vs_'+var_name.split(',')[2]
+    
+var_name = var_name.replace("(","_").replace(")","")
 
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat
@@ -4966,7 +5241,7 @@ if options.extra_name != "":
   datacard_name+='_'+options.extra_name
 #else: 
 output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
-outfile = ROOT.TFile(output_name, 'RECREATE')
+if not options.load: outfile = ROOT.TFile(output_name, 'RECREATE')
     
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
 if options.channel=="em": cats['em_shape_cat'] = '('+cats[options.cat]+')*('+cats['loose_baseline']+')'
@@ -4976,445 +5251,528 @@ plot_unmodified = plot
 if options.datacard != "": nodename = options.channel+'_'+options.datacard
 else: nodename = options.channel+'_'+options.cat   
 
-add_names_dict = {}
-add_names = []
-cats_unmodified = copy.deepcopy(cats)
 
-syst_names = {}
+if not options.load:
 
-max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
-while len(systematics) > 0:
-  ana = Analysis()
-  #if options.syst_scale_j_by_source != '': ana.writeSubnodes(False) # storing subnodes uses too much memory when doing JES uncertainties split by source
+  add_names_dict = {}
+  add_names = []
+  cats_unmodified = copy.deepcopy(cats)
   
-  ana.remaps = {}
-  if options.channel == 'em':
-      ana.remaps['MuonEG'] = 'data_obs'
-  elif options.channel in ['mt','mj','zmm']:
-      ana.remaps['SingleMuon'] = 'data_obs'
-  elif options.era != 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
-      ana.remaps['SingleElectron'] = 'data_obs'
-  elif options.era == 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
-      ana.remaps['EGamma'] = 'data_obs'
-  elif options.channel == 'tt':
-      ana.remaps['Tau'] = 'data_obs'  
-      
-  ana.nodes.AddNode(ListNode(nodename))
-
-  prev_dir=None    
-  for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
-      syst_names[systematic] = systematics[systematic][1]
-      if prev_dir is not None and systematics[systematic][0] is not prev_dir: continue # this ensures that we process the same trees from every call to ana.Run() - i.e trees in sub-directory systematics[systematic][0]
-      prev_dir = systematics[systematic][0]
-      print "Processing:", systematic
-      print ""
-      print systematics[systematic][0]
-
-      plot = options.var
-      cats=copy.deepcopy(cats_unmodified)
-      wshift=1.0
-      if systematic == 'syst_qcd_shape_wsf_up' and w_abs_shift is not None: wshift+=w_abs_shift
-      if systematic == 'syst_qcd_shape_wsf_down' and w_abs_shift is not None: wshift-=w_abs_shift
-      if options.syst_scale_j_by_source != '' and 'syst_scale_j_by_source' in systematic:
-        # if JES systematic split by source then the category and plotting variable strings need to be modified to use the shifted variables
-        replace_dict = systematics[systematic][5]  
-        for cat in cats: cats[cat] = OverwriteNames(cats[cat], replace_dict)
-        plot = OverwriteNames(plot, replace_dict)
-      
-      add_folder_name = systematics[systematic][0]
-      add_name = systematics[systematic][1]
-      isFFSyst = systematics[systematic][4]
-      ff_syst_weight = None
-      if not isFFSyst: weight = systematics[systematic][2]
-      else:
-          weight='wt'
-          ff_syst_weight = systematics[systematic][2]
-      if options.add_wt is not "": weight+="*"+options.add_wt
-      if options.channel == "tt" and options.era == 'mssmsummer16': weight+='*wt_tau_id_medium'
-      if options.channel == "tt" and options.era in ['smsummer16']: weight+='*wt_tau_id_tight'
-      if options.cat == '0jet' and options.era in ['smsummer16']: weight+='*wt_lfake_rate'
-
-      samples_to_skip = systematics[systematic][3]
-      add_names.append(add_name)
-      syst_add_name=add_folder_name
-      
-
-      mc_input_folder_name = options.folder
-      if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
-      
-      if options.signal_folder: signal_mc_input_folder_name = options.signal_folder
-      else: signal_mc_input_folder_name = options.folder
-      if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
-      
-      if options.embed_folder: embed_input_folder_name = options.embed_folder
-      else: embed_input_folder_name = options.folder
-      if add_folder_name != '' and 'EmbedZTT' not in samples_to_skip: embed_input_folder_name += '/'+add_folder_name
-    
-      # Add all data files
-      for sample_name in data_samples:
-          ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-      
-      # Add all MC background files
-      for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples:
-          ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-          #ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), sample_name) # this fixes issues if a sample is not included in systematic sub directory (e.g because systematics doesn't affect it) but at the same time can make it easier to miss issues like a sample missing that should be there 
+  syst_names = {}
+  
+  max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
+  while len(systematics) > 0:
+    ana = Analysis()
+    #if options.syst_scale_j_by_source != '': ana.writeSubnodes(False) # storing subnodes uses too much memory when doing JES uncertainties split by source
+  
+    ana.remaps = {}
+    if options.channel == 'em':
+        ana.remaps['MuonEG'] = 'data_obs'
+    elif options.channel in ['mt','mj','zmm']:
+        ana.remaps['SingleMuon'] = 'data_obs'
+    elif options.era != 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
+        ana.remaps['SingleElectron'] = 'data_obs'
+    elif options.era == 'cp18' and (options.channel == 'et' or options.channel == 'zee'):
+        ana.remaps['EGamma'] = 'data_obs'
+    elif options.channel == 'tt':
+        ana.remaps['Tau'] = 'data_obs'  
+        
+    ana.nodes.AddNode(ListNode(nodename))
  
-      # Add embedded samples if using
-      if options.embedding: 
-        for sample_name in embed_samples:
-          ana.AddSamples(embed_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-          
-      # Add all MC signal files
-      
-      if options.analysis in ['sm','cpprod','cpdecay']:
-          signal_samples = sm_samples
-      elif options.analysis in ['mssm','mssmrun2']:
-          signal_samples = mssm_samples
-          if options.bbh_nlo_masses and mssm_nlo_samples: signal_samples['bbH'] = mssm_nlo_samples['bbH']
-          if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
-          if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
-      elif options.analysis == 'Hhh':
-          signal_samples = Hhh_samples
-      elif options.analysis == "vlq":
-          signal_samples = vlq_samples
-
-      for samp in signal_samples:
-          if options.analysis in ['sm','cpprod','cpdecay']:
-              masses=sm_masses
-          elif samp == 'ggH':
-              masses = ggh_masses
-          elif (samp == 'bbH' and not options.bbh_nlo_masses) or samp == 'bbH-LO':
-              masses = bbh_masses
-          elif 'bbH' in samp:
-              masses = bbh_nlo_masses
-          elif options.analysis == "vlq":
-              masses = None
-          if masses is not None:    
-              for mass in masses:
-                  sample_names=[]
-                  if isinstance(signal_samples[samp], (list,)): 
-                     for i in signal_samples[samp]: sample_names.append(i.replace('*',mass)) 
-                  else: sample_names = [signal_samples[samp].replace('*',mass)]
-                  tree_name = 'ntuple'
-                  if options.gen_signal: tree_name = 'gen_ntuple'
-                  for sample_name in sample_names: 
-                    #if 'amcatnloFXFX' in sample_name and False:
-                    #  new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
-                    #  if add_folder_name != '': new_sig_folder += '/'+add_folder_name
-                    ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), tree_name, None, sample_name)
-          elif options.analysis == "vlq":
-              if options.vlq_sig != "":
-                if samp in options.vlq_sig.split(","):
-                  sample_names=[]
-                  if isinstance(vlq_samples[samp], (list,)):
-                    for i in vlq_samples[samp]: sample_names.append(i)
-                  else: sample_names = [vlq_samples[samp]]
-                  for sample_name in sample_names:
-                    ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-                   #ana.AddSamples(signal_mc_input_folder_name+'/'+signal_samples[samp]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, signal_samples[samp])
-
-      if options.add_sm_background and options.analysis in ['mssm','mssmrun2']:
-          for samp in sm_samples:
-            sample_names=[]
-            if isinstance(sm_samples[samp], (list,)):
-              for i in sm_samples[samp]: sample_names.append(i.replace('*',options.add_sm_background))
-            else: sample_names = [sm_samples[samp].replace('*',options.add_sm_background)]
-            for sample_name in sample_names:
-              ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-
-
-
-              
-      ana.AddInfo(options.paramfile, scaleTo='data_obs')
+ 
+    prev_dir=None    
+    for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
+        syst_names[systematic] = systematics[systematic][1]
+        if prev_dir is not None and systematics[systematic][0] is not prev_dir: continue # this ensures that we process the same trees from every call to ana.Run() - i.e trees in sub-directory systematics[systematic][0]
+        prev_dir = systematics[systematic][0]
+        print "Processing:", systematic
+        print ""
+        print systematics[systematic][0]
   
-      # Add data only for default
-      if systematic == 'default': do_data = True
-      else: do_data = False
+        plot = options.var
+        cats=copy.deepcopy(cats_unmodified)
+        wshift=1.0
+        if systematic == 'syst_qcd_shape_wsf_up' and w_abs_shift is not None: wshift+=w_abs_shift
+        if systematic == 'syst_qcd_shape_wsf_down' and w_abs_shift is not None: wshift-=w_abs_shift
+        if options.syst_scale_j_by_source != '' and 'syst_scale_j_by_source' in systematic:
+          # if JES systematic split by source then the category and plotting variable strings need to be modified to use the shifted variables
+          replace_dict = systematics[systematic][5]  
+          for cat in cats: cats[cat] = OverwriteNames(cats[cat], replace_dict)
+          plot = OverwriteNames(plot, replace_dict)
+        
+        add_folder_name = systematics[systematic][0]
+        add_name = systematics[systematic][1]
+        isFFSyst = systematics[systematic][4]
+        ff_syst_weight = None
+        if not isFFSyst: weight = systematics[systematic][2]
+        else:
+            weight='wt'
+            ff_syst_weight = systematics[systematic][2]
+        if options.add_wt is not "": weight+="*"+options.add_wt
+        if options.channel == "tt" and options.era == 'mssmsummer16': weight+='*wt_tau_id_medium'
+        if options.channel == "tt" and options.era in ['smsummer16']: weight+='*wt_tau_id_tight'
+        if options.cat == '0jet' and options.era in ['smsummer16']: weight+='*wt_lfake_rate'
+  
+        samples_to_skip = systematics[systematic][3]
+        add_names.append(add_name)
+        syst_add_name=add_folder_name
+        
+  
+        mc_input_folder_name = options.folder
+        if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
+        
+        if options.signal_folder: signal_mc_input_folder_name = options.signal_folder
+        else: signal_mc_input_folder_name = options.folder
+        if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
+        
+        if options.embed_folder: embed_input_folder_name = options.embed_folder
+        else: embed_input_folder_name = options.folder
+        if add_folder_name != '' and 'EmbedZTT' not in samples_to_skip: embed_input_folder_name += '/'+add_folder_name
       
-      #Run default plot 
-      if options.scheme == 'signal': 
-          samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','QCD','jetFakes','ZLL','ZTT','ZL','EWKZ','ggH_hww'])
+        # Add all data files
+        for sample_name in data_samples:
+            ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+        
+        # Add all MC background files
+        for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + ztt_shape_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples+['EmbeddingMuMuA','EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD']:
+            ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+            #ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), sample_name) # this fixes issues if a sample is not included in systematic sub directory (e.g because systematics doesn't affect it) but at the same time can make it easier to miss issues like a sample missing that should be there 
+   
+        # Add embedded samples if using
+        if options.embedding: 
+          for sample_name in embed_samples:
+            ana.AddSamples(embed_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+            
+        # Add all MC signal files
+        
+        if options.analysis in ['sm','cpprod','cpdecay']:
+            signal_samples = sm_samples
+        elif options.analysis in ['mssm','mssmrun2']:
+            signal_samples = mssm_samples
+            if options.bbh_nlo_masses and mssm_nlo_samples: signal_samples['bbH'] = mssm_nlo_samples['bbH']
+            if options.nlo_qsh: signal_samples.update(mssm_nlo_qsh_samples)
+            if options.bbh_nlo_masses and options.bbh_masses:  signal_samples.update(mssm_lo_samples)
+        elif options.analysis == 'Hhh':
+            signal_samples = Hhh_samples
+        elif options.analysis == "vlq":
+            signal_samples = vlq_samples
+  
+        for samp in signal_samples:
+            if options.analysis in ['sm','cpprod','cpdecay']:
+                masses=sm_masses
+            elif samp == 'ggH':
+                masses = ggh_masses
+            elif (samp == 'bbH' and not options.bbh_nlo_masses) or samp == 'bbH-LO':
+                masses = bbh_masses
+            elif 'bbH' in samp:
+                masses = bbh_nlo_masses
+            elif options.analysis == "vlq":
+                masses = None
+            if masses is not None:    
+                for mass in masses:
+                    sample_names=[]
+                    if isinstance(signal_samples[samp], (list,)): 
+                       for i in signal_samples[samp]: sample_names.append(i.replace('*',mass)) 
+                    else: sample_names = [signal_samples[samp].replace('*',mass)]
+                    tree_name = 'ntuple'
+                    if options.gen_signal: tree_name = 'gen_ntuple'
+                    for sample_name in sample_names: 
+                      #if 'amcatnloFXFX' in sample_name and False:
+                      #  new_sig_folder = '/vols/cms/dw515/Offline/output/SM/Oct26_2016_newsig/'
+                      #  if add_folder_name != '': new_sig_folder += '/'+add_folder_name
+                      ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), tree_name, None, sample_name)
+            elif options.analysis == "vlq":
+                if options.vlq_sig != "":
+                  if samp in options.vlq_sig.split(","):
+                    sample_names=[]
+                    if isinstance(vlq_samples[samp], (list,)):
+                      for i in vlq_samples[samp]: sample_names.append(i)
+                    else: sample_names = [vlq_samples[samp]]
+                    for sample_name in sample_names:
+                      ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+                     #ana.AddSamples(signal_mc_input_folder_name+'/'+signal_samples[samp]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, signal_samples[samp])
+  
+        if options.add_sm_background and options.analysis in ['mssm','mssmrun2']:
+            for samp in sm_samples:
+              sample_names=[]
+              if isinstance(sm_samples[samp], (list,)):
+                for i in sm_samples[samp]: sample_names.append(i.replace('*',options.add_sm_background))
+              else: sample_names = [sm_samples[samp].replace('*',options.add_sm_background)]
+              for sample_name in sample_names:
+                ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+  
+  
+  
+                
+        ana.AddInfo(options.paramfile, scaleTo='data_obs')
+    
+        # Add data only for default
+        if systematic == 'default': do_data = True
+        else: do_data = False
+        
+        #Run default plot 
+        if options.scheme == 'signal': 
+            samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','QCD','jetFakes','ZLL','ZTT','ZL','EWKZ','ggH_hww'])
+            do_data = False
+        if options.scheme == "noTT":
+            samples_to_skip.extend(["TTT","TTJ"])
+        if options.only_sig:
+          samples_to_skip.extend(['jetFakes','EmbedZTT','ZTT','ZLL','TT','VV','W','QCD','TTJ','TTL','VVT','VVJ','EWKZ'])
           do_data = False
-      if options.scheme == "noTT":
-          samples_to_skip.extend(["TTT","TTJ"])
-      if options.only_sig:
-        samples_to_skip.extend(['jetFakes','EmbedZTT','ZTT','ZLL','TT','VV','W','QCD','TTJ','TTL','VVT','VVJ','EWKZ'])
-        do_data = False
-
-      RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
-      #if options.era == "tauid2016" and options.channel in ['et','mt']: 
-      #    RunPlotting(ana, cats['pass']+'&&'+cats['baseline'], cats_unmodified['pass']+'&&'+cats_unmodified['baseline'], sel, "pass"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)
-      #    RunPlotting(ana, cats['fail']+'&&'+cats['baseline'], cats_unmodified['fail']+'&&'+cats_unmodified['baseline'], sel, "fail"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)
-     
-      if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
-          add_names.append("_custom_uncerts_up")
-          add_names.append("_custom_uncerts_down")
-          RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
-          RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
-
-      add_names_dict[add_name] = samples_to_skip
+  
+        RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
+        #if options.era == "tauid2016" and options.channel in ['et','mt']: 
+        #    RunPlotting(ana, cats['pass']+'&&'+cats['baseline'], cats_unmodified['pass']+'&&'+cats_unmodified['baseline'], sel, "pass"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)
+        #    RunPlotting(ana, cats['fail']+'&&'+cats['baseline'], cats_unmodified['fail']+'&&'+cats_unmodified['baseline'], sel, "fail"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)
+       
+        if options.do_custom_uncerts and options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down !="":
+            add_names.append("_custom_uncerts_up")
+            add_names.append("_custom_uncerts_down")
+            RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_up', weight+'*'+options.custom_uncerts_wt_up, do_data, ['signal'],outfile,ff_syst_weight)
+            RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, '_custom_uncerts_down', weight+'*'+options.custom_uncerts_wt_down, do_data, ['signal'],outfile,ff_syst_weight)
+  
+        add_names_dict[add_name] = samples_to_skip
+        
+        del systematics[systematic]
+    ana.Run()
+    ana.nodes.Output(outfile)
+  
+    # fix negative bns,empty histograms etc.
+    FixBins(ana,outfile)
+    for n in add_names: 
+      GetTotals(ana,n,outfile)
+    PrintSummary(nodename, ['data_obs'], add_names)
+  
+  if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
       
-      del systematics[systematic]
-  ana.Run()
-  ana.nodes.Output(outfile)
+  #if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
+  if (options.era in ["smsummer16"] and options.syst_w_fake_rate and options.method != 8) or options.era in ["tauid2016"]: NormWFakeSysts(ana,outfile)
+  #NormEmbedToMC(ana,outfile) # this is to check embedding sensitivity after scaling embedding to MC yields
+  
+  if options.syst_embedding_tt and options.embedding and not options.no_default and not options.only_sig: TTBarEmbeddingSyst(ana,outfile,options.syst_embedding_tt)
+  
+  if options.doNLOScales: 
+      ScaleUncertBand(nodename,outfile)
+      DONLOUncerts(nodename,outfile)
+  if options.doPDF:
+      PDFUncerts(nodename,outfile)
+  
+  def Symmetrise(hist):
+    nbins = hist.GetNbinsX()
+    if nbins % 2:
+      print 'N X bins in 2D histogram is not even so cannot symmetrise!'
+      return
+    to_skip = ['data_obs','ggH','qqH','WH','WplusH','WminusH','ZH']
+    to_skip = ['data_obs']
+    if True in [x in hist.GetName() for x in to_skip]: return
+    for i in range(1,nbins/2+1):
+      lo_bin = i
+      hi_bin = nbins-i+1
+      for j in range(1,hist.GetNbinsY()+2):
+        c1 = hist.GetBinContent(lo_bin,j)
+        c2 = hist.GetBinContent(hi_bin,j)
+        e1 = hist.GetBinError(lo_bin,j)
+        e2 = hist.GetBinError(hi_bin,j)
+        cnew = (c1+c2)/2
+        enew = math.sqrt(e1**2 + e2**2)/2
+        hist.SetBinContent(lo_bin,j,cnew)
+        hist.SetBinContent(hi_bin,j,cnew)
+        hist.SetBinError(lo_bin,j,enew)
+        hist.SetBinError(hi_bin,j,enew)
+  
+  def MergeXBins(hist):
+    nxbins = hist.GetNbinsX()
+    nybins = hist.GetNbinsY()
+    nbins = hist.GetNbinsX()*hist.GetNbinsY()
+    to_skip = ['data_obs','ggH','qqH','WH','WplusH','WminusH','ZH']
+    if True in [x in hist.GetName() for x in to_skip]: return
+    for i in range(1,nybins+2):
+      tot_err = ROOT.Double()
+      tot = hist.IntegralAndError(1,nxbins,i,i,tot_err)
+      for j in range(1, nxbins+1):
+        hist.SetBinContent(j,i,tot/nxbins)
+        hist.SetBinError(j,i,tot_err/nxbins)
 
-  # fix negative bns,empty histograms etc.
-  FixBins(ana,outfile)
-  for n in add_names: 
-    GetTotals(ana,n,outfile)
-  PrintSummary(nodename, ['data_obs'], add_names)
+  def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
+  
+    # getting binning
+    binning = []
+    for i in range(1,hist.GetNbinsX()+2):
+      binning.append(hist.GetBinLowEdge(i))
 
-if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
-    
-#if options.method in [17,18] and options.do_ff_systs: NormFFSysts(ana,outfile)
-if (options.era in ["smsummer16"] and options.syst_w_fake_rate and options.method != 8) or options.era in ["tauid2016"]: NormWFakeSysts(ana,outfile)
-#NormEmbedToMC(ana,outfile) # this is to check embedding sensitivity after scaling embedding to MC yields
+    # remove zeros left
+    no_entries_yet = True
+    for i in range(1,hist.GetNbinsX()):
+      if hist.GetBinContent(i) == 0 and no_entries_yet:
+        binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i))))
+        continue
+      elif hist.GetBinContent(i) != 0 and no_entries_yet:
+        no_entries_yet = False
 
-if options.syst_embedding_tt and options.embedding and not options.no_default and not options.only_sig: TTBarEmbeddingSyst(ana,outfile,options.syst_embedding_tt)
+    # remove zeros right
+    no_entries_yet = True
+    for i in reversed(range(2,hist.GetNbinsX()+1)):
+      if hist.GetBinContent(i) == 0 and no_entries_yet:
+        binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i+1))))
+        continue
+      elif hist.GetBinContent(i) != 0 and no_entries_yet:
+        no_entries_yet = False
 
-if options.doNLOScales: 
-    ScaleUncertBand(nodename,outfile)
-    DONLOUncerts(nodename,outfile)
-if options.doPDF:
-    PDFUncerts(nodename,outfile)
+    # left to right
+    finished = False
+    k = 0
+    while finished == False and k < 1000:
+      k += 1
+      for i in range(1,hist.GetNbinsX()):
 
-def Symmetrise(hist):
-  nbins = hist.GetNbinsX()
-  if nbins % 2:
-    print 'N X bins in 2D histogram is not even so cannot symmetrise!'
-    return
-  to_skip = ['data_obs','ggH','qqH','WH','WplusH','WminusH','ZH']
-  to_skip = ['data_obs']
-  if True in [x in hist.GetName() for x in to_skip]: return
-  for i in range(1,nbins/2+1):
-    lo_bin = i
-    hi_bin = nbins-i+1
-    for j in range(1,hist.GetNbinsY()+2):
-      c1 = hist.GetBinContent(lo_bin,j)
-      c2 = hist.GetBinContent(hi_bin,j)
-      e1 = hist.GetBinError(lo_bin,j)
-      e2 = hist.GetBinError(hi_bin,j)
-      cnew = (c1+c2)/2
-      enew = math.sqrt(e1**2 + e2**2)/2
-      hist.SetBinContent(lo_bin,j,cnew)
-      hist.SetBinContent(hi_bin,j,cnew)
-      hist.SetBinError(lo_bin,j,enew)
-      hist.SetBinError(hi_bin,j,enew)
+        if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
+        else: uncert_frac = BinUncertFraction+1
+        if uncert_frac > BinUncertFraction and hist.GetBinContent(i) < BinThreshold:
+          #binning.remove(hist.GetBinLowEdge(i+1))
+          binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i+1))))
+          hist = RebinHist(hist,binning)
+          break
+        elif i+1 == hist.GetNbinsX():
+          finished = True
+  
+    # right to left
+    finished = False
+    k = 0
+    while finished == False and k < 1000:
+      k+= 1
+      for i in reversed(range(2,hist.GetNbinsX()+1)):
 
-def MergeXBins(hist):
-  nxbins = hist.GetNbinsX()
-  nybins = hist.GetNbinsY()
-  nbins = hist.GetNbinsX()*hist.GetNbinsY()
-  to_skip = ['data_obs','ggH','qqH','WH','WplusH','WminusH','ZH']
-  if True in [x in hist.GetName() for x in to_skip]: return
-  for i in range(1,nybins+2):
-    tot_err = ROOT.Double()
-    tot = hist.IntegralAndError(1,nxbins,i,i,tot_err)
-    for j in range(1, nxbins+1):
-      hist.SetBinContent(j,i,tot/nxbins)
-      hist.SetBinError(j,i,tot_err/nxbins)
-
-## print average weights
-#x_lines = []
-#y_labels = []
-#directory = outfile.Get(nodename)
-#outfile.cd(nodename)
-#for key in directory.GetListOfKeys():
-#  hist_name = key.GetName()
-#  hist = directory.Get(hist_name).Clone()
-#
-#  if not isinstance(hist,ROOT.TDirectory):
-#    print hist.GetName(), hist.GetEntries(), hist.Integral(-1,-1)/hist.GetEntries()
-
-# sm 2D unrolling
-if is_2d and options.do_unrolling:
-  x_lines = []
-  y_labels = []
-  first_hist = True
-  # loop over all TH2Ds and for each one unroll to produce TH1D and add to datacard
-  directory = outfile.Get(nodename)  
-  outfile.cd(nodename)
-  hists_to_add = []
-  for key in directory.GetListOfKeys():
-    hist_name = key.GetName()
-    hist = directory.Get(hist_name).Clone()
- 
-    if not isinstance(hist,ROOT.TDirectory):
-      include_of = True
-      if 'dijet' in options.cat: include_of = False
- 
-      if options.symmetrise: Symmetrise(hist)
-      if options.mergeXbins: MergeXBins(hist)
-
-      h1d = UnrollHist2D(hist,include_of)
-      hists_to_add.append(h1d)
-      if first_hist:
-        first_hist=False
-        Nxbins = hist.GetNbinsX()
-        for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
-        for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
-        if include_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
-  for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
-
-# sm 3D unrolling
-if is_3d and options.do_unrolling:
-  x_lines = []
-  y_labels = []
-  z_labels = []
-  first_hist = True
-  # loop over all TH3Ds and for each one unroll to produce TH1D and add to datacard
-  directory = outfile.Get(nodename)
-  outfile.cd(nodename)
-  hists_to_add = []
-  for key in directory.GetListOfKeys():
-    hist_name = key.GetName()
-    hist = directory.Get(hist_name).Clone()
-    if not isinstance(hist,ROOT.TDirectory):
-      include_y_of = False
-      include_z_of = True
-      h1d = UnrollHist3D(hist,include_y_of,include_z_of)
-      hists_to_add.append(h1d)
-      if first_hist:
-        first_hist=False
-        Nxbins = hist.GetNbinsX()
-        for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
-        for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
-        if include_y_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
-        for j in range(1,hist.GetNbinsZ()+1): z_labels.append([hist.GetZaxis().GetBinLowEdge(j),hist.GetZaxis().GetBinLowEdge(j+1)])
-        if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
-  for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
-
-
-# make systematic uncertainty histograms
-
-custom_uncerts_up_name = options.custom_uncerts_up_name
-custom_uncerts_down_name = options.custom_uncerts_down_name
-#if len(syst_names)>1 and options.do_custom_uncerts:
-if options.do_custom_uncerts:
-
-  custom_uncerts_up_name = 'total_bkg_uncerts_total_up' 
-  custom_uncerts_down_name = 'total_bkg_uncerts_total_down' 
-
-  directory = outfile.Get(nodename)
-  h0 = directory.Get('total_bkg')
-  hists=[]
-
-  for x in syst_names:
-    if x == 'default': continue
-    h=h0.Clone()
-    syst = syst_names[x]
-    print 'add syst', x, syst, h0.Integral()
-    h.SetName(h0.GetName()+syst)
+        if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
+        else: uncert_frac = BinUncertFraction+1
+        if uncert_frac > BinUncertFraction and hist.GetBinContent(i) < BinThreshold:
+  #        binning.remove(hist.GetBinLowEdge(i))
+          binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i))))
+          hist = RebinHist(hist,binning)
+          break
+        elif i == 2:
+          finished = True
+  
+    return binning
+  
+  def RebinHist(hist,binning):
+    # getting initial binning
+    initial_binning = []
+    for i in range(1,hist.GetNbinsX()+2):
+      initial_binning.append(hist.GetBinLowEdge(i))
+  
+    new_binning = array('f', map(float,binning))
+    hout = ROOT.TH1D(hist.GetName(),'',len(new_binning)-1, new_binning)
+    for i in range(1,hout.GetNbinsX()+1):
+      for j in range(1,hist.GetNbinsX()+1):
+        if hist.GetBinCenter(j) > hout.GetBinLowEdge(i) and hist.GetBinCenter(j) < hout.GetBinLowEdge(i+1):
+          new_content = hout.GetBinContent(i)+hist.GetBinContent(j)
+          new_error = (hout.GetBinError(i)**2+hist.GetBinError(j)**2)**0.5
+          hout.SetBinContent(i,new_content)
+          hout.SetBinError(i,new_error)
+    #hout.Print("all")
+    return hout
+  
+  ## print average weights
+  #x_lines = []
+  #y_labels = []
+  #directory = outfile.Get(nodename)
+  #outfile.cd(nodename)
+  #for key in directory.GetListOfKeys():
+  #  hist_name = key.GetName()
+  #  hist = directory.Get(hist_name).Clone()
+  #
+  #  if not isinstance(hist,ROOT.TDirectory):
+  #    print hist.GetName(), hist.GetEntries(), hist.Integral(-1,-1)/hist.GetEntries()
+  
+  # sm 2D unrolling
+  if is_2d and options.do_unrolling:
+    x_lines = []
+    y_labels = []
+    first_hist = True
+    # loop over all TH2Ds and for each one unroll to produce TH1D and add to datacard
+    directory = outfile.Get(nodename)  
+    outfile.cd(nodename)
+    hists_to_add = []
     for key in directory.GetListOfKeys():
-      name = key.GetName()
-      if name.startswith('ggH') or name.startswith('bbH') or name.startswith('qqH') or name.startswith('VH') or name.startswith('ZH') or name.startswith('WH') or name.startswith('WplusH') or name.startswith('WminusH'): continue
-      histo = directory.Get(name)
-      if not isinstance(histo,ROOT.TDirectory) and name.endswith(syst) and not name.startswith('jetFakes_norm'):
-        #print name.replace(syst,''), name, histo.Integral() 
-        histo_nom = directory.Get(name.replace(syst,''))
-        histo.Add(histo_nom,-1)
-        if 'scale_embed_met' in name:
-          # this part scales the embed MET uncertainties to their actual values
-          scales = {
-            "mt_2018": 0.85,
-            "mt_2017": 0.67,
-            "mt_2016": 1.0,
-            "et_2018": 0.73,
-            "et_2017": 0.63,
-            "et_2016": 0.84,
-            "tt_2018": 0.20,
-            "tt_2017": 0.25,
-            "tt_2016": 0.22,
-          }
-          scale = (scales['%s_%s' % (options.channel,options.year)]**2+0.1**2)**.5
-          print 'scaling ', name, ' by ', scale
-          for i in range(1,histo.GetNbinsX()+1): 
-            histo.SetBinContent(i,histo.GetBinContent(i)*scale)
-        h.Add(histo)
-    hists.append(h.Clone())
-
-  norm_systs = {}
-  if options.embedding: 
-    if options.channel in ['em']:
-      norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
-      norm_systs['dy_xs'] = (0.02,['ZLL'])
-      norm_systs['lumi'] = (0.025,['TTT','VVT','ZLL'])
-    else:
-      norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
-      norm_systs['dy_xs'] = (0.02,['ZL'])
-      norm_systs['lumi'] = (0.025,['TTT','VVT','ZL'])
-  else: 
-    if options.channel in ['em']:
-      norm_systs['dy_xs'] = (0.02,['ZLL','ZTT'])
-      norm_systs['lumi'] = (0.025,['TTT','VVT','ZLL','ZTT'])
-    else:
-      norm_systs['dy_xs'] = (0.02,['ZL','ZTT'])
-      norm_systs['lumi'] = (0.025,['TTT','VVT','ZL','ZTT'])
-  norm_systs['ttbar_xs'] = (0.04,['TTT'])
-  norm_systs['vv_xs'] = (0.05,['VVT'])
-  if options.channel == 'tt':
-    if options.embedding: norm_systs['tau_id'] = (0.06,['EmbedZTT'])
-    else: norm_systs['tau_id'] = (0.06,['ZTT'])
-    norm_systs['wfakes_yield'] = (0.2,['Wfakes'])
-    norm_systs['l_fakerate'] = (0.05,['VVT','ZL','TTT'])
-  if options.channel in ['et','mt']:
+      hist_name = key.GetName()
+      hist = directory.Get(hist_name).Clone()
+   
+      if not isinstance(hist,ROOT.TDirectory):
+        include_of = True
+        if 'dijet' in options.cat: include_of = False
+   
+        if options.symmetrise: Symmetrise(hist)
+        if options.mergeXbins: MergeXBins(hist)
+  
+        h1d = UnrollHist2D(hist,include_of)
+        hists_to_add.append(h1d)
+        if first_hist:
+          first_hist=False
+          Nxbins = hist.GetNbinsX()
+          for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
+          for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
+          if include_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
+    for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+  
+  # sm 3D unrolling
+  if is_3d and options.do_unrolling:
+    x_lines = []
+    y_labels = []
+    z_labels = []
+    first_hist = True
+    # loop over all TH3Ds and for each one unroll to produce TH1D and add to datacard
+    directory = outfile.Get(nodename)
+    outfile.cd(nodename)
+    hists_to_add = []
+    for key in directory.GetListOfKeys():
+      hist_name = key.GetName()
+      hist = directory.Get(hist_name).Clone()
+      if not isinstance(hist,ROOT.TDirectory):
+        include_y_of = False
+        include_z_of = True
+        h1d = UnrollHist3D(hist,include_y_of,include_z_of)
+        hists_to_add.append(h1d)
+        if first_hist:
+          first_hist=False
+          Nxbins = hist.GetNbinsX()
+          for i in range(1,hist.GetNbinsY()+1): x_lines.append(Nxbins*i)
+          for j in range(1,hist.GetNbinsY()+1): y_labels.append([hist.GetYaxis().GetBinLowEdge(j),hist.GetYaxis().GetBinLowEdge(j+1)])
+          if include_y_of: y_labels.append([hist.GetYaxis().GetBinLowEdge(hist.GetNbinsY()+1),-1])
+          for j in range(1,hist.GetNbinsZ()+1): z_labels.append([hist.GetZaxis().GetBinLowEdge(j),hist.GetZaxis().GetBinLowEdge(j+1)])
+          if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
+    for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
+  
+  
+  # make systematic uncertainty histograms
+  
+  custom_uncerts_up_name = options.custom_uncerts_up_name
+  custom_uncerts_down_name = options.custom_uncerts_down_name
+  #if len(syst_names)>1 and options.do_custom_uncerts:
+  if options.do_custom_uncerts:
+  
+    custom_uncerts_up_name = 'total_bkg_uncerts_total_up' 
+    custom_uncerts_down_name = 'total_bkg_uncerts_total_down' 
+  
+    directory = outfile.Get(nodename)
+    h0 = directory.Get('total_bkg')
+    hists=[]
+  
+    for x in syst_names:
+      if x == 'default': continue
+      h=h0.Clone()
+      syst = syst_names[x]
+      print 'add syst', x, syst, h0.Integral()
+      h.SetName(h0.GetName()+syst)
+      for key in directory.GetListOfKeys():
+        name = key.GetName()
+        if name.startswith('ggH') or name.startswith('bbH') or name.startswith('qqH') or name.startswith('VH') or name.startswith('ZH') or name.startswith('WH') or name.startswith('WplusH') or name.startswith('WminusH'): continue
+        histo = directory.Get(name)
+        if not isinstance(histo,ROOT.TDirectory) and name.endswith(syst) and not name.startswith('jetFakes_norm'):
+          #print name.replace(syst,''), name, histo.Integral() 
+          histo_nom = directory.Get(name.replace(syst,''))
+          histo.Add(histo_nom,-1)
+          if 'scale_embed_met' in name:
+            # this part scales the embed MET uncertainties to their actual values
+            scales = {
+              "mt_2018": 0.85,
+              "mt_2017": 0.67,
+              "mt_2016": 1.0,
+              "et_2018": 0.73,
+              "et_2017": 0.63,
+              "et_2016": 0.84,
+              "tt_2018": 0.20,
+              "tt_2017": 0.25,
+              "tt_2016": 0.22,
+            }
+            scale = (scales['%s_%s' % (options.channel,options.year)]**2+0.1**2)**.5
+            print 'scaling ', name, ' by ', scale
+            for i in range(1,histo.GetNbinsX()+1): 
+              histo.SetBinContent(i,histo.GetBinContent(i)*scale)
+          h.Add(histo)
+      hists.append(h.Clone())
+  
+    norm_systs = {}
     if options.embedding: 
-      norm_systs['tau_id'] = (0.03,['EmbedZTT'])
-      norm_systs['l_id'] = (0.02,['EmbedZTT','TTT','VVT','ZL'])
+      if options.channel in ['em']:
+        norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
+        norm_systs['dy_xs'] = (0.02,['ZLL'])
+        norm_systs['lumi'] = (0.025,['TTT','VVT','ZLL'])
+      else:
+        norm_systs['embed_yield'] = (0.04,['EmbedZTT'])
+        norm_systs['dy_xs'] = (0.02,['ZL'])
+        norm_systs['lumi'] = (0.025,['TTT','VVT','ZL'])
     else: 
-      norm_systs['tau_id'] = (0.02,['ZTT'])
-      norm_systs['l_id'] = (0.02,['ZTT','TTT','VVT','ZL'])
-    norm_systs['l_fakerate'] = (0.2,['ZL'])
-  if options.channel in ['em']:
-    if options.embedding: 
-      norm_systs['m_id'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
-      norm_systs['e_id'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
-      norm_systs['m_trg'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
-      norm_systs['e_trg'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
-    else:
-      norm_systs['m_id'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
-      norm_systs['e_id'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
-      norm_systs['m_trg'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
-      norm_systs['e_trg'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
-    norm_systs['l_fakerate'] = (0.2,['ZLL','W'])
-  
-  for syst in norm_systs:
-  
-    val = norm_systs[syst][0]
-    procs = norm_systs[syst][1]
-    h1 = h0.Clone()
-    h2 = h0.Clone()
-    h1.SetName(h0.GetName()+syst)
-    h2.SetName(h0.GetName()+syst)
-    for p in procs:
-      print p
-      hup = directory.Get(p).Clone()
-      hnom = directory.Get(p).Clone()
-      hup.Scale(val)
-      #print syst, p, hnom.Integral(), hup.Integral()
+      if options.channel in ['em']:
+        norm_systs['dy_xs'] = (0.02,['ZLL','ZTT'])
+        norm_systs['lumi'] = (0.025,['TTT','VVT','ZLL','ZTT'])
+      else:
+        norm_systs['dy_xs'] = (0.02,['ZL','ZTT'])
+        norm_systs['lumi'] = (0.025,['TTT','VVT','ZL','ZTT'])
+    norm_systs['ttbar_xs'] = (0.04,['TTT'])
+    norm_systs['vv_xs'] = (0.05,['VVT'])
+    if options.channel == 'tt':
+      if options.embedding: norm_systs['tau_id'] = (0.06,['EmbedZTT'])
+      else: norm_systs['tau_id'] = (0.06,['ZTT'])
+      norm_systs['wfakes_yield'] = (0.2,['Wfakes'])
+      norm_systs['l_fakerate'] = (0.05,['VVT','ZL','TTT'])
+    if options.channel in ['et','mt']:
+      if options.embedding: 
+        norm_systs['tau_id'] = (0.03,['EmbedZTT'])
+        norm_systs['l_id'] = (0.02,['EmbedZTT','TTT','VVT','ZL'])
+      else: 
+        norm_systs['tau_id'] = (0.02,['ZTT'])
+        norm_systs['l_id'] = (0.02,['ZTT','TTT','VVT','ZL'])
+      norm_systs['l_fakerate'] = (0.2,['ZL'])
+    if options.channel in ['em']:
+      if options.embedding: 
+        norm_systs['m_id'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
+        norm_systs['e_id'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
+        norm_systs['m_trg'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
+        norm_systs['e_trg'] = (0.02,['EmbedZTT','TTT','VVT','VVJ','ZLL','W'])
+      else:
+        norm_systs['m_id'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+        norm_systs['e_id'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+        norm_systs['m_trg'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+        norm_systs['e_trg'] = (0.02,['ZTT','TTT','TTJ','VVT','VVJ','ZLL','W'])
+      norm_systs['l_fakerate'] = (0.2,['ZLL','W'])
+    
+    for syst in norm_systs:
+    
+      val = norm_systs[syst][0]
+      procs = norm_systs[syst][1]
       h1 = h0.Clone()
       h2 = h0.Clone()
-      h1.Add(hup)
-      h2.Add(hup,-1)
-    hists.append(h1.Clone())
-    hists.append(h2.Clone())
-
-  (uncert, up, down) = TotalUnc(h0, hists)
-  outfile.cd(nodename)
-  uncert.Write()
-  up.Write()
-  down.Write()
+      h1.SetName(h0.GetName()+syst)
+      h2.SetName(h0.GetName()+syst)
+      for p in procs:
+        hup = directory.Get(p).Clone()
+        hnom = directory.Get(p).Clone()
+        hup.Scale(val)
+        #print syst, p, hnom.Integral(), hup.Integral()
+        h1 = h0.Clone()
+        h2 = h0.Clone()
+        h1.Add(hup)
+        h2.Add(hup,-1)
+      hists.append(h1.Clone())
+      hists.append(h2.Clone())
+  
+    (uncert, up, down) = TotalUnc(h0, hists)
+    outfile.cd(nodename)
+    uncert.Write()
+    up.Write()
+    down.Write()
+  
+  
+  if options.do_unrolling==0: 
+    print "Finished Processing"
+    exit(0)
+  if is_2d and not options.do_unrolling:
+    print "Finished Processing"
+    exit(0) # add options for is_3d as well!
 
 outfile.Close()
-
-
-if options.do_unrolling==0: 
-  print "Finished Processing"
-  exit(0)
-if is_2d and not options.do_unrolling:
-  print "Finished Processing"
-  exit(0) # add options for is_3d as well!
 plot_file = ROOT.TFile(output_name, 'READ')
+
 
 #if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
 #    w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
@@ -5431,9 +5789,28 @@ plot_file = ROOT.TFile(output_name, 'READ')
 if options.custom_uncerts_wt_up != "" and options.custom_uncerts_wt_down != "": 
     custom_uncerts_up_name = "total_bkg_custom_uncerts_up"
     custom_uncerts_down_name = "total_bkg_custom_uncerts_down"
-elif options.custom_uncerts_up_name != '':
+#elif options.custom_uncerts_up_name != '':
+else:
     custom_uncerts_up_name = options.custom_uncerts_up_name
     custom_uncerts_down_name = options.custom_uncerts_down_name
+
+if options.auto_rebinning:
+  outfile_rebin = ROOT.TFile(output_name.replace(".root","_rebinned.root"), 'RECREATE')
+  outfile_rebin.mkdir(nodename)
+  outfile_rebin.cd(nodename)
+  total_bkghist = plot_file.Get(nodename+'/total_bkg').Clone()
+  binning = FindRebinning(total_bkghist,BinThreshold=options.bin_threshold,BinUncertFraction=options.bin_uncert_fraction)
+  print "New binning:", binning
+  hists_done = []
+  for i in  plot_file.Get(nodename).GetListOfKeys():
+      if i.GetName() not in hists_done:
+        if ".subnodes" not in i.GetName():
+          RebinHist(plot_file.Get(nodename+'/'+i.GetName()).Clone(),binning).Write()
+          hists_done.append(i.GetName())
+  outfile_rebin.Close()
+  plot_file = ROOT.TFile(output_name.replace(".root","_rebinned.root"), 'READ')
+else:
+  plot_file = ROOT.TFile(output_name, 'READ')
 
 
 if not options.no_plot:
@@ -5473,6 +5850,9 @@ if not options.no_plot:
         options.x_blind_min = -1e5
         options.x_blind_max = -1e5 
     if options.do_unrolling and is_2d:
+        if options.lines != []: x_lines=list(options.lines)
+        if options.y_labels != []: y_labels = list(options.y_labels)
+        if options.y_var_titles != []: y_var_titles = list(options.y_var_titles)
         auto_blind=False
         options.norm_bins=False
         plotting.HTTPlotUnrolled(nodename, 
@@ -5512,8 +5892,13 @@ if not options.no_plot:
         x_lines,
         [y_labels,y_var_titles],
         options.embedding,
+        options.embedding_zmm,
         vbf_background,
-        options.signal_scheme
+        options.signal_scheme,
+        options.var.split('[')[1].split(']')[0].split(","),
+        options.var.split('[')[2].split(']')[0].split(","),
+        options.norm_to_one,
+        options.bkg_comp,
         )
     elif scheme != 'signal':
       auto_blind=False
@@ -5564,7 +5949,9 @@ if not options.no_plot:
         options.qcd_ff_closure,
         options.w_ff_closure,
         options.bkg_comp,
-        options.plot_signals.split(",")
+        options.plot_signals.split(","),
+        options.norm_to_one,
+        options.gU
         )
     else:    
       plotting.HTTPlotSignal(nodename, 
@@ -5637,13 +6024,13 @@ if not options.no_plot:
    #          "#mu#tau_{h}")
 
 #norm signal yields on datacards to 1pb AFTER plotting    
-outfile =  ROOT.TFile(output_name, 'UPDATE')
-for add_name in add_names: 
-    if options.analysis in ['mssm','mssmrun2']:
-        NormSignals(outfile,add_name)
+#outfile =  ROOT.TFile(output_name, 'UPDATE')
+#for add_name in add_names: 
+#    if options.analysis in ['mssm','mssmrun2']:
+#        NormSignals(outfile,add_name)
 
 # for smsummer16 need to ad WplusH and WminusH templates into one
-if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm' and options.analysis != "mssmrun2" and not options.only_sig:
+if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17','cp18','mvadm2016'] and options.channel != 'zmm' and options.analysis not in ["mssmrun2","vlq"] and not options.only_sig:
   outfile.cd(nodename)
   directory = outfile.Get(nodename)
   hists_to_add = []
@@ -5661,6 +6048,6 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'cpsummer17'
 if options.analysis in ['mssmrun2','vlq']:
   RenameMSSMrun2Datacards(outfile)
 
-outfile.Close()
+if not options.load: outfile.Close()
 
 print "Finished Processing"

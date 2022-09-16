@@ -74,64 +74,65 @@ def GetBinning(var,min_bin,max_bin,num_bins,log=False,round=1,final_bin_start=No
   return var+str(bins).strip()
 
 all_ch_variables = [
-                    GetBinning('mt_tot',20,3200,50,log=True,round=1,final_bin_start=1000),
-                    GetBinning('m_vis',20,3200,50,log=True,round=1,final_bin_start=1000),
-#                    GetBinning('svfit_mass',20,3200,50,log=True,round=1,final_bin_start=1000),
-                    GetBinning('met',10,800,40,log=True,round=1,final_bin_start=500),
+                    GetBinning('mt_tot',20,3200,100,log=True,round=1),
+                    GetBinning('pt_1+pt_2+met+jpt_1',20,3200,100,log=True,round=1),
+                    GetBinning('m_vis',20,3200,100,log=True,round=1),
+                    #GetBinning('svfit_mass',20,3200,50,log=True,round=1,final_bin_start=1000),
+                    GetBinning('met',10,800,100,log=True,round=1),
                     #'n_jets[0,1,>=2]',
                     #'n_deepbjets[0,>=1]',
-#                    'n_jets[0,1,2,3,4,5]',
-#                    'n_deepbjets[0,1,2,3]',
-#                    GetBinning('mt_1',0,500,40,log=False,round=1,final_bin_start=None),
-#                    GetBinning('mt_2',0,500,40,log=False,round=1,final_bin_start=None),
-#                    GetBinning('mt_lep',0,500,40,log=False,round=1,final_bin_start=None),
-#                    GetBinning('eta_1',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
-#                    GetBinning('eta_2',-2.2,2.2,40,log=False,round=0.05,final_bin_start=None),
-#                    GetBinning('met_dphi_1',0,3.2,40,log=False,round=0.05,final_bin_start=None),
-#                    GetBinning('met_dphi_2',0,3.2,40,log=False,round=0.05,final_bin_start=None),
-#                    GetBinning('dphi',0,3.2,40,log=False,round=0.05,final_bin_start=None),
-#                    GetBinning('jpt_1',30,600,40,log=True,round=1,final_bin_start=None),
-#                    GetBinning('jpt_2',30,600,40,log=True,round=1,final_bin_start=None),
-#                    GetBinning('pt_vis',30,600,40,log=True,round=1,final_bin_start=None),
-#                    GetBinning('pt_tt',30,600,40,log=True,round=1,final_bin_start=None),
-#                    GetBinning('mjj',0,500,40,log=False,round=1,final_bin_start=None),
-#                    GetBinning('dijetpt',30,600,40,log=True,round=1,final_bin_start=None),
-#                    GetBinning('jdeta',0,6.0,40,log=False,round=0.05,final_bin_start=None),
+                    'n_jets[0,1,2,3,4,5]',
+                    'n_deepbjets[0,1,2,3]',
+                    GetBinning('mt_1',0,500,100,log=False,round=1),
+                    GetBinning('mt_2',0,500,100,log=False,round=1),
+                    GetBinning('mt_lep',0,500,100,log=False,round=1),
+                    #GetBinning('eta_1',-2.2,2.2,100,log=False,round=0.05),
+                    #GetBinning('eta_2',-2.2,2.2,100,log=False,round=0.05),
+                    GetBinning('met_dphi_1',0,3.2,100,log=False,round=0.05),
+                    GetBinning('met_dphi_2',0,3.2,100,log=False,round=0.05),
+                    GetBinning('dphi',0,3.2,100,log=False,round=0.05),
+                    GetBinning('jpt_1',30,600,100,log=True,round=1),
+                    GetBinning('jpt_2',30,600,100,log=True,round=1),
+                    GetBinning('pt_vis',30,600,100,log=True,round=1),
+                    GetBinning('pt_tt',30,600,100,log=True,round=1),
+                    GetBinning('mjj',0,500,100,log=False,round=1),
+                    GetBinning('dijetpt',30,600,100,log=True,round=1),
+                    GetBinning('jdeta',0,6.0,100,log=False,round=0.05),
                     ]
 
 ch_dep_var = {"mt":[
-                    GetBinning('pt_1',20,800,40,log=True,round=1,final_bin_start=500),
-                    GetBinning('pt_2',30,800,40,log=True,round=1,final_bin_start=500),
-#                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001,final_bin_start=None),
-                    #'tau_decay_mode_2[==0,==1,==10,==11]',
-#                    'tau_decay_mode_2[0,1,10,11]',
+                    GetBinning('pt_1',20,800,100,log=True,round=1),
+                    GetBinning('pt_2',30,800,100,log=True,round=1),
+                    GetBinning('iso_1',0,0.15,100,log=False,round=0.001),
+                    'tau_decay_mode_2[==0,==1,==10,==11]',
+                    #'tau_decay_mode_2[0,1,10,11]',
                     ],
               "et":[
-                    GetBinning('pt_1',20,800,40,log=True,round=1,final_bin_start=500),
-                    GetBinning('pt_2',30,800,40,log=True,round=1,final_bin_start=500),
-#                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001,final_bin_start=None),
-                    #'tau_decay_mode_2[==0,==1,==10,==11]',
-#                    'tau_decay_mode_2[0,1,10,11]',
+                    GetBinning('pt_1',20,800,40,log=True,round=1),
+                    GetBinning('pt_2',30,800,40,log=True,round=1),
+                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001),
+                    'tau_decay_mode_2[==0,==1,==10,==11]',
+                    #'tau_decay_mode_2[0,1,10,11]',
                     ],
               "tt":[
-                    GetBinning('pt_1',40,800,40,log=True,round=1,final_bin_start=500),
-                    GetBinning('pt_2',40,800,40,log=True,round=1,final_bin_start=500),
-                    #'tau_decay_mode_1[==0,==1,==10,==11]',
-                    #'tau_decay_mode_2[==0,==1,==10,==11]',
-#                    'tau_decay_mode_1[0,1,10,11]',
-#                    'tau_decay_mode_2[0,1,10,11]',
+                    GetBinning('pt_1',40,800,40,log=True,round=1),
+                    GetBinning('pt_2',40,800,40,log=True,round=1),
+                    'tau_decay_mode_1[==0,==1,==10,==11]',
+                    'tau_decay_mode_2[==0,==1,==10,==11]',
+                    #'tau_decay_mode_1[0,1,10,11]',
+                    #'tau_decay_mode_2[0,1,10,11]',
                     ],
                "em":[
-                    GetBinning('pt_1',20,600,40,log=True,round=1,final_bin_start=None),
-                    GetBinning('pt_2',30,600,40,log=True,round=1,final_bin_start=None),
-                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001,final_bin_start=None),
-                    GetBinning('iso_2',0,0.15,40,log=False,round=0.001,final_bin_start=None),
+#                    GetBinning('pt_1',20,600,40,log=True,round=1),
+#                    GetBinning('pt_2',30,600,40,log=True,round=1),
+#                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001),
+#                    GetBinning('iso_2',0,0.15,40,log=False,round=0.001),
                     ]
               }
 
 
-config_files = {'2016':'scripts/plot_mssm_2016.cfg',
-                '2017':'scripts/plot_mssm_2017.cfg',
+config_files = {'2016':'scripts/plot_vlq_2016.cfg',
+                '2017':'scripts/plot_vlq_2017.cfg',
                 '2018':'scripts/plot_vlq_2018.cfg'
                }
 
@@ -141,37 +142,57 @@ categories = {
                     #"Nbtag0_MT40To70",
                     #"NbtagGt1_MTLt40",
                     #"NbtagGt1_MT40To70",
-                    #"Nbtag0_MTLt70",
-                    #"NbtagGt1_MTLt70",
+                    "Nbtag0_MTLt70",
+                    "NbtagGt1_MTLt70",
                     "MTLt70",
-                    #"inclusive"
+                    "inclusive",
+                    "Nbtag0_NjetsGt1_MTLt70",
+                    "Nbtag0_Njets0_MTLt70",
+                    "Nbtag0_NjetsGt1_MTLt70_STMETGt800",
+                    "Nbtag0_NjetsGt1_MTLt70_STMET400to800",
+                    "Nbtag0_NjetsGt1",
+                    "Nbtag0_Njets0",
+                    "Nbtag0_NjetsGt1_STMETGt800",
+                    "Nbtag0_NjetsGt1_STMET400to800",
                     ],
               "et":[                    
                     #"Nbtag0_MTLt40",
                     #"Nbtag0_MT40To70",
                     #"NbtagGt1_MTLt40",
                     #"NbtagGt1_MT40To70",
-                    #"Nbtag0_MTLt70",
-                    #"NbtagGt1_MTLt70",
+                    "Nbtag0_MTLt70",
+                    "NbtagGt1_MTLt70",
                     "MTLt70",
-                    #"inclusive"
+                    "inclusive",
+                    "Nbtag0_NjetsGt1_MTLt70",
+                    "Nbtag0_Njets0_MTLt70",
+                    "Nbtag0_NjetsGt1_MTLt70_STMETGt800",
+                    "Nbtag0_NjetsGt1_MTLt70_STMET400to800",
+                    "Nbtag0_NjetsGt1",
+                    "Nbtag0_Njets0",
+                    "Nbtag0_NjetsGt1_STMETGt800",
+                    "Nbtag0_NjetsGt1_STMET400to800",
                     ],
               "tt":[
                     "inclusive",
-#                    "Nbtag0",
-                    #"NbtagGt1",
+                    "Nbtag0",
+                    "NbtagGt1",
+                    "Nbtag0_NjetsGt1",
+                    "Nbtag0_Njets0",
+                    "Nbtag0_NjetsGt1_STMETGt800",
+                    "Nbtag0_NjetsGt1_STMET400to800",
                     ],
               "em":[
-                    "NbtagGt1_DZetaLtm35",
-                    "Nbtag0_DZetaGt30",
-                    "Nbtag0_DZetam10To30",
-                    "Nbtag0_DZetam35Tom10",
-                    "NbtagGt1_DZetaGt30",
-                    "NbtagGt1_DZetam10To30",
-                    "NbtagGt1_DZetam35Tom10",
-                    "Nbtag0_DZetaGtm35",
-                    "NbtagGt1_DZetaGtm35",
-                    "DZetaGtm35",
+                    #"NbtagGt1_DZetaLtm35",
+                    #"Nbtag0_DZetaGt30",
+                    #"Nbtag0_DZetam10To30",
+                    #"Nbtag0_DZetam35Tom10",
+                    #"NbtagGt1_DZetaGt30",
+                    #"NbtagGt1_DZetam10To30",
+                    #"NbtagGt1_DZetam35Tom10",
+                    #"Nbtag0_DZetaGtm35",
+                    #"NbtagGt1_DZetaGtm35",
+                    #"DZetaGtm35",
                     ]
               }
 
@@ -183,14 +204,14 @@ methods = {
            }
 
 
-add_options = '--ratio_range=\'auto\' --signal_scale=100 --log_y'
+add_options = '--ratio_range=\'auto\' --gU=3.9  --plot_signals=\'VLQ_betaRd33_0_matched_M_2000,VLQ_betaRd33_0_offdiag0_matched_M_2000\' --auto_rebinning --bin_uncert_frac=0.2'
  
 # Set up output directories
 
 cmssw_base = os.getcwd().replace("src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2","")
 
 if not os.path.isdir('%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s' % vars()):
-  os.system("mkdir %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s" % vars())
+		os.system("mkdir %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s" % vars())
 
 if not os.path.isdir('%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s/jobs' % vars()):
   os.system("mkdir %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s/jobs" % vars())
@@ -215,31 +236,17 @@ for year in years:
     
         cfg = config_files[year]
         method = methods[channel]
-        run_cmd_0_gU1 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU2_gU1,vlq_betaRd33_0_mU3_gU1,vlq_betaRd33_0_mU4_gU1"' % vars()
-        run_cmd_0_gU2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU2_gU2,vlq_betaRd33_0_mU3_gU2,vlq_betaRd33_0_mU4_gU2"' % vars()
-        run_cmd_0_gU3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU2_gU3,vlq_betaRd33_0_mU3_gU3,vlq_betaRd33_0_mU4_gU3"' % vars()
-        run_cmd_minus1_gU1 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_minus1_mU2_gU1,vlq_betaRd33_minus1_mU3_gU1,vlq_betaRd33_minus1_mU4_gU1"' % vars()
-        run_cmd_minus1_gU2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_minus1_mU2_gU2,vlq_betaRd33_minus1_mU3_gU2,vlq_betaRd33_minus1_mU4_gU2"' % vars()
-        run_cmd_minus1_gU3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_minus1_mU2_gU3,vlq_betaRd33_minus1_mU3_gU3,vlq_betaRd33_minus1_mU4_gU3"' % vars()
-        run_cmd_0_mU2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU2_gU1,vlq_betaRd33_0_mU2_gU2,vlq_betaRd33_0_mU2_gU3"' % vars()
-        run_cmd_0_mU3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU3_gU1,vlq_betaRd33_0_mU3_gU2,vlq_betaRd33_0_mU3_gU3"' % vars()
-        run_cmd_0_mU4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU4_gU1,vlq_betaRd33_0_mU4_gU2,vlq_betaRd33_0_mU4_gU3"' % vars()
-        run_cmd_minus1_mU2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_minus1_mU2_gU1,vlq_betaRd33_minus1_mU2_gU2,vlq_betaRd33_minus1_mU2_gU3"' % vars()
-        run_cmd_minus1_mU3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_minus1_mU3_gU1,vlq_betaRd33_minus1_mU3_gU2,vlq_betaRd33_minus1_mU3_gU3"' % vars()
-        run_cmd_minus1_mU4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_minus1_mU4_gU1,vlq_betaRd33_minus1_mU4_gU2,vlq_betaRd33_minus1_mU4_gU3"' % vars()
-        run_cmd_gu1_mU2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU2_gU1,vlq_betaRd33_minus1_mU2_gU1"' % vars()
-        run_cmd_gu1_mU3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU3_gU1,vlq_betaRd33_minus1_mU3_gU1"' % vars()
-        run_cmd_gu1_mU4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --plot_signals="vlq_betaRd33_0_mU4_gU1,vlq_betaRd33_minus1_mU4_gU1"' % vars()
- 
-  
-  
-        run_list = [run_cmd_0_gU1,run_cmd_0_gU2,run_cmd_0_gU3,run_cmd_minus1_gU1,run_cmd_minus1_gU2,run_cmd_minus1_gU3,run_cmd_0_mU2,run_cmd_0_mU3,run_cmd_0_mU4,run_cmd_minus1_mU2,run_cmd_minus1_mU3,run_cmd_minus1_mU4,run_cmd_gu1_mU2,run_cmd_gu1_mU3,run_cmd_gu1_mU4]
-        add_name_list = ["_betaRd33_0_gU1","_betaRd33_0_gU2","_betaRd33_0_gU3","_betaRd33_minus1_gU1","_betaRd33_minus1_gU2","_betaRd33_minus1_gU3","_betaRd33_0_mU2","_betaRd33_0_mU3","_betaRd33_0_mU4","_betaRd33_minus1_mU2","_betaRd33_minus1_mU3","_betaRd33_minus1_mU4","_gU1_mU2","_gU1_mU3","_gU1_mU4"]
-        i = 0
-        for cmd in run_list:
-          
-          add_name = add_name_list[i]
-          i += 1 
+        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s' % vars()
+        run_list = [run_cmd]
+        if channel in ["mt","et"]:
+          run_list.append(run_cmd + " --w_ff_closure")
+        if channel in ["mt","et","tt"]:
+          run_list.append(run_cmd + " --qcd_ff_closure")
+
+
+        for i,cmd in enumerate(run_list):
+
+          if var_string in ["mt_tot","m_vis","pt_1+pt_2+met+jpt_1","met"]: cmd += " --log_y --log_x"
 
           add_syst = ''
           output_folder = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s/%(channel)s/%(year)s' % vars()
@@ -256,10 +263,14 @@ for year in years:
               add_syst += ' --syst_prefire="CMS_prefiring" --syst_zwt="CMS_htt_dyShape"'
             elif year == "2018":
               add_syst += ' --syst_zwt="CMS_htt_dyShape"'
-   
+  
+          if "MT" in cat and "ff_closure" in cmd: continue 
           
-          extra_name = '%(var_string)s%(add_name)s' % vars()
-          cmd += ' --extra_name=\'%(extra_name)s\' --outputfolder=%(output_folder)s %(add_syst)s --paramfile=scripts/params_vlq_2018.json' % vars()
+          extra_name = '%(var_string)s' % vars()
+          if "w_ff_closure" in cmd: extra_name += "_w_ff_closure"
+          if "qcd_ff_closure" in cmd: extra_name += "_qcd_ff_closure"
+
+          cmd += ' --extra_name=\'%(extra_name)s\' --outputfolder=%(output_folder)s %(add_syst)s' % vars()
           if var_string in ["mt_tot","m_vis","pt_1","pt_2","met","svfit_mass","jpt_1","jpt_2","pt_vis","pt_tt","dijetpt"]: cmd += ' --log_x'
           job_file = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s/jobs/vlq_plot_%(cat)s_%(year)s_%(channel)s_%(extra_name)s.sh' % vars()
           CreateBatchJob(job_file,cmssw_base,[cmd])

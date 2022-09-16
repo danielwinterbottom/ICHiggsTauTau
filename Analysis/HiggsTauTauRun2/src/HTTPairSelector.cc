@@ -43,6 +43,7 @@ namespace ic {
     std::cout << boost::format(param_fmt) % "pair_label"            % pair_label_;
     std::cout << boost::format(param_fmt) % "met_label"             % met_label_;
     std::cout << boost::format(param_fmt) % "use_most_isolated"     % use_most_isolated_;
+    std::cout << boost::format(param_fmt) % "use_os_preference"     % use_os_preference_;
     std::cout << boost::format(param_fmt) % "scale_met_for_tau"     % scale_met_for_tau_;
     std::cout << boost::format(param_fmt) % "tau_scale"             % tau_scale_;
     std::string allowed_str = "";

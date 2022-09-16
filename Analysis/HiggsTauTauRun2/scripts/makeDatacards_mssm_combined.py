@@ -170,13 +170,13 @@ for year in years:
   ### Systematics ###
 
   common_shape_systematics = [
-#      ' --syst_tau_id_diff="CMS_eff_t_*_%(year)s"' % vars(), # Tau ID efficiency
-#      ' --syst_tau_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Tau Trigger efficiency
-#      ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
-#      ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
-#      ' --syst_mssm_ggh ' # ggH theory uncertainties,
-      ' --syst_eff_b=CMS_htt_eff_b_%(year)s' % vars(),
-      ' --syst_fake_b=CMS_htt_mistag_b_%(year)s'% vars(),
+      ' --syst_tau_id_diff="CMS_eff_t_*_%(year)s"' % vars(), # Tau ID efficiency
+      ' --syst_tau_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Tau Trigger efficiency
+      ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
+      ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
+      ' --syst_mssm_ggh ' # ggH theory uncertainties,
+#      ' --syst_eff_b=CMS_htt_eff_b_%(year)s' % vars(),
+#      ' --syst_fake_b=CMS_htt_mistag_b_%(year)s'% vars(),
     ]
 
   common_sep_shape_systematics = [
@@ -190,20 +190,20 @@ for year in years:
 
   if year != '2018': 
     common_shape_systematics += [
-    #  ' --syst_prefire="CMS_prefiring"'
+      ' --syst_prefire="CMS_prefiring"'
       ]
   if year == '2016':  
     common_shape_systematics += [
-    #  ' --syst_zwt="CMS_htt_dyShape_2016"'
+      ' --syst_zwt="CMS_htt_dyShape_2016"'
       ]
   else:
     common_shape_systematics += [
-     # ' --syst_zwt="CMS_htt_dyShape"'
+      ' --syst_zwt="CMS_htt_dyShape"'
       ]
 
 
   et_shape_systematics = [
-#    ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
+    ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
   ]
 
   et_sep_shape_systematics = [
@@ -214,7 +214,7 @@ for year in years:
   ]
 
   mt_shape_systematics = [
-#    ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
+    ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
   ]
 
   mt_sep_shape_systematics = [
@@ -259,7 +259,7 @@ for year in years:
     categories = cat_schemes[ch]
 
     for cat in categories:
-      add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
+      add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\' --sel=\'n_jets>0 && jpt_1>50\''
       if ch == "em": method = '19'
       else: method = '17'
 
@@ -296,26 +296,26 @@ for year in years:
   
       
       # run systematics that involve drawing from different trees in parallel      
-      #for syst in sep_systs_channel[ch]:
-      #  syst_name=syst.split('=')[0].split('--')[1]
-      #  dc='%(cat)s_%(syst_name)s' % vars()
-      #  run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond_nosysts)s --no_default %(syst)s' % vars()
-      #  rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(dc)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(dc)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      for syst in sep_systs_channel[ch]:
+        syst_name=syst.split('=')[0].split('--')[1]
+        dc='%(cat)s_%(syst_name)s' % vars()
+        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond_nosysts)s --no_default %(syst)s' % vars()
+        rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(dc)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(dc)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
   
-      #  if not options.batch:
-      #    print run_cmd
-      #    if not options.dry_run:
-      #      os.system(run_cmd)
-      #      os.system(rename_cmd)
-      #  elif options.batch:
-      #    job_file = '%(output_folder)s/jobs/mssm_datacard_%(dc)s_%(ch)s_%(YEAR)s.sh' % vars()
-      #    CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
-      #    if not options.dry_run:
-      #      #if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
-      #      if ch in ["mt","et"] and YEAR == "2018" and 'do_ff_syst' in syst:
-      #        SubmitBatchJob(job_file,time=600,memory=24,cores=1)
-      #      else:
-      #        SubmitBatchJob(job_file,time=180,memory=24,cores=1)    
+        if not options.batch:
+          print run_cmd
+          if not options.dry_run:
+            os.system(run_cmd)
+            os.system(rename_cmd)
+        elif options.batch:
+          job_file = '%(output_folder)s/jobs/mssm_datacard_%(dc)s_%(ch)s_%(YEAR)s.sh' % vars()
+          CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
+          if not options.dry_run:
+            #if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
+            if ch in ["mt","et"] and YEAR == "2018" and 'do_ff_syst' in syst:
+              SubmitBatchJob(job_file,time=600,memory=24,cores=1)
+            else:
+              SubmitBatchJob(job_file,time=180,memory=24,cores=1)    
 
 
 

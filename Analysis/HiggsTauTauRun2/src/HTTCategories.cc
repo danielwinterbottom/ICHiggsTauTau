@@ -48,6 +48,7 @@ namespace ic {
       do_qcd_scale_wts_ = false;
       do_mssm_higgspt_ = false;
       do_faketaus_ = false;
+      do_muonsfakingtaus_ = false;
       trg_applied_in_mc_ = true;
 }
 
@@ -1171,6 +1172,13 @@ namespace ic {
       outtree_->Branch("jmva_1",             &jmva_1_);
       outtree_->Branch("jmva_2",             &jmva_2_);
       outtree_->Branch("count_s",             &count_s_);
+      outtree_->Branch("second_muon_pt",      &second_muon_pt_);
+      outtree_->Branch("second_muon_dR",             &second_muon_dR_);
+      outtree_->Branch("mass_two_muons",             &mass_two_muons_);
+      outtree_->Branch("wt_mfake_vloose",             &wt_mfake_vloose_);
+      outtree_->Branch("wt_mfake_loose",             &wt_mfake_loose_);
+      outtree_->Branch("wt_mfake_medium",             &wt_mfake_medium_);
+      outtree_->Branch("wt_mfake_tight",             &wt_mfake_tight_);
 
       if (channel_ == channel::em) {
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
@@ -1197,9 +1205,13 @@ namespace ic {
       outtree_->Branch("jet_flav_3", &jet_flav_3_);
       outtree_->Branch("jet_pt_1", &jet_pt_1_);
       outtree_->Branch("jet_pt_2", &jet_pt_2_);
-      if(do_faketaus_){
+      if(do_faketaus_||do_muonsfakingtaus_){
         outtree_->Branch("tau_dm_1", &tau_dm_1_);
         outtree_->Branch("tau_pt_1", &tau_pt_1_);
+        outtree_->Branch("tau_dR_1", &tau_dR_1_);
+        outtree_->Branch("tau_dR_2", &tau_dR_2_);
+        outtree_->Branch("tau_eta_1", &tau_eta_1_);
+        outtree_->Branch("tau_charge", &tau_charge_);
       }
 
       outtree_->Branch("q_1", &q_1_);
@@ -1687,7 +1699,6 @@ namespace ic {
 
   int HTTCategories::Execute(TreeEvent *event) {
     
-
     if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
@@ -2472,6 +2483,10 @@ namespace ic {
     wt_efake_rate_down_ = 1.0;
     wt_mfake_rate_up_ = 1.0;
     wt_mfake_rate_down_ = 1.0;
+    wt_mfake_vloose_ = 1.0;
+    wt_mfake_loose_ = 1.0;
+    wt_mfake_medium_ = 1.0;
+    wt_mfake_tight_ = 1.0;
     if (event->Exists("wt_tau_fake_up"))    wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
     if (event->Exists("wt_tau_fake_down"))  wt_tau_fake_down_ = event->Get<double>("wt_tau_fake_down");
     if (event->Exists("wt_tquark_up"))      wt_tquark_up_   = event->Get<double>("wt_tquark_up");
@@ -2486,6 +2501,11 @@ namespace ic {
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
+    if (event->Exists("wt_mfake_vloose")) wt_mfake_vloose_ = event->Get<double>("wt_mfake_vloose");
+    if (event->Exists("wt_mfake_loose")) wt_mfake_loose_ = event->Get<double>("wt_mfake_loose");
+    if (event->Exists("wt_mfake_medium")) wt_mfake_medium_ = event->Get<double>("wt_mfake_medium");
+    if (event->Exists("wt_mfake_tight")) wt_mfake_tight_ = event->Get<double>("wt_mfake_tight");
+
 
     wt_em_qcd_njets0_unc1_up_   = (event->Exists("wt_em_qcd_njets0_unc1_up"  )) ? event->Get<double>("wt_em_qcd_njets0_unc1_up"  ) : 1.0; 
     wt_em_qcd_njets0_unc1_down_ = (event->Exists("wt_em_qcd_njets0_unc1_down")) ? event->Get<double>("wt_em_qcd_njets0_unc1_down") : 1.0; 
@@ -2865,6 +2885,30 @@ namespace ic {
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
+      std::vector<Muon *> muons_full = event->GetPtrVec<Muon>("muons");
+      std::vector<Tau *> taus_full = event->GetPtrVec<Tau>("taus");
+      second_muon_dR_ = -1;
+      second_muon_pt_ = -1;
+      mass_two_muons_ = -1;
+      if (muons_full.size()>1) {
+        //std::cout << "Tau Size "<< taus_full.size() << " Muons Size " << muons_full.size() << " Muon pT ";
+        //for (unsigned i = 0; i < muons_full.size(); ++i) {
+        //  std::cout << muons_full[i]->pt() << " ";
+        //}
+        //std::cout << "Sel Muon " << muon->pt() << " Sel Tau " << tau->pt() << " DRs ";
+        for (unsigned i = 0; i < muons_full.size(); ++i) {
+          //std::cout << DR(muons_full[i],tau) << " ";
+          if (DR(muons_full[i],tau)<0.5 && muons_full[i]->pt()>10 && muons_full[i]->charge()==tau->charge() && DR(muons_full[i],muon)>0.5) {
+            Candidate* dimuon_pair  = new Candidate();
+            dimuon_pair->set_vector(muon->vector()+muons_full[i]->vector());
+            //std::cout << DR(muons_full[i],tau) << " " << muons_full[i]->pt() << " " << dimuon_pair->M() << "\n";
+            second_muon_dR_ = DR(muons_full[i],tau);
+            second_muon_pt_ = muons_full[i]->pt();
+            mass_two_muons_ = dimuon_pair->M();
+          }
+        }
+        //std::cout << "\n";
+      }
       d0_1_ = muon->dxy_vertex();
       dz_1_ = muon->dz_vertex();
       d0_2_ = tau->lead_dxy_vertex();
@@ -3207,9 +3251,10 @@ namespace ic {
     }
 
     
-    if(do_faketaus_&&(channel_==channel::zmm||channel_==channel::em)){
+    if((do_faketaus_||do_muonsfakingtaus_)&&(channel_==channel::zmm||channel_==channel::em)){
       std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
-      std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      //std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+      //std::cout << DR(taus[0],lep1) << " " << taus[0]->pt() << " " << lep1->pt() << std::endl;
       tau_pt_1_=-9999;
       tau_dm_1_=-9999;
 
@@ -3256,23 +3301,58 @@ namespace ic {
         mt_1_nomu_ = MT(not_removed_mu, newmet); 
         mu_pt_ = not_removed_mu->pt();
       }
+      std::cout << taus.size() << std::endl;
       if(taus.size()>0) { 
         deepTauVsEle_vvvloose_1_   = taus[0]->HasTauID("byVVVLooseDeepTau2017v2p1VSe")   ? taus[0]->GetTauID("byVVVLooseDeepTau2017v2p1VSe"):   0.;
         deepTauVsMu_vloose_1_      =    taus[0]->HasTauID("byVLooseDeepTau2017v2p1VSmu")   ? taus[0]->GetTauID("byVLooseDeepTau2017v2p1VSmu"):   0.;
         deepTauVsJets_vvvloose_1_  = taus[0]->HasTauID("byVVVLooseDeepTau2017v2p1VSjet")   ? taus[0]->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"):   0.;
-        tau_mva_decay_mode_1_ = taus[0]->HasTauID("MVADM2017v1") ? taus[0]->GetTauID("MVADM2017v1") : 0.0;
-        iso_1_      = taus[0]->HasTauID("byDeepTau2017v2p1VSjetraw")      ? taus[0]->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
-        deepTauVsEle_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSeraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
-        deepTauVsMu_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSmuraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
+        if(!do_muonsfakingtaus_) {
+          tau_mva_decay_mode_1_ = taus[0]->HasTauID("MVADM2017v1") ? taus[0]->GetTauID("MVADM2017v1") : 0.0;
+          iso_1_      = taus[0]->HasTauID("byDeepTau2017v2p1VSjetraw")      ? taus[0]->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
+          deepTauVsEle_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSeraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
+          deepTauVsMu_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSmuraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
+        } else {
+          std::vector<Candidate *> muonprobe1;
+          std::vector<Candidate *> muonprobe2;
+          muonprobe1.push_back(ditau->GetCandidate("lepton1"));
+          muonprobe2.push_back(ditau->GetCandidate("lepton2"));
+          if (DR(taus[0],muonprobe1[0])>DR(taus[0],muonprobe2[0])) {
+            lep1 = ditau->GetCandidate("lepton2");
+            lep2 = ditau->GetCandidate("lepton1");
+            muonprobe1[0] = ditau->GetCandidate("lepton2");
+            muonprobe2[0] = ditau->GetCandidate("lepton1");
+          }
+          //std::cout << "DR " << DR(taus[0],muonprobe1[0]) << " " << DR(taus[0],muonprobe2[0]) << std::endl;
+          tau_mva_decay_mode_1_ = taus[0]->HasTauID("MVADM2017v1") ? taus[0]->GetTauID("MVADM2017v1") : 0.0;
+          iso_1_      = taus[0]->HasTauID("byDeepTau2017v2p1VSjetraw")      ? taus[0]->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
+          deepTauVsEle_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSeraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
+          deepTauVsMu_iso_1_       = taus[0]->HasTauID("byDeepTau2017v2p1VSmuraw")        ? taus[0]->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
+          tau_pt_1_ = taus[0]->pt();
+          tau_dm_1_ = taus[0]->decay_mode();
+          std::cout << tau_dm_1_ << std::endl;
+          tau_dR_1_ = DR(taus[0],muonprobe1[0]);
+          tau_dR_2_ = DR(taus[0],muonprobe2[0]);
+          tau_eta_1_ = taus[0]->vector().Eta();
+          tau_charge_ = taus[0]->charge();
+        }
       }
       else {
+        return 1;
         deepTauVsEle_vvvloose_1_ = 0.;
         deepTauVsMu_vloose_1_ = 0.;
         deepTauVsJets_vvvloose_1_ = 0.;
         tau_mva_decay_mode_1_ = -1;
+        tau_pt_1_ = 0.;
+        tau_dm_1_ = -1;
+        tau_dR_1_ = 0.;
+        tau_dR_2_ = 0.;
+        iso_1_ = 0.;
+        deepTauVsEle_iso_1_ = 0.;
+        deepTauVsMu_iso_1_ = 0.;
+        tau_eta_1_ = 0.;
+        tau_charge_ = 0;
       } 
-
-      if(taus.size()>0){
+      if(taus.size()>0 && !do_muonsfakingtaus_){
         tau_pt_1_ = taus[0]->pt();
         tau_dm_1_ = taus[0]->decay_mode();
       }
@@ -5272,7 +5352,8 @@ namespace ic {
     aco_angle_6_ = aco_angle_6_!=aco_angle_6_ ? -9999. : aco_angle_6_;
     aco_angle_7_ = aco_angle_7_!=aco_angle_7_ ? -9999. : aco_angle_7_;
  
-    if (write_tree_ && fs_) outtree_->Fill();
+    if (write_tree_ && fs_ && mass_two_muons_ != -1) outtree_->Fill();
+    //if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
     if (make_mva_ntuple_) mvatree_->Fill();
 

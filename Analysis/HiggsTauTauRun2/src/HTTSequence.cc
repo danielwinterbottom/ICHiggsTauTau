@@ -137,6 +137,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   elec_dxy = 0.045;
   muon_dxy = 0.045;
   muon_dz = 0.2;
+  //muon_dxy = 0.2;
+  //muon_dz = 0.045;
   tau_dz = 0.2;
   pair_dr = 0.5;
 
@@ -305,6 +307,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % js["make_sync_ntuple"].asBool();
   std::cout << boost::format(param_fmt) % "save_output_jsons" % js["save_output_jsons"].asBool();
   std::cout << boost::format(param_fmt) % "use_deep_csv" % use_deep_csv;
+  std::cout << boost::format(param_fmt) % "do_muonsfakingtaus" % js["baseline"]["do_muonsfakingtaus"].asBool();
   std::cout << "** Kinematics **" << std::endl;
   std::cout << boost::format(param_fmt) % "elec_pt" % elec_pt;
   std::cout << boost::format(param_fmt) % "elec_eta" % elec_eta;
@@ -512,14 +515,14 @@ HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
   .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
   .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
   .set_tau_scale(tau_shift)
-  .set_use_most_isolated((strategy_type != strategy::paper2013) && (!(channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee)))
-  .set_use_os_preference((strategy_type == strategy::paper2013) || (channel == channel::zee || channel == channel::zmm || channel == channel::tpzmm || channel == channel::tpzee))
+  .set_use_most_isolated(false)
+  .set_use_os_preference(true)
   .set_allowed_tau_modes(allowed_tau_modes)
   .set_metuncl_mode(metuncl_mode)
   .set_metcl_mode(metcl_mode)
   .set_shift_jes(!do_recoil)
   .set_usePFMET(usePFMET);
-    
+  
 httPairSelector.set_gen_taus_label("genParticles");
 
 BuildModule(httPairSelector);
@@ -651,10 +654,12 @@ if (!is_data && !is_embedded) {
    );
 }
 
-BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
-  .set_input_label(jets_label)
-  .set_reference_label("ditau")
-  .set_min_dr(0.5));
+if(!js["baseline"]["do_muonsfakingtaus"].asBool()){
+  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+    .set_input_label(jets_label)
+    .set_reference_label("ditau")
+    .set_min_dr(0.5));
+}
 
 if(!is_data) {
   bool do_ngenjets = (output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos || output_name.find("JJH")!=output_name.npos);
@@ -1102,6 +1107,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       .set_do_qcd_scale_wts(do_qcd_scale_wts_)
       .set_do_mssm_higgspt(do_mssm_higgspt)
       .set_do_faketaus(js["baseline"]["do_faketaus"].asBool())
+      .set_do_muonsfakingtaus(js["baseline"]["do_muonsfakingtaus"].asBool())
       .set_trg_applied_in_mc(js["trg_in_mc"].asBool()));
 
   // now we need to delete the deep copies of the jet and met collections
@@ -1682,6 +1688,7 @@ void HTTSequence::BuildMTPairs() {
               MuonID(m);
     }));
 
+
   BuildTauSelection();
 
   if(js["do_mt_tagandprobe"].asBool()){
@@ -1926,7 +1933,7 @@ void HTTSequence::BuildZMMPairs() {
                 MuonID(m);
       }));
 
-  if(js["baseline"]["do_muonfakingtaus"].asBool()){
+  if(js["baseline"]["do_muonsfakingtaus"].asBool()){
     BuildModule(SimpleFilter<Tau>("TauFilter")
         .set_input_label(js["taus"].asString()).set_min(1)
         .set_predicate([=](Tau const* t) {
@@ -1941,9 +1948,9 @@ void HTTSequence::BuildZMMPairs() {
     BuildModule(OverlapFilter<Tau,Muon>("TauMuonOverlapFilter")
       .set_input_label(js["taus"].asString())
       .set_reference_label("sel_lead_muons")
+      .set_min_dr(0.00000001)
       .set_max_dr(0.5));
-  };
-
+    };
   
   BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
       .set_input_label_first("sel_lead_muons")
@@ -1969,8 +1976,6 @@ void HTTSequence::BuildZMMPairs() {
       .set_reference_label("ditau")
       .set_min_dr(0.5));
   }
-
-  
 }
 
 // --------------------------------------------------------------------------
@@ -2009,17 +2014,28 @@ void HTTSequence::BuildTauSelection(){
   
   // filter taus first with loose pT cut - this avoids running more time consuming parts of the code for events with taus that just wont pass the offline cuts anyway 
   double loose_tau_pt = tau_pt*0.8;
+  //BuildModule(SimpleFilter<Tau>("TauFilterNewDMLoosePT")
+  //   .set_input_label(js["taus"].asString()).set_min(min_taus)
+  //   .set_predicate([=](Tau const* t) {
+  //     return  t->pt()                     >  loose_tau_pt &&
+  //             fabs(t->eta())              <  tau_eta    &&
+  //             fabs(t->lead_dz_vertex())   <  tau_dz     &&
+  //             fabs(t->charge())           == 1          &&
+  //             t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
+  //             t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
+
+  //   }));
   BuildModule(SimpleFilter<Tau>("TauFilterNewDMLoosePT")
      .set_input_label(js["taus"].asString()).set_min(min_taus)
-     .set_predicate([=](Tau const* t) {
+     .set_predicate([=](Tau const* t) {    
        return  t->pt()                     >  loose_tau_pt &&
                fabs(t->eta())              <  tau_eta    &&
                fabs(t->lead_dz_vertex())   <  tau_dz     &&
                fabs(t->charge())           == 1          &&
                t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
-               t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
-
+               t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5;
      }));
+
  
  if (tau_scale_mode > 0 && !is_data){
     // Tau energy scale is applied to genuine taus only - this works by selecting taus matched to generator level hadronic taus and saving these as a collection of pointers. The the shift is then applied to this collection which in turn shifts the tau energy for all corresponding taus in the origional tau collection (this will only work if both collections of taus are stored as pointers!)
@@ -2195,6 +2211,17 @@ void HTTSequence::BuildTauSelection(){
 
  }
 
+// BuildModule(SimpleFilter<Tau>("TauFilterNewDM")
+//    .set_input_label(js["taus"].asString()).set_min(min_taus)
+//    .set_predicate([=](Tau const* t) {
+//      return  t->pt()                     >  tau_pt     &&
+//              fabs(t->eta())              <  tau_eta    &&
+//              fabs(t->lead_dz_vertex())   <  tau_dz     &&
+//              fabs(t->charge())           == 1          &&
+//              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
+//              t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5; 
+//
+//    }));
  BuildModule(SimpleFilter<Tau>("TauFilterNewDM")
     .set_input_label(js["taus"].asString()).set_min(min_taus)
     .set_predicate([=](Tau const* t) {
@@ -2203,8 +2230,7 @@ void HTTSequence::BuildTauSelection(){
               fabs(t->lead_dz_vertex())   <  tau_dz     &&
               fabs(t->charge())           == 1          &&
               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
-              t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5; 
-
+              t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5;
     }));
 
  }

@@ -48,6 +48,12 @@ template <class T>
 int SimpleFilter<T>::Execute(TreeEvent *event) {
   std::vector<T *> & vec = event->GetPtrVec<T>(input_label_);
   ic::erase_if(vec,!boost::bind(predicate_,_1));
+  //if ((input_label_ == "sel_muons" || input_label_ == "taus") && vec.size()>1) {
+  //  std::cout << input_label_ << " " << vec.size() << std::endl;
+  //}
+  if ((input_label_ == "PairFilter")) {
+    std::cout << input_label_ << " " << vec.size() << std::endl;
+  }
   if (vec.size() >= min_ && vec.size() <= max_) {
     return 0;
   } else {

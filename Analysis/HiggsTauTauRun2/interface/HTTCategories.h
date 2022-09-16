@@ -38,6 +38,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, do_mssm_higgspt)
   CLASS_MEMBER(HTTCategories, bool, do_sm_ps_wts)
   CLASS_MEMBER(HTTCategories, bool, do_faketaus)
+  CLASS_MEMBER(HTTCategories, bool, do_muonsfakingtaus)
   CLASS_MEMBER(HTTCategories, bool, trg_applied_in_mc)
 
   TTree *outtree_;
@@ -89,6 +90,10 @@ class HTTCategories : public ModuleBase {
   double wt_efake_rate_down_;
   double wt_mfake_rate_up_;
   double wt_mfake_rate_down_;
+  double wt_mfake_vloose_;
+  double wt_mfake_loose_;
+  double wt_mfake_medium_;
+  double wt_mfake_tight_; 
 
   double wt_em_qcd_;
   double wt_em_qcd_extrapdown_;
@@ -939,9 +944,13 @@ class HTTCategories : public ModuleBase {
   double wt_ps_isr_down_;
   double wt_ps_fsr_up_;
   double wt_ps_fsr_down_;
-  
+ 
+  double tau_dR_1_;
+  double tau_dR_2_; 
+  double tau_eta_1_;
   double tau_pt_1_;
   int tau_dm_1_;
+  int tau_charge_;
   double wt_dysoup_;
   double wt_wsoup_;
 
@@ -1173,6 +1182,10 @@ class HTTCategories : public ModuleBase {
   double gen_nu_eta_2_;
 
   double pf_met_;
+
+  double second_muon_pt_;
+  double second_muon_dR_;
+  double mass_two_muons_;
 
  public:
   HTTCategories(std::string const& name);

@@ -4,6 +4,7 @@ from matplotlib.pyplot import figure
 import matplotlib.patches as mpatches
 
 plt.rcParams["figure.figsize"] = (8,4)
+plt.rcParams['font.size'] = 5.0
 fig1, ax1 = plt.subplots(2,5)
 backgrounds_and_mapping = {"jetFakes":"JetFakes", "EMB":"Embedding", "ZL":r"Z$\rightarrow$ll", "TTL":r"$t\bar{t}$", "VVL":"Diboson", "wFakes":"JetFakes", "QCD":"QCD", "W":"W"}
 colour_mapping = {'JetFakes':'#ff9999','Embedding':'#66b3ff',r"Z$\rightarrow$ll":'#99ff99',r"$t\bar{t}$":'#ffcc99','Diboson':'#f58142','QCD':'#E036B7','W':'#14720B','Other':'#4D9190'}
@@ -99,8 +100,10 @@ for cat_name in ["no b-tag", "b-tag"]:
     colors = []
     
     for i in list2: colors.append(colour_mapping[i])
-    
-    ax1[ind1][ind2].pie(list1, colors=colors, autopct='%1.1f%%',startangle=140, textprops={'fontsize': 5})
+  
+    names = [str(round(i*100,1))+"%" for i in list1] 
+    #ax1[ind1][ind2].pie(list1, colors=colors, autopct='%1.1f%%',startangle=140, textprops={'fontsize': 5})
+    ax1[ind1][ind2].pie(list1, colors=colors)
     ax1[ind1][ind2].set_title(title,fontsize=10)
     ax1[ind1][ind2].axis('equal')
     #plt.show()
@@ -113,7 +116,7 @@ for cat_name in ["no b-tag", "b-tag"]:
 # Draw legend
 leg = []
 for k,v in colour_mapping.items():
-  if k != "Other":
+  if k != "Other" and k != "W":
     leg.append(mpatches.Patch(color=v, label=k))
 leg.append(mpatches.Patch(color=colour_mapping["Other"], label="Remaining\ncontributions"))
 ax1[0][4].legend(handles=leg,prop={'size': 10},loc=2,frameon=False)

@@ -9,7 +9,7 @@ import UserCode.ICHiggsTauTau.plotting as plotting
 ntuple_name   = "ntuple"
 var_input     = "pt_1[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,520,540,560,580,600]"
 x_label       = "p_{T} (GeV)"
-y_label       = " < Events / GeV >"
+y_label       = "1/#sigma d#sigma/dp_{T} (1/GeV)"
 do_ratio      = False
 ratio_file    = ""
 logx          = False
@@ -214,16 +214,16 @@ def DrawHistogramsWithBand(pad_name,h_dict,do_ratio=False,do_options=True, x_lab
           h_dict[key+"_up"].GetXaxis().SetNoExponent()
   
         h_dict[key+"_up"].Draw("e2")
-        h_dict[key+"_up"].SetLineWidth(0)
+        #h_dict[key+"_up"].SetLineWidth(0)
         h_dict[key+"_up"].SetMarkerSize(0)
         h_dict[key+"_up"].SetMarkerColorAlpha(colours[i],0)
-        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
-        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],1)
+        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
+        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0)
         if no_uncerts:
           #h_dict[key+"_up"].SetLineWidth(2)
-          #h_dict[key+"_up"].SetLineColor(colours[i])
+          h_dict[key+"_up"].SetLineColor(colours[i])
           h_dict[key+"_up"].SetLineWidth(2)
-          h_dict[key+"_up"].SetLineColor(1)
+          #h_dict[key+"_up"].SetLineColor(1)
  
         if not no_uncerts: h_dict[key+"_down"].Draw("e2 same")
         h_dict[key+"_down"].SetLineWidth(0)
@@ -236,7 +236,7 @@ def DrawHistogramsWithBand(pad_name,h_dict,do_ratio=False,do_options=True, x_lab
       #h_dict[key].SetLineWidth(2)
       #h_dict[key].SetLineColor(colours[i])
       h_dict[key].SetLineWidth(2)
-      h_dict[key].SetLineColor(1)
+      #h_dict[key].SetLineColor(1)
       h_dict[key].SetMarkerSize(0)
       h_dict[key].SetFillColorAlpha(colours[i],0.3)
       #h_dict[key].SetFillColorAlpha(colours[i],1)
@@ -247,13 +247,13 @@ def DrawHistogramsWithBand(pad_name,h_dict,do_ratio=False,do_options=True, x_lab
         h_dict[key+"_up"].SetLineWidth(0)
         h_dict[key+"_up"].SetMarkerSize(0)
         h_dict[key+"_up"].SetMarkerColorAlpha(colours[i],0)
-        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
-        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],1)
+        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
+        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0)
         if no_uncerts:
           #h_dict[key+"_up"].SetLineWidth(2)
-          #h_dict[key+"_up"].SetLineColor(colours[i])
+          h_dict[key+"_up"].SetLineColor(colours[i])
           h_dict[key+"_up"].SetLineWidth(2)
-          h_dict[key+"_up"].SetLineColor(1)
+          #h_dict[key+"_up"].SetLineColor(1)
 
 
   
@@ -377,11 +377,18 @@ else:
 #DrawHistogramsWithBand(pad1,h_plot_dict,do_ratio=do_ratio,do_options=True, x_label=x_label, y_label=y_label,pad="top",no_uncerts=turn_uncerts_off,colours=[ROOT.TColor.GetColor(248, 206, 104),ROOT.TColor.GetColor(100, 192, 232),ROOT.TColor.GetColor(155, 152, 204),ROOT.TColor.GetColor(222, 90, 106),ROOT.TColor.GetColor(250, 202, 255),ROOT.TColor.GetColor(222, 90, 106),ROOT.TColor.GetColor(192, 232, 100)])
 DrawHistogramsWithBand(pad1,h_plot_dict,do_ratio=do_ratio,do_options=True, x_label=x_label, y_label=y_label,pad="top",no_uncerts=turn_uncerts_off)
 
+#4,2,3,94
+h_plot_dict[total_name].SetLineColor(4)
+h_plot_dict["b-only"].SetLineColor(2)
+h_plot_dict["i-only"].SetLineColor(3)
+h_plot_dict["t-only"].SetLineColor(94)
 
-l = ROOT.TLegend(0.6,0.25,0.94,0.52)
+#l = ROOT.TLegend(0.6,0.25,0.94,0.52)
+l = ROOT.TLegend(0.47,0.35,0.94,0.62)
 l.SetBorderSize(0)
 if not do_ratio:
-  l.SetTextSize(0.025)
+#  l.SetTextSize(0.025)
+  l.SetTextSize(0.04)
 else:
   l.SetTextSize(0.04)
 #for key, val in h_plot_dict.items():
@@ -393,17 +400,19 @@ else:
 #    if key[0] == "i":
 #      l.AddEntry(val,"t b-interference","f")
 
-l.AddEntry(h_plot_dict["t-only"],"t quark only","f")
-l.AddEntry(h_plot_dict["b-only"],"b quark only","f")
-l.AddEntry(h_plot_dict["i-only"],"t b-interference","f")
-l.AddEntry(h_plot_dict[total_name],total_name,"f")
+l.AddEntry(h_plot_dict["t-only"],"t quark only","l")
+l.AddEntry(h_plot_dict["b-only"],"b quark only","l")
+l.AddEntry(h_plot_dict["i-only"],"t b-interference","l")
+l.AddEntry(h_plot_dict[total_name],total_name,"l")
 l.Draw()
 
 # Draw titles and text on plot
  
 if not do_ratio:
-  plotting.DrawTitle(pad1, title_right, 1, scale=1)
-  plotting.DrawTitle(pad1, title_left, 3, scale=1)
+#  plotting.DrawTitle(pad1, title_right, 1, scale=1)
+#  plotting.DrawTitle(pad1, title_left, 3, scale=1)
+  plotting.DrawTitle(pad1, title_right, 1, scale=1.25)
+  plotting.DrawTitle(pad1, title_left, 3, scale=1.25)
 else:
   plotting.DrawTitle(pad1, title_right, 1, scale=1)
   plotting.DrawTitle(pad1, title_left, 3, scale=1)
@@ -412,12 +421,18 @@ latex = ROOT.TLatex()
 latex.SetNDC()
 latex.SetTextAngle(0)
 latex.SetTextAlign(12)
-latex.SetTextSize(0.03)
+#latex.SetTextSize(0.03)
+latex.SetTextSize(0.04)
 latex.SetTextColor(1)
-latex.DrawLatex(0.65,0.88,under_legend_1)
-latex.DrawLatex(0.65,0.83,under_legend_2)
-latex.DrawLatex(0.65,0.78,under_legend_3)
-latex.DrawLatex(0.65,0.73,under_legend_4)
+#latex.DrawLatex(0.65,0.88,under_legend_1)
+#latex.DrawLatex(0.65,0.83,under_legend_2)
+#latex.DrawLatex(0.65,0.78,under_legend_3)
+#latex.DrawLatex(0.65,0.73,under_legend_4)
+latex.DrawLatex(0.55,0.88,under_legend_1)
+latex.DrawLatex(0.55,0.83,under_legend_2)
+latex.DrawLatex(0.55,0.78,under_legend_3)
+latex.DrawLatex(0.55,0.73,under_legend_4)
+
 plotting.DrawCMSLogo(pad1, 'CMS', 'Simulation', 11, 0.045, 0.03, 1.0, '', 1.0)
 
 # Draw 10^-3

@@ -3,10 +3,10 @@
 # python scripts/makeDatacards_vlq.py --years='2016,2017,2018' --channels='tt,mt,et,em' --output_folder='vlq_dc' --batch
 
 # after running all jobs hadd them using this commnd inside the output folder:
-#for ch in tt et mt em; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done; done
+#for var in mt_tot_puppi stmet; do for ch in tt et mt em; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-${var}.root ${year}/${ch}/*${var}.root"; done; done
 
 # to copy them to the right combine directory
-#for ch in tt et mt em; do for year in 2016 2017 2018; do cp ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-mt_tot_puppi.root /vols/cms/gu18/CH_unblinding/CMSSW_10_2_25/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes/${year}/${ch}/; done; done
+#for ch in tt et mt em; do for year in 2016 2017 2018; do cp ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-*.root /vols/cms/gu18/CH_unblinding/CMSSW_10_2_25/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes/${year}/${ch}/; done; done
 
 import sys
 from optparse import OptionParser
@@ -112,6 +112,7 @@ for year in years:
   # my attempt at a compromise with the binning
   # merge mt_tot<50 bins since this region was tricking the past and seems to only impact the lowest mass point  (M=60)
   # use slightly finer bins for mt_tot between 350 and 1000
+  BINS_STMET="[50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
   BINS_FINE="[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
 
   # for btag category bins merge mt_tot<60 for same reason as above
@@ -123,6 +124,10 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
+                   "Nbtag0_Njets0_MTLt40",
+                   "Nbtag0_Njets0_MT40To70",
+                   "Nbtag0_NjetsGt1_MTLt40",
+                   "Nbtag0_NjetsGt1_MT40To70",
    #                "MTLt40",
    #                "MT40To70",
                    ]
@@ -132,6 +137,10 @@ for year in years:
                    "Nbtag0_MT40To70",
                    "NbtagGt1_MTLt40",
                    "NbtagGt1_MT40To70",
+                   "Nbtag0_Njets0_MTLt40",
+                   "Nbtag0_Njets0_MT40To70",
+                   "Nbtag0_NjetsGt1_MTLt40",
+                   "Nbtag0_NjetsGt1_MT40To70",
   #                 "MTLt40",
   #                 "MT40To70",
                    ]
@@ -139,6 +148,8 @@ for year in years:
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
+                   "Nbtag0_Njets0",
+                   "Nbtag0_NjetsGt1",
  #                  "inclusive",
                    ]
 
@@ -147,6 +158,12 @@ for year in years:
                    "Nbtag0_DZetaGt30",
                    "Nbtag0_DZetam10To30",
                    "Nbtag0_DZetam35Tom10",
+                   "Nbtag0_Njets0_DZetaGt30",
+                   "Nbtag0_Njets0_DZetam10To30",
+                   "Nbtag0_Njets0_DZetam35Tom10",
+                   "Nbtag0_NjetsGt1_DZetaGt30",
+                   "Nbtag0_NjetsGt1_DZetam10To30",
+                   "Nbtag0_NjetsGt1_DZetam35Tom10",
                    "NbtagGt1_DZetaGt30",
                    "NbtagGt1_DZetam10To30",
                    "NbtagGt1_DZetam35Tom10",
@@ -269,8 +286,9 @@ for year in years:
       if cat.startswith("NbtagGt1"): bins = BINS
       else: bins = BINS_FINE
 
-      for j in options.add_options.split(","):
-        add_cond += " --"+j
+      if options.add_options != "": 
+        for j in options.add_options.split(","):
+          add_cond += " --"+j
 
 
       add_cond_nosysts = add_cond
@@ -280,38 +298,55 @@ for year in years:
           add_cond += i
 
       run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond)s --only_sig' % vars()
-      rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-mt_tot_puppi.root' % vars()
 
-      if not options.batch:
-        print run_cmd
-        if not options.dry_run:
-          os.system(run_cmd)
-          os.system(rename_cmd)
-      elif options.batch:
-        job_file = '%(output_folder)s/jobs/vlq_datacard_%(cat)s_%(ch)s_%(YEAR)s.sh' % vars()
-        CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
-        if not options.dry_run:
-          SubmitBatchJob(job_file,time=180,memory=24,cores=1)
-  
-      
-      # run systematics that involve drawing from different trees in parallel     
-      if not no_syst: 
+      run_cmd_alt1 = ''
+      rename_cmd_alt1 = ''
+      if "NjetsGt1" in cat:
+        bins = BINS_STMET
+        var_alt = 'pt_1+pt_2+jpt_1+met'
+        run_cmd_alt1 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s --only_sig --sel=\'m_vis>100\'' % vars()
+        rename_cmd_alt1 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-stmet.root' % vars()
+
+      commands = [(run_cmd,rename_cmd)]
+      if run_cmd_alt1 != '': commands.append((run_cmd_alt1, rename_cmd_alt1))
+
+      num = 0
+      for run_cmd_, rename_cmd_ in commands:
+
+        if not options.batch:
+          print run_cmd_
+          if not options.dry_run:
+            os.system(run_cmd_)
+            os.system(rename_cmd_)
+        elif options.batch:
+          job_file = '%(output_folder)s/jobs/vlq_datacard_%(cat)s_%(ch)s_%(YEAR)s_%(num)s.sh' % vars()
+          CreateBatchJob(job_file,cmssw_base,[run_cmd_,rename_cmd_])
+          if not options.dry_run:
+            SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+    
+        
+        # run systematics that involve drawing from different trees in parallel    
         for syst in sep_systs_channel[ch]:
           syst_name=syst.split('=')[0].split('--')[1]
           dc='%(cat)s_%(syst_name)s' % vars()
-          run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --extra_name=%(syst_name)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond_nosysts)s --no_default %(syst)s --only_sig' % vars()
-          rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(dc)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(dc)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
-  
+          run_cmd_syst_ = run_cmd_.replace(add_cond, add_cond_nosysts)+' --extra_name=%(syst_name)s --no_default %(syst)s ' % vars()
+          rename_cmd_syst_ = rename_cmd_.replace('%(ch)s_%(YEAR)s.root' % vars(), '%(syst_name)s_%(ch)s_%(YEAR)s.root' % vars() ).replace('.inputs' % vars(), '_%(syst_name)s.inputs' % vars())
+
           if not options.batch:
-            print run_cmd
+            print run_cmd_syst_
             if not options.dry_run:
-              os.system(run_cmd)
-              os.system(rename_cmd)
+              os.system(run_cmd_syst_)
+              os.system(rename_cmd_syst_)
           elif options.batch:
-            job_file = '%(output_folder)s/jobs/vlq_datacard_%(dc)s_%(ch)s_%(YEAR)s.sh' % vars()
-            CreateBatchJob(job_file,cmssw_base,[run_cmd,rename_cmd])
+            job_file = '%(output_folder)s/jobs/vlq_datacard_%(dc)s_%(ch)s_%(YEAR)s_%(num)s.sh' % vars()
+            CreateBatchJob(job_file,cmssw_base,[run_cmd_syst_,rename_cmd_syst_])
             if not options.dry_run:
-              SubmitBatchJob(job_file,time=180,memory=24,cores=1)    
-
-
-
+              #if (ch in ["mt","et"] or (YEAR in "2018" and ch in "tt")) and not options.no_syst and False:
+              if ch in ["mt","et"] and 'do_ff_syst' in syst:
+                SubmitBatchJob(job_file,time=600,memory=12,cores=1)
+              else:
+                SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        num+=1
+ 
+  

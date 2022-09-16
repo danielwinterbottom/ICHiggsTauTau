@@ -874,6 +874,11 @@ int HTTWeights::PreAnalysis() {
         w_->function("t_id_vs_mu_eta_tight_up")->functor(w_->argSet("t_eta")));
     fns_["t_id_vs_mu_eta_tight_down"] = std::shared_ptr<RooFunctor>(
         w_->function("t_id_vs_mu_eta_tight_down")->functor(w_->argSet("t_eta")));
+    fns_["t_id_vs_mu_eta_loose"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_id_vs_mu_eta_loose")->functor(w_->argSet("t_eta")));
+    fns_["t_id_vs_mu_eta_medium"] = std::shared_ptr<RooFunctor>(
+        w_->function("t_id_vs_mu_eta_medium")->functor(w_->argSet("t_eta")));
+
 
     // zpt reweighting
     fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
@@ -2792,6 +2797,16 @@ int HTTWeights::Execute(TreeEvent *event) {
          mtau_fakerate_2 = fns_["t_id_vs_mu_eta_tight"]->eval(t_args.data());
          mtau_fakerate_2_up = fns_["t_id_vs_mu_eta_tight_up"]->eval(t_args.data());
          mtau_fakerate_2_down = fns_["t_id_vs_mu_eta_tight_down"]->eval(t_args.data());
+         double wt_mfake_vloose_ = fns_["t_id_vs_mu_eta_vloose"]->eval(t_args.data());
+         double wt_mfake_loose_ = fns_["t_id_vs_mu_eta_loose"]->eval(t_args.data());
+         double wt_mfake_medium_ = fns_["t_id_vs_mu_eta_medium"]->eval(t_args.data());
+         double wt_mfake_tight_ = fns_["t_id_vs_mu_eta_tight"]->eval(t_args.data());
+
+         event->Add("wt_mfake_vloose",wt_mfake_vloose_);
+         event->Add("wt_mfake_loose",wt_mfake_loose_);
+         event->Add("wt_mfake_medium",wt_mfake_medium_);
+         event->Add("wt_mfake_tight",wt_mfake_tight_);
+
        }
        else {                       
          mtau_fakerate_2 = fns_["t_id_vs_mu_eta_vloose"]->eval(t_args.data()); 
@@ -2811,7 +2826,6 @@ int HTTWeights::Execute(TreeEvent *event) {
      eventInfo->set_weight("mtau_fakerate",mtau_fakerate_1*mtau_fakerate_2);
      event->Add("wt_mfake_rate_up",mtau_fakerate_1_up*mtau_fakerate_2_up/(mtau_fakerate_1*mtau_fakerate_2));
      event->Add("wt_mfake_rate_down",mtau_fakerate_1_down*mtau_fakerate_2_down/(mtau_fakerate_1*mtau_fakerate_2));
-
    }
  
     return 0;

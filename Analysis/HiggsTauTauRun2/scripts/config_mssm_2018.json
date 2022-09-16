@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
     //"channels":     ["mt","tt","et","em"],
-    "channels":     ["zmm"],
+    "channels":     ["mt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -47,7 +47,7 @@
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
-    "do_preselection" : true,
+    "do_preselection" : false,
     "force_old_effs" : false,
     "electrons"     : "electrons",
     "muons"         : "muons",
@@ -56,7 +56,7 @@
     "met"           : "pfMET",
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
-    "do_mt_tagandprobe"    : true,
+    "do_mt_tagandprobe"    : false,
     "do_recoil"            : true,
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
@@ -65,7 +65,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     "output_folder" : "output/",
-    "output_folder" : "/vols/cms/gu18/Offline/output/DeepTau/1403",
+    //"output_folder" : "/vols/cms/gu18/Offline/output/DeepTau/1806",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/gu18/Offline/output/MSSM/mssm_2018_svfit/",
@@ -88,7 +88,7 @@
     "mc_pu_file"    : "input/pileup/pu_distributions_mc_2018.root",
     "run_trg_filter": false,
     "baseline": {
-      "do_faketaus"     : true,
+      "do_muonsfakingtaus"     : true,
       "tau_scale_mode"    : true,
       "jes_mode"          : 0,
       "jer_mode"          : 0,
@@ -176,17 +176,17 @@
 
     "mt": {
       "baseline": {
-        "pair_dr": 0.5,
-        "di_muon_veto"   :true,
-        "di_elec_veto"   :true,
-        "extra_elec_veto":true,
-        "extra_muon_veto":true,
-        "max_extra_elecs": 0,
-        "max_extra_muons": 1,
-        "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
-        "do_ff_systematics": true,
+        "pair_dr": 0.3,
+        "di_muon_veto"   :false,
+        "di_elec_veto"   :false,
+        "extra_elec_veto":false,
+        "extra_muon_veto":false,
+        "max_extra_elecs": 100,
+        "max_extra_muons": 100,
+        "do_tau_anti_muon": false,
+        "do_tau_anti_elec":false,
+        "do_ff_weights" : false,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2018.root",
         "ff_fracs_file" : ""
@@ -204,10 +204,10 @@
     "zmm": {
       "baseline": {
         "pair_dr": 0.3,
-        "extra_elec_veto":true,
-        "extra_muon_veto":true,
-        "max_extra_elecs": 0,
-        "max_extra_muons": 2
+        "extra_elec_veto":false,
+        "extra_muon_veto":false,
+        "max_extra_elecs": 100,
+        "max_extra_muons":100
       }
     },
     "zee": {

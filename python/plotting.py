@@ -63,12 +63,14 @@ def SetAxisTitles(plot, channel):
   titles['iso_1'] = ['I^{'+lep1_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep1_label+'}_{rel}']
 #  titles['iso_2'] = ['I^{'+lep2_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep2_label+'}_{rel}']
   titles['iso_2'] = ['rawDeepTau2017v2p1VSjet','Events / '+bin_width+' GeV', 'rawDeepTau2017v2p1VSjet']
+  titles['deepTauVsMu_iso_2'] = ['rawDeepTau2017v2p1VSmu','Events / '+bin_width, 'rawDeepTau2017v2p1VSmu']
   titles['pt_1'] = ['p_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['p_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep2_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
   titles['mt_tot'] = ['m_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{tot} (1/GeV)']
+  titles['pt_1+pt_2+met+jpt_1'] = ['S_{T}^{MET} (GeV)','Events / '+bin_width+' GeV', 'dN/dMS_{T}^{MET} (1/GeV)','GeV']
   titles['mt_1'] = ['m_{T}(p_{T}^{'+lep1_label+'},p_{T}^{miss}) (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}(p_{T}^{'+lep1_label+'},p_{T}^{miss}) (1/GeV)']
   titles['mt_2'] = ['m_{T}(p_{T}^{'+lep2_label+'},p_{T}^{miss}) (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}(p_{T}^{'+lep2_label+'},p_{T}^{miss}) (1/GeV)']
   titles['mt_lep'] = ['m_{T}(p_{T}^{'+lep1_label+'},p_{T}^{'+lep2_label+'}) (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}(p_{T}^{'+lep1_label+'},p_{T}^{'+lep2_label+'}) (1/GeV)']
@@ -182,6 +184,7 @@ def SetAxisTitles2D(plot, channel):
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}','']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}','']
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)','GeV']
+  titles['pt_1+pt_2+met+jpt_1'] = ['S_{T}^{MET} (GeV)','Events / '+bin_width+' GeV', 'dN/dMS_{T}^{MET} (1/GeV)','GeV']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)','GeV']
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)','GeV']
@@ -195,6 +198,8 @@ def SetAxisTitles2D(plot, channel):
   titles['met_dphi_1'] = ['#Delta#phi(lep1,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi','']
   titles['met_dphi_2'] = ['#Delta#phi(lep2,E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi','']
   titles['chi'] = ['#chi','Events / '+bin_width, 'dN/d#chi','']
+  #titles['deepTauVsMu_iso_2'] = ['DeepTau2017v2p1VSmu WP','Events / '+bin_width, 'DeepTau2017v2p1VSmu WP']
+  titles['deepTauVsMu_iso_2'] = ['DeepTau2017v2p1VSmu Score','Events / '+bin_width, 'DeepTau2017v2p1VSmu Score']
 
 
   if channel == 'tt':
@@ -1693,7 +1698,7 @@ def DrawVerticalLine(pad, line, xval):
     line.DrawLine(xval, ymin, xval, ymax)
 
 
-def DrawTitle(pad, text, align, scale=1):
+def DrawTitle(pad, text, align, scale=1, offset=0):
     pad_backup = R.gPad
     pad.cd()
     t = pad.GetTopMargin()
@@ -1706,7 +1711,7 @@ def DrawTitle(pad, text, align, scale=1):
         pad_ratio = 1.
 
     textSize = 0.6
-    textOffset = 0.2
+    textOffset = 0.2 + offset
 
     latex = R.TLatex()
     latex.SetNDC()
@@ -2219,7 +2224,9 @@ def HTTPlot(nodename,
             qcd_ff_closure=False,
             w_ff_closure=False,
             bkg_comp = False,
-            plot_signals=[]
+            plot_signals=[],
+            norm_to_one = False,
+            gU = 1
             ):
 
     R.gROOT.SetBatch(R.kTRUE)
@@ -2268,6 +2275,9 @@ def HTTPlot(nodename,
         "vlq_betaRd33_minus1_mU4_gU1":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=1 (XS)",
         "vlq_betaRd33_minus1_mU4_gU2":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=2 (XS)",
         "vlq_betaRd33_minus1_mU4_gU3":str(int(signal_scale))+"#times VLQ #beta_{R}^{b#tau}=-1, m_{U}=4 TeV, g_{U}=3 (XS)",
+        "VLQ_betaRd33_0_offdiag0_matched_M_1000":"VLQ: g_{U}=10",
+        "VLQ_betaRd33_0_matched_M_2000":"m_{U} = 2 TeV, VLQ BM 1, g_{U} = "+gU,
+        "VLQ_betaRd33_0_offdiag0_matched_M_2000":"m_{U} = 2 TeV, VLQ BM 3, g_{U} = "+gU
     }
 
     ModTDRStyle(r=0.04, l=0.14)
@@ -2550,6 +2560,9 @@ def HTTPlot(nodename,
             bkg['leg_text'] = '#mu#rightarrow#tau embedding'
           if chan == 'zee' and bkg['leg_text'] is 'Z#rightarrow ee':
             bkg['plot_list'] = ["EmbedZL","ZJ"]
+    
+    #if embedding_zmm:
+    #  background_schemes['mt'] = [backgroundComp("#mu#rightarrow#mu embedding",["EmbedZL"],R.TColor.GetColor(100,192,232))]
 
     #if split_taus:
     #  ztt_name = 'Z#rightarrow#tau#tau'
@@ -2614,7 +2627,19 @@ def HTTPlot(nodename,
       else:
           bkghist.Add(hists.Clone())
 
-      
+
+    #### NORMALISING TO 1 #####
+    if norm_to_one:
+      stack = R.THStack("hs","")
+      hist_scale = []
+      for ind, hists in enumerate(bkg_histos):
+        hist_scale.append(hists)
+        hist_scale[ind].Scale(1/bkghist.Integral())
+        stack.Add(hist_scale[ind])
+
+      blind_datahist.Scale(1/blind_datahist.Integral())     
+      bkghist.Scale(1/bkghist.Integral()) 
+
     c1 = R.TCanvas()
     c1.cd()    
     
@@ -2720,9 +2745,14 @@ def HTTPlot(nodename,
     axish[0].GetYaxis().SetLabelSize(0.03)
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
     if not custom_y_range:
-        if(log_y): 
-            axish[0].SetMinimum(0.1)
-            axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+        if(log_y):
+            axish[0].SetMinimum(10**(math.floor(math.log10(NonZeroMinimum(bkghist)))))
+            bkghist.Print("all")
+            print bkghist.GetMaximum()
+            if (1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())) >= 0:
+              axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+            else:
+              axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum()))))
         else: 
             axish[0].SetMinimum(0)
             axish[0].SetMaximum(1.1*(1+extra_pad)*bkghist.GetMaximum())
@@ -2773,7 +2803,6 @@ def HTTPlot(nodename,
         #h[i].SetFillColorAlpha(colours[i],0.3)
         #h[i].Draw("e2 same")
         h_hist[i].Draw("hist same")
-        h[i].Print("all")
 
  
     # separate out signal into powheg ggH and qqH,
@@ -2903,11 +2932,11 @@ def HTTPlot(nodename,
 
     
     #Setup legend
-    legend = PositionedLegend(0.37,0.3,3,0.05) 
-    #legend = PositionedLegend(0.5,0.2,3,0.03) # when showing plots of signal
+    #legend = PositionedLegend(0.37,0.3,3,0.05) 
+    legend = PositionedLegend(0.38,0.3,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
-    legend.SetTextSize(0.03)
-    #legend.SetTextSize(0.018) # when showing plots of signal
+    #legend.SetTextSize(0.03)
+    legend.SetTextSize(0.022) # when showing plots of signal
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
@@ -2962,7 +2991,14 @@ def HTTPlot(nodename,
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
-    
+  
+#    latex1 = R.TLatex()
+#    latex1.SetNDC()
+#    latex1.SetTextAlign(23)
+#    latex1.SetTextSize(0.03)
+#    latex1.DrawLatex(0.5, 0.7, "|#eta|>1.7")
+
+ 
     ## category plots for mt and em channel
     ## mt cats plot:
     #line1 = R.TLine()
@@ -3084,12 +3120,13 @@ def HTTPlot(nodename,
             h_ratio[i].Draw("hist same")
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
+
         if ratio_range == "auto":
           max_list,min_list = [],[]
-          max_list.append(ratio_bkghist.GetMaximum())
-          min_list.append(NonZeroMinimum(ratio_bkghist))
-          #max_list.append(blind_ratio.GetMaximum())
-          #min_list.append(blind_ratio.GetMinimum())
+          #max_list.append(ratio_bkghist.GetMaximum())
+          #min_list.append(NonZeroMinimum(ratio_bkghist))
+          max_list.append(blind_ratio.GetMaximum())
+          min_list.append(NonZeroMinimum(blind_ratio))
           for i in h_ratio:
             max_list.append(i.GetMaximum())
             min_list.append(NonZeroMinimum(i))
@@ -3097,15 +3134,42 @@ def HTTPlot(nodename,
           else: min_val = min(min_list)
           if max(max_list)>100: max_val = 99.9
           else: max_val = max(max_list)
-          print min_list,min(min_list), min_val
-          print max_list,min(max_list), max_val
-          axish[1+pad_shift].SetMinimum(round(min_val, -int(floor(log10(abs(min_val))))))
+          min_val_om = -int(floor(log10(abs(min_val))))
+          if min_val < min_val_om:
+            axish[1+pad_shift].SetMinimum(round(min_val_om-min_val,min_val_om))
+          else:
+            axish[1+pad_shift].SetMinimum(round(min_val,min_val_om))
           if round(max_val, -int(floor(log10(abs(max_val))))) < max_val:
             axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))) + 10**int(floor(log10(abs(max_val)))))
           else:
             axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))))
+          ratio_range = "{},{}".format(axish[1+pad_shift].GetMinimum(),axish[1+pad_shift].GetMaximum())
 
-        if not blind: blind_ratio.DrawCopy("e0same")
+        # draw arrows if point above or below axis
+        up_hist = blind_ratio.Clone()
+        down_hist = blind_ratio.Clone()
+        for i in range(0,blind_ratio.GetNbinsX()+1):
+          if blind_ratio.GetBinContent(i) > float(ratio_range.split(',')[1]) and blind_ratio.GetBinContent(i)!=0:
+            up_hist.SetBinContent(i,0.92*(float(ratio_range.split(',')[1])-float(ratio_range.split(',')[0]))+float(ratio_range.split(',')[0]))
+          else:
+            up_hist.SetBinContent(i,-1000)
+          if blind_ratio.GetBinContent(i) < float(ratio_range.split(',')[0]) and blind_ratio.GetBinContent(i)!=0:
+            down_hist.SetBinContent(i,0.08*(float(ratio_range.split(',')[1])-float(ratio_range.split(',')[0]))+float(ratio_range.split(',')[0]))
+          else:
+            down_hist.SetBinContent(i,-1000)
+          up_hist.SetBinError(i,0.0001)
+          down_hist.SetBinError(i,0.0001)
+        up_hist.SetMarkerStyle(22)
+        up_hist.SetMarkerSize(1.2)
+        up_hist.SetLineColorAlpha(0,0.0)
+        down_hist.SetMarkerStyle(23)
+        down_hist.SetMarkerSize(1.2)
+        down_hist.SetLineColorAlpha(0,0.0)
+ 
+        if not blind: 
+          blind_ratio.DrawCopy("e0same")
+          up_hist.DrawCopy("e0same")
+          down_hist.DrawCopy("e0same")
         if(ratio_log_y):
             pads[1].SetLogy(1)
             axish[1+pad_shift].SetMinimum(0.9)
@@ -3952,7 +4016,7 @@ def TagAndProbePlot(graphs=[],
     latex2.SetTextAngle(0)
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
-    latex2.DrawLatex(0.145,0.955,label)
+    #latex2.DrawLatex(0.145,0.955,label)
     
     #Add ratio plot if required
     if ratio:
@@ -4000,7 +4064,45 @@ def TagAndProbePlot(graphs=[],
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')    
-    
+   
+def ChooseAxisLabels(axis,labels,size=0.04,logx=False,pad=None,offset=0.04,replace=[]):
+  if replace != [] and len(labels) != len(replace): 
+    print "Replace and labels are not the same length"
+    return
+
+  axis.GetXaxis().SetLabelSize(0)
+  axis_min = axis.GetXaxis().GetXmin()
+  axis_max = axis.GetXaxis().GetXmax()
+  axis.SetNdivisions(len(labels))
+  if pad==None:
+    b = R.gPad.GetBottomMargin()
+    l = R.gPad.GetLeftMargin()
+    r = 1 -R.gPad.GetRightMargin()
+  else:
+    b = pad.GetBottomMargin()
+    l = pad.GetLeftMargin()
+    r = 1 -pad.GetRightMargin()
+
+  for ind, num in enumerate(labels):
+    latex = R.TLatex()
+    latex.SetNDC()
+    latex.SetTextAngle(315)
+    #latex.SetTextAngle(90)
+    latex.SetTextColor(R.kBlack)
+    latex.SetTextFont(42)
+    latex.SetTextSize(size)
+    latex.SetTextAlign(11)
+    #latex.SetTextAlign(22)
+    if not logx:
+      x_shift = ((num - axis_min)*(r - l))/(axis_max - axis_min)
+    else:
+      x_shift = (math.log(num,10) - math.log(axis_min,10))*(r - l)/(math.log(axis_max,10) - math.log(axis_min,10))
+    if replace != []:
+      latex.DrawLatex(l+x_shift, b-offset, str(replace[ind]))
+    else:
+      latex.DrawLatex(l+x_shift, b-offset, str(num))
+   
+ 
 def HTTPlotUnrolled(nodename, 
             infile=None, 
             signal_scale=1, 
@@ -4038,8 +4140,13 @@ def HTTPlotUnrolled(nodename,
             x_lines=None,
             y_labels_vec=None,
             embedding=False,
+            embedding_zmm=False,
             vbf_background=False,
             signal_scheme="",
+            binning_1 = [],
+            binning_2 = [],
+            norm_to_one=False,
+            bkg_comp=False
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -4061,12 +4168,22 @@ def HTTPlotUnrolled(nodename,
 
     background_schemes = {
         'mt':[
-            backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+            #backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
+            backgroundComp("t#bar{t} (#mu#rightarrow#tau_{h})",["TTM"],R.TColor.GetColor(63,0,125)),
+            backgroundComp("t#bar{t} (e#rightarrow#tau_{h})",["TTE"],R.TColor.GetColor(8,48,107)),
+            backgroundComp("t#bar{t} (j#rightarrow#tau_{h})",["TTJ"],R.TColor.GetColor(106,81,163)),
+            backgroundComp("t#bar{t} (#tau_{h})",["TTT"],R.TColor.GetColor(188,189,220)),
+            #backgroundComp("t#bar{t} (not #mu#rightarrow#tau_{h})",["TTNM"],R.TColor.GetColor(136,65,157)),
             backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
-            backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
-            backgroundComp("Z#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
-            backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
-            backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
+            #backgroundComp("Electroweak",["VVT","VVJ","W"],R.TColor.GetColor(222,90,106)),
+            backgroundComp("Electroweak (#mu#rightarrow#tau_{h})",["VVM","WM"],R.TColor.GetColor(128,0,38)),
+            backgroundComp("Electroweak (e#rightarrow#tau_{h})",["VVE","WE"],R.TColor.GetColor(189,0,38)),
+            backgroundComp("Electroweak (j#rightarrow#tau_{h})",["VVJ","WJ"],R.TColor.GetColor(252,78,42)),
+            backgroundComp("Electroweak (#tau_{h})",["VVT","WT"],R.TColor.GetColor(253,141,60)),
+            #backgroundComp("Electroweak (not #mu#rightarrow#tau_{h})",["VVNM","WNM"],R.TColor.GetColor(227,26,28)),
+            backgroundComp("Z#rightarrow#mu#mu and Z#rightarrow#tau#tau#rightarrow#mu#mu",["ZL","ZJ"],R.TColor.GetColor(100,192,232)),
+            backgroundComp("Z#rightarrow#tau#tau#rightarrow#mu#tau_{h}",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
+            #backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,255)),
             ],
         'et':[
             backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
@@ -4133,9 +4250,9 @@ def HTTPlotUnrolled(nodename,
         'ff_comp':[backgroundComp("t#bar{t} jet#rightarrow#tau_{h}",["TTJ"],R.TColor.GetColor(155,152,204)),backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),backgroundComp("Electroweak jet#rightarrow#tau_{h}",["VVJ","W"],R.TColor.GetColor(222,90,106)),backgroundComp("Z#rightarrow ll jet#rightarrow#tau_{h}",["ZJ"],R.TColor.GetColor(100,192,232))]
         }
     
-    if vbf_background:
-         for key in background_schemes: 
-             background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
+    #if vbf_background:
+    #     for key in background_schemes: 
+    #         background_schemes[key].insert(0,backgroundComp("qqH#rightarrow#tau#tau + VH#rightarrow#tau#tau",["qqH_htt125","ZH_htt125", "WplusH_htt125","WminusH_htt125"],R.TColor.GetColor(51,51,230)))
 
     if embedding:
       for chan in ['em','et','mt','tt','zmm']:
@@ -4147,6 +4264,15 @@ def HTTPlotUnrolled(nodename,
             bkg['leg_text'] = '#mu#rightarrow#tau embedding'
           if chan == 'zmm' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
             bkg['plot_list'] = ["EmbedZL","ZJ"]
+
+    if embedding_zmm:
+      for chan in ['em','et','mt','tt','zmm']:
+        if not chan in background_schemes: continue
+        schemes = background_schemes[chan]
+        for bkg in schemes:
+          if chan == 'mt' and bkg['leg_text'] is 'Z#rightarrow#mu#mu':
+            bkg['plot_list'] = ["EmbedZL"]
+            bkg['leg_text'] = '#mu#rightarrow#mu embedding'
 
     total_datahist = infile.Get(nodename+'/data_obs').Clone()
     if scheme == 'w_shape': total_datahist = infile.Get(nodename+'/W').Clone()
@@ -4193,8 +4319,104 @@ def HTTPlotUnrolled(nodename,
     c1 = R.TCanvas()
     c1.cd()
 
-    if ratio:
+    #### NORMALISING TO 1 - DO THIS IN EACH "CATEGORY" BIN #####
+    if norm_to_one:
+
+       load_unscaled = None
+       #load_unscaled = "output/datacard_fabs_eta_2_vs_deepTauVsMu_iso_2_inclusive_no_sf_mt_2018.root"
+       bins_to_scale = 1
+       stack_unscaled = R.THStack("hs","")
+       if load_unscaled != None:
+         infile_unscaled = R.TFile(load_unscaled, 'READ')
+         bkg_histos_unscaled = []
+         for i,t in enumerate(background_schemes[scheme]):
+             plots = t['plot_list']
+             h = R.TH1F()
+             for j,k in enumerate(plots):
+                 if not infile_unscaled.Get(nodename+'/'+k): continue
+                 if h.GetEntries()==0:
+                     h = infile_unscaled.Get(nodename+'/'+k).Clone()
+                     h.SetName(k)
+                 else:
+                     h.Add(infile_unscaled.Get(nodename+'/'+k).Clone())
+             bkg_histos_unscaled.append(h)       
+     
+         bkghist_unscaled = R.TH1F()
+         for hists in bkg_histos_unscaled:
+           if norm_bins: Norm2DBins(hists)
+           stack_unscaled.Add(hists.Clone())
+           if bkghist_unscaled.GetEntries()==0:
+               bkghist_unscaled = hists.Clone()
+           else:
+               bkghist_unscaled.Add(hists.Clone())
+
+       stack = R.THStack("hs","")
+       hist_scale = []
+       for ind, hists in enumerate(bkg_histos):
+         hist_scale.append(hists)
+    
+       cat_sum = []
+       cat_sum_data = []
+       cat_sum_bkg = []
+       for i_num, i in enumerate(binning_1):
+         cat_sum.append(0) 
+         cat_sum_data.append(0)
+         cat_sum_bkg.append(0)
+         for j_num, j in enumerate(binning_2[:-1]):
+           bin_num = (i_num*len(binning_2[:-1])) + j_num + 1
+           for ind, hists in enumerate(bkg_histos):
+             if load_unscaled == None:
+               cat_sum[i_num] += hists.GetBinContent(bin_num) 
+             else:
+               cat_sum[i_num] += bkg_histos_unscaled[ind].GetBinContent(bin_num)
+           cat_sum_data[i_num] += total_datahist.GetBinContent(bin_num)
+           if load_unscaled == None:
+             cat_sum_bkg[i_num] += bkghist.GetBinContent(bin_num)
+           else:
+             cat_sum_bkg[i_num] += bkghist_unscaled.GetBinContent(bin_num)
+        
+       for i_num, i in enumerate(binning_1):
+         for j_num, j in enumerate(binning_2[:-1]):
+           bin_num = (i_num*len(binning_2[:-1])) + j_num + 1
+           for ind, hists in enumerate(bkg_histos):
+             bkg_histos[ind].SetBinContent(bin_num,hists.GetBinContent(bin_num)/cat_sum[i_num])
+             bkg_histos[ind].SetBinError(bin_num,hists.GetBinError(bin_num)/cat_sum[i_num])
+           total_datahist.SetBinContent(bin_num,total_datahist.GetBinContent(bin_num)/cat_sum_data[i_num])
+           total_datahist.SetBinError(bin_num,total_datahist.GetBinError(bin_num)/cat_sum_data[i_num])
+           bkghist.SetBinContent(bin_num,bkghist.GetBinContent(bin_num)/cat_sum_bkg[i_num])
+           bkghist.SetBinError(bin_num,bkghist.GetBinError(bin_num)/cat_sum_bkg[i_num])
+
+       # scale bins down to still get integral == 1
+       if load_unscaled != None:
+         for i_num, i in enumerate(binning_1):
+           sum_other = 0
+           sum_bins = 0
+           for j_num, j in enumerate(binning_2[:-1]):
+             bin_num = (i_num*len(binning_2[:-1])) + j_num + 1
+             if j_num >= bins_to_scale:
+               sum_other += bkghist.GetBinContent(bin_num) 
+             else:
+               sum_bins += bkghist.GetBinContent(bin_num)
+           fail_sf = (1-sum_other)/sum_bins
+           for j_num, j in enumerate(binning_2[:-1]):
+             bin_num = (i_num*len(binning_2[:-1])) + j_num + 1
+             bkghist.SetBinContent(bin_num,bkghist.GetBinContent(bin_num)*fail_sf)
+             bkghist.SetBinError(bin_num,bkghist.GetBinError(bin_num)*fail_sf)
+             for ind, hists in enumerate(bkg_histos):
+               bkg_histos[ind].SetBinContent(bin_num,bkg_histos[ind].GetBinContent(bin_num)*fail_sf)
+               bkg_histos[ind].SetBinError(bin_num,bkg_histos[ind].GetBinError(bin_num)*fail_sf)
+      
+       stack = R.THStack("hs","")
+       for ind, hists in enumerate(bkg_histos):
+         stack.Add(hists)
+
+    total_datahist.Print("all")
+    bkghist.Print("all")
+
+    if ratio and not bkg_comp:
         pads=TwoPadSplit(0.29,0.01,0.01)
+    elif ratio and bkg_comp:
+        pads=MultiRatioSplit([0.28,0.18],[0.01,0.01],[0.01,0.01])
     else:
         pads=OnePad()
     pads[0].cd()
@@ -4204,11 +4426,11 @@ def HTTPlotUnrolled(nodename,
 
     if custom_x_range:
         if x_axis_max > bkghist.GetXaxis().GetXmax(): x_axis_max = bkghist.GetXaxis().GetXmax()
-    if ratio:
+    if ratio and not bkg_comp:
         if(log_x): pads[1].SetLogx(1)
         axish = createAxisHists(2,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         axish[1].GetXaxis().SetTitle(x_title)
-        axish[1].GetXaxis().SetLabelSize(0.03)
+        #axish[1].GetXaxis().SetLabelSize(0)
         axish[1].GetXaxis().SetTitleSize(0.04)
         axish[1].GetYaxis().SetNdivisions(4)
         if scheme == 'w_shape' or scheme == 'qcd_shape' or scheme == 'ff_comp': axish[1].GetYaxis().SetTitle("Ratio")
@@ -4225,15 +4447,46 @@ def HTTPlotUnrolled(nodename,
           axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
         if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    elif bkg_comp:
+        axish = createAxisHists(3,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
+
+        axish[1].GetYaxis().SetTitle("Bkg Frac")
+        axish[1].GetYaxis().SetTitleOffset(1.3)
+        axish[1].GetYaxis().SetTitleSize(0.03)
+        axish[1].GetYaxis().SetLabelSize(0.03)
+        axish[1].GetYaxis().SetNdivisions(4)
+
+        axish[2].GetXaxis().SetTitle(x_title)
+        axish[2].GetXaxis().SetLabelSize(0.03)
+        axish[2].GetXaxis().SetTitleSize(0.04)
+        axish[2].GetYaxis().SetNdivisions(4)
+       
+        axish[2].GetYaxis().SetTitle("Obs/Exp")
+        axish[2].GetYaxis().SetTitleOffset(1)
+        axish[2].GetYaxis().SetTitleSize(0.03)
+        axish[2].GetYaxis().SetLabelSize(0.03)
+
+        axish[0].GetXaxis().SetTitleSize(0)
+        axish[0].GetXaxis().SetLabelSize(0)
+        axish[1].GetXaxis().SetTitleSize(0)
+        axish[1].GetXaxis().SetLabelSize(0)
+        if custom_x_range:
+          axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+          axish[1].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+          axish[2].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
+        if custom_y_range:
+          axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     else:
         axish = createAxisHists(1,bkghist,bkghist.GetXaxis().GetXmin(),bkghist.GetXaxis().GetXmax()-0.01)
         axish[0].GetXaxis().SetTitle(x_title)
         axish[0].GetXaxis().SetTitleSize(0.04)
-        axish[0].GetXaxis().SetLabelSize(0.03)
+        #axish[0].GetXaxis().SetLabelSize(0.03)
+        axish[0].GetXaxis().SetLabelSize(0)
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
         if custom_y_range:
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
+    y_title = "a.u."
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(0.8)
     axish[0].GetYaxis().SetTitleSize(0.04)
@@ -4263,8 +4516,6 @@ def HTTPlotUnrolled(nodename,
     if signal_scheme == 'cpprod_split':
       signal_split_schemes = ['sm_cp','ps_sm']
 
-      print sig_schemes['sm_cp'][1] 
-      print sig_schemes['sm_cp'][1][0] 
       h = infile.Get(nodename+'/'+sig_schemes['sm_cp'][1][0]+'125').Clone()
       h2 = infile.Get(nodename+'/'+sig_schemes['ps_cp'][1][0]+'125').Clone()
 
@@ -4379,9 +4630,10 @@ def HTTPlotUnrolled(nodename,
 
     
     #Setup legend
-    legend = PositionedLegend(0.13,0.45,7,0.02)
+    #legend = PositionedLegend(0.13,0.45,7,0.02)
+    legend = PositionedLegend(0.1,0.45,7,0.04)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.022)
+    legend.SetTextSize(0.016)
     legend.SetFillColor(0)
     if scheme == 'w_shape' or scheme == 'qcd_shape': legend.AddEntry(blind_datahist,"un-loosened shape","PE")
     elif scheme == 'ff_comp': legend.AddEntry(blind_datahist,"FF jet#rightarrow#tau_{h}","PE")
@@ -4406,23 +4658,55 @@ def HTTPlotUnrolled(nodename,
     if channel == "zmm": channel_label = "Z#rightarrow#mu#mu"
     if channel == "zee": channel_label = "Z#rightarrow ee"
     if cat != "": channel_label+=" "+cat
+    replace_dict = {"0":"","0.1058354":"VLoose","0.2158633":"Loose","0.5551894":"Medium","0.8754835":"Tight"}
+    #replace_dict = {"0.1":"0.1","0.2":"0.2","0.3":"0.3","0.4":"0.4","0.5":"0.5","0.6":"0.6","0.7":"0.7","0.8":"0.8","0.9":"0.9"}
+    #replace_dict = {"0.01":"0.01","0.02":"0.02","0.03":"0.03","0.04":"0.04","0.05":"0.05","0.06":"0.06","0.07":"0.07","0.08":"0.08","0.09":"0.09"}
+    use_existing_keys = False
     latex2 = R.TLatex()
     latex2.SetNDC()
     latex2.SetTextAngle(0)
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextAlign(23)
     latex2.SetTextSize(0.028)
-    latex2.DrawLatex(0.46,0.92,channel_label)
+    #latex2.DrawLatex(0.46,0.92,channel_label)
+    nbins_1 = len(binning_1)
+    nbins_2 = len(binning_2)
+    min_bins_2 = binning_2[0]
+    max_bins_2 = binning_2[-1]
+    total_nbins = bkghist.GetNbinsX()
+    draw_every = 1
+    count = 0
+    find_list = []
+    replace_list = []
+    for i in binning_1:
+      local_count = 0
+      for j in binning_2[:-1]:
+        if local_count % draw_every == 0: 
+          find_list.append(count)
+          if str(j) in replace_dict.keys():
+            replace_list.append(replace_dict[str(j)])
+          elif use_existing_keys:
+            replace_list.append(str(j))
+          else:
+            replace_list.append("")
+        count += 1
+        local_count += 1
+    if bkg_comp: pad_no = 2
+    else: pad_no = 1
+    ChooseAxisLabels(axish[pad_no],find_list,size=0.028,logx=False,pad=pads[pad_no],offset=0.02,replace=replace_list)
+    #ChooseAxisLabels(axish[pad_no],find_list,size=0.018,logx=False,pad=pads[pad_no],offset=0.032,replace=replace_list)
     
     #CMS and lumi labels
     if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.01, -0.16, 1.0, '', 0.4)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.01, -0.22, 1.0, '', 0.4)
     DrawTitle(pads[0], lumi, 3, scale=0.5)
 
     #Add ratio plot if required
     # replace commented with uncommented/vice versa to plot ratio of signal hists
     # for comparison of ggH signal shapes
     if ratio:
+        if bkg_comp: pad_shift = 1
+        else: pad_shift = 0
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
         blind_ratio = MakeRatioHist(blind_datahist.Clone(),bkghist.Clone(),True,False)
 
@@ -4437,11 +4721,11 @@ def HTTPlotUnrolled(nodename,
             #     legend.AddEntry(R.TObject(), "K-S probability = %.3f" % ks_score, "")
             # sighist_ratios.append(sighist_ratio)
 
-        pads[1].cd()
-        pads[1].SetGrid(0,1)
-        axish[1].Draw("axis")
-        axish[1].SetMinimum(float(ratio_range.split(',')[0]))
-        axish[1].SetMaximum(float(ratio_range.split(',')[1]))
+        pads[1+pad_shift].cd()
+        pads[1+pad_shift].SetGrid(0,1)
+        axish[1+pad_shift].Draw("axis")
+        axish[1+pad_shift].SetMinimum(float(ratio_range.split(',')[0]))
+        axish[1+pad_shift].SetMaximum(float(ratio_range.split(',')[1]))
 
         # pads[0].cd()
         # if len(sighist_ratios) >= 1:
@@ -4452,15 +4736,68 @@ def HTTPlotUnrolled(nodename,
         #     sighist_ratios[1].DrawCopy("e0same")
 
 
+        # draw arrows if point above or below axis
+        up_hist = blind_ratio.Clone()
+        down_hist = blind_ratio.Clone()
+        for i in range(0,blind_ratio.GetNbinsX()+1):
+          if blind_ratio.GetBinContent(i) > float(ratio_range.split(',')[1]) and blind_ratio.GetBinContent(i)!=0:
+            up_hist.SetBinContent(i,0.92*(float(ratio_range.split(',')[1])-float(ratio_range.split(',')[0]))+float(ratio_range.split(',')[0]))
+            up_hist.SetBinError(i,0.0001)
+          else:
+            up_hist.SetBinContent(i,-1000)
+            up_hist.SetBinError(i,0)
+          if blind_ratio.GetBinContent(i) < float(ratio_range.split(',')[0]) and blind_ratio.GetBinContent(i)!=0:
+            down_hist.SetBinContent(i,0.08*(float(ratio_range.split(',')[1])-float(ratio_range.split(',')[0]))+float(ratio_range.split(',')[0]))
+            down_hist.SetBinError(i,0.0001)
+          else:
+            down_hist.SetBinContent(i,-1000)
+            down_hist.SetBinError(i,0)
+        up_hist.SetMarkerStyle(22)
+        up_hist.SetMarkerSize(1.2)
+        up_hist.SetLineColorAlpha(0,0.0)
+        down_hist.SetMarkerStyle(23)
+        down_hist.SetMarkerSize(1.2)
+        down_hist.SetLineColorAlpha(0,0.0)
+
         ratio_bkghist.SetMarkerSize(0)
         ratio_bkghist.Draw("e2same")
         blind_ratio.DrawCopy("e0same")
-        pads[1].RedrawAxis("G")
-        
-    pads[0].cd()
-    pads[0].GetFrame().Draw()
-    pads[0].RedrawAxis()
-    
+        up_hist.DrawCopy("e0same")
+        down_hist.DrawCopy("e0same")
+
+        pads[1+pad_shift].RedrawAxis("G")
+   
+    if bkg_comp:
+      #Create stacked plot for the backgrounds
+      fracstack = R.THStack("hs","")
+      for hists in reversed(bkg_histos):
+        new_hists = hists.Clone()
+        new_hists.Divide(bkghist)
+        fracstack.Add(new_hists)
+      pads[1].cd()
+      if log_x:
+        pads[1].SetLogx(1)
+        pads[2].SetLogx(1)
+        axish[2].GetXaxis().SetMoreLogLabels()
+        axish[2].GetXaxis().SetNoExponent()
+
+      pads[1].SetGrid(0,1)
+      axish[1].Draw("axis")
+      axish[1].SetMinimum(0.)
+      axish[1].SetMaximum(1.)
+      fracstack.Draw("hist")
+      pads[1].RedrawAxis("G")
+      fracstack.GetXaxis().SetLabelSize(0)
+      fracstack.GetYaxis().SetLabelSize(0)
+      fracstack.SetMinimum(0.)
+      fracstack.SetMaximum(1.)
+      fracstack.GetXaxis().SetTitle()
+      fracstack.GetYaxis().SetTitle("Bkg Frac")
+      fracstack.GetYaxis().SetTitleOffset(1)
+      fracstack.GetYaxis().SetTitleSize(0.03)
+      fracstack.GetYaxis().SetLabelSize(0.03)
+      fracstack.GetYaxis().SetNdivisions(4)
+ 
     if x_lines is not None:
       line = R.TLine()
       line.SetLineWidth(2)
@@ -4476,6 +4813,11 @@ def HTTPlotUnrolled(nodename,
           ymax = axish[1].GetMaximum()
           ymin = axish[1].GetMinimum()
           line.DrawLine(x,ymin,x,ymax)
+        if ratio and bkg_comp:
+          pads[2].cd()
+          ymax = axish[2].GetMaximum()
+          ymin = axish[2].GetMinimum()
+          line.DrawLine(x,ymin,x,ymax)
         
     if y_labels_vec is not None:
       pads[0].cd()  
@@ -4484,24 +4826,27 @@ def HTTPlotUnrolled(nodename,
       if '(' in var: var = var.split(' ')[0]
       y_bins = y_labels_vec[0]
       latex = R.TLatex()
-      latex.SetNDC()
+      #latex.SetNDC()
       latex.SetTextAngle(0)
       latex.SetTextColor(R.kBlack)
       latex.SetTextSize(0.028)
-      
+ 
       Nybins = len(y_bins)
       if Nybins > 4: 
           latex.SetTextSize(0.023)
       if Nybins > 5: 
           latex.SetTextSize(0.02)
+      x_lines.insert(0,0)
+      x_lines.append(2*x_lines[-1]-x_lines[-2])
       for i in range(0, Nybins):
         ymin = y_labels_vec[0][i][0]
         ymax = y_labels_vec[0][i][1]
+        if var == "fabs(eta_2)": var = "|#eta|"
         if var not in ['jeta_1','MVA Score','NN Score']:
             if ymax == -1: 
-                y_bin_label = '%s #geq %0.f %s' % (var,ymin,unit)
+                y_bin_label = '%s #geq %.1f %s' % (var,ymin,unit)
             else: 
-                y_bin_label = '%0.f #leq %s < %0.f %s' % (ymin,var,ymax,unit) 
+                y_bin_label = '%.1f #leq %s < %.1f %s' % (ymin,var,ymax,unit) 
         else: 
             if ymax == -1: 
                 y_bin_label = '%s #geq %.1f %s' % (var,ymin,unit)
@@ -4511,10 +4856,13 @@ def HTTPlotUnrolled(nodename,
           if i == 0: y_bin_label = "1 prong"
           if i == 1: y_bin_label = "1 prong + #pi^{0}"
           if i == 2: y_bin_label = "3 prong"
-        xshift = 0.78/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
+        xshift = 0.8/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
         if Nybins > 5: 
             xshift = 0.76/Nybins*i  # bit annoying but will have to change the 0.78 if the plot proportions are changed
-        latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
+        xshift = 0.81/Nybins*i
+        #latex.DrawLatex(0.095+xshift,0.82,y_bin_label)
+        latex.SetTextAlign(21)
+        latex.DrawLatex((float(x_lines[i+1])+float(x_lines[i]))/2,10,y_bin_label)
 
     
     c1.SaveAs(plot_name+'.pdf')
@@ -4622,7 +4970,7 @@ def SoverBPlot(nodename='',
     
     #CMS label and title
     FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
-    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
+    DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 0.0, '', 1.0)
     
     if channel == "em": channel_label = "e#mu"
     if channel == "et": channel_label = "e#tau_{h}"
@@ -4637,11 +4985,6 @@ def SoverBPlot(nodename='',
     latex2.SetTextColor(R.kBlack)
     latex2.SetTextSize(0.028)
     latex2.DrawLatex(0.145,0.955,channel_label)
-    
-    pads[1].cd()
-    axish[1].Draw("axis")
-    r_2.Draw("hist same")
-    pads[1].RedrawAxis("G")
         
     pads[0].cd()
     pads[0].GetFrame().Draw()

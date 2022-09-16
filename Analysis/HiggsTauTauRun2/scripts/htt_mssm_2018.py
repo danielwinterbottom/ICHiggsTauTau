@@ -252,6 +252,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     data_samples = []
     data_eras = ['A','B','C','D']
+    #data_eras = ["D"]
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
@@ -262,9 +263,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
                 data_samples+=['MuonEG'+era]
             if 'tt' in chn:
                 data_samples+=['Tau'+era]
-    if ('mt' in channels or 'et' in channels) and 'tt' not in channels:
-      for era in data_eras:
-        data_samples+=['Tau'+era]
+    #if ('mt' in channels or 'et' in channels) and 'tt' not in channels:
+    #  for era in data_eras:
+    #    data_samples+=['Tau'+era]
 
 
     DATAFILELIST="./filelists/Sep18_2018_Data_102X"
@@ -332,7 +333,9 @@ if options.proc_embed or options.proc_all:
             if 'et' in chn:
                 embed_samples+=['EmbeddingElTau'+era]
             if 'mt' in chn:
-                embed_samples+=['EmbeddingMuTau'+era]
+                embed_samples+=['EmbeddingMuTau'+era,'EmbeddingMuMu'+era,'EmbeddingElEl'+era]
+                #embed_samples+=['EmbeddingMuTau'+era]
+                #embed_samples+=['EmbeddingMuMu'+era,'EmbeddingElEl'+era]
             if 'tt' in chn:
                 embed_samples+=['EmbeddingTauTau'+era]
             if 'zmm' in chn:

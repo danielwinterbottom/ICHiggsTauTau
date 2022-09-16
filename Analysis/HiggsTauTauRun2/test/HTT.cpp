@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
     if(is_embedded &&  ( (channel_str.find("em") != channel_str.npos &&
                     output_name.find("EmbeddingElMu")==output_name.npos )||
                 (channel_str.find("mt") != channel_str.npos &&
-                 output_name.find("EmbeddingMuTau") == output_name.npos ) ||
+                 (output_name.find("EmbeddingMuTau") == output_name.npos && output_name.find("EmbeddingMuMu") == output_name.npos && output_name.find("EmbeddingMuMu") == output_name.npos)) ||
                 (channel_str.find("et") != channel_str.npos &&
                  output_name.find("EmbeddingElTau") == output_name.npos ) ||
                 (channel_str.find("tt") != channel_str.npos &&
@@ -163,9 +163,9 @@ int main(int argc, char* argv[]) {
                 (channel_str.find("tpzee") != channel_str.npos &&
                  output_name.find("EmbeddingElEl") == output_name.npos ) ||
                 (channel_str.find("tpmt") != channel_str.npos &&
-                 output_name.find("EmbeddingMuTau") == output_name.npos )))
+                 output_name.find("EmbeddingMuTau") == output_name.npos ))) {
         continue; 
-
+    }
 
     bool ignore_channel =false;
     bool duplicate_channel = false;

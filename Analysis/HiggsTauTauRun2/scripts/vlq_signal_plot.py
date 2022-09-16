@@ -10,7 +10,7 @@ ntuple_name   = "ntuple"
 #var_input     = "mt_tot[50,80,100,120,140,160,180,200,250,300,350,400,500,600,700,900,5000]"
 var_input     = "mt_tot[50,80,100,120,140,160,180,200,250,300,350,400,500,600,700,900,2000]"
 x_label       = "m_{T}^{tot} (GeV)"
-y_label       = "< Events / GeV >"
+y_label       = "dN/dm_{T}^{tot} (1/GeV)"
 do_ratio      = False
 ratio_file    = ""
 logx          = True
@@ -159,6 +159,7 @@ def DrawHistogramsWithBand(pad_name,h_dict,do_ratio=False,do_options=True, x_lab
   i = 0
   if no_uncerts: h_dict = RemoveUncerts(h_dict)
   for key, val in h_dict.items():
+    print key
     if "_up" not in key and "_down" not in key:
       pad_name.cd()
   
@@ -197,12 +198,12 @@ def DrawHistogramsWithBand(pad_name,h_dict,do_ratio=False,do_options=True, x_lab
         h_dict[key+"_up"].SetLineWidth(0)
         h_dict[key+"_up"].SetMarkerSize(0)
         h_dict[key+"_up"].SetMarkerColorAlpha(colours[i],0)
-        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
-        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],1.0)
+        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
+        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0)
         if no_uncerts:
           h_dict[key+"_up"].SetLineWidth(2)
           h_dict[key+"_up"].SetLineColor(colours[i])
-          h_dict[key+"_up"].SetLineColor(1)
+          #h_dict[key+"_up"].SetLineColor(1)
 
         if not no_uncerts: h_dict[key+"_down"].Draw("e2 same")
         h_dict[key+"_down"].SetLineWidth(0)
@@ -224,12 +225,12 @@ def DrawHistogramsWithBand(pad_name,h_dict,do_ratio=False,do_options=True, x_lab
         h_dict[key+"_up"].SetLineWidth(0)
         h_dict[key+"_up"].SetMarkerSize(0)
         h_dict[key+"_up"].SetMarkerColorAlpha(colours[i],0)
-        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
-        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],1.0)
+        #h_dict[key+"_up"].SetFillColorAlpha(colours[i],0.3)
+        h_dict[key+"_up"].SetFillColorAlpha(colours[i],0)
         if no_uncerts:
           h_dict[key+"_up"].SetLineWidth(2)
-          #h_dict[key+"_up"].SetLineColor(colours[i])
-          h_dict[key+"_up"].SetLineColor(1)
+          h_dict[key+"_up"].SetLineColor(colours[i])
+          #h_dict[key+"_up"].SetLineColor(1)
 
   
         if not no_uncerts: h_dict[key+"_down"].Draw("e2 same")
@@ -241,10 +242,10 @@ def DrawHistogramsWithBand(pad_name,h_dict,do_ratio=False,do_options=True, x_lab
  
       do_options = False
       i+=1
+
   pad_name.SetTickx(1)
   pad_name.SetTicky(1)
   pad_name.RedrawAxis() 
-  #c.Update()
 
 def DrawLegend(pad,h_dict,draw_type="l",posx1=0.6,posy1=0.7,posx2=0.88,posy2=0.88):
   pad.cd()
@@ -351,6 +352,9 @@ for key, val in files_2016.items():
   h_new_dict[key+"_down"],h_new_dict[key+"_up"] = GetUpAndDownUncertaintyHistograms(key, h_dict, lnN_uncerts=lnN_uncerts)
   h_new_dict[key] = h_dict[key].Clone()
   h_plot_dict[key] = h_dict[key].Clone()
+  h_plot_dict[key].SetBinContent(0,0)
+  h_plot_dict[key].SetBinError(0,0)
+  h_plot_dict[key].Print("all")
 
   # Make plotable histogram with different up and down uncertainties
   h_plot_dict[key+"_down"], h_plot_dict[key+"_up"] = MakeUncertaintyBandsPlotable(h_dict[key].Clone(),h_new_dict[key+"_down"].Clone(),h_new_dict[key+"_up"].Clone())
@@ -365,6 +369,16 @@ else:
 #DrawHistogramsWithBand(pad1,h_plot_dict,do_ratio=do_ratio,do_options=True, x_label=x_label, y_label=y_label,pad="top",no_uncerts=turn_uncerts_off,colours=[ROOT.TColor.GetColor(100, 192, 232),ROOT.TColor.GetColor(155, 152, 204),ROOT.TColor.GetColor(248, 206, 104),ROOT.TColor.GetColor(222, 90, 106),ROOT.TColor.GetColor(250, 202, 255),ROOT.TColor.GetColor(222, 90, 106),ROOT.TColor.GetColor(192, 232, 100)])
 DrawHistogramsWithBand(pad1,h_plot_dict,do_ratio=do_ratio,do_options=True, x_label=x_label, y_label=y_label,pad="top",no_uncerts=turn_uncerts_off)
 
+
+hobj = plotting.GetAxisHist(pad1)
+print hobj.GetMinimum(), hobj.GetMaximum()
+line1 = ROOT.TLine(0,hobj.GetMinimum(),0,hobj.GetMaximum()*0.99)
+line1.SetLineWidth(2)
+line1.SetLineColor(10)
+line1.Draw()
+pad1.Update()
+
+
 #DrawHorizontalLine(pad1,0,var_input,width=2,style=2,color=1)
 bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
 line = ROOT.TLine(bins[0],0,bins[-1],0)
@@ -373,27 +387,37 @@ line.SetLineStyle(2)
 line.SetLineColor(1)
 line.Draw()
 
+pad1.RedrawAxis()
+
+h_plot_dict["Signal"].SetLineColor(2)
+h_plot_dict["Interference"].SetLineColor(3)
+h_plot_dict["Combined"].SetLineColor(4)
 
 #DrawLegend(pad1,h_plot_dict,draw_type="l",posx1=0.6,posy1=0.7,posx2=0.88,posy2=0.88)
-l = ROOT.TLegend(0.62,0.2,0.95,0.4)
+#l = ROOT.TLegend(0.62,0.2,0.95,0.4)
+l = ROOT.TLegend(0.5,0.2,0.95,0.4)
 l.SetBorderSize(0)
 if not do_ratio:
-  l.SetTextSize(0.025)
+#  l.SetTextSize(0.025)
+  l.SetTextSize(0.04)
 else:
   l.SetTextSize(0.04)
 for key, val in h_plot_dict.items():
   if not "_down" in key and not "_up" in key:
     if key != "Combined":
-      l.AddEntry(val,key,"f")
+      l.AddEntry(val,key,"l")
     else:
-      l.AddEntry(val,"Signal + interference","f")
+      l.AddEntry(val,"Signal + interference","l")
 l.Draw()
 
 # Draw titles and text on plot
  
 if not do_ratio:
-  plotting.DrawTitle(pad1, title_right, 1, scale=1)
-  plotting.DrawTitle(pad1, title_left, 3, scale=1)
+  #plotting.DrawTitle(pad1, title_right, 1, scale=1)
+  #plotting.DrawTitle(pad1, title_left, 3, scale=1)
+  plotting.DrawTitle(pad1, title_right, 1, scale=1.25, offset=0.1)
+  plotting.DrawTitle(pad1, title_left, 3, scale=1.25)
+
 else:
   plotting.DrawTitle(pad1, title_right, 1, scale=1)
   plotting.DrawTitle(pad1, title_left, 3, scale=1)
@@ -402,11 +426,16 @@ latex = ROOT.TLatex()
 latex.SetNDC()
 latex.SetTextAngle(0)
 latex.SetTextAlign(12)
-latex.SetTextSize(0.03)
+#latex.SetTextSize(0.03)
+latex.SetTextSize(0.04)
 latex.SetTextColor(1)
-latex.DrawLatex(0.65,0.88,under_legend_1)
-latex.DrawLatex(0.65,0.83,under_legend_2)
-latex.DrawLatex(0.65,0.78,under_legend_3)
+#latex.DrawLatex(0.65,0.88,under_legend_1)
+#latex.DrawLatex(0.65,0.83,under_legend_2)
+#latex.DrawLatex(0.65,0.78,under_legend_3)
+latex.DrawLatex(0.6,0.88,under_legend_1)
+latex.DrawLatex(0.6,0.83,under_legend_2)
+latex.DrawLatex(0.6,0.78,under_legend_3)
+
 
 plotting.DrawCMSLogo(pad1, 'CMS', 'Simulation', 11, 0.045, 0.03, 1.0, '', 1.0)
 
