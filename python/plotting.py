@@ -81,6 +81,10 @@ def SetAxisTitles(plot, channel):
   titles['dphi'] = ['#Delta#phi('+lep1_label+','+lep2_label+')','Events / '+bin_width, 'dN/d#Delta#phi','']
   titles['met_dphi_1'] = ['#Delta#phi('+lep1_label+',E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
   titles['met_dphi_2'] = ['#Delta#phi('+lep2_label+',E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
+  titles['ip_mag_1'] = ['|IP_{'+lep1_label+'}| (cm)','Events / '+bin_width+' cm', 'dN/d|IP_{'+lep1_label+'}| (1/cm)']
+  titles['ip_mag_2'] = ['|IP_{'+lep2_label+'}| (cm)','Events / '+bin_width+' cm', 'dN/d|IP_{'+lep2_label+'}| (1/cm)']
+  titles['ip_sig_1'] = ['|IP_{'+lep1_label+'}|/#sigma_{IP}','Events / '+bin_width+' cm', 'dN/d(|IP_{'+lep1_label+'}|/#sigma_{IP})']
+  titles['ip_sig_2'] = ['|IP_{'+lep2_label+'}|/#sigma_{IP}','Events / '+bin_width+' cm', 'dN/d(|IP_{'+lep2_label+'}|/#sigma_{IP})']
   if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
@@ -2747,8 +2751,8 @@ def HTTPlot(nodename,
     if not custom_y_range:
         if(log_y):
             axish[0].SetMinimum(10**(math.floor(math.log10(NonZeroMinimum(bkghist)))))
-            bkghist.Print("all")
-            print bkghist.GetMaximum()
+            #bkghist.Print("all")
+            #print bkghist.GetMaximum()
             if (1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())) >= 0:
               axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
             else:
@@ -3139,11 +3143,16 @@ def HTTPlot(nodename,
             axish[1+pad_shift].SetMinimum(round(min_val_om-min_val,min_val_om))
           else:
             axish[1+pad_shift].SetMinimum(round(min_val,min_val_om))
+          max_val = min(max_val,4)
           if round(max_val, -int(floor(log10(abs(max_val))))) < max_val:
             axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))) + 10**int(floor(log10(abs(max_val)))))
           else:
             axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))))
-          ratio_range = "{},{}".format(axish[1+pad_shift].GetMinimum(),axish[1+pad_shift].GetMaximum())
+          #ratio_range = "{},{}".format(axish[1+pad_shift].GetMinimum(),axish[1+pad_shift].GetMaximum())
+          ratio_range = "{},{}".format(0.,max(axish[1+pad_shift].GetMaximum(),2))
+          print ratio_range
+          axish[1+pad_shift].SetMinimum(float(ratio_range.split(',')[0]))
+          axish[1+pad_shift].SetMaximum(float(ratio_range.split(',')[1]))
 
         # draw arrows if point above or below axis
         up_hist = blind_ratio.Clone()

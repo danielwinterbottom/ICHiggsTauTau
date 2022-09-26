@@ -764,6 +764,7 @@ elif options.channel == "em":
   cats['Nbtag0'] = '(n_deepbjets==0 && pzeta>-35)'
 
 cats['Nbtag0_NjetsGt1_STMETGt800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800)'
+cats['Nbtag0_NjetsGt1_STMETGt1000'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>1000)'
 cats['Nbtag0_NjetsGt1_STMET400to800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800)'
 
 cats['Nbtag0_MTLt40'] = '(n_deepbjets==0 && mt_1<40)'
@@ -776,6 +777,7 @@ cats['Nbtag0_Njets0_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && !(n_jets>0 && jpt_
 cats['Nbtag0_NjetsGt1_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50)'
 
 cats['Nbtag0_NjetsGt1_MTLt70_STMETGt800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800)'
+cats['Nbtag0_NjetsGt1_MTLt70_STMETGt1000'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>1000)'
 cats['Nbtag0_NjetsGt1_MTLt70_STMET400to800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800)'
 
 cats['NbtagGt1_MTLt40'] = '(n_deepbjets>0 && mt_1<40)'
@@ -811,6 +813,10 @@ cats['Nbtag1_MT40To70'] = '(n_deepbjets==1 && mt_1>40 && mt_1<70)'
 cats['Nbtag0_MTLt70'] = '(n_deepbjets==0 && mt_1<70)'
 cats['NbtagGt1_MTLt70'] = '(n_deepbjets>0 && mt_1<70)'
 cats['MTLt70'] = '(mt_1<70)'
+
+cats['Nbtag0_MTGt70'] = '(n_deepbjets==0 && mt_1>70)'
+cats['NbtagGt1_MTGt70'] = '(n_deepbjets>0 && mt_1>70)'
+cats['MTGt70'] = '(mt_1>70)'
 
 cats['MTLt40'] = '(mt_1<40)'
 cats['MT40To70'] = '(mt_1>40 && mt_1<70)'

@@ -74,51 +74,65 @@ def GetBinning(var,min_bin,max_bin,num_bins,log=False,round=1,final_bin_start=No
   return var+str(bins).strip()
 
 all_ch_variables = [
-                    GetBinning('mt_tot',20,3200,100,log=True,round=1),
-                    GetBinning('pt_1+pt_2+met+jpt_1',20,3200,100,log=True,round=1),
-                    GetBinning('m_vis',20,3200,100,log=True,round=1),
-                    #GetBinning('svfit_mass',20,3200,50,log=True,round=1,final_bin_start=1000),
-                    GetBinning('met',10,800,100,log=True,round=1),
-                    #'n_jets[0,1,>=2]',
-                    #'n_deepbjets[0,>=1]',
-                    'n_jets[0,1,2,3,4,5]',
-                    'n_deepbjets[0,1,2,3]',
-                    GetBinning('mt_1',0,500,100,log=False,round=1),
-                    GetBinning('mt_2',0,500,100,log=False,round=1),
-                    GetBinning('mt_lep',0,500,100,log=False,round=1),
-                    #GetBinning('eta_1',-2.2,2.2,100,log=False,round=0.05),
-                    #GetBinning('eta_2',-2.2,2.2,100,log=False,round=0.05),
-                    GetBinning('met_dphi_1',0,3.2,100,log=False,round=0.05),
-                    GetBinning('met_dphi_2',0,3.2,100,log=False,round=0.05),
-                    GetBinning('dphi',0,3.2,100,log=False,round=0.05),
-                    GetBinning('jpt_1',30,600,100,log=True,round=1),
-                    GetBinning('jpt_2',30,600,100,log=True,round=1),
-                    GetBinning('pt_vis',30,600,100,log=True,round=1),
-                    GetBinning('pt_tt',30,600,100,log=True,round=1),
-                    GetBinning('mjj',0,500,100,log=False,round=1),
-                    GetBinning('dijetpt',30,600,100,log=True,round=1),
-                    GetBinning('jdeta',0,6.0,100,log=False,round=0.05),
+                    #GetBinning('mt_tot',20,3200,100,log=True,round=1),
+                    'mt_tot[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,5000',
+                    #GetBinning('pt_1+pt_2+met+jpt_1',20,3200,100,log=True,round=1),
+                    'pt_1+pt_2+met+jpt_1[100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500,3000]',
+                   # #GetBinning('m_vis',20,3200,100,log=True,round=1),
+                   # ##GetBinning('svfit_mass',20,3200,50,log=True,round=1,final_bin_start=1000),
+                   # #GetBinning('met',10,800,100,log=True,round=1),
+                   # ##'n_jets[0,1,>=2]',
+                   # ##'n_deepbjets[0,>=1]',
+                   # #'n_jets[0,1,2,3,4,5]',
+                   # #'n_deepbjets[0,1,2,3]',
+                   # #GetBinning('mt_1',0,500,100,log=False,round=1),
+                   # #GetBinning('mt_2',0,500,100,log=False,round=1),
+                   # #GetBinning('mt_lep',0,500,100,log=False,round=1),
+                   # ##GetBinning('eta_1',-2.2,2.2,100,log=False,round=0.05),
+                   # ##GetBinning('eta_2',-2.2,2.2,100,log=False,round=0.05),
+                   # #GetBinning('met_dphi_1',0,3.2,100,log=False,round=0.05),
+                   # #GetBinning('met_dphi_2',0,3.2,100,log=False,round=0.05),
+                   # #GetBinning('dphi',0,3.2,100,log=False,round=0.05),
+                   # #GetBinning('jpt_1',30,600,100,log=True,round=1),
+                   # #GetBinning('jpt_2',30,600,100,log=True,round=1),
+                   # #GetBinning('pt_vis',30,600,100,log=True,round=1),
+                   # #GetBinning('pt_tt',30,600,100,log=True,round=1),
+                   # #GetBinning('mjj',0,500,100,log=False,round=1),
+                   # #GetBinning('dijetpt',30,600,100,log=True,round=1),
+                   # #GetBinning('jdeta',0,6.0,100,log=False,round=0.05),
+                    'fabs(dphi)[0.0,0.31416,0.62832,0.94248,1.25664,1.5708,1.88496,2.19912,2.51328,2.82744,3.1416]',
+                    'n_deepbjets[0,1,2,3,4,5]',
+                    'n_jets[0,1,2,3,4,5,6,7]',
+                    'jpt_1[0,60,120,180,240,300,360,420,480,540,600,660,720,780,840,900,1000,1400]', 
+                    'jpt_2[0,60,120,180,240,300,360,420,480,540,600,660,720,900]', 
+                    'met[0,60,120,180,240,300,360,420,480,540,600,660,780,900,1400]', 
+                    'pt_1[0,60,120,180,240,300,360,420,480,540,600,900,1400]', 
+                    'pt_2[0,60,120,180,240,300,360,420,480,540,600,900,1400]',
+                    'ip_sig_1[0,0.5,1.0,1.5,2.0,3,4,5,10]' ,
+                    'ip_sig_2[0,0.5,1.0,1.5,2.0,3,4,5,10]' ,
+                    'ip_mag_1[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]',
+                    'ip_mag_2[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]',
                     ]
 
 ch_dep_var = {"mt":[
-                    GetBinning('pt_1',20,800,100,log=True,round=1),
-                    GetBinning('pt_2',30,800,100,log=True,round=1),
-                    GetBinning('iso_1',0,0.15,100,log=False,round=0.001),
-                    'tau_decay_mode_2[==0,==1,==10,==11]',
+                    #GetBinning('pt_1',20,800,100,log=True,round=1),
+                    #GetBinning('pt_2',30,800,100,log=True,round=1),
+                    #GetBinning('iso_1',0,0.15,100,log=False,round=0.001),
+                    #'tau_decay_mode_2[==0,==1,==10,==11]',
                     #'tau_decay_mode_2[0,1,10,11]',
                     ],
               "et":[
-                    GetBinning('pt_1',20,800,40,log=True,round=1),
-                    GetBinning('pt_2',30,800,40,log=True,round=1),
-                    GetBinning('iso_1',0,0.15,40,log=False,round=0.001),
-                    'tau_decay_mode_2[==0,==1,==10,==11]',
+                    #GetBinning('pt_1',20,800,40,log=True,round=1),
+                    #GetBinning('pt_2',30,800,40,log=True,round=1),
+                    #GetBinning('iso_1',0,0.15,40,log=False,round=0.001),
+                    #'tau_decay_mode_2[==0,==1,==10,==11]',
                     #'tau_decay_mode_2[0,1,10,11]',
                     ],
               "tt":[
-                    GetBinning('pt_1',40,800,40,log=True,round=1),
-                    GetBinning('pt_2',40,800,40,log=True,round=1),
-                    'tau_decay_mode_1[==0,==1,==10,==11]',
-                    'tau_decay_mode_2[==0,==1,==10,==11]',
+                    #GetBinning('pt_1',40,800,40,log=True,round=1),
+                    #GetBinning('pt_2',40,800,40,log=True,round=1),
+                    #'tau_decay_mode_1[==0,==1,==10,==11]',
+                    #'tau_decay_mode_2[==0,==1,==10,==11]',
                     #'tau_decay_mode_1[0,1,10,11]',
                     #'tau_decay_mode_2[0,1,10,11]',
                     ],
@@ -149,10 +163,12 @@ categories = {
                     "Nbtag0_NjetsGt1_MTLt70",
                     "Nbtag0_Njets0_MTLt70",
                     "Nbtag0_NjetsGt1_MTLt70_STMETGt800",
+                    "Nbtag0_NjetsGt1_MTLt70_STMETGt1000",
                     "Nbtag0_NjetsGt1_MTLt70_STMET400to800",
                     "Nbtag0_NjetsGt1",
                     "Nbtag0_Njets0",
                     "Nbtag0_NjetsGt1_STMETGt800",
+                    "Nbtag0_NjetsGt1_STMETGt1000",
                     "Nbtag0_NjetsGt1_STMET400to800",
                     ],
               "et":[                    
@@ -167,10 +183,12 @@ categories = {
                     "Nbtag0_NjetsGt1_MTLt70",
                     "Nbtag0_Njets0_MTLt70",
                     "Nbtag0_NjetsGt1_MTLt70_STMETGt800",
+                    "Nbtag0_NjetsGt1_MTLt70_STMETGt1000",
                     "Nbtag0_NjetsGt1_MTLt70_STMET400to800",
                     "Nbtag0_NjetsGt1",
                     "Nbtag0_Njets0",
                     "Nbtag0_NjetsGt1_STMETGt800",
+                    "Nbtag0_NjetsGt1_STMETGt1000",
                     "Nbtag0_NjetsGt1_STMET400to800",
                     ],
               "tt":[
@@ -180,6 +198,7 @@ categories = {
                     "Nbtag0_NjetsGt1",
                     "Nbtag0_Njets0",
                     "Nbtag0_NjetsGt1_STMETGt800",
+                    "Nbtag0_NjetsGt1_STMETGt1000",
                     "Nbtag0_NjetsGt1_STMET400to800",
                     ],
               "em":[
@@ -204,7 +223,8 @@ methods = {
            }
 
 
-add_options = '--ratio_range=\'auto\' --gU=3.9  --plot_signals=\'VLQ_betaRd33_0_matched_M_2000,VLQ_betaRd33_0_offdiag0_matched_M_2000\' --auto_rebinning --bin_uncert_frac=0.2'
+#add_options = '--ratio_range=\'auto\' --gU=3.9  --plot_signals=\'VLQ_betaRd33_0_matched_M_2000,VLQ_betaRd33_0_offdiag0_matched_M_2000\' --auto_rebinning --bin_uncert_frac=0.2'
+add_options = '--ratio_range=\'auto\' --gU=3.9  --plot_signals=\'VLQ_betaRd33_0_matched_M_2000,VLQ_betaRd33_0_offdiag0_matched_M_2000\' '
  
 # Set up output directories
 
@@ -236,7 +256,9 @@ for year in years:
     
         cfg = config_files[year]
         method = methods[channel]
-        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s' % vars()
+        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=\'%(cfg)s\' --channel=%(channel)s --method=%(method)s --var=\'%(var)s\' --cat=%(cat)s %(add_options)s --extra_pad 0.5 ' % vars()
+        print run_cmd
+        #run_list = []
         run_list = [run_cmd]
         if channel in ["mt","et"]:
           run_list.append(run_cmd + " --w_ff_closure")
@@ -251,28 +273,84 @@ for year in years:
           add_syst = ''
           output_folder = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s/%(channel)s/%(year)s' % vars()
           if args.add_systs:
+
+            common_shape_systematics = [
+                ' --syst_tau_id_diff="CMS_eff_t_*_%(year)s"' % vars(), # Tau ID efficiency
+                ' --syst_tau_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Tau Trigger efficiency
+                ' --syst_tquark="CMS_htt_ttbarShape"', # Top pT re-weighting
+                ' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars(), # ttbar contamination in embedding
+                ' --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s"' % vars(), # Tau energy scale
+                ' --syst_res_j="CMS_res_j_%(year)s"' % vars(), # Jet energy resolution
+                ' --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s"' % vars(), # MET unclustered energy uncertainty
+                ' --syst_scale_met="CMS_htt_boson_scale_met_%(year)s"' % vars(), # MET recoil correction uncertainty
+                ' --syst_res_met="CMS_htt_boson_res_met_%(year)s"' % vars(),  # MET recoil correction uncertainty
+                ' --syst_scale_j_regrouped="CMS_scale_j_*group"', # Jet energy scale (grouped)
+                ' --do_ff_systs',
+              ]
+          
+            if year != '2018':
+              common_shape_systematics += [
+                ' --syst_prefire="CMS_prefiring"'
+                ]
+            if year == '2016':
+              common_shape_systematics += [
+                ' --syst_zwt="CMS_htt_dyShape_2016"'
+                ]
+            else:
+              common_shape_systematics += [
+                ' --syst_zwt="CMS_htt_dyShape"'
+                ]
+
+            et_shape_systematics = [
+              ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
+              ' --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
+              ' --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
+              ' --syst_e_scale="CMS_scale_e"', # Election energy scale
+            ]
+
+            mt_shape_systematics = [
+              ' --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars(), # Lepton trigger efficiency 
+              ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
+              ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
+            ]
+            add_syst=''
+            for syst in common_shape_systematics: add_syst+=' %s ' % syst
+
             if channel == "mt":
-              add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group" --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s" --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars()
-            elif channel in ["et"]:
-              add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group" --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s" --syst_e_scale="CMS_scale_e" --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars()
-            elif channel in ["tt"]:
-              add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group"' % vars()
-            if year == "2016":
-              add_syst += ' --syst_zwt="CMS_htt_dyShape_2016" --syst_prefire="CMS_prefiring"'
-            elif year == "2017":
-              add_syst += ' --syst_prefire="CMS_prefiring" --syst_zwt="CMS_htt_dyShape"'
-            elif year == "2018":
-              add_syst += ' --syst_zwt="CMS_htt_dyShape"'
+              for syst in mt_shape_systematics: add_syst+=' %s ' % syst
+
+            if channel == "et":
+              for syst in et_shape_systematics: add_syst+=' %s ' % syst
+
+            print add_syst
+           
+
+           # if channel == "mt":
+           #   add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group" --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s" --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s" --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars()
+           # elif channel in ["et"]:
+           #   add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group" --syst_efake_0pi_scale="CMS_ZLShape_et_1prong_%(year)s" --syst_efake_1pi_scale="CMS_ZLShape_et_1prong1pizero_%(year)s" --syst_e_scale="CMS_scale_e" --syst_lep_trg_diff="CMS_eff_*_%(year)s"' % vars()
+           # elif channel in ["tt"]:
+           #   add_syst = '--do_custom_uncerts --add_stat_to_syst --syst_tau_trg_diff="trg_syst_*" --syst_tau_id_diff="id_syst_*"  --do_ff_systs --syst_tquark="syst_ttbar_pt"  --syst_embedding_tt="syst_embed_tt"  --syst_tau_scale_grouped="CMS_scale_t_*group_%(year)s" --syst_res_j="CMS_res_j_%(year)s" --syst_scale_met_unclustered="CMS_scale_met_unclustered_%(year)s" --syst_scale_met="CMS_htt_boson_scale_met_%(year)s" --syst_res_met="CMS_htt_boson_reso_met_%(year)s" --syst_scale_j_regrouped="CMS_scale_j_*group"' % vars()
+           # if year == "2016":
+           #   add_syst += ' --syst_zwt="CMS_htt_dyShape_2016" --syst_prefire="CMS_prefiring"'
+           # elif year == "2017":
+           #   add_syst += ' --syst_prefire="CMS_prefiring" --syst_zwt="CMS_htt_dyShape"'
+           # elif year == "2018":
+           #   add_syst += ' --syst_zwt="CMS_htt_dyShape"'
   
           if "MT" in cat and "ff_closure" in cmd: continue 
           
           extra_name = '%(var_string)s' % vars()
+          extra_name = extra_name.replace('(','')
+          extra_name = extra_name.replace(')','')
           if "w_ff_closure" in cmd: extra_name += "_w_ff_closure"
           if "qcd_ff_closure" in cmd: extra_name += "_qcd_ff_closure"
 
           cmd += ' --extra_name=\'%(extra_name)s\' --outputfolder=%(output_folder)s %(add_syst)s' % vars()
-          if var_string in ["mt_tot","m_vis","pt_1","pt_2","met","svfit_mass","jpt_1","jpt_2","pt_vis","pt_tt","dijetpt"]: cmd += ' --log_x'
+          #if var_string in ["mt_tot","m_vis","pt_1","pt_2","met","svfit_mass","jpt_1","jpt_2","pt_vis","pt_tt","dijetpt"]: cmd += ' --log_x'
+          if var_string in ["mt_tot","m_vis","pt_1","pt_2","met","svfit_mass","pt_vis","pt_tt","dijetpt"]: cmd += ' --log_x'
           job_file = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/%(output)s/jobs/vlq_plot_%(cat)s_%(year)s_%(channel)s_%(extra_name)s.sh' % vars()
+          print job_file
           CreateBatchJob(job_file,cmssw_base,[cmd])
           if not args.dry_run: SubmitBatchJob(job_file,time=180,memory=24,cores=1)
 
