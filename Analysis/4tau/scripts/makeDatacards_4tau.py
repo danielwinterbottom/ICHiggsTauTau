@@ -69,6 +69,17 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
 all_ch_variables = [
+
+                    #GetBinning('pt_1',0,400,100,round=1),
+                    #GetBinning('pt_2',0,400,100,round=1),
+                    #GetBinning('pt_3',0,400,100,round=1),
+                    #GetBinning('mt_lep_12',0,400,100,round=1),
+                    #GetBinning('mt_lep_13',0,400,100,round=1),
+                    #GetBinning('mt_lep_23',0,400,100,round=1),
+                    #GetBinning('mvis_12',0,400,100,round=1),
+                    #GetBinning('mvis_13',0,400,100,round=1),
+                    #GetBinning('mvis_23',0,400,100,round=1),
+                    GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
                     #GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
                     #GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
                     #GetBinning('pt_min_dphi_1',0,300,60,round=1),
@@ -82,6 +93,7 @@ ch_dep_var = {"mttt":[],
               "eett":[],
               "tttt":[],
               "emtt":[],
+	      "ttt":[],
               }
 
 unb_ch_dep_var = {
@@ -191,6 +203,7 @@ unb_ch_dep_var = {
                       ],
               "tttt":[],
               "emtt":[],
+	      "ttt":[],
               }
 
 
@@ -209,17 +222,22 @@ config_files = {'2016':'scripts/plot_UL_2016.cfg',
 #              }
 
 categories = {
-              "tttt":["inclusive"],
-              "ettt":["inclusive"],
-              "mttt":["inclusive"],
-              "emtt":["inclusive"],
-              "eett":["inclusive"],
-              "mmtt":["inclusive"],
+              "ttt":["inclusive","nobtag","btag"],
+              "tttt":["inclusive","nobtag","btag"],
+              "ettt":["inclusive","nobtag","btag"],
+              "mttt":["inclusive","nobtag","btag"],
+              "emtt":["inclusive","nobtag","btag"],
+              "eett":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
+              "mmtt":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
               }
 
 
 add_options = ''
+
+#add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10'
+
 add_options = '--ratio_range=\'0.6,1.4\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.08 --method=2'
+
 #add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10 --vsjets=None --add_wt=\'1/(idisoweight_3*idisoweight_4)\''
  
 blind_options = '--blind --x_blind_min=-999 --x_blind_max=999'

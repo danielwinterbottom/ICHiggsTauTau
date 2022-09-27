@@ -23,7 +23,9 @@
 #include "4tau/interface/HTTEnergyScale.h"
 #include "4tau/interface/HTTCategories.h"
 #include "4tau/interface/HTTFourTauSelector.h"
+#include "4tau/interface/HTTThreeTauSelector.h"
 #include "4tau/interface/HTTFourTauGenInfo.h"
+#include "4tau/interface/HTTThreeTauGenInfo.h"
 #include "4tau/interface/BTagCheck.h"
 #include "4tau/interface/SVFitTest.h"
 #include "4tau/interface/HTTRun2RecoilCorrector.h"
@@ -50,6 +52,7 @@
 #include "Modules/interface/SimpleFilter.h"
 #include "Modules/interface/CompositeProducer.h"
 #include "Modules/interface/FourParticleCompositeProducer.h"
+#include "Modules/interface/ThreeParticleCompositeProducer.h"
 #include "Modules/interface/CopyCollection.h"
 #include "Modules/interface/OneCollCompositeProducer.h"
 #include "Modules/interface/OverlapFilter.h"
@@ -128,6 +131,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   veto_dimuon_eta = 2.4;
   veto_dimuon_dxy = 0.045;
   veto_dimuon_dz = 0.2;
+  veto_tau_pt = 20;
+  veto_tau_eta = 2.3;
+  veto_tau_dz = 0.2;
+
 
   // TO DO: Check these and try changing them
   elec_dz = 0.2;
@@ -162,6 +169,11 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if (channel_str == "tttt"){
    min_taus = 4;
    tau_pt = 35;
+  }
+
+  if (channel_str == "ttt"){
+   min_taus = 3;
+   tau_pt = 20;
   }
 
 
@@ -309,7 +321,7 @@ void HTTSequence::BuildSequence(){
     int nums;
     while(file >> nums){
       to_check.push_back(nums);
-      std::cout << nums << std::endl;
+      //std::cout << nums << std::endl;
     }
 
     file.close();
@@ -392,25 +404,40 @@ if(!is_data && js["do_gen_analysis"].asBool()){
    }
   BuildModule(lumiMask);
  }
-
 if (channel == channel::ettt) BuildETTTProducts();
 if (channel == channel::mttt) BuildMTTTProducts();
 if (channel == channel::emtt) BuildEMTTProducts();
 if (channel == channel::tttt) BuildTTTTProducts();
 if (channel == channel::eett) BuildEETTProducts();
 if (channel == channel::mmtt) BuildMMTTProducts();
+if (channel == channel::ttt)  BuildTTTProducts();
 
-HTTFourTauSelector httFourTauSelector = HTTFourTauSelector("HTTFourTauSelector")
-  .set_channel(channel)
-  .set_fs(fs.get())
-  .set_pair_label("4tau")
-  .set_strategy(strategy_type)
-  .set_mc(mc_type)
-  .set_use_most_isolated(true)
-  .set_use_charge_preference(true)
-  .set_allowed_tau_modes(allowed_tau_modes);
+
+if (channel == channel::ttt) {
+   HTTThreeTauSelector httThreeTauSelector = HTTThreeTauSelector("HTTThreeTauSelector")
+     .set_channel(channel)
+     .set_fs(fs.get())
+     .set_pair_label("4tau")
+     .set_strategy(strategy_type)
+     .set_mc(mc_type)
+     .set_use_most_isolated(true)
+     .set_use_charge_preference(true)
+     .set_allowed_tau_modes(allowed_tau_modes);
     
-BuildModule(httFourTauSelector);
+   BuildModule(httThreeTauSelector);
+} else {
+   HTTFourTauSelector httFourTauSelector = HTTFourTauSelector("HTTFourTauSelector")
+     .set_channel(channel)
+     .set_fs(fs.get())
+     .set_pair_label("4tau")
+     .set_strategy(strategy_type)
+     .set_mc(mc_type)
+     .set_use_most_isolated(true)
+     .set_use_charge_preference(true)
+     .set_allowed_tau_modes(allowed_tau_modes);
+
+   BuildModule(httFourTauSelector);
+}
 
 // TO DO: Update for 4tau UL
 BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -427,7 +454,10 @@ BuildModule(HTTTriggerFilter("HTTTriggerFilter")
 //if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
 if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
 if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
-
+if (js["baseline"]["extra_tau_veto"].asBool()) BuildExtraTauVeto();
+//std::cout << js["baseline"]["extra_elec_veto"].asBool() << std::endl;
+//std::cout << js["baseline"]["extra_muon_veto"].asBool() << std::endl;
+//std::cout << js["baseline"]["extra_tau_veto"].asBool() << std::endl;
 // do not need in this analysis as stats are low enough
 //if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
 //  BuildModule(PreselectionFilter("PreselectionFilter")
@@ -545,11 +575,21 @@ if (!is_data && !is_embedded) {
 }
 
 if(!is_data) {
-  BuildModule(HTTFourTauGenInfo("HTTFourTauGenInfo")
-    .set_ditau_label("4tau")
-    .set_channel(channel)
-    .set_ngenjets(true)
-  );
+	
+	if(channel == channel::ttt){
+	
+	   BuildModule(HTTThreeTauGenInfo("HTTThreeTauGenInfo")
+         .set_ditau_label("4tau")
+         .set_channel(channel)
+         .set_ngenjets(true)
+      );
+	} else {
+			BuildModule(HTTFourTauGenInfo("HTTFourTauGenInfo")
+            .set_ditau_label("4tau")
+            .set_channel(channel)
+            .set_ngenjets(true)
+      );
+	}
 }
 
 std::string scalefactor_file;
@@ -881,6 +921,23 @@ void HTTSequence::BuildTTTTProducts(){
 
 }
 
+// --------------------------------------------------------------------------
+// TTT Product Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildTTTProducts(){
+
+ BuildTauSelection();
+
+ BuildModule(ThreeParticleCompositeProducer<Tau, Tau, Tau>("TTTProducer")
+     .set_input_label_first(js["taus"].asString())
+     .set_input_label_second(js["taus"].asString())
+     .set_input_label_third(js["taus"].asString())
+     .set_candidate_name_first("lepton1")
+     .set_candidate_name_second("lepton2")
+     .set_candidate_name_third("lepton3")
+     .set_output_label("4tau"));
+}
+
 
 // --------------------------------------------------------------------------
 // ETTT Product Sequence
@@ -1172,7 +1229,7 @@ void HTTSequence::BuildMMTTProducts() {
 // Tau Selection Sequence
 // --------------------------------------------------------------------------
 void HTTSequence::BuildTauSelection(){
-  
+  //test 
   // filter taus first with loose pT cut - this avoids running more time consuming parts of the code for events with taus that just wont pass the offline cuts anyway 
   double loose_tau_pt = tau_pt*0.8;
 
@@ -1461,7 +1518,6 @@ void HTTSequence::BuildTauSelection(){
         ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3)); //lepton_rho
         return 0;
    }));
-  
    HTTFilter<Electron> extraElecFilter = HTTFilter<Electron>("ExtraElecFilter")
        .set_input_label("extra_elecs")
        .set_veto_name("extra_elec_veto")
@@ -1482,7 +1538,6 @@ void HTTSequence::BuildTauSelection(){
  
    BuildModule(CopyCollection<Muon>("CopyToExtraMuons",
        js["muons"].asString(), "extra_muons"));
- 
    HTTFilter<Muon> extraMuonFilter = HTTFilter<Muon>("ExtraMuonFilter")
        .set_input_label("extra_muons")
        .set_veto_name("extra_muon_veto")
@@ -1499,5 +1554,23 @@ void HTTSequence::BuildTauSelection(){
    });
    BuildModule(extraMuonFilter);
  
+ }
+ void HTTSequence::BuildExtraTauVeto(){
+   
+   BuildModule(CopyCollection<Tau>("CopyToExtraTaus",
+	js["taus"].asString(), "extra_taus"));
+   HTTFilter <Tau> extraTauFilter = HTTFilter<Tau>("ExtraTauFilter")
+	.set_input_label("extra_taus")
+	.set_veto_name("extra_tau_veto")
+	.set_max(3);
+   extraTauFilter.set_no_filter(false);
+   extraTauFilter.set_predicate([=](Tau const* t) {
+       return  t->pt()                     >  veto_tau_pt &&
+               fabs(t->eta())              <  veto_tau_eta    &&
+               fabs(t->lead_dz_vertex())   <  veto_tau_dz     &&
+               fabs(t->charge())           == 1          &&
+               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
+   });  
+   BuildModule(extraTauFilter);
  }
 }

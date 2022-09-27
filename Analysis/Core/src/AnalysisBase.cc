@@ -129,8 +129,8 @@ int AnalysisBase::RunAnalysis() {
   std::cout << std::string(78, '-') << "\n";
 
   // Timers if we want them
+  //std::cout << input_files_.size() << std::endl;
   std::chrono::time_point<std::chrono::system_clock> start, end;
-
   for (unsigned file = 0; file < input_files_.size(); ++file) {
     // Stop looping through files if user-specified events have
     // been processed
@@ -209,7 +209,6 @@ int AnalysisBase::RunAnalysis() {
       tree_ptr->SetCacheSize(100000000);
       tree_ptr->SetCacheLearnEntries(100);
     }
-
     unsigned tree_events = tree_ptr->GetEntries();
     event_.SetTree(tree_ptr);
     DoEventSetup();
@@ -230,6 +229,7 @@ int AnalysisBase::RunAnalysis() {
         event_.SetEvent(evt);
         bool track_event = false;
         for (unsigned m = 0; m < seq.modules.size(); ++m) {
+          //std::cout << seq.modules[m]->ModuleName() << std::endl;
           if (timings_) start = std::chrono::system_clock::now();
           ++(seq.proc_counters[m]);
 	  int status = (seq.modules)[m]->Execute(&event_);

@@ -31,6 +31,7 @@ class HTTSequence {
   double veto_muon_pt, veto_muon_eta, veto_muon_dxy, veto_muon_dz;
   double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;
   double veto_dimuon_pt, veto_dimuon_eta, veto_dimuon_dxy, veto_dimuon_dz;
+  double veto_tau_pt, veto_tau_eta, veto_tau_dz;
   unsigned min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
   unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, jer_mode, jes_corr_mode, ztautau_mode, vh_filter_mode, metscale_mode, metres_mode, metuncl_mode, metcl_mode;
   std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
@@ -59,6 +60,7 @@ class HTTSequence {
   void BuildEMTTProducts();
   void BuildEETTProducts();
   void BuildMMTTProducts();
+  void BuildTTTProducts();
   void BuildETPairs();
   void BuildMTPairs();
   void BuildEMPairs();
@@ -78,7 +80,7 @@ class HTTSequence {
 
   void BuildExtraMuonVeto();
   void BuildExtraElecVeto();
-
+  void BuildExtraTauVeto();
 
   template<class T>
   void BuildModule(T const& mod) {

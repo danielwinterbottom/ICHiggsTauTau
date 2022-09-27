@@ -55,6 +55,12 @@ class Candidate {
 
   /// Calculates the candidate mass
   inline double M() const { return vector_.M(); }
+
+  /// 
+  inline double px() const { return vector_.Px(); }
+  inline double py() const { return vector_.Py(); }
+  inline double pz() const { return vector_.Pz(); }
+
   /**@}*/
 
   /// @name Setters

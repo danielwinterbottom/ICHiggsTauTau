@@ -563,12 +563,20 @@ namespace ic {
     wt_mc_sign_ = eventInfo->weight_defined("wt_mc_sign") ? eventInfo->weight("wt_mc_sign") : 1.0;
     std::vector<CompositeCandidate *> const& fourtau_vec = event->GetPtrVec<CompositeCandidate>(fourtau_label_);
     CompositeCandidate const* fourtau = fourtau_vec.at(0);
+
     Candidate const* lep1 = fourtau->GetCandidate("lepton1");
     Candidate const* lep2 = fourtau->GetCandidate("lepton2");
     Candidate const* lep3 = fourtau->GetCandidate("lepton3");
-    Candidate const* lep4 = fourtau->GetCandidate("lepton4");
+    Candidate const* lep4 = 0;
+    if (channel_ != channel::ttt) lep4 = fourtau->GetCandidate("lepton4");
+    
 
- 
+
+    //std::cout << "lep 1 :" << " px " << lep1->px() << " py " << lep1->py() << " pz " << lep1->pz() << "energy : " << lep1->energy()  << std::endl;
+    //std::cout << "lep 2 :" << " px " << lep2->px() << " py " << lep2->py() << " pz " << lep2->pz() << "energy : " << lep2->energy()  << std::endl;
+    //std::cout << "lep 3 :" << " px " << lep3->px() << " py " << lep3->py() << " pz " << lep3->pz() << "energy : " << lep3->energy()  << std::endl;
+
+
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
@@ -592,6 +600,9 @@ namespace ic {
     if (channel_ == channel::mmtt || channel_ == channel::eett || channel_ == channel::emtt) {
       n_jetfakes_ = (gen_match_3_==6) + (gen_match_4_==6);
     }
+    if (channel_ == channel::ttt) {
+      n_jetfakes_ = (gen_match_1_==6) + (gen_match_2_==6) + (gen_match_3_==6);
+    }
 
     pdgid_mother_1_ = event->Exists("pdgid_mother_1") ? event->Get<int>("pdgid_mother_1") : 0;
     pdgid_mother_2_ = event->Exists("pdgid_mother_2") ? event->Get<int>("pdgid_mother_2") : 0;
@@ -600,14 +611,23 @@ namespace ic {
 
     all_taus_from_bosons_ = (((((pdgid_mother_1_ == 25) + (pdgid_mother_2_ == 25) + (pdgid_mother_3_ == 25) + (pdgid_mother_4_ == 25)) == 2) + (((pdgid_mother_1_ == 35) + (pdgid_mother_2_ == 35) + (pdgid_mother_3_ == 35) + (pdgid_mother_4_ == 35)) == 2) + (((pdgid_mother_1_ == 36) + (pdgid_mother_2_ == 36) + (pdgid_mother_3_ == 36) + (pdgid_mother_4_ == 36)) == 2)) == 2);
     pair_number_ = -9999;
-    if ((pdgid_mother_1_ == pdgid_mother_2_) && (pdgid_mother_3_ == pdgid_mother_4_)) {
-      pair_number_ = 0;
-    } else if ((pdgid_mother_1_ == pdgid_mother_3_) && (pdgid_mother_2_ == pdgid_mother_4_)) {
-      pair_number_ = 1;
-    } else if ((pdgid_mother_1_ == pdgid_mother_4_) && (pdgid_mother_2_ == pdgid_mother_3_)) {
-      pair_number_ = 2;
+    if(channel_ != channel::ttt){
+       if ((pdgid_mother_1_ == pdgid_mother_2_) && (pdgid_mother_3_ == pdgid_mother_4_)) {
+          pair_number_ = 0;
+       } else if ((pdgid_mother_1_ == pdgid_mother_3_) && (pdgid_mother_2_ == pdgid_mother_4_)) {
+         pair_number_ = 1;
+       } else if ((pdgid_mother_1_ == pdgid_mother_4_) && (pdgid_mother_2_ == pdgid_mother_3_)) {
+         pair_number_ = 2;
+       }
+    } else if (channel_ == channel::ttt){
+      if (pdgid_mother_1_ == pdgid_mother_2_){
+         pair_number_ = 0;
+      } else if (pdgid_mother_1_ == pdgid_mother_3_){
+        pair_number_ = 1;
+      } else if (pdgid_mother_2_ == pdgid_mother_3_){
+        pair_number_ = 2;
+      }
     }
-
 
     trg_doubletau_12_ = event->Exists("trg_doubletau_12") ? event->Get<bool>("trg_doubletau_12") : false;
     trg_doubletau_13_ = event->Exists("trg_doubletau_13") ? event->Get<bool>("trg_doubletau_13") : false;
@@ -808,53 +828,53 @@ namespace ic {
     trigeff_emucross_low_mc_1_ = event->Exists("trigeff_e_emucross_low_mc_1") ? event->Get<double>("trigeff_e_emucross_low_mc_1") : 1.0;
     trigeff_emucross_low_mc_2_ = event->Exists("trigeff_e_emucross_low_mc_2") ? event->Get<double>("trigeff_e_emucross_low_mc_2") : 1.0;
 
+    
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     pt_3_ = lep3->pt();
-    pt_4_ = lep4->pt();
-    jet_pt_1_ = 0;
+	
+	jet_pt_1_ = 0;
     jet_pt_2_ = 0;
     jet_pt_3_ = 0;
-    jet_pt_4_ = 0;
-    jet_probb_1_ = 0;
-    jet_probb_2_ = 0;
+	
+	jet_probb_1_ = 0;
+	jet_probb_2_ = 0;
     jet_probb_3_ = 0;
-    jet_probb_4_ = 0;
-    jet_probbb_1_ = 0;    
+	
+	jet_probbb_1_ = 0;    
     jet_probbb_2_ = 0;
     jet_probbb_3_ = 0;
-    jet_probbb_4_ = 0;
+	
     jet_problepb_1_ = 0;    
     jet_problepb_2_ = 0;
     jet_problepb_3_ = 0;
-    jet_problepb_4_ = 0;
-    jet_probc_1_ = 0;    
+	
+	jet_probc_1_ = 0;    
     jet_probc_2_ = 0;
     jet_probc_3_ = 0;
-    jet_probc_4_ = 0;
+	
     jet_probuds_1_ = 0;    
     jet_probuds_2_ = 0;
     jet_probuds_3_ = 0;
-    jet_probuds_4_ = 0;
+	
     jet_probg_1_ = 0;
     jet_probg_2_ = 0;
-    jet_probg_3_ = 0;
-    jet_probg_4_ = 0;
-
-    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
+    jet_probg_3_ = 0;    
+	
+	std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
     std::vector<Candidate *> lepvec1;
     std::vector<Candidate *> lepvec2;
-    std::vector<Candidate *> lepvec3;
-    std::vector<Candidate *> lepvec4;
-    lepvec1.push_back(fourtau->GetCandidate("lepton1"));
+    std::vector<Candidate *> lepvec3;    
+	
+	lepvec1.push_back(fourtau->GetCandidate("lepton1"));
     lepvec2.push_back(fourtau->GetCandidate("lepton2"));
-    lepvec3.push_back(fourtau->GetCandidate("lepton3"));
-    lepvec4.push_back(fourtau->GetCandidate("lepton4"));
-    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
+    lepvec3.push_back(fourtau->GetCandidate("lepton3"));    
+	
+	std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_2 = MatchByDR(uncleaned_jets, lepvec2, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_3 = MatchByDR(uncleaned_jets, lepvec3, 0.5, true, true);
-    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_4 = MatchByDR(uncleaned_jets, lepvec4, 0.5, true, true);
-    if(channel_ == channel::tttt) {
+
+    if(channel_ == channel::tttt || channel_ == channel::ttt) {
       if(tau_matches_1.size() > 0) {
         jet_pt_1_ = (tau_matches_1.at(0)).first->pt();
         jet_probb_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
@@ -865,7 +885,7 @@ namespace ic {
         jet_probg_1_ = (tau_matches_1.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
       }
     }
-    if(channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt) {
+    if(channel_ == channel::tttt || channel_ == channel::ttt ||  channel_ == channel::ettt || channel_ == channel::mttt) {
       if(tau_matches_2.size() > 0) {
         jet_pt_2_ = (tau_matches_2.at(0)).first->pt();
         jet_probb_2_ = (tau_matches_2.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
@@ -885,70 +905,55 @@ namespace ic {
       jet_probuds_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
       jet_probg_3_ = (tau_matches_3.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
     }
-    if(tau_matches_4.size() > 0) {
-      jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
-      jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
-      jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
-      jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
-      jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
-      jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
-      jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
-    }
+
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
     eta_3_ = lep3->eta();
-    eta_4_ = lep4->eta();
+
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
     phi_3_ = lep3->phi();
-    phi_4_ = lep4->phi();
+
     dphi_12_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep2->vector());
-    dphi_13_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep3->vector());
-    dphi_14_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep4->vector());
+    dphi_13_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep3->vector());   
     dphi_23_ = ROOT::Math::VectorUtil::DeltaPhi(lep2->vector(),lep3->vector()); 
-    dphi_24_ = ROOT::Math::VectorUtil::DeltaPhi(lep2->vector(),lep4->vector());
-    dphi_34_ = ROOT::Math::VectorUtil::DeltaPhi(lep3->vector(),lep4->vector());
+   
+
     dR_12_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
     dR_13_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep3->vector()));
-    dR_14_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep4->vector()));
     dR_23_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(),lep3->vector()));
-    dR_24_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(),lep4->vector()));
-    dR_34_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep3->vector(),lep4->vector()));
+   
     E_1_ = lep1->energy();
     E_2_ = lep2->energy();
     E_3_ = lep3->energy();
-    E_4_ = lep4->energy();
+   
     m_1_ = lep1->M();
     m_2_ = lep2->M();
     m_3_ = lep3->M();
-    m_4_ = lep4->M();
+
     Met const* mets = NULL;
     mets = event->GetPtr<Met>(met_label_);
     met_ = mets->vector().pt();
     mt_1_ = MT(lep1, mets);
     mt_2_ = MT(lep2, mets);
     mt_3_ = MT(lep3, mets);
-    mt_4_ = MT(lep4, mets);
+
     mt_lep_12_ = MT(lep1, lep2);
     mt_lep_13_ = MT(lep1, lep3);
-    mt_lep_14_ = MT(lep1, lep4);
+   
     mt_lep_23_ = MT(lep2, lep3);
-    mt_lep_24_ = MT(lep2, lep4);
-    mt_lep_34_ = MT(lep3, lep4);
+
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
     q_3_ = lep3->charge();
-    q_4_ = lep4->charge();
-    q_sum_ = lep1->charge()+lep2->charge()+lep3->charge()+lep4->charge();
-    st_ = lep1->pt()+lep2->pt()+lep3->pt()+lep4->pt()+mets->vector().pt();
-
+   
+    q_sum_ = lep1->charge()+lep2->charge()+lep3->charge();
+    st_ = lep1->pt()+lep2->pt()+lep3->pt()+mets->vector().pt();
+	 
     // get ditau mass of all combinations:
     CompositeCandidate *pair12 = new CompositeCandidate();
     CompositeCandidate *pair13 = new CompositeCandidate();
-    CompositeCandidate *pair14 = new CompositeCandidate();
     CompositeCandidate *pair23 = new CompositeCandidate();
-    CompositeCandidate *pair24 = new CompositeCandidate();
-    CompositeCandidate *pair34 = new CompositeCandidate();
 
     pair12->AddCandidate("lepton1",fourtau->GetCandidate("lepton1"));
     pair12->AddCandidate("lepton2",fourtau->GetCandidate("lepton2"));
@@ -956,221 +961,264 @@ namespace ic {
     pair13->AddCandidate("lepton1",fourtau->GetCandidate("lepton1"));
     pair13->AddCandidate("lepton2",fourtau->GetCandidate("lepton3"));
 
-    pair14->AddCandidate("lepton1",fourtau->GetCandidate("lepton1"));
-    pair14->AddCandidate("lepton2",fourtau->GetCandidate("lepton4"));
-
     pair23->AddCandidate("lepton1",fourtau->GetCandidate("lepton2"));
     pair23->AddCandidate("lepton2",fourtau->GetCandidate("lepton3"));
 
-    pair24->AddCandidate("lepton1",fourtau->GetCandidate("lepton2"));
-    pair24->AddCandidate("lepton2",fourtau->GetCandidate("lepton4"));
-
-    pair34->AddCandidate("lepton1",fourtau->GetCandidate("lepton3"));
-    pair34->AddCandidate("lepton2",fourtau->GetCandidate("lepton4"));
+    //std::cout << "pair12 :" << " px " << pair12->px() << " py " << pair12->py() << " pz " << pair12->pz() << "energy : " << pair12->energy()  << std::endl;
+    //std::cout << "pair13 :" << " px " << pair13->px() << " py " << pair13->py() << " pz " << pair13->pz() << "energy : " << pair13->energy()  << std::endl;
+    //std::cout << "pair23 :" << " px " << pair23->px() << " py " << pair23->py() << " pz " << pair23->pz() << "energy : " << pair23->energy()  << std::endl;
 
     mvis_12_ = pair12->M();
     mvis_13_ = pair13->M();
-    mvis_14_ = pair14->M();
     mvis_23_ = pair23->M();
-    mvis_24_ = pair24->M();
-    mvis_34_ = pair34->M();
 
     pt_tt_12_ = pair12->pt();
     pt_tt_13_ = pair13->pt();
-    pt_tt_14_ = pair14->pt();
     pt_tt_23_ = pair23->pt();
-    pt_tt_24_ = pair24->pt();
-    pt_tt_34_ = pair34->pt();
 
     mvis_phi_ = 0.0;
     mvis_A_ = 0.0;
     pt_phi_ = 0.0;
     pt_A_ = 0.0;
-  
-    if (((pdgid_mother_1_ == 25) && (pdgid_mother_2_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_2_ == 35))) {
-      mvis_phi_ = pair12->M();
-      pt_phi_ = pair12->pt();
-    } else if (((pdgid_mother_1_ == 25) && (pdgid_mother_3_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_3_ == 35))) {
-      mvis_phi_ = pair13->M();
-      pt_phi_ = pair13->pt();
-    } else if (((pdgid_mother_1_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_4_ == 35))) {
-      mvis_phi_ = pair14->M();
-      pt_phi_ = pair14->pt();
-    } else if (((pdgid_mother_2_ == 25) && (pdgid_mother_3_ == 25)) || ((pdgid_mother_2_ == 35) && (pdgid_mother_3_ == 35))) {
-      mvis_phi_ = pair23->M();
-      pt_phi_ = pair23->pt();
-    } else if (((pdgid_mother_2_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_2_ == 35) && (pdgid_mother_4_ == 35))) {
-      mvis_phi_ = pair24->M();
-      pt_phi_ = pair24->pt();
-    } else if (((pdgid_mother_3_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_3_ == 35) && (pdgid_mother_4_ == 35))) {
-      mvis_phi_ = pair34->M();
-      pt_phi_ = pair34->pt();
-    }
-
-    if ((pdgid_mother_1_ == 36) && (pdgid_mother_2_ == 36)) {
-      mvis_A_ = pair12->M();
-      pt_A_ = pair12->pt();
-    } else if ((pdgid_mother_1_ == 36) && (pdgid_mother_3_ == 36)) {
-      mvis_A_ = pair13->M();
-      pt_A_ = pair13->pt();
-    } else if ((pdgid_mother_1_ == 36) && (pdgid_mother_4_ == 36)) {
-      mvis_A_ = pair14->M();
-      pt_A_ = pair14->pt();
-    } else if ((pdgid_mother_2_ == 36) && (pdgid_mother_3_ == 36)) {
-      mvis_A_ = pair23->M();
-      pt_A_ = pair23->pt();
-    } else if ((pdgid_mother_2_ == 36) && (pdgid_mother_4_ == 36)) {
-      mvis_A_ = pair24->M();
-      pt_A_ = pair24->pt();
-    } else if ((pdgid_mother_3_ == 36) && (pdgid_mother_4_ == 36)) {
-      mvis_A_ = pair34->M();
-      pt_A_ = pair34->pt();
-    }
-
-
-    // select closest tau pairs
-    p_min_dphi_1_ = 1;
-    p_min_dR_1_ = 1;
-    p_min_sum_dphi_1_ = 1;
-    p_min_sum_dR_1_ = 1;
-    p_min_dphi_2_ = 2;
-    p_min_dR_2_ = 2;
-    p_min_sum_dphi_2_ = 2;
-    p_min_sum_dR_2_ = 2;
-
-    double min_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
-    double min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
-    double min_sum_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
-    double min_sum_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
-
-    for(int i = 1; i < 5; i++){
-      for(int j = 1; j < 5; j++){
-        if (i < j) { 
-          vector<int> v {1,2,3,4};
-          v.erase(std::remove(v.begin(), v.end(), i), v.end());
-          v.erase(std::remove(v.begin(), v.end(), j), v.end());
-          if (fourtau->GetCandidate("lepton"+std::to_string(i))->charge() == -fourtau->GetCandidate("lepton"+std::to_string(j))->charge()) {
-            //min_dphi
-            if (std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector())) < min_dphi_) {
-              min_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()));
-              p_min_dphi_1_ = i;
-              p_min_dphi_2_ = j;
-            }
-            // min dR
-            if (std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector())) < min_dR_) {
-              min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()));
-              p_min_dR_1_ = i;
-              p_min_dR_2_ = j;
-            }
-  
-            // min sum dphi
-            if ((std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()))) < min_sum_dphi_) {
-              min_sum_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()));
-              p_min_sum_dphi_1_ = i;
-              p_min_sum_dphi_2_ = j;
-            }
-  
-            // min sum dR
-            if ((std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()))) < min_sum_dR_) {
-              min_sum_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()));
-              p_min_sum_dR_1_ = i;
-              p_min_sum_dR_2_ = j;
-            }
-          }
-        }
+ 
+    if (channel_ != channel::ttt) {
+      pt_4_= lep4->pt();
+	  
+	  jet_pt_4_ = 0;
+      jet_probb_4_ = 0;
+      jet_probbb_4_ = 0;    
+      jet_problepb_4_ = 0;
+      jet_probc_4_ = 0;
+      jet_probuds_4_ = 0;
+      jet_probg_4_ = 0;
+      std::vector<Candidate *> lepvec4;
+      lepvec4.push_back(fourtau->GetCandidate("lepton4"));
+      std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_4 = MatchByDR(uncleaned_jets, lepvec4, 0.5, true, true);
+	  
+	  if(tau_matches_4.size() > 0) {
+		jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
+		jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+		jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+		jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+		jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+		jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+		jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+	  }
+	  
+      eta_4_ = lep4->eta();
+      phi_4_ = lep4->phi();
+      dphi_14_ = ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(),lep4->vector());
+      dphi_34_ = ROOT::Math::VectorUtil::DeltaPhi(lep3->vector(),lep4->vector());
+      dphi_24_ = ROOT::Math::VectorUtil::DeltaPhi(lep2->vector(),lep4->vector());
+      dR_14_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep4->vector()));
+      dR_24_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep2->vector(),lep4->vector()));
+      dR_34_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep3->vector(),lep4->vector()));
+      E_4_ = lep4->energy();
+      m_4_ = lep4->M();
+      mt_4_ = MT(lep4, mets);
+      mt_lep_14_ = MT(lep1, lep4);
+      mt_lep_24_ = MT(lep2, lep4);
+      mt_lep_34_ = MT(lep3, lep4);
+      q_4_ = lep4->charge();
+      q_sum_ = lep1->charge()+lep2->charge()+lep3->charge()+lep4->charge();
+      st_ = lep1->pt()+lep2->pt()+lep3->pt()+lep4->pt()+mets->vector().pt();
+      CompositeCandidate *pair14 = new CompositeCandidate();
+      CompositeCandidate *pair24 = new CompositeCandidate();
+      CompositeCandidate *pair34 = new CompositeCandidate();
+      pair14->AddCandidate("lepton1",fourtau->GetCandidate("lepton1"));
+      pair14->AddCandidate("lepton2",fourtau->GetCandidate("lepton4"));
+      pair24->AddCandidate("lepton1",fourtau->GetCandidate("lepton2"));
+      pair24->AddCandidate("lepton2",fourtau->GetCandidate("lepton4"));
+      pair34->AddCandidate("lepton1",fourtau->GetCandidate("lepton3"));
+      pair34->AddCandidate("lepton2",fourtau->GetCandidate("lepton4"));
+      mvis_14_ = pair14->M();
+      mvis_24_ = pair24->M();
+      mvis_34_ = pair34->M();
+      pt_tt_14_ = pair14->pt();
+      pt_tt_24_ = pair24->pt();
+      pt_tt_34_ = pair34->pt();
+      if (((pdgid_mother_1_ == 25) && (pdgid_mother_2_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_2_ == 35))) {
+        mvis_phi_ = pair12->M();
+        pt_phi_ = pair12->pt();
+      } else if (((pdgid_mother_1_ == 25) && (pdgid_mother_3_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_3_ == 35))) {
+        mvis_phi_ = pair13->M();
+        pt_phi_ = pair13->pt();
+      } else if (((pdgid_mother_1_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_1_ == 35) && (pdgid_mother_4_ == 35))) {
+        mvis_phi_ = pair14->M();
+        pt_phi_ = pair14->pt();
+      } else if (((pdgid_mother_2_ == 25) && (pdgid_mother_3_ == 25)) || ((pdgid_mother_2_ == 35) && (pdgid_mother_3_ == 35))) {
+        mvis_phi_ = pair23->M();
+        pt_phi_ = pair23->pt();
+      } else if (((pdgid_mother_2_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_2_ == 35) && (pdgid_mother_4_ == 35))) {
+        mvis_phi_ = pair24->M();
+        pt_phi_ = pair24->pt();
+      } else if (((pdgid_mother_3_ == 25) && (pdgid_mother_4_ == 25)) || ((pdgid_mother_3_ == 35) && (pdgid_mother_4_ == 35))) {
+        mvis_phi_ = pair34->M();
+        pt_phi_ = pair34->pt();
       }
-    }
 
-    CompositeCandidate *pair_min_dphi_1 = new CompositeCandidate();
-    CompositeCandidate *pair_min_dphi_2 = new CompositeCandidate();
-    CompositeCandidate *pair_min_dR_1 = new CompositeCandidate();
-    CompositeCandidate *pair_min_dR_2 = new CompositeCandidate();
-    CompositeCandidate *pair_min_sum_dphi_1 = new CompositeCandidate();
-    CompositeCandidate *pair_min_sum_dphi_2 = new CompositeCandidate();
-    CompositeCandidate *pair_min_sum_dR_1 = new CompositeCandidate();
-    CompositeCandidate *pair_min_sum_dR_2 = new CompositeCandidate();
+      if ((pdgid_mother_1_ == 36) && (pdgid_mother_2_ == 36)) {
+        mvis_A_ = pair12->M();
+        pt_A_ = pair12->pt();
+      } else if ((pdgid_mother_1_ == 36) && (pdgid_mother_3_ == 36)) {
+        mvis_A_ = pair13->M();
+        pt_A_ = pair13->pt();
+      } else if ((pdgid_mother_1_ == 36) && (pdgid_mother_4_ == 36)) {
+        mvis_A_ = pair14->M();
+        pt_A_ = pair14->pt();
+      } else if ((pdgid_mother_2_ == 36) && (pdgid_mother_3_ == 36)) {
+        mvis_A_ = pair23->M();
+        pt_A_ = pair23->pt();
+      } else if ((pdgid_mother_2_ == 36) && (pdgid_mother_4_ == 36)) {
+        mvis_A_ = pair24->M();
+        pt_A_ = pair24->pt();
+      } else if ((pdgid_mother_3_ == 36) && (pdgid_mother_4_ == 36)) {
+        mvis_A_ = pair34->M();
+        pt_A_ = pair34->pt();
+      }
 
-    pair_min_dphi_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_)));
-    pair_min_dphi_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_)));
-    vector<int> v1 {1,2,3,4};
-    v1.erase(std::remove(v1.begin(), v1.end(), p_min_dphi_1_), v1.end());
-    v1.erase(std::remove(v1.begin(), v1.end(), p_min_dphi_2_), v1.end());
-    pair_min_dphi_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v1[0])));
-    pair_min_dphi_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v1[1])));
+        // select closest tau pairs
+       p_min_dphi_1_ = 1;
+       p_min_dR_1_ = 1;
+       p_min_sum_dphi_1_ = 1;
+       p_min_sum_dR_1_ = 1;
+       p_min_dphi_2_ = 2;
+       p_min_dR_2_ = 2;
+       p_min_sum_dphi_2_ = 2;
+       p_min_sum_dR_2_ = 2;
 
-    pair_min_dR_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_1_)));
-    pair_min_dR_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_2_)));
-    vector<int> v2 {1,2,3,4};
-    v2.erase(std::remove(v2.begin(), v2.end(), p_min_dR_1_), v2.end());
-    v2.erase(std::remove(v2.begin(), v2.end(), p_min_dR_2_), v2.end());
-    pair_min_dR_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v2[0])));
-    pair_min_dR_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v2[1])));
+       double min_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
+       double min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
+       double min_sum_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
+       double min_sum_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
 
-    pair_min_sum_dphi_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dphi_1_)));
-    pair_min_sum_dphi_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dphi_2_)));
-    vector<int> v3 {1,2,3,4};
-    v3.erase(std::remove(v3.begin(), v3.end(), p_min_sum_dphi_1_), v3.end());
-    v3.erase(std::remove(v3.begin(), v3.end(), p_min_sum_dphi_2_), v3.end());
-    pair_min_sum_dphi_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v3[0])));
-    pair_min_sum_dphi_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v3[1])));
+       for(int i = 1; i < 5; i++){
+         for(int j = 1; j < 5; j++){
+           if (i < j) { 
+             vector<int> v {1,2,3,4};
+             v.erase(std::remove(v.begin(), v.end(), i), v.end());
+             v.erase(std::remove(v.begin(), v.end(), j), v.end());
+             if (fourtau->GetCandidate("lepton"+std::to_string(i))->charge() == -fourtau->GetCandidate("lepton"+std::to_string(j))->charge()) {
+               //min_dphi
+               if (std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector())) < min_dphi_) {
+                 min_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()));
+                 p_min_dphi_1_ = i;
+                 p_min_dphi_2_ = j;
+               }
+               // min dR
+               if (std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector())) < min_dR_) {
+                 min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()));
+                 p_min_dR_1_ = i;
+                 p_min_dR_2_ = j;
+              }
+  
+               // min sum dphi
+               if ((std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()))) < min_sum_dphi_) {
+                 min_sum_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()));
+                 p_min_sum_dphi_1_ = i;
+                 p_min_sum_dphi_2_ = j;
+               }
+  
+               // min sum dR
+               if ((std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()))) < min_sum_dR_) {
+                 min_sum_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()))+std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(v[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v[1]))->vector()));
+                 p_min_sum_dR_1_ = i;
+                 p_min_sum_dR_2_ = j;
+               }
+             }
+           }
+         }
+       }
 
-    pair_min_sum_dR_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_1_)));
-    pair_min_sum_dR_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_2_)));
-    vector<int> v4 {1,2,3,4};
-    v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_1_), v4.end());
-    v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_2_), v4.end());
-    pair_min_sum_dR_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v4[0])));
-    pair_min_sum_dR_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v4[1])));
+       CompositeCandidate *pair_min_dphi_1 = new CompositeCandidate();
+       CompositeCandidate *pair_min_dphi_2 = new CompositeCandidate();
+       CompositeCandidate *pair_min_dR_1 = new CompositeCandidate();
+       CompositeCandidate *pair_min_dR_2 = new CompositeCandidate();
+       CompositeCandidate *pair_min_sum_dphi_1 = new CompositeCandidate();
+       CompositeCandidate *pair_min_sum_dphi_2 = new CompositeCandidate();
+       CompositeCandidate *pair_min_sum_dR_1 = new CompositeCandidate();
+       CompositeCandidate *pair_min_sum_dR_2 = new CompositeCandidate();
 
-    if (pair_min_dphi_1->M()>pair_min_dphi_2->M()) {
-      mvis_min_dphi_1_ = pair_min_dphi_1->M();
-      mvis_min_dphi_2_ = pair_min_dphi_2->M();
-      pt_min_dphi_1_ = pair_min_dphi_1->pt();
-      pt_min_dphi_2_ = pair_min_dphi_2->pt();
-    } else {
-      mvis_min_dphi_1_ = pair_min_dphi_2->M();
-      mvis_min_dphi_2_ = pair_min_dphi_1->M();
-      pt_min_dphi_1_ = pair_min_dphi_2->pt();
-      pt_min_dphi_2_ = pair_min_dphi_1->pt();
+       pair_min_dphi_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_)));
+       pair_min_dphi_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_)));
+       vector<int> v1 {1,2,3,4};
+       v1.erase(std::remove(v1.begin(), v1.end(), p_min_dphi_1_), v1.end());
+       v1.erase(std::remove(v1.begin(), v1.end(), p_min_dphi_2_), v1.end());
+       pair_min_dphi_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v1[0])));
+       pair_min_dphi_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v1[1])));
 
-    }
+       pair_min_dR_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_1_)));
+       pair_min_dR_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_2_)));
+       vector<int> v2 {1,2,3,4};
+       v2.erase(std::remove(v2.begin(), v2.end(), p_min_dR_1_), v2.end());
+       v2.erase(std::remove(v2.begin(), v2.end(), p_min_dR_2_), v2.end());
+       pair_min_dR_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v2[0])));
+       pair_min_dR_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v2[1])));
 
-    if (pair_min_sum_dphi_1->M()>pair_min_sum_dphi_2->M()) {
-      mvis_min_sum_dphi_1_ = pair_min_sum_dphi_1->M();
-      mvis_min_sum_dphi_2_ = pair_min_sum_dphi_2->M();
-      pt_min_sum_dphi_1_ = pair_min_sum_dphi_1->pt();
-      pt_min_sum_dphi_2_ = pair_min_sum_dphi_2->pt();
-    } else {
-      mvis_min_sum_dphi_1_ = pair_min_sum_dphi_2->M();
-      mvis_min_sum_dphi_2_ = pair_min_sum_dphi_1->M();
-      pt_min_sum_dphi_1_ = pair_min_sum_dphi_2->pt();
-      pt_min_sum_dphi_2_ = pair_min_sum_dphi_1->pt();
-    }
+       pair_min_sum_dphi_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dphi_1_)));
+       pair_min_sum_dphi_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dphi_2_)));
+       vector<int> v3 {1,2,3,4};
+       v3.erase(std::remove(v3.begin(), v3.end(), p_min_sum_dphi_1_), v3.end());
+       v3.erase(std::remove(v3.begin(), v3.end(), p_min_sum_dphi_2_), v3.end());
+       pair_min_sum_dphi_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v3[0])));
+       pair_min_sum_dphi_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v3[1])));
 
-    if (pair_min_dR_1->M()>pair_min_dR_2->M()) {
-      mvis_min_dR_1_ = pair_min_dR_1->M();
-      mvis_min_dR_2_ = pair_min_dR_2->M();
-      pt_min_dR_1_ = pair_min_dR_1->pt();
-      pt_min_dR_2_ = pair_min_dR_2->pt();
-    } else {
-      mvis_min_dR_1_ = pair_min_dR_2->M();
-      mvis_min_dR_2_ = pair_min_dR_1->M();
-      pt_min_dR_1_ = pair_min_dR_2->pt();
-      pt_min_dR_2_ = pair_min_dR_1->pt();
-    }
+       pair_min_sum_dR_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_1_)));
+       pair_min_sum_dR_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_2_)));
+       vector<int> v4 {1,2,3,4};
+       v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_1_), v4.end());
+       v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_2_), v4.end());
+       pair_min_sum_dR_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v4[0])));
+       pair_min_sum_dR_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v4[1])));
 
-    if (pair_min_sum_dR_1->M()>pair_min_sum_dR_2->M()) {
-      mvis_min_sum_dR_1_ = pair_min_sum_dR_1->M();
-      mvis_min_sum_dR_2_ = pair_min_sum_dR_2->M();
-      pt_min_sum_dR_1_ = pair_min_sum_dR_1->pt();
-      pt_min_sum_dR_2_ = pair_min_sum_dR_2->pt();
-    } else {
-      mvis_min_sum_dR_1_ = pair_min_sum_dR_2->M();
-      mvis_min_sum_dR_2_ = pair_min_sum_dR_1->M();
-      pt_min_sum_dR_1_ = pair_min_sum_dR_2->pt();
-      pt_min_sum_dR_2_ = pair_min_sum_dR_1->pt();
-    }
+       if (pair_min_dphi_1->M()>pair_min_dphi_2->M()) {
+         mvis_min_dphi_1_ = pair_min_dphi_1->M();
+         mvis_min_dphi_2_ = pair_min_dphi_2->M();
+         pt_min_dphi_1_ = pair_min_dphi_1->pt();
+         pt_min_dphi_2_ = pair_min_dphi_2->pt();
+       } else {
+         mvis_min_dphi_1_ = pair_min_dphi_2->M();
+         mvis_min_dphi_2_ = pair_min_dphi_1->M();
+         pt_min_dphi_1_ = pair_min_dphi_2->pt();
+         pt_min_dphi_2_ = pair_min_dphi_1->pt();
+       }
 
+       if (pair_min_sum_dphi_1->M()>pair_min_sum_dphi_2->M()) {
+         mvis_min_sum_dphi_1_ = pair_min_sum_dphi_1->M();
+         mvis_min_sum_dphi_2_ = pair_min_sum_dphi_2->M();
+         pt_min_sum_dphi_1_ = pair_min_sum_dphi_1->pt();
+         pt_min_sum_dphi_2_ = pair_min_sum_dphi_2->pt();
+       } else {
+         mvis_min_sum_dphi_1_ = pair_min_sum_dphi_2->M();
+         mvis_min_sum_dphi_2_ = pair_min_sum_dphi_1->M();
+         pt_min_sum_dphi_1_ = pair_min_sum_dphi_2->pt();
+         pt_min_sum_dphi_2_ = pair_min_sum_dphi_1->pt();
+       }
+
+       if (pair_min_dR_1->M()>pair_min_dR_2->M()) {
+         mvis_min_dR_1_ = pair_min_dR_1->M();
+         mvis_min_dR_2_ = pair_min_dR_2->M();
+         pt_min_dR_1_ = pair_min_dR_1->pt();
+         pt_min_dR_2_ = pair_min_dR_2->pt();
+       } else {
+         mvis_min_dR_1_ = pair_min_dR_2->M();
+         mvis_min_dR_2_ = pair_min_dR_1->M();
+         pt_min_dR_1_ = pair_min_dR_2->pt();
+         pt_min_dR_2_ = pair_min_dR_1->pt();
+       }
+
+       if (pair_min_sum_dR_1->M()>pair_min_sum_dR_2->M()) {
+         mvis_min_sum_dR_1_ = pair_min_sum_dR_1->M();
+         mvis_min_sum_dR_2_ = pair_min_sum_dR_2->M();
+         pt_min_sum_dR_1_ = pair_min_sum_dR_1->pt();
+         pt_min_sum_dR_2_ = pair_min_sum_dR_2->pt();
+       } else {
+         mvis_min_sum_dR_1_ = pair_min_sum_dR_2->M();
+         mvis_min_sum_dR_2_ = pair_min_sum_dR_1->M();
+         pt_min_sum_dR_1_ = pair_min_sum_dR_2->pt();
+         pt_min_sum_dR_2_ = pair_min_sum_dR_1->pt();
+       }
+   }
 
     if (channel_ == channel::ettt) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
@@ -1486,6 +1534,117 @@ namespace ic {
       deepTauVsMu_vvtight_4_    = tau2->HasTauID("byVVTightDeepTau2017v2p1VSmu")   ? tau2->GetTauID("byVVTightDeepTau2017v2p1VSmu"):    0.;
 
     }
+    if (channel_ == channel::ttt) {
+      Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+      Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+      Tau const* tau3 = dynamic_cast<Tau const*>(lep3);
+      d0_1_ = tau1->lead_dxy_vertex();
+      dz_1_ = tau1->lead_dz_vertex();
+      d0_2_ = tau2->lead_dxy_vertex();
+      dz_2_ = tau2->lead_dz_vertex();
+      d0_3_ = tau3->lead_dxy_vertex();
+      dz_3_ = tau3->lead_dz_vertex();
+      tau_decay_mode_1_ = tau1->decay_mode();
+      tau_decay_mode_2_ = tau2->decay_mode();
+      tau_decay_mode_3_ = tau3->decay_mode();
+      // Raw DNN scores
+      deepTauVsJets_iso_1_      = tau1->HasTauID("byDeepTau2017v2p1VSjetraw")      ? tau1->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
+      deepTauVsEle_iso_1_       = tau1->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau1->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
+      deepTauVsMu_iso_1_        = tau1->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau1->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
+
+      deepTauVsJets_iso_2_      = tau2->HasTauID("byDeepTau2017v2p1VSjetraw")      ? tau2->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
+      deepTauVsEle_iso_2_       = tau2->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau2->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
+      deepTauVsMu_iso_2_        = tau2->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau2->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
+
+      deepTauVsJets_iso_3_      = tau3->HasTauID("byDeepTau2017v2p1VSjetraw")      ? tau3->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
+      deepTauVsEle_iso_3_       = tau3->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau3->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
+      deepTauVsMu_iso_3_        = tau3->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau3->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
+
+      // Existing workpoints 
+      deepTauVsJets_vvvloose_1_ = tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") ? tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"): 0.;
+      deepTauVsJets_vvloose_1_  = tau1->HasTauID("byVVLooseDeepTau2017v2p1VSjet")  ? tau1->GetTauID("byVVLooseDeepTau2017v2p1VSjet"):  0.;
+      deepTauVsJets_vloose_1_   = tau1->HasTauID("byVLooseDeepTau2017v2p1VSjet")   ? tau1->GetTauID("byVLooseDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_loose_1_    = tau1->HasTauID("byLooseDeepTau2017v2p1VSjet")    ? tau1->GetTauID("byLooseDeepTau2017v2p1VSjet"):    0.;
+      deepTauVsJets_medium_1_   = tau1->HasTauID("byMediumDeepTau2017v2p1VSjet")   ? tau1->GetTauID("byMediumDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_tight_1_    = tau1->HasTauID("byTightDeepTau2017v2p1VSjet")    ? tau1->GetTauID("byTightDeepTau2017v2p1VSjet"):    0.;
+      deepTauVsJets_vtight_1_   = tau1->HasTauID("byVTightDeepTau2017v2p1VSjet")   ? tau1->GetTauID("byVTightDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_vvtight_1_  = tau1->HasTauID("byVVTightDeepTau2017v2p1VSjet")  ? tau1->GetTauID("byVVTightDeepTau2017v2p1VSjet"):  0.;
+
+      deepTauVsEle_vvvloose_1_  = tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSe")   ? tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSe"):   0.;
+      deepTauVsEle_vvloose_1_   = tau1->HasTauID("byVVLooseDeepTau2017v2p1VSe")    ? tau1->GetTauID("byVVLooseDeepTau2017v2p1VSe"):    0.;
+      deepTauVsEle_vloose_1_    = tau1->HasTauID("byVLooseDeepTau2017v2p1VSe")     ? tau1->GetTauID("byVLooseDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_loose_1_     = tau1->HasTauID("byLooseDeepTau2017v2p1VSe")      ? tau1->GetTauID("byLooseDeepTau2017v2p1VSe"):      0.;
+      deepTauVsEle_medium_1_    = tau1->HasTauID("byMediumDeepTau2017v2p1VSe")     ? tau1->GetTauID("byMediumDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_tight_1_     = tau1->HasTauID("byTightDeepTau2017v2p1VSe")      ? tau1->GetTauID("byTightDeepTau2017v2p1VSe"):      0.;
+      deepTauVsEle_vtight_1_    = tau1->HasTauID("byVTightDeepTau2017v2p1VSe")     ? tau1->GetTauID("byVTightDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_vvtight_1_   = tau1->HasTauID("byVVTightDeepTau2017v2p1VSe")    ? tau1->GetTauID("byVVTightDeepTau2017v2p1VSe"):    0.;
+
+      deepTauVsMu_vvvloose_1_  = tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSmu")   ? tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSmu"):   0.;
+      deepTauVsMu_vvloose_1_   = tau1->HasTauID("byVVLooseDeepTau2017v2p1VSmu")    ? tau1->GetTauID("byVVLooseDeepTau2017v2p1VSmu"):    0.;
+      deepTauVsMu_vloose_1_    = tau1->HasTauID("byVLooseDeepTau2017v2p1VSmu")     ? tau1->GetTauID("byVLooseDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_loose_1_     = tau1->HasTauID("byLooseDeepTau2017v2p1VSmu")      ? tau1->GetTauID("byLooseDeepTau2017v2p1VSmu"):      0.;
+      deepTauVsMu_medium_1_    = tau1->HasTauID("byMediumDeepTau2017v2p1VSmu")     ? tau1->GetTauID("byMediumDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_tight_1_     = tau1->HasTauID("byTightDeepTau2017v2p1VSmu")      ? tau1->GetTauID("byTightDeepTau2017v2p1VSmu"):      0.;
+      deepTauVsMu_vtight_1_    = tau1->HasTauID("byVTightDeepTau2017v2p1VSmu")     ? tau1->GetTauID("byVTightDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_vvtight_1_   = tau1->HasTauID("byVVTightDeepTau2017v2p1VSmu")    ? tau1->GetTauID("byVVTightDeepTau2017v2p1VSmu"):    0.;
+
+      deepTauVsJets_vvvloose_2_ = tau2->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") ? tau2->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"): 0.;
+      deepTauVsJets_vvloose_2_  = tau2->HasTauID("byVVLooseDeepTau2017v2p1VSjet")  ? tau2->GetTauID("byVVLooseDeepTau2017v2p1VSjet"):  0.;
+      deepTauVsJets_vloose_2_   = tau2->HasTauID("byVLooseDeepTau2017v2p1VSjet")   ? tau2->GetTauID("byVLooseDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_loose_2_    = tau2->HasTauID("byLooseDeepTau2017v2p1VSjet")    ? tau2->GetTauID("byLooseDeepTau2017v2p1VSjet"):    0.;
+      deepTauVsJets_medium_2_   = tau2->HasTauID("byMediumDeepTau2017v2p1VSjet")   ? tau2->GetTauID("byMediumDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_tight_2_    = tau2->HasTauID("byTightDeepTau2017v2p1VSjet")    ? tau2->GetTauID("byTightDeepTau2017v2p1VSjet"):    0.;
+      deepTauVsJets_vtight_2_   = tau2->HasTauID("byVTightDeepTau2017v2p1VSjet")   ? tau2->GetTauID("byVTightDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_vvtight_2_  = tau2->HasTauID("byVVTightDeepTau2017v2p1VSjet")  ? tau2->GetTauID("byVVTightDeepTau2017v2p1VSjet"):  0.;
+
+      deepTauVsEle_vvvloose_2_  = tau2->HasTauID("byVVVLooseDeepTau2017v2p1VSe")   ? tau2->GetTauID("byVVVLooseDeepTau2017v2p1VSe"):   0.;
+      deepTauVsEle_vvloose_2_   = tau2->HasTauID("byVVLooseDeepTau2017v2p1VSe")    ? tau2->GetTauID("byVVLooseDeepTau2017v2p1VSe"):    0.;
+      deepTauVsEle_vloose_2_    = tau2->HasTauID("byVLooseDeepTau2017v2p1VSe")     ? tau2->GetTauID("byVLooseDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_loose_2_     = tau2->HasTauID("byLooseDeepTau2017v2p1VSe")      ? tau2->GetTauID("byLooseDeepTau2017v2p1VSe"):      0.;
+      deepTauVsEle_medium_2_    = tau2->HasTauID("byMediumDeepTau2017v2p1VSe")     ? tau2->GetTauID("byMediumDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_tight_2_     = tau2->HasTauID("byTightDeepTau2017v2p1VSe")      ? tau2->GetTauID("byTightDeepTau2017v2p1VSe"):      0.;
+      deepTauVsEle_vtight_2_    = tau2->HasTauID("byVTightDeepTau2017v2p1VSe")     ? tau2->GetTauID("byVTightDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_vvtight_2_   = tau2->HasTauID("byVVTightDeepTau2017v2p1VSe")    ? tau2->GetTauID("byVVTightDeepTau2017v2p1VSe"):    0.;
+
+      deepTauVsMu_vvvloose_2_  = tau2->HasTauID("byVVVLooseDeepTau2017v2p1VSmu")   ? tau2->GetTauID("byVVVLooseDeepTau2017v2p1VSmu"):   0.;
+      deepTauVsMu_vvloose_2_   = tau2->HasTauID("byVVLooseDeepTau2017v2p1VSmu")    ? tau2->GetTauID("byVVLooseDeepTau2017v2p1VSmu"):    0.;
+      deepTauVsMu_vloose_2_    = tau2->HasTauID("byVLooseDeepTau2017v2p1VSmu")     ? tau2->GetTauID("byVLooseDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_loose_2_     = tau2->HasTauID("byLooseDeepTau2017v2p1VSmu")      ? tau2->GetTauID("byLooseDeepTau2017v2p1VSmu"):      0.;
+      deepTauVsMu_medium_2_    = tau2->HasTauID("byMediumDeepTau2017v2p1VSmu")     ? tau2->GetTauID("byMediumDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_tight_2_     = tau2->HasTauID("byTightDeepTau2017v2p1VSmu")      ? tau2->GetTauID("byTightDeepTau2017v2p1VSmu"):      0.;
+      deepTauVsMu_vtight_2_    = tau2->HasTauID("byVTightDeepTau2017v2p1VSmu")     ? tau2->GetTauID("byVTightDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_vvtight_2_   = tau2->HasTauID("byVVTightDeepTau2017v2p1VSmu")    ? tau2->GetTauID("byVVTightDeepTau2017v2p1VSmu"):    0.;
+
+      deepTauVsJets_vvvloose_3_ = tau3->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") ? tau3->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"): 0.;
+      deepTauVsJets_vvloose_3_  = tau3->HasTauID("byVVLooseDeepTau2017v2p1VSjet")  ? tau3->GetTauID("byVVLooseDeepTau2017v2p1VSjet"):  0.;
+      deepTauVsJets_vloose_3_   = tau3->HasTauID("byVLooseDeepTau2017v2p1VSjet")   ? tau3->GetTauID("byVLooseDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_loose_3_    = tau3->HasTauID("byLooseDeepTau2017v2p1VSjet")    ? tau3->GetTauID("byLooseDeepTau2017v2p1VSjet"):    0.;
+      deepTauVsJets_medium_3_   = tau3->HasTauID("byMediumDeepTau2017v2p1VSjet")   ? tau3->GetTauID("byMediumDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_tight_3_    = tau3->HasTauID("byTightDeepTau2017v2p1VSjet")    ? tau3->GetTauID("byTightDeepTau2017v2p1VSjet"):    0.;
+      deepTauVsJets_vtight_3_   = tau3->HasTauID("byVTightDeepTau2017v2p1VSjet")   ? tau3->GetTauID("byVTightDeepTau2017v2p1VSjet"):   0.;
+      deepTauVsJets_vvtight_3_  = tau3->HasTauID("byVVTightDeepTau2017v2p1VSjet")  ? tau3->GetTauID("byVVTightDeepTau2017v2p1VSjet"):  0.;
+
+      deepTauVsEle_vvvloose_3_  = tau3->HasTauID("byVVVLooseDeepTau2017v2p1VSe")   ? tau3->GetTauID("byVVVLooseDeepTau2017v2p1VSe"):   0.;
+      deepTauVsEle_vvloose_3_   = tau3->HasTauID("byVVLooseDeepTau2017v2p1VSe")    ? tau3->GetTauID("byVVLooseDeepTau2017v2p1VSe"):    0.;
+      deepTauVsEle_vloose_3_    = tau3->HasTauID("byVLooseDeepTau2017v2p1VSe")     ? tau3->GetTauID("byVLooseDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_loose_3_     = tau3->HasTauID("byLooseDeepTau2017v2p1VSe")      ? tau3->GetTauID("byLooseDeepTau2017v2p1VSe"):      0.;
+      deepTauVsEle_medium_3_    = tau3->HasTauID("byMediumDeepTau2017v2p1VSe")     ? tau3->GetTauID("byMediumDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_tight_3_     = tau3->HasTauID("byTightDeepTau2017v2p1VSe")      ? tau3->GetTauID("byTightDeepTau2017v2p1VSe"):      0.;
+      deepTauVsEle_vtight_3_    = tau3->HasTauID("byVTightDeepTau2017v2p1VSe")     ? tau3->GetTauID("byVTightDeepTau2017v2p1VSe"):     0.;
+      deepTauVsEle_vvtight_3_   = tau3->HasTauID("byVVTightDeepTau2017v2p1VSe")    ? tau3->GetTauID("byVVTightDeepTau2017v2p1VSe"):    0.;
+
+      deepTauVsMu_vvvloose_3_  = tau3->HasTauID("byVVVLooseDeepTau2017v2p1VSmu")   ? tau3->GetTauID("byVVVLooseDeepTau2017v2p1VSmu"):   0.;
+      deepTauVsMu_vvloose_3_   = tau3->HasTauID("byVVLooseDeepTau2017v2p1VSmu")    ? tau3->GetTauID("byVVLooseDeepTau2017v2p1VSmu"):    0.;
+      deepTauVsMu_vloose_3_    = tau3->HasTauID("byVLooseDeepTau2017v2p1VSmu")     ? tau3->GetTauID("byVLooseDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_loose_3_     = tau3->HasTauID("byLooseDeepTau2017v2p1VSmu")      ? tau3->GetTauID("byLooseDeepTau2017v2p1VSmu"):      0.;
+      deepTauVsMu_medium_3_    = tau3->HasTauID("byMediumDeepTau2017v2p1VSmu")     ? tau3->GetTauID("byMediumDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_tight_3_     = tau3->HasTauID("byTightDeepTau2017v2p1VSmu")      ? tau3->GetTauID("byTightDeepTau2017v2p1VSmu"):      0.;
+      deepTauVsMu_vtight_3_    = tau3->HasTauID("byVTightDeepTau2017v2p1VSmu")     ? tau3->GetTauID("byVTightDeepTau2017v2p1VSmu"):     0.;
+      deepTauVsMu_vvtight_3_   = tau3->HasTauID("byVVTightDeepTau2017v2p1VSmu")    ? tau3->GetTauID("byVVTightDeepTau2017v2p1VSmu"):    0.;
+     
+    }
+
+
     if (channel_ == channel::tttt) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);

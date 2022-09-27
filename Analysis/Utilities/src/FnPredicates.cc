@@ -1747,6 +1747,17 @@ namespace ic {
     return (charge != 0 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1 && abs(cand->At(2)->charge()) == 1 && abs(cand->At(3)->charge()) == 1);
   }
 
+
+  bool TotalZeroChargeThreeParticles(CompositeCandidate const* cand) {
+    int charge = (cand->At(0)->charge() + cand->At(1)->charge() + cand->At(2)->charge());
+    return (charge == 0 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1 && abs(cand->At(2)->charge()) == 1);
+  }
+
+  bool TotalNonZeroChargeThreeParticles(CompositeCandidate const* cand) {
+    int charge = (cand->At(0)->charge() + cand->At(1)->charge() + cand->At(2)->charge());
+    return (charge != 0 && abs(cand->At(0)->charge()) == 1 && abs(cand->At(1)->charge()) == 1 && abs(cand->At(2)->charge()) == 1);
+  }
+
   bool NoDuplicateParticle(CompositeCandidate const* cand, double const& dR_sep ) {
 //    std::vector<double> pt_check = {cand->At(0)->pt(),cand->At(1)->pt(),cand->At(2)->pt(),cand->At(3)->pt()};
 //    std::sort(pt_check.begin(),pt_check.end());
@@ -1759,6 +1770,18 @@ namespace ic {
                (std::fabs(ROOT::Math::VectorUtil::DeltaR(cand->At(1)->vector(),cand->At(2)->vector())) < dR_sep) +
                (std::fabs(ROOT::Math::VectorUtil::DeltaR(cand->At(1)->vector(),cand->At(3)->vector())) < dR_sep) +
                (std::fabs(ROOT::Math::VectorUtil::DeltaR(cand->At(2)->vector(),cand->At(3)->vector())) < dR_sep);
+    return (fail == 0);
+  }
+  
+    bool NoDuplicateParticle_(CompositeCandidate const* cand, double const& dR_sep ) {
+//    std::vector<double> pt_check = {cand->At(0)->pt(),cand->At(1)->pt(),cand->At(2)->pt(),cand->At(3)->pt()};
+//    std::sort(pt_check.begin(),pt_check.end());
+//    auto new_pt_check = std::unique(pt_check.begin(), pt_check.end());
+//    pt_check.erase(new_pt_check,pt_check.end());
+//    return (pt_check.size()==4);
+    int fail = (std::fabs(ROOT::Math::VectorUtil::DeltaR(cand->At(0)->vector(),cand->At(1)->vector())) < dR_sep) + 
+               (std::fabs(ROOT::Math::VectorUtil::DeltaR(cand->At(0)->vector(),cand->At(2)->vector())) < dR_sep) +
+               (std::fabs(ROOT::Math::VectorUtil::DeltaR(cand->At(1)->vector(),cand->At(2)->vector())) < dR_sep);
     return (fail == 0);
   }
 
