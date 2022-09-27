@@ -164,6 +164,10 @@ parser.add_argument("--no_data", dest="no_data", action='store_true',
     help="Do not draw data.")
 parser.add_argument("--do_unrolling", dest="do_unrolling", action='store_true',
     help="If argument is set to true will unroll 2D histograms into 1D histogram.")
+parser.add_argument("--plot_from_dc", default="", type=str,
+      help="If not empty will draw plot straight from datacard")
+parser.add_argument("--extra_name", default="", type=str,
+      help="Extra name for plot")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -243,6 +247,8 @@ elif options.channel == "eett":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=e_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
   cats['trigger'] = "(trg_singleelectron_1 || trg_singleelectron_2 || trg_doubletau_34)"
   cats['data_veto'] = "!(isTau && (trg_singleelectron_1 || trg_singleelectron_2))"
+ # cats['trigger'] = "(1)"
+  cats['data_veto'] = "(1)"
 
 cats['baseline'] = "(({charge_sel}) && {current_baseline} && {trigger_sel})".format(charge_sel=charge_sel,current_baseline=cats['baseline'],trigger_sel=cats['trigger'])
 
@@ -259,8 +265,8 @@ if options.do_trg_sf:
   if options.channel == "eett":
     sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlee_data_1 + trigeff_singlee_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_2) - (trigeff_singlee_data_1*trigeff_singlee_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1*trigeff_singlee_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlee_mc_1 + trigeff_singlee_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_2) - (trigeff_singlee_mc_1*trigeff_singlee_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1*trigeff_singlee_mc_2)))"
   if options.channel == "mmtt":
-    #sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlem_data_1 + trigeff_singlem_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_2) - (trigeff_singlem_data_1*trigeff_singlem_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1*trigeff_singlem_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlem_mc_1 + trigeff_singlem_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_2) - (trigeff_singlem_mc_1*trigeff_singlem_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1*trigeff_singlem_mc_2)))"
-    sf_string = "(1)"
+    sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlem_data_1 + trigeff_singlem_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_2) - (trigeff_singlem_data_1*trigeff_singlem_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1*trigeff_singlem_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlem_mc_1 + trigeff_singlem_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_2) - (trigeff_singlem_mc_1*trigeff_singlem_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1*trigeff_singlem_mc_2)))"
+  sf_string = "(1)"
   
   if options.add_wt == "":
     options.add_wt = "(" + sf_string + ")"
@@ -303,21 +309,21 @@ for i in options.set_alias:
 		
 # Add data sample names
 if options.channel == 'tttt':
-	if options.year == "2016-preVFP":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF']
-	elif options.year == "2016-postVFP":
-		data_samples = ['TauF','TauG','TauH']
-	elif options.year == "2016":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
-	elif options.year == "2017":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF']
-	elif options.year == "2018":
-		data_samples = ['TauA','TauB','TauC','TauD'] 
+  if options.year == "2016_preVFP":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF']
+  elif options.year == "2016_postVFP":
+	  data_samples = ['TauF','TauG','TauH']
+  elif options.year == "2016":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
+  elif options.year == "2017":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF']
+  elif options.year == "2018":
+	  data_samples = ['TauA','TauB','TauC','TauD'] 
 
 elif options.channel == 'ettt':
-	if options.year == "2016-preVFP":
+	if options.year == "2016_preVFP":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-	elif options.year == "2016-postVFP":
+	elif options.year == "2016_postVFP":
 		data_samples = ['TauF','TauG','TauH','SingleElectronF','SingleElectronG','SingleElectronH']
 	elif options.year == "2016":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
@@ -327,9 +333,9 @@ elif options.channel == 'ettt':
 		data_samples = ['TauA','TauB','TauC','TauD','EGammaA','EGammaB','EGammaC','EGammaD']
 
 elif options.channel == 'mttt':
-	if options.year == "2016-preVFP":
+	if options.year == "2016_preVFP":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-	elif options.year == "2016-postVFP":
+	elif options.year == "2016_postVFP":
 		data_samples = ['TauF','TauG','TauH','SingleMuonF','SingleMuonG','SingleMuonH']
 	elif options.year == "2016":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
@@ -339,43 +345,40 @@ elif options.channel == 'mttt':
 		data_samples = ['TauA','TauB','TauC','TauD','SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
 
 elif options.channel == 'eett':
-	if options.year == "2016-preVFP":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleEGB','DoubleEGC','DoubleEGD','DoubleEGE','DoubleEGF']
-	elif options.year == "2016-postVFP":
-		data_samples = ['TauF','TauG','TauH','DoubleEGF','DoubleEGG','DoubleEGH']
+	if options.year == "2016_preVFP":
+		data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+	elif options.year == "2016_postVFP":
+		data_samples = ['TauF','TauG','TauH','SingleElectronF','SingleElectronG','SingleElectronH']
 	elif options.year == "2017":
-		data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleEGB','DoubleEGC','DoubleEGD','DoubleEGE','DoubleEGF']
+		data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
 	elif options.year == "2018":
 		data_samples = ['TauA','TauB','TauC','TauD','EGammaA','EGammaB','EGammaC','EGammaD']
 
 elif options.channel == 'mmtt':
-  if options.year == "2016-preVFP":
-	  data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
-  elif options.year == "2016-postVFP":
-	  data_samples = ['TauF','TauG','TauH','DoubleMuonF','DoubleMuonG','DoubleMuonH']
+  if options.year == "2016_preVFP":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
+  elif options.year == "2016_postVFP":
+	  data_samples = ['TauF','TauG','TauH','SingleMuonF','SingleMuonG','SingleMuonH']
   elif options.year == "2017":
-	  data_samples = ['TauB','TauC','TauD','TauE','TauF','DoubleMuonB','DoubleMuonC','DoubleMuonD','DoubleMuonE','DoubleMuonF']
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
   elif options.year == "2018":
-	  #data_samples = ['TauA','TauB','TauC','TauD','DoubleMuonA','DoubleMuonB','DoubleMuonC','DoubleMuonD']
     data_samples = ['TauA','TauB','TauC','TauD','SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-    #data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
 
 elif options.channel == 'emtt':
-  if options.year == "2016-preVFP":
-	  data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
-  elif options.year == "2016-postVFP":
-	  data_samples = ['TauF','TauG','TauH','MuonEGF','MuonEGG','MuonEGH']
+  if options.year == "2016_preVFP":
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+  elif options.year == "2016_postVFP":
+	  data_samples = ['TauF','TauG','TauH','SingleMuonF','SingleMuonG','SingleMuonH','SingleElectronF','SingleElectronG','SingleElectronH']
   elif options.year == "2016":
-	  data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','TauG','TauH','MuonEGC','MuonEGD','MuonEGE','MuonEGF','MuonEGG','MuonEGH']
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH','SingleMuonB', 'SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH','SingleElectronB', 'SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
   elif options.year == "2017":
-	  data_samples = ['TauB','TauC','TauD','TauE','TauF','MuonEGB','MuonEGC','MuonEGD','MuonEGE','MuonEGF']
+	  data_samples = ['TauB','TauC','TauD','TauE','TauF','SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleElectronB', 'SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
   elif options.year == "2018":
     data_samples = ['TauA','TauB','TauC','TauD','SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD','EGammaA','EGammaB','EGammaC','EGammaD']
 
 if options.year == "2018":
     if options.campaign == "ReReco":
       ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
-      #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10-50-LO']
       top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
       vv_samples = [
       				'T-tW-ext1', 'Tbar-tW-ext1','Tbar-t','WWTo2L2Nu','T-t',
@@ -384,7 +387,6 @@ if options.year == "2018":
       				]
       vvv_samples = []
       wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
-      #wjets_samples = ['WJetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
       wgam_samples = ['WGToLNuG']
       ewkz_samples = ['EWKZ2Jets']
     elif options.campaign == "UL":
@@ -397,6 +399,54 @@ if options.year == "2018":
       ewkz_samples = ['EWKZ2Jets_ZToLL']
       signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
 
+if options.year == "2017":
+  if options.campaign == "ReReco":
+    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
+    top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo2L2Q','WZTo3LNu', 'ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','VVTo2L2Nu']
+    vvv_samples = []
+    wjets_samples = ['WJetsToLNu-LO','WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets','EWKWPlus2Jets']
+    wgam_samples = ['WGToLNuG']
+    ewkz_samples = ['EWKZ2Jets']
+    signal_samples = []
+  elif options.campaign == "UL":
+    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+    top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L']
+    vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
+    wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+    wgam_samples = ['WGToLNuG']
+    ewkz_samples = ['EWKZ2Jets_ZToLL']
+    signal_samples = []
+
+if options.year == "2016_postVFP":
+  ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+  top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+  vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
+  vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
+  wgam_samples = ['WGToLNuG']
+  wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+  ewkz_samples = ['EWKZ2Jets_ZToLL']
+  signal_samples = []
+
+if options.year == "2016_preVFP":
+  ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+  top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+  vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
+  vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
+  wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+  wgam_samples = ['WGToLNuG']
+  ewkz_samples = ['EWKZ2Jets_ZToLL']
+  signal_samples = []
+
+if options.year == "2016":
+  ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
+  vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','WWTo1L1Nu2Q','WZJToLLLNu','VVTo2L2Nu','VVTo2L2Nu-ext1','ZZTo2L2Q','ZZTo4L-amcat','WZTo2L2Q','WZTo1L3Nu','WZTo1L1Nu2Q']
+  vvv_samples = []
+  wgam_samples = ['WGToLNuG-ext1','WGToLNuG-ext2','WGToLNuG-ext3']
+  wjets_samples = ['WJetsToLNu-LO', 'WJetsToLNu-LO-ext','W1JetsToLNu-LO','W2JetsToLNu-LO','W2JetsToLNu-LO-ext','W3JetsToLNu-LO','W3JetsToLNu-LO-ext','W4JetsToLNu-LO','W4JetsToLNu-LO-ext1','W4JetsToLNu-LO-ext2']
+  ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
+  signal_samples = []
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -404,6 +454,9 @@ correct_gen_matches = []
 t_gen_matches = []
 e_gen_matches = []
 m_gen_matches = []
+lfake_gen_matches = []
+jfake_gen_matches = []
+
 for in0,ch in enumerate(options.channel):
   ind = in0+1
   if ch == "e":
@@ -412,60 +465,54 @@ for in0,ch in enumerate(options.channel):
     correct_gen_matches.append("(gen_match_%(ind)i==2 || gen_match_%(ind)i==4)" % vars())
   elif ch == "t":
     correct_gen_matches.append("(gen_match_%(ind)i==5)" % vars())
+    lfake_gen_matches.append("(gen_match_%(ind)i<5)" % vars())
+    jfake_gen_matches.append("(gen_match_%(ind)i==6)" % vars())
+
   t_gen_matches.append("(gen_match_%(ind)i==5 || gen_match_%(ind)i==3 || gen_match_%(ind)i==4)" % vars())
   e_gen_matches.append("(gen_match_%(ind)i==1)" % vars())
   m_gen_matches.append("(gen_match_%(ind)i==2)" % vars())
-
+  
 summed_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3])
 summed_t_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=t_gen_matches[0],gm2=t_gen_matches[1],gm3=t_gen_matches[2],gm4=t_gen_matches[3])
 summed_e_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=e_gen_matches[0],gm2=e_gen_matches[1],gm3=e_gen_matches[2],gm4=e_gen_matches[3])
 summed_m_gen_matches = "({gm1} + {gm2} + {gm3} + {gm4})".format(gm1=m_gen_matches[0],gm2=m_gen_matches[1],gm3=m_gen_matches[2],gm4=m_gen_matches[3])
 
+summed_lfake_gen_matches = "("
+for ind,i in enumerate(lfake_gen_matches):
+  summed_lfake_gen_matches += i
+  if ind + 1 < len(lfake_gen_matches):
+    summed_lfake_gen_matches += " + "
+summed_lfake_gen_matches += ")"
+
+summed_jfake_gen_matches = "("
+for ind,i in enumerate(jfake_gen_matches):
+  summed_jfake_gen_matches += i
+  if ind + 1 < len(jfake_gen_matches):
+    summed_jfake_gen_matches += " + "
+summed_jfake_gen_matches += ")"
 
 z_sels = {
-				  "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZTT1F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZTT2F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZTT3F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZTT4F":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
+          "ZTTR" :"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZMMR" :"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZMM1F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZMM2F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZMM3F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZMM4F":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
           "ZEER" :"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 4)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZEE1F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 3)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZEE2F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 2)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZEE3F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 1)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZEE4F":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({sgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,sgm=summed_gen_matches),
-          "ZO"   :"((({mgm} > 0) + ({egm} > 0) + ({tgm} > 0)) > 1)".format(mgm=summed_m_gen_matches,egm=summed_e_gen_matches,tgm=summed_t_gen_matches),
+          "ZTTJF":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({jfgm} > 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,jfgm=summed_jfake_gen_matches),
+          "ZMMJF":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({jfgm} > 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,jfgm=summed_jfake_gen_matches),
+          "ZEEJF":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({jfgm} > 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,jfgm=summed_jfake_gen_matches),
+          "ZTTLF":"({tgm} > 0) && ({egm} == 0) && ({mgm} == 0) && ({lfgm} > 0) && ({jfgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,lfgm=summed_jfake_gen_matches,jfgm=summed_jfake_gen_matches),
+          "ZMMLF":"({tgm} == 0) && ({egm} == 0) && ({mgm} > 0) && ({lfgm} > 0) && ({jfgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,lfgm=summed_jfake_gen_matches,jfgm=summed_jfake_gen_matches),
+          "ZEELF":"({tgm} == 0) && ({egm} > 0) && ({mgm} == 0) && ({lfgm} > 0) && ({jfgm} == 0)".format(tgm=summed_t_gen_matches,egm=summed_e_gen_matches,mgm=summed_m_gen_matches,lfgm=summed_jfake_gen_matches,jfgm=summed_jfake_gen_matches),
           }
 
+other_sels = {
+              "R" :"({sgm} == 4)".format(sgm=summed_gen_matches),
+              "JF":"({jfgm} > 0)".format(jfgm=summed_jfake_gen_matches),
+              "LF":"({lfgm} > 0) && ({jfgm} == 0)".format(lfgm=summed_jfake_gen_matches,jfgm=summed_jfake_gen_matches),
+              }
 
-top_sels = {
-          "TTR":"({gm1} && {gm2} && {gm3} && {gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "TT1F":"((!{gm1} && {gm2} && {gm3} && {gm4}) ||"\
-                 "({gm1} && !{gm2} && {gm3} && {gm4}) ||"\
-                 "({gm1} && {gm2} && !{gm3} && {gm4}) ||"\
-                 "({gm1} && {gm2} && {gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "TT2F":"((!{gm1} && !{gm2} && {gm3} && {gm4}) ||"\
-                 "(!{gm1} && {gm2} && !{gm3} && {gm4}) ||"\
-                 "(!{gm1} && {gm2} && {gm3} && !{gm4}) ||"\
-                 "({gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
-                 "({gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
-                 "({gm1} && {gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "TT3F":"((!{gm1} && !{gm2} && !{gm3} && {gm4}) ||"\
-                 "(!{gm1} && !{gm2} && {gm3} && !{gm4}) ||"\
-                 "(!{gm1} && {gm2} && !{gm3} && !{gm4}) ||"\
-                 "({gm1} && !{gm2} && !{gm3} && !{gm4}))".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          "TT4F":"(!{gm1} && !{gm2} && !{gm3} && !{gm4})".format(gm1=correct_gen_matches[0],gm2=correct_gen_matches[1],gm3=correct_gen_matches[2],gm4=correct_gen_matches[3]),
-          }
-
-top_sels = {"TTR":top_sels["TTR"],"TT1F":top_sels["TT1F"],"TT2F":top_sels["TT2F"],"TT3F":top_sels["TT3F"],"TT4F":top_sels["TT4F"]}
-vv_sels = {"VVR":top_sels["TTR"],"VV1F":top_sels["TT1F"],"VV2F":top_sels["TT2F"],"VV3F":top_sels["TT3F"],"VV4F":top_sels["TT4F"]}
-w_sels = {"WR":top_sels["TTR"],"W1F":top_sels["TT1F"],"W2F":top_sels["TT2F"],"W3F":top_sels["TT3F"],"W4F":top_sels["TT4F"]}
-vvv_sels = {}
-
+top_sels = {"TT"+key:val for (key,val) in other_sels.items()}
+vv_sels = {"VV"+key:val for (key,val) in other_sels.items()}
+w_sels = {"W"+key:val for (key,val) in other_sels.items()}
+vvv_sels = {"VVV"+key:val for (key,val) in other_sels.items()}
 
 # All functions defined here
 
@@ -524,26 +571,90 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   else:
     vjf = "deepTauVsJets_" + VsJets_wp_fail
   
+  ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1")
+
+  # raw weight names
+  ff_raw_1 = "(wt_ff_None_"+VsJets_wp+"_raw_1)"
+  ff_raw_2 = "(wt_ff_None_"+VsJets_wp+"_raw_2)"
+  ff_raw_3 = "(wt_ff_None_"+VsJets_wp+"_raw_3)"
+  ff_raw_4 = "(wt_ff_None_"+VsJets_wp+"_raw_4)"
+
+  ff_raw_12 = "(wt_ff_None_"+VsJets_wp+"_raw_12)"
+  ff_raw_13 = "(wt_ff_None_"+VsJets_wp+"_raw_13)"
+  ff_raw_14 = "(wt_ff_None_"+VsJets_wp+"_raw_14)"
+  ff_raw_23 = "(wt_ff_None_"+VsJets_wp+"_raw_23)"
+  ff_raw_24 = "(wt_ff_None_"+VsJets_wp+"_raw_24)"
+  ff_raw_34 = "(wt_ff_None_"+VsJets_wp+"_raw_34)"
+
+  ff_raw_123 = "(wt_ff_None_"+VsJets_wp+"_raw_123)"
+  ff_raw_124 = "(wt_ff_None_"+VsJets_wp+"_raw_124)"
+  ff_raw_134 = "(wt_ff_None_"+VsJets_wp+"_raw_134)"
+  ff_raw_234 = "(wt_ff_None_"+VsJets_wp+"_raw_234)"
+
+  ff_raw_1234 = "(wt_ff_None_"+VsJets_wp+"_raw_1234)"
+
+  # correction weight names
+  ff_corr_1 = "(wt_ff_None_"+VsJets_wp+"_corr_1)"
+  ff_corr_2 = "(wt_ff_None_"+VsJets_wp+"_corr_2)"
+  ff_corr_3 = "(wt_ff_None_"+VsJets_wp+"_corr_3)"
+  ff_corr_4 = "(wt_ff_None_"+VsJets_wp+"_corr_4)"
+
+  ff_corr_12 = "(wt_ff_None_"+VsJets_wp+"_corr_12)"
+  ff_corr_13 = "(wt_ff_None_"+VsJets_wp+"_corr_13)"
+  ff_corr_14 = "(wt_ff_None_"+VsJets_wp+"_corr_14)"
+  ff_corr_23 = "(wt_ff_None_"+VsJets_wp+"_corr_23)"
+  ff_corr_24 = "(wt_ff_None_"+VsJets_wp+"_corr_24)"
+  ff_corr_34 = "(wt_ff_None_"+VsJets_wp+"_corr_34)"
+
+  ff_corr_123 = "(wt_ff_None_"+VsJets_wp+"_corr_123)"
+  ff_corr_124 = "(wt_ff_None_"+VsJets_wp+"_corr_124)"
+  ff_corr_134 = "(wt_ff_None_"+VsJets_wp+"_corr_134)"
+  ff_corr_234 = "(wt_ff_None_"+VsJets_wp+"_corr_234)"
+
+  ff_corr_1234 = "(wt_ff_None_"+VsJets_wp+"_corr_1234)"
+
+  # pass selections
+  pass_1 = "({vjn}_1>0.5)".format(vjn=vj)
+  pass_2 = "({vjn}_2>0.5)".format(vjn=vj)
+  pass_3 = "({vjn}_3>0.5)".format(vjn=vj)
+  pass_4 = "({vjn}_4>0.5)".format(vjn=vj)
+
+  # fail selections
+  fail_1 = "({vjn}_1<0.5)".format(vjn=vj)
+  fail_2 = "({vjn}_2<0.5)".format(vjn=vj)
+  fail_3 = "({vjn}_3<0.5)".format(vjn=vj)
+  fail_4 = "({vjn}_4<0.5)".format(vjn=vj)
+
   if options.channel in ["emtt","eett","mmtt"]:
-    ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1")
-    ff_raw_3 = "(wt_ff_None_"+VsJets_wp+"_raw_3)"
-    ff_raw_4 = "(wt_ff_None_"+VsJets_wp+"_raw_4)"
-    ff_raw_34 = "(wt_ff_None_"+VsJets_wp+"_raw_34)"
-    ff_corr_3 = "(wt_ff_None_"+VsJets_wp+"_corr_3)"
-    ff_corr_4 = "(wt_ff_None_"+VsJets_wp+"_corr_4)"
-    pass_3 = "("+vj+"_3>0.5)"
-    pass_4 = "("+vj+"_4>0.5)"
-    fail_3 = "("+vj+"_3<0.5)"
-    fail_4 = "("+vj+"_4<0.5)"
-    #ff_wt = "((%(ff_raw_3)s * %(ff_corr_3)s * %(pass_4)s * %(fail_3)s) + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s) - (%(ff_raw_34)s * %(ff_corr_3)s * %(ff_corr_4)s * %(fail_3)s * %(fail_4)s))" % vars()
-    #ff_wt = "0.5*((%(ff_raw_3)s * %(ff_corr_3)s * %(pass_4)s * %(fail_3)s) + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s))" % vars()
-    #ff_wt = "((%(ff_raw_3)s * %(pass_4)s * %(fail_3)s) + (%(ff_raw_4)s * %(pass_3)s * %(fail_4)s) - (%(ff_raw_34)s * %(fail_3)s * %(fail_4)s))" % vars()
+    ff_wt = "((%(ff_raw_3)s * %(ff_corr_3)s * %(fail_3)s * %(pass_4)s) \
+            + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s) \
+            - (%(ff_raw_34)s * %(ff_corr_34)s * %(fail_3)s * %(fail_4)s))" % vars()
     #ff_wt = "((%(ff_raw_34)s * %(fail_3)s * %(fail_4)s))" % vars()
-    #ff_wt = "((%(ff_raw_34)s * %(ff_corr_3)s * %(ff_corr_4)s * %(fail_3)s * %(fail_4)s))" % vars()
-    ff_wt = "(%(ff_raw_3)s * %(ff_corr_3)s * %(pass_4)s * %(fail_3)s)" % vars()
-    #ff_wt = "(%(ff_raw_3)s * %(pass_4)s * %(fail_3)s)" % vars()
-    #ff_wt = "(%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s)" % vars()
-    #ff_wt = "(%(ff_raw_4)s * %(pass_3)s * %(fail_4)s)" % vars()
+  elif options.channel in ["ettt","mttt"]:
+    ff_wt = "((%(ff_raw_2)s * %(ff_corr_2)s * %(fail_2)s * %(pass_3)s * %(pass_4)s) \
+            + (%(ff_raw_3)s * %(ff_corr_3)s * %(pass_2)s * %(fail_3)s * %(pass_4)s) \
+            + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_2)s * %(pass_3)s * %(fail_4)s) \
+            - (%(ff_raw_23)s * %(ff_corr_23)s * %(fail_2)s * %(fail_3)s * %(pass_4)s) \
+            - (%(ff_raw_24)s * %(ff_corr_24)s * %(fail_2)s * %(pass_3)s * %(fail_4)s) \
+            - (%(ff_raw_34)s * %(ff_corr_34)s * %(pass_2)s * %(fail_3)s * %(fail_4)s) \
+            + (%(ff_raw_234)s * %(ff_corr_234)s * %(fail_2)s * %(fail_3)s * %(fail_4)s))" % vars()
+  elif options.channel in ["tttt"]:
+    ff_wt = "((%(ff_raw_1)s * %(ff_corr_1)s * %(fail_1)s * %(pass_2)s * %(pass_3)s * %(pass_4)s) \
+            + (%(ff_raw_2)s * %(ff_corr_2)s * %(pass_1)s * %(fail_2)s * %(pass_3)s * %(pass_4)s) \
+            + (%(ff_raw_3)s * %(ff_corr_3)s * %(pass_1)s * %(pass_2)s * %(fail_3)s * %(pass_4)s) \
+            + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_1)s * %(pass_2)s * %(pass_3)s * %(fail_4)s) \
+            - (%(ff_raw_12)s * %(ff_corr_12)s * %(fail_1)s * %(fail_2)s * %(pass_3)s * %(pass_4)s) \
+            - (%(ff_raw_13)s * %(ff_corr_13)s * %(fail_1)s * %(pass_2)s * %(fail_3)s * %(pass_4)s) \
+            - (%(ff_raw_14)s * %(ff_corr_14)s * %(fail_1)s * %(pass_2)s * %(pass_3)s * %(fail_4)s) \
+            - (%(ff_raw_23)s * %(ff_corr_23)s * %(pass_1)s * %(fail_2)s * %(fail_3)s * %(pass_4)s) \
+            - (%(ff_raw_24)s * %(ff_corr_24)s * %(pass_1)s * %(fail_2)s * %(pass_3)s * %(fail_4)s) \
+            - (%(ff_raw_34)s * %(ff_corr_34)s * %(pass_1)s * %(pass_2)s * %(fail_3)s * %(fail_4)s) \
+            + (%(ff_raw_123)s * %(ff_corr_123)s * %(fail_1)s * %(fail_2)s * %(fail_3)s * %(pass_4)s) \
+            + (%(ff_raw_124)s * %(ff_corr_124)s * %(fail_1)s * %(fail_2)s * %(pass_3)s * %(fail_4)s) \
+            + (%(ff_raw_134)s * %(ff_corr_134)s * %(fail_1)s * %(pass_2)s * %(fail_3)s * %(fail_4)s) \
+            + (%(ff_raw_234)s * %(ff_corr_234)s * %(pass_1)s * %(fail_2)s * %(fail_3)s * %(fail_4)s) \
+            - (%(ff_raw_1234)s * %(ff_corr_1234)s * %(fail_1)s * %(fail_2)s * %(fail_3)s * %(fail_4)s))" % vars()
+
 
   if data_veto == None:
     ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, wt, sel, ff_sel)
@@ -713,13 +824,16 @@ if var_name.count(',') == 2:
     is_3d = True
     var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]+'_vs_'+var_name.split(',')[2]    
 
-
-if options.datacard != "": datacard_name = options.datacard
-else: datacard_name = options.cat
-if options.extra_name != "": 
-  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
-else: 
-  output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+if options.datacard != "":
+  if options.extra_name != "":
+    output_name = options.outputfolder+'/'+ options.datacard + '_' + options.extra_name + '.root'
+  else:
+    output_name = options.outputfolder+'/'+ options.datacard +'.root'
+else:
+  if options.extra_name != "": 
+    output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
+  else: 
+    output_name = options.outputfolder+'/datacard_'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
   
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
@@ -736,88 +850,87 @@ cats_unmodified = copy.deepcopy(cats)
 systematics = OrderedDict()
 systematics['default'] = ('','', 'wt', [], False)
 
-max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
-while len(systematics) > 0:
-  ana = Analysis()
-  
-  ana.remaps = {}
-  if options.channel == 'emtt':
-      ana.remaps['MuonEG'] = 'data_obs'
-  elif options.channel in ['mttt']:
-      ana.remaps['SingleMuon'] = 'data_obs'
-  elif options.channel in ['mmtt']:
-      #ana.remaps['DoubleMuon'] = 'data_obs'
-      ana.remaps['SingleMuon'] = 'data_obs'
-  elif options.year != '2018' and options.channel in ['ettt']:
-      ana.remaps['SingleElectron'] = 'data_obs'
-  elif options.year != '2018' and options.channel in ['eett']:
-      ana.remaps['DoubleEG'] = 'data_obs'
-  elif options.year == '2018' and options.channel in ['eett','ettt']:
-      ana.remaps['EGamma'] = 'data_obs'
-  elif options.channel == 'tttt':
-      ana.remaps['Tau'] = 'data_obs'  
-      
-  ana.nodes.AddNode(ListNode(nodename))
-
-  prev_dir=None    
-  for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
-      if prev_dir is not None and systematics[systematic][0] is not prev_dir: continue # this ensures that we process the same trees from every call to ana.Run() - i.e trees in sub-directory systematics[systematic][0]
-      prev_dir = systematics[systematic][0]
-      print "Processing:", systematic
-      print ""
-
-      plot = options.var
-      cats=copy.deepcopy(cats_unmodified)
-      
-      add_folder_name = systematics[systematic][0]
-      add_name = systematics[systematic][1]
-      isFFSyst = systematics[systematic][4]
-      samples_to_skip = systematics[systematic][3]
-      add_names.append(add_name)
-      syst_add_name=add_folder_name
-      
-
-      mc_input_folder_name = options.folder
-      if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
-      
-      if options.signal_folder: signal_mc_input_folder_name = options.signal_folder
-      else: signal_mc_input_folder_name = options.folder
-      if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
-      
-      if options.embed_folder: embed_input_folder_name = options.embed_folder
-      else: embed_input_folder_name = options.folder
-      if add_folder_name != '' and 'EmbedZTT' not in samples_to_skip: embed_input_folder_name += '/'+add_folder_name
+if options.plot_from_dc == "":
+  max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
+  while len(systematics) > 0:
+    ana = Analysis()
     
-      # Add all data files
-      for sample_name in data_samples:
-          ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+    ana.remaps = {}
+    if options.channel == 'emtt':
+        ana.remaps['MuonEG'] = 'data_obs'
+    elif options.channel in ['mttt']:
+        ana.remaps['SingleMuon'] = 'data_obs'
+    elif options.channel in ['mmtt']:
+        ana.remaps['SingleMuon'] = 'data_obs'
+    elif options.year != '2018' and options.channel in ['eett','ettt']:
+        ana.remaps['SingleElectron'] = 'data_obs'
+    elif options.year == '2018' and options.channel in ['eett','ettt']:
+        ana.remaps['EGamma'] = 'data_obs'
+    elif options.channel == 'tttt':
+        ana.remaps['Tau'] = 'data_obs'  
+        
+    ana.nodes.AddNode(ListNode(nodename))
+
+    prev_dir=None    
+    for index, systematic in enumerate(list(systematics.keys())[:max_systs_per_pass]):
+        if prev_dir is not None and systematics[systematic][0] is not prev_dir: continue # this ensures that we process the same trees from every call to ana.Run() - i.e trees in sub-directory systematics[systematic][0]
+        prev_dir = systematics[systematic][0]
+        print "Processing:", systematic
+        print ""
+
+        plot = options.var
+        cats=copy.deepcopy(cats_unmodified)
+        
+        add_folder_name = systematics[systematic][0]
+        add_name = systematics[systematic][1]
+        isFFSyst = systematics[systematic][4]
+        samples_to_skip = systematics[systematic][3]
+        add_names.append(add_name)
+        syst_add_name=add_folder_name
+        
+
+        mc_input_folder_name = options.folder
+        if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
+        
+        if options.signal_folder: signal_mc_input_folder_name = options.signal_folder
+        else: signal_mc_input_folder_name = options.folder
+        if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
+        
+        if options.embed_folder: embed_input_folder_name = options.embed_folder
+        else: embed_input_folder_name = options.folder
+        if add_folder_name != '' and 'EmbedZTT' not in samples_to_skip: embed_input_folder_name += '/'+add_folder_name
       
-      # Add all MC background files
-      for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples:
-          ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
-      for sample_name in signal_samples:
-          ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)         
+        # Add all data files
+        for sample_name in data_samples:
+            ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+        
+        # Add all MC background files
+        for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples:
+            ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+        for sample_name in signal_samples:
+            ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)         
  
-      ana.AddInfo(options.paramfile, scaleTo='data_obs')
-  
-      # Add data only for default
-      if systematic == 'default': do_data = True
-      else: do_data = False
-              
-      #Run default plot
-      do_data=(not options.no_data)
-      weight="wt"
-      RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile)
-      del systematics[systematic]
+        ana.AddInfo(options.paramfile, scaleTo='data_obs')
+    
+        # Add data only for default
+        if systematic == 'default': do_data = True
+        else: do_data = False
+                
+        #Run default plot
+        do_data=(not options.no_data)
+        weight="wt"
+        #if options.plot_from_dc == "": RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile)
+        RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile)
+        del systematics[systematic]
 
-  ana.Run()
-  ana.nodes.Output(outfile)
+    ana.Run()
+    ana.nodes.Output(outfile)
 
-  # fix negative bns,empty histograms etc.
-  FixBins(ana,outfile)
-  for n in add_names: 
-    GetTotals(ana,n,outfile)
-  PrintSummary(nodename, ['data_obs'], add_names)
+    # fix negative bns,empty histograms etc.
+    FixBins(ana,outfile)
+    for n in add_names: 
+      GetTotals(ana,n,outfile)
+    PrintSummary(nodename, ['data_obs'], add_names)
 
 # do rebinning
 def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
@@ -872,8 +985,10 @@ def RebinHist(hist,binning):
   for i in range(1,hout.GetNbinsX()+1):
     for j in range(1,hist.GetNbinsX()+1):
       if hist.GetBinCenter(j) > hout.GetBinLowEdge(i) and hist.GetBinCenter(j) < hout.GetBinLowEdge(i+1):
-        hout.SetBinContent(i,hout.GetBinContent(i)+hist.GetBinContent(j))
-        hout.SetBinError(i,(hout.GetBinError(i)**2+hist.GetBinError(j)**2)**0.5)
+        new_content = hout.GetBinContent(i)+hist.GetBinContent(j)
+        new_error = (hout.GetBinError(i)**2+hist.GetBinError(j)**2)**0.5
+        hout.SetBinContent(i,new_content)
+        hout.SetBinError(i,new_error)
   #hout.Print("all")
   return hout
 
@@ -936,9 +1051,8 @@ if is_3d and options.do_unrolling:
 
 outfile.Close()
 
-# can I add some options here to just run plotting, then I combine datacards elsewhere and can pass them to this
-# test on other mmtt jet fake channels when set up
 
+if options.plot_from_dc != "": output_name = options.plot_from_dc
 plot_file = ROOT.TFile(output_name, 'READ')
 
 if options.auto_rebinning:
@@ -947,6 +1061,7 @@ if options.auto_rebinning:
   outfile_rebin.cd(nodename)
   total_bkghist = plot_file.Get(nodename+'/total_bkg').Clone()
   binning = FindRebinning(total_bkghist,BinThreshold=options.bin_threshold,BinUncertFraction=options.bin_uncert_fraction)
+  print "New binning:", binning
   hists_done = []
   for i in  plot_file.Get(nodename).GetListOfKeys():
       if i.GetName() not in hists_done:
@@ -962,7 +1077,11 @@ if not options.no_plot:
     if options.extra_name != '': vname = options.extra_name
     else: vname = var_name
 
-    if options.datacard != "": plot_name = options.outputfolder+'/'+vname+'_'+options.datacard+'_'+options.channel+'_'+options.year
+    if options.datacard != "": 
+      if options.extra_name != "":
+        plot_name = options.outputfolder+'/'+options.datacard+"_"+options.extra_name
+      else:
+        plot_name = options.outputfolder+'/'+options.datacard
     else: plot_name = options.outputfolder+'/'+vname+'_'+options.cat+'_'+options.channel+'_'+options.year
     if options.charges_non_zero: plot_name += "_cnz"
     if options.log_x: plot_name += "_logx" 

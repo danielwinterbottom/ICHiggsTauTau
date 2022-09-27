@@ -115,7 +115,7 @@ tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
                     toKeep = [
                             "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
-                            "deepTau2017v2p1",
+                            "deepTau2017v2p1","MVADM_2017_v1",
                                ])
 tauIdEmbedder.runTauID()
 

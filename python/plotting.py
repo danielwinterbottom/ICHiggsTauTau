@@ -2271,61 +2271,29 @@ def HTTPlot(nodename,
 
     background_schemes = {
       'mttt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ettt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'tttt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'eett': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69)),
-        backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'mmtt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69)),
-        backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'emtt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
     }
 
 
@@ -2494,10 +2462,10 @@ def HTTPlot(nodename,
     
     #Setup legend
     #legend = PositionedLegend(0.37,0.4,3,0.03) 
-    legend = PositionedLegend(0.25,0.37,3,0.03) # when showing plots of signal
+    legend = PositionedLegend(0.28,0.3,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
-    #legend.SetTextSize(0.02)
-    legend.SetTextSize(0.018)
+    legend.SetTextSize(0.02)
+    #legend.SetTextSize(0.018)
     legend.SetFillColor(0)
 #    legend.SetTextAlign(13);
     #else: legend.AddEntry(blind_datahist,"Observation","PE")
@@ -3747,7 +3715,7 @@ def HTTPlotUnrolled(nodename,
 
     
     #Setup legend
-    legend = PositionedLegend(0.13,0.15,7,0.02)
+    legend = PositionedLegend(0.1,0.15,7,0.0)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
