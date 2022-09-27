@@ -82,8 +82,12 @@ class HTTCategories : public ModuleBase {
   double wt_tquark_up_;
   double wt_tquark_down_;
   double wt_tquark_alt_;
+  double wt_zpt_;
   double wt_zpt_up_;
   double wt_zpt_down_;
+  double wt_zpt_NLO_;
+  double wt_zpt_up_NLO_;
+  double wt_zpt_down_NLO_;
   double wt_zpt_embed_ic_;
   double wt_efake_rate_up_;
   double wt_efake_rate_down_;
@@ -1030,6 +1034,10 @@ class HTTCategories : public ModuleBase {
   double wt_tau_trg_mvadm11_down_;
 
   double wt_tau_trg_mssm_doubleonly_, wt_tau_trg_mssm_, wt_tau_id_mssm_;
+
+  double wt_tau_sf_id_dm_vs_pt_;
+  double wt_tau_sf_id_dm_;
+  double wt_tau_sf_id_pt_;
 
   double wt_tau_trg_mssm_dm0_up_;
   double wt_tau_trg_mssm_dm0_down_;
