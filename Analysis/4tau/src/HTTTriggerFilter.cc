@@ -153,7 +153,7 @@ namespace ic {
       leg_singleelectron = {"hltEle25erWPTightGsfTrackIsoFilter"};
     } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       trg_obj_label_singleelectron = {"triggerObjectsEle32L1DoubleEG","triggerObjectsEle35","triggerObjectsEle27"};
-      leg_singleelectron = {"triggerObjectsEle32L1DoubleEG","triggerObjectsEle35","triggerObjectsEle27"};
+      leg_singleelectron = {"hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEle35noerWPTightGsfTrackIsoFilter","hltEle27WPTightGsfTrackIsoFilter"};
     } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       trg_obj_label_singleelectron = {"triggerObjectsEle32","triggerObjectsEle35"};
       leg_singleelectron = {"hltEle32WPTightGsfTrackIsoFilter","hltEle35noerWPTightGsfTrackIsoFilter"};

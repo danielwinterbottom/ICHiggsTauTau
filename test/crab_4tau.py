@@ -196,7 +196,7 @@ for dm in dml:
             tasks.append(('DoubleMuonF', '/DoubleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD'))
 
           elif yr == "2018":
-            ## Runs A to D in 2018
+            # Runs A to D in 2018
             # SingleMuon
             tasks.append(('SingleMuonA', '/SingleMuon/Run2018A-UL2018_MiniAODv2-v3/MINIAOD'))
             tasks.append(('SingleMuonB', '/SingleMuon/Run2018B-UL2018_MiniAODv2-v2/MINIAOD'))
@@ -581,7 +581,7 @@ for dm in dml:
               config.Data.unitsPerJob = 100000
             else:
               config.Data.splitting = 'EventAwareLumiBased'
-              config.Data.unitsPerJob = 50000
+              config.Data.unitsPerJob = 10000
 
             if args.recovery: config.Data.unitsPerJob = 10000
 
