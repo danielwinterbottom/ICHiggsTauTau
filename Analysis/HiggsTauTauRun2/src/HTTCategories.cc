@@ -228,6 +228,11 @@ namespace ic {
       outtree_->Branch("wt_tau_id_mssm_bin6_up",    &wt_tau_id_mssm_bin6_up_);
       outtree_->Branch("wt_tau_id_mssm_bin6_down",    &wt_tau_id_mssm_bin6_down_);
 
+      outtree_->Branch("wt_tau_id_dm_vs_pt",    &wt_tau_sf_id_dm_vs_pt_);
+      outtree_->Branch("wt_tau_id_dm",    &wt_tau_sf_id_dm_);
+      outtree_->Branch("wt_tau_id_pt",    &wt_tau_sf_id_pt_);
+
+
       outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
       outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
       if(!systematic_shift_){
@@ -296,6 +301,9 @@ namespace ic {
       }
      
       outtree_->Branch("wt_prefire", &wt_prefire_);
+      outtree_->Branch("wt_zpt",&wt_zpt_);
+      outtree_->Branch("wt_zpt_NLO",&wt_zpt_NLO_);
+
       if(!systematic_shift_) {
         outtree_->Branch("wt_prefire_up", &wt_prefire_up_);
         outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
@@ -1164,6 +1172,7 @@ namespace ic {
         outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
         outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
+        outtree_->Branch("wt_zpt_up_NLO",         &wt_zpt_up_NLO_);
         outtree_->Branch("wt_efake_rate_up", &wt_efake_rate_up_);
         outtree_->Branch("wt_efake_rate_down", &wt_efake_rate_down_);
         outtree_->Branch("wt_mfake_rate_up", &wt_mfake_rate_up_);
@@ -1812,6 +1821,12 @@ namespace ic {
     wt_tau_id_mssm_bin6_up_ =     (event->Exists("wt_tau_id_mssm_bin6_up")) ?    event->Get<double>("wt_tau_id_mssm_bin6_up") : 1.;
     wt_tau_id_mssm_bin6_down_ =     (event->Exists("wt_tau_id_mssm_bin6_down")) ?    event->Get<double>("wt_tau_id_mssm_bin6_down") : 1.;
 
+    wt_tau_sf_id_dm_vs_pt_ = (event->Exists("tau_sf_id_dm_vs_pt")) ?    event->Get<double>("tau_sf_id_dm_vs_pt") : 1.;
+    wt_tau_sf_id_dm_ = (event->Exists("tau_sf_id_dm")) ?    event->Get<double>("tau_sf_id_dm") : 1.;
+    wt_tau_sf_id_pt_ = (event->Exists("tau_sf_id_pt")) ?    event->Get<double>("tau_sf_id_pt") : 1.;
+
+    wt_zpt_ = (event->Exists("zpt_sf")) ?    event->Get<double>("zpt_sf") : 1.;
+    wt_zpt_NLO_ = (event->Exists("zpt_sf_NLO")) ?    event->Get<double>("zpt_sf_NLO") : 1.;
 
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
@@ -2442,7 +2457,9 @@ namespace ic {
     wt_tquark_down_ = 1.0;
     wt_tquark_alt_ = 1.0;
     wt_zpt_up_ = 1.0;
+    wt_zpt_up_NLO_ = 1.0;
     wt_zpt_down_ = 1.0;
+    wt_zpt_down_NLO_ = 1.0;
     wt_zpt_embed_ic_ = 1.0;
     wt_em_qcd_ = 1.0;
     wt_efake_rate_up_ = 1.0;
@@ -2456,6 +2473,8 @@ namespace ic {
     if (event->Exists("wt_tquark_alt"))      wt_tquark_alt_   = event->Get<double>("wt_tquark_alt");
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
+    if (event->Exists("wt_zpt_up_NLO"))         wt_zpt_up_NLO_   = event->Get<double>("wt_zpt_up_NLO");
+    if (event->Exists("wt_zpt_down_NLO"))       wt_zpt_down_NLO_ = event->Get<double>("wt_zpt_down_NLO");
     if (event->Exists("wt_zpt_embed_ic"))      wt_zpt_embed_ic_ = event->Get<double>("wt_zpt_embed_ic");
     if (event->Exists("wt_efake_rate_up"))  wt_efake_rate_up_   = event->Get<double>("wt_efake_rate_up");
     if (event->Exists("wt_efake_rate_down")) wt_efake_rate_down_ = event->Get<double>("wt_efake_rate_down");

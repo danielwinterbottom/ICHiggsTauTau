@@ -661,8 +661,6 @@ int HTTWeights::PreAnalysis() {
     fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_dm_vvvloose")->functor(w_->argSet("t_dm")));
 
-    std::cout << "TEST 0: " << fns_["t_deeptauid_dm_medium"]->eval(1) << std::endl;
-
     fns_["t_deeptauid_pt_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_pt_medium_bin1_up")->functor(w_->argSet("t_pt")));
     fns_["t_deeptauid_pt_medium_bin2_up"] = std::shared_ptr<RooFunctor>(
@@ -957,7 +955,12 @@ int HTTWeights::PreAnalysis() {
     }
     // UL Scale Factors
     if(scalefactor_file_UL_!="" && (era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL)){
-      
+     
+
+      // zpt reweighting
+      fns_["zpt_weight_nom_NLO"] = std::shared_ptr<RooFunctor>(
+         w_UL_->function("zptmass_weight_nom_NLO")->functor(w_UL_->argSet("z_gen_pt,z_gen_mass")));
+    
       // muon trk efficiency from MuonPOG
       fns_["m_trk_ratio"] = std::shared_ptr<RooFunctor>(
           w_UL_->function("m_trk_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
@@ -1302,6 +1305,12 @@ int HTTWeights::Execute(TreeEvent *event) {
     ) {
     double tau_sf_1 = 1.0;
     double tau_sf_2 = 1.0;
+
+    double tau_sf_1_dm = 1.0;
+    double tau_sf_1_pt = 1.0;
+    double tau_sf_2_dm = 1.0;
+    double tau_sf_2_pt = 1.0;
+
     double tau_sf_highpt_1 = 1.0;
     double tau_sf_highpt_2 = 1.0;
     if (channel_ != channel::tt){
@@ -1318,6 +1327,11 @@ int HTTWeights::Execute(TreeEvent *event) {
       if (!is_embedded_){
         auto args_pt = std::vector<double>{pt_2};
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium"]->eval(args_pt.data()) : 1.0;
+
+        tau_sf_2_pt = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium"]->eval(args_pt.data()) : 1.0;
+        auto args_dm_2 = std::vector<double>{decay_mode_2};
+        tau_sf_2_dm = (gen_match_2==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_2.data()) : 1.0;
+
         tau_sf_highpt_2 = (gen_match_2==5&&pt_2>100) ? fns_["t_deeptauid_highpt"]->eval(args_pt.data()) : 1.0;
 
         eventInfo->set_weight("tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2", tau_sf_2 , false);
@@ -1586,6 +1600,11 @@ int HTTWeights::Execute(TreeEvent *event) {
       if (!is_embedded_){
         auto args_dm_1 = std::vector<double>{decay_mode_1};
         tau_sf_1 = (gen_match_1==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_1.data()) : 1.0;
+
+        tau_sf_1_dm = (gen_match_1==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_1.data()) : 1.0;
+        auto args_pt_1 = std::vector<double>{pt_1};
+        tau_sf_1_pt = (gen_match_1==5) ? fns_["t_deeptauid_pt_medium"]->eval(args_pt_1.data()) : 1.0;
+
         tau_sf_highpt_1 = (gen_match_2==5&&pt_1>100) ? fns_["t_deeptauid_highpt"]->eval(args_pt_1.data()) : 1.0;
         tau_sf_dm0_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm0_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
         tau_sf_dm1_up*=((gen_match_1==5) ? fns_["t_deeptauid_dm_medium_dm1_up"]->eval(args_dm_1.data()) : 1.0)/tau_sf_1;
@@ -1669,6 +1688,11 @@ int HTTWeights::Execute(TreeEvent *event) {
       if (!is_embedded_){
         auto args_dm_2 = std::vector<double>{decay_mode_2};
         tau_sf_2 = (gen_match_2==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_2.data()) : 1.0;
+       
+        tau_sf_2_dm = (gen_match_2==5) ? fns_["t_deeptauid_dm_medium"]->eval(args_dm_2.data()) : 1.0;
+        auto args_pt_2 = std::vector<double>{pt_2};
+        tau_sf_2_pt = (gen_match_2==5) ? fns_["t_deeptauid_pt_medium"]->eval(args_pt_2.data()) : 1.0;
+
         tau_sf_highpt_2 = (gen_match_2==5&&pt_2>100) ? fns_["t_deeptauid_highpt"]->eval(args_pt_2.data()) : 1.0;
         tau_sf_dm0_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm0_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
         tau_sf_dm1_up*=((gen_match_2==5) ? fns_["t_deeptauid_dm_medium_dm1_up"]->eval(args_dm_2.data()) : 1.0)/tau_sf_2;
@@ -1802,6 +1826,9 @@ int HTTWeights::Execute(TreeEvent *event) {
     }
     eventInfo->set_weight("wt_tau_id_sf",tau_sf_1*tau_sf_2);
     if(channel_==channel::tt) event->Add("idisoweight_1", tau_sf_1);
+    event->Add("tau_sf_id_dm_vs_pt",((tau_sf_1_dm*tau_sf_2_dm)/(tau_sf_1_pt*tau_sf_2_pt)));
+    event->Add("tau_sf_id_dm",tau_sf_1_dm*tau_sf_2_dm);
+    event->Add("tau_sf_id_pt",tau_sf_1_pt*tau_sf_2_pt);
     event->Add("idisoweight_2", tau_sf_2);
   }
   if (do_em_qcd_weights_){
@@ -1916,8 +1943,19 @@ int HTTWeights::Execute(TreeEvent *event) {
       double wtzpt_down=1.0;
       double wtzpt_up = wtzpt*wtzpt;
       eventInfo->set_weight("wt_zpt",wtzpt);
+      event->Add("zpt_sf",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+
+      // NLO zpt
+      if ((era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL)){
+        double wtzpt_NLO = fns_["zpt_weight_nom_NLO"]->eval(args.data());
+        double wtzpt_down_NLO=1.0;
+        double wtzpt_up_NLO = wtzpt_NLO*wtzpt_NLO;
+        event->Add("zpt_sf_NLO",wtzpt_NLO);
+        event->Add("wt_zpt_up_NLO",wtzpt_up_NLO/wtzpt_NLO);
+        event->Add("wt_zpt_down_NLO",wtzpt_down_NLO/wtzpt_NLO);
+      }
   }
   if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
 
