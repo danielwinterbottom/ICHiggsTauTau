@@ -2895,7 +2895,7 @@ def HTTPlot(nodename,
     
     #Setup legend
     #legend = PositionedLegend(0.37,0.3,3,0.05) 
-    legend = PositionedLegend(0.4,0.37,3,0.03) # when showing plots of signal
+    legend = PositionedLegend(0.4,0.15,3,0.005) # when showing plots of signal
     legend.SetTextFont(42)
     #legend.SetTextSize(0.03)
     legend.SetTextSize(0.018) # when showing plots of signal

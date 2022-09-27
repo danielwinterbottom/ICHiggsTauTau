@@ -87,9 +87,9 @@ sample_list = [
 	'DY3JetsToLL_M-10to50-LO',
 	'DY4JetsToLL_M-10to50-LO',
 	 # Drell-Yan NLO
-#	'DYJetsToLL_0J-NLO',
-#	'DYJetsToLL_1J-NLO',
-#	'DYJetsToLL_2J-NLO',
+	'DYJetsToLL_0J-NLO',
+	'DYJetsToLL_1J-NLO',
+	'DYJetsToLL_2J-NLO',
 	 # Electroweak W and Z
 	'EWKWMinus2Jets_WToLNu',
 	'EWKWPlus2Jets_WToLNu',
@@ -190,7 +190,7 @@ for sa in sample_list:
   hadd_dirs=[]
   command=''
   if batch:
-    JOB='jobs/hadd_%s.sh' % sa
+    JOB='jobs16pre/hadd_%s.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:

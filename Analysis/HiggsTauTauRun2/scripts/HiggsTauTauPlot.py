@@ -583,6 +583,8 @@ if options.channel == 'tt':
           cats['baseline'] = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_%(wp)s_2>0.5 && leptonveto==0 && (trg_doubletau || (pt_1>180 && trg_singletau_1) || (pt_2>180 && trg_singletau_2)) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
       else:
         cats['baseline'] = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+       # cats['baseline'] = '(deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
+
 
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
@@ -632,7 +634,8 @@ if options.analysis == 'cpprod':
   if options.channel in ['tt']: cats['baseline'] += ' && pt_1>50'
   cats['baseline'] = cats['baseline'].replace('deepTauVsEle_vvloose_2','deepTauVsEle_vvvloose_2').replace('deepTauVsEle_vvloose_1','deepTauVsEle_vvvloose_1')
 
-cats['inclusive'] = '(1)' 
+cats['inclusive'] = '(1)'
+cats['wj_cut'] = "mt_1 < 40 && pt_1 > 40" 
 cats['w_os'] = 'os'
 cats['w_sdb'] = 'mt_1>70.'
 cats['pass'] = 'mva_olddm_tight_2>0.5 && pzeta>-25'
@@ -1318,6 +1321,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
 
     if options.era in ["UL_16_preVFP"]:
         ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        #ztt_samples = ['DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
         vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
         wgam_samples = ['WGToLNuG']
         wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
@@ -1328,6 +1332,7 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
 
     if options.era in ["UL_16_postVFP"]:
         ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        #ztt_samples = ['DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
         vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
         wgam_samples = ['WGToLNuG']
         wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
@@ -1356,7 +1361,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'tauid2016',
  
 if options.era in ['cpsummer17','tauid2017']:
 
-    ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
+   # ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
     if options.channel == "tt": # remove 'DYJetsToLL_M-10-50-LO (zero entries)
         ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
@@ -1395,8 +1400,9 @@ if options.era in ['cpsummer17','tauid2017']:
 
 
 if options.era in ['UL_17']:
-
     ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+    #ztt_samples = ['DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+
     # Question: Is this need for UL_17?
     #if options.channel == "tt": # remove 'DYJetsToLL_M-10-50-LO (zero entries)
         #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1']
@@ -1470,6 +1476,7 @@ if options.era in ['cp18']:
 
 if options.era in ['UL_18']:
     ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+    #ztt_samples = ['DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']   
     #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WWTo1L1Nu2Q','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','Tbar-t','Tbar-tW','T-t','T-tW']
