@@ -1051,4 +1051,3 @@ if not options.no_plot:
       draw_data=(not options.no_data)
       )
 
-
