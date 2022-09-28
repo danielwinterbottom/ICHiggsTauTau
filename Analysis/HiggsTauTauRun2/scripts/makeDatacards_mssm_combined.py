@@ -5,7 +5,12 @@
 # python scripts/makeDatacards_mssm_combined.py --years='2016,2017,2018' --channels='tt,mt,et' --output_folder='mssm_dc_v4' --no_syst --batch
 
 # after running all jobs hadd them using this commnd inside the output folder:
-#for ch in tt et mt; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/htt_all.inputs-mssm-vs-sm-Run${year}-mt_tot_puppi.root ${year}/${ch}/*.root"; done; done
+#for var in mt_tot_puppi stmet; do for ch in tt et mt; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/htt_all.inputs-mssm-vs-sm-Run${year}-${var}.root ${year}/${ch}/*${var}.root"; done; done; done
+
+#for var in mt_tot_puppi stmet n_bjets n_jets jpt_1 jpt_2 met pt_1 pt_2 ip_sig_1 ip_sig_2 ip_mag_1 ip_mag_2; do for ch in tt et mt; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/htt_all.inputs-mssm-vs-sm-Run${year}-${var}.root ${year}/${ch}/*${var}.root"; done; done; done
+
+# to copy them to the right combine directory
+#for ch in tt et mt em; do for year in 2016 2017 2018; do cp ${year}/${ch}/htt_all.inputs-mssm-vs-sm-Run${year}-*.root /vols/cms/gu18/CH_unblinding/CMSSW_10_2_25/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes/${year}/${ch}/; done; done
 
 import sys
 from optparse import OptionParser
@@ -113,6 +118,7 @@ for year in years:
   # merge mt_tot<50 bins since this region was tricking the past and seems to only impact the lowest mass point  (M=60)
   # use slightly finer bins for mt_tot between 350 and 1000
   BINS_FINE="[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
+  BINS_STMET="[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
   BINS_VFINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
   BINS_SVFIT="[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200,205,210,215,220,225,230,235,240,245,250,255,260,265,270,275,280,285,290,295,300]"
   BINS_MVIS="[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200]"
@@ -130,7 +136,11 @@ for year in years:
                    "Nbtag0_MTLt40_MHGt250",
                    "Nbtag0_MT40To70_MHGt250",
                    #"Nbtag0_MTLt40_MHGt200",
-                   #"Nbtag0_MT40To70_MHGt200"
+                   #"Nbtag0_MT40To70_MHGt200",
+                   "Nbtag0_Njets0_MTLt40",
+                   "Nbtag0_Njets0_MT40To70",
+                   "Nbtag0_NjetsGt1_MTLt40",
+                   "Nbtag0_NjetsGt1_MT40To70",
                    ]
 
   categories_mt = [
@@ -141,13 +151,19 @@ for year in years:
                    "Nbtag0_MTLt40_MHGt250",
                    "Nbtag0_MT40To70_MHGt250",
                    #"Nbtag0_MTLt40_MHGt200",
-                   #"Nbtag0_MT40To70_MHGt200"
+                   #"Nbtag0_MT40To70_MHGt200",
+                   "Nbtag0_Njets0_MTLt40",
+                   "Nbtag0_Njets0_MT40To70",
+                   "Nbtag0_NjetsGt1_MTLt40",
+                   "Nbtag0_NjetsGt1_MT40To70",
                    ]
 
   categories_tt = [
                    "Nbtag0",
                    "NbtagGt1",
                    "Nbtag0_MHGt250",
+                   "Nbtag0_Njets0",
+                   "Nbtag0_NjetsGt1",
                    #"Nbtag0_MHGt200",
                    ]
 
@@ -304,7 +320,7 @@ for year in years:
           add_cond += i
 
       run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
-      rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-mt_tot_puppi.root' % vars()
 
       run_cmd_alt1 = ''
       rename_cmd_alt1 = ''
@@ -312,27 +328,57 @@ for year in years:
       rename_cmd_alt2 = ''
       run_cmd_alt3 = ''
       rename_cmd_alt3 = ''
+      run_cmd_alt4 = ''
+      rename_cmd_alt4 = ''
 
       # do seperate svfit and pt_tt vs svfit, and more bins at low mt_tot 
       #bins = BINS_VFINE
       #run_cmd_alt1 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_vfine --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
       #rename_cmd_alt1 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_vfine_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_vfine.inputs-%(ANA)s%(dc_app)s.root' % vars()
 
-      bins = BINS_SVFIT
-      var_alt = 'svfit_mass'
-      run_cmd_alt2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_svfit --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
-      rename_cmd_alt2 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_svfit.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      #bins = BINS_SVFIT
+      #var_alt = 'svfit_mass'
+      #run_cmd_alt2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
+      #rename_cmd_alt2 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-m_sv_puppi.root' % vars()
 
-      bins = BINS_2D
-      var_alt = 'pt_tt,svfit_mass'
-      run_cmd_alt3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s_pt_tt_vs_svfit --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
-      rename_cmd_alt3 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_pt_tt_vs_svfit_%(cat)s_pt_tt_vs_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s_pt_tt_vs_svfit.inputs-%(ANA)s%(dc_app)s.root' % vars()
+      #bins = BINS_2D
+      #var_alt = 'pt_tt,svfit_mass'
+      #run_cmd_alt3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars()
+      #rename_cmd_alt3 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_pt_tt_vs_svfit_%(cat)s_pt_tt_vs_svfit_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-m_sv_VS_pt_tt_splitpT.root' % vars()
 
-      commands = [(run_cmd,rename_cmd)]
+      if "NjetsGt1" in cat:
+
+        alt_var = [
+                   ["stmet","pt_1+pt_2+jpt_1+met","[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"],
+                   ["dphi","fabs\\(dphi\\)","[0.0,0.31416,0.62832,0.94248,1.25664,1.5708,1.88496,2.19912,2.51328,2.82744,3.1416]"],
+                   ["n_bjets","n_deepbjets","[0,1,2,3,4,5]"],
+                   ["n_jets","n_jets","[0,1,2,3,4,5,6,7]"],
+                   ["jpt_1","jpt_1","[0,60,120,180,240,300,360,420,480,540,600,660,720,780,840,900,1000,1400]"],
+                   ["jpt_2","jpt_2","[0,60,120,180,240,300,360,420,480,540,600,660,720,900]"],
+                   ["met","met","[0,60,120,180,240,300,360,420,480,540,600,660,780,900,1400]"],
+                   ["pt_1","pt_1","[0,60,120,180,240,300,360,420,480,540,600,900,1400]"],
+                   ["pt_2","pt_2","[0,60,120,180,240,300,360,420,480,540,600,900,1400]"],
+                   ["ip_sig_1","ip_sig_1","[0,0.5,1.0,1.5,2.0,3,4,5,10]"],
+                   ["ip_sig_2","ip_sig_2","[0,0.5,1.0,1.5,2.0,3,4,5,10]"],
+                   ["ip_mag_1","ip_mag_1","[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]"],
+                   ["ip_mag_2","ip_mag_2","[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]"],
+                  ]
+      
+        run_cmd_alt4 = []
+        rename_cmd_alt4 = []
+        for var_name, var_alt, bins in alt_var:
+
+          run_cmd_alt4.append('python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s' % vars())
+          rename_cmd_alt4.append('mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-%(var_name)s.root' % vars())
+
+      #commands = [(run_cmd,rename_cmd)]
+      commands = []
       if not var == 'm_vis':
         if run_cmd_alt1 != '': commands.append((run_cmd_alt1, rename_cmd_alt1)) 
         if run_cmd_alt2 != '': commands.append((run_cmd_alt2, rename_cmd_alt2)) 
         if run_cmd_alt3 != '': commands.append((run_cmd_alt3, rename_cmd_alt3)) 
+        for ind, val in enumerate(run_cmd_alt4):
+          commands.append((run_cmd_alt4[ind], rename_cmd_alt4[ind]))
 
       num = 0
       for run_cmd_, rename_cmd_ in commands:

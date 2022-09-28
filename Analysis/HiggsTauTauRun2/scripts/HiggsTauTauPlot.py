@@ -669,6 +669,8 @@ cats['qcd_shape_comp']=''
 if options.channel == "tt":
   cats['NbtagGt1'] = '(n_deepbjets>0)'
   cats['Nbtag0'] = '(n_deepbjets==0)'
+  cats['Nbtag0_Njets0'] = '(n_deepbjets==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  cats['Nbtag0_NjetsGt1'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
 elif options.channel in ["et","mt"]:
   cats['NbtagGt1'] = '(n_deepbjets>0 && mt_1<70)'
   cats['Nbtag0'] = '(n_deepbjets==0 && mt_1<70)'
@@ -683,6 +685,11 @@ cats['Nbtag0_MTLt40'] = '(n_deepbjets==0 && mt_1<40)'
 cats['Nbtag0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
 cats['NbtagGt1_MTLt40'] = '(n_deepbjets>0 && mt_1<40)'
 cats['NbtagGt1_MT40To70'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
+
+cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+cats['Nbtag0_Njets0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && n_jets>0 && jpt_1>50 && m_vis>100)'
+cats['Nbtag0_NjetsGt1_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && n_jets>0 && jpt_1>50 && m_vis>100)'
 
 cats['Nbtag0_MHGt250'] = '(n_deepbjets==0 && svfit_mass>250)'
 cats['Nbtag0_MHGt200'] = '(n_deepbjets==0 && svfit_mass>200)'
