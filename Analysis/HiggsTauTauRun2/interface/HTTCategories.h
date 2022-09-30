@@ -253,6 +253,7 @@ class HTTCategories : public ModuleBase {
   unsigned n_lowpt_jets_;
   unsigned n_prebjets_;
   unsigned n_deepbjets_;
+  unsigned n_deepbjets_pt50_;
   unsigned n_bjets_;
   unsigned n_loose_bjets_;
   unsigned n_btag_;

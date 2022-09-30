@@ -750,8 +750,6 @@ cats['qcd_shape_comp']=''
 if options.channel == "tt":
   cats['NbtagGt1'] = '(n_deepbjets>0)'
   cats['Nbtag0'] = '(n_deepbjets==0)'
-  cats['Nbtag0_Njets0'] = '(n_deepbjets==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
-  cats['Nbtag0_NjetsGt1'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
   cats['Nbtag0_interference'] = '(n_deepbjets==0 && vlq_s_bdt_multiclass<0.5)'
   cats['NbtagGt1_interference'] = '(n_deepbjets>0 && vlq_s_bdt_multiclass<0.5)'
   cats['Nbtag0_signal'] = '(n_deepbjets==0 && vlq_s_bdt_multiclass>0.5)'
@@ -763,22 +761,27 @@ elif options.channel == "em":
   cats['NbtagGt1'] = '(n_deepbjets>0 && pzeta>-35)'
   cats['Nbtag0'] = '(n_deepbjets==0 && pzeta>-35)'
 
-cats['Nbtag0_NjetsGt1_STMETGt800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800 && m_vis>100)'
-cats['Nbtag0_NjetsGt1_STMETGt1000'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>1000 && m_vis>100)'
-cats['Nbtag0_NjetsGt1_STMET400to800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800 && m_vis>100)'
+cats['Nbtag0_Njets0'] = '(n_deepbjets==0 && !(n_jets>0 && jpt_1>50) && m_vis>100&&pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && m_vis>100&&pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1_STMETGt800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800 && m_vis>100&&pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1_STPFMETGt800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+pf_met+jpt_1)>800 && m_vis>100&&pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1_STMETGt1000'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>1000 && m_vis>100&&pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1_STMET400to800'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800  && m_vis>100&&pt_1>50&&pt_2>50)'
+cats['NLooseCSVbtag0_NjetsGt1_STPFMETGt800'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+pf_met+jpt_1)>800 && m_vis>100&&pt_1>50&&pt_2>50)'
+cats['NLooseCSVbtag0_NjetsGt1_STMETGt800'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800 && m_vis>100&&pt_1>50&&pt_2>50)'
+
+cats['Nbtag0_NjetsGt1_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && m_vis>100 && pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1_MTLt70_STMETGt800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800 && m_vis>100 && pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1_MTLt70_STMETGt1000'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>1000 && m_vis>100 && pt_1>50&&pt_2>50)'
+cats['Nbtag0_NjetsGt1_MTLt70_STMET400to800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800 && m_vis>100 && pt_1>50&&pt_2>50)'
 
 cats['Nbtag0_MTLt40'] = '(n_deepbjets==0 && mt_1<40)'
 cats['Nbtag0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
-cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
-cats['Nbtag0_Njets0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
-cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && n_jets>0 && jpt_1>50 && m_vis>100)'
-cats['Nbtag0_NjetsGt1_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && n_jets>0 && jpt_1>50 && m_vis>100)'
-cats['Nbtag0_Njets0_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
-cats['Nbtag0_NjetsGt1_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && m_vis>100)'
-
-cats['Nbtag0_NjetsGt1_MTLt70_STMETGt800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>800 && m_vis>100)'
-cats['Nbtag0_NjetsGt1_MTLt70_STMETGt1000'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>1000 && m_vis>100)'
-cats['Nbtag0_NjetsGt1_MTLt70_STMET400to800'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && (pt_1+pt_2+met+jpt_1)>400 && (pt_1+pt_2+met+jpt_1)<800 && m_vis>100)'
+cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_Njets0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && !(n_jets>0 && jpt_1>50))'
+cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && mt_1<40 && n_jets>0 && jpt_1>50)'
+cats['Nbtag0_NjetsGt1_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70 && n_jets>0 && jpt_1>50)'
+cats['Nbtag0_Njets0_MTLt70'] = '(n_deepbjets==0 && mt_1<70 && !(n_jets>0 && jpt_1>50))'
 
 cats['NbtagGt1_MTLt40'] = '(n_deepbjets>0 && mt_1<40)'
 cats['NbtagGt1_MT40To70'] = '(n_deepbjets>0 && mt_1>40 && mt_1<70)'
@@ -5230,7 +5233,7 @@ def RawFFFromString(string):
 is_2d=False
 is_3d=False
 var_name = options.var.split('[')[0]
-#var_name = var_name.split('(')[0]
+var_name = var_name.split('(')[0]
 if var_name.count(',') == 1:
     is_2d = True
     var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]
@@ -5239,6 +5242,7 @@ if var_name.count(',') == 2:
     var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]+'_vs_'+var_name.split(',')[2]
     
 var_name = var_name.replace("(","_").replace(")","")
+var_name = var_name.replace("/","_over_")
 
 if options.datacard != "": datacard_name = options.datacard
 else: datacard_name = options.cat

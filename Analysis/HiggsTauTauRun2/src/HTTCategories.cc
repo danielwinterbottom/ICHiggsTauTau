@@ -877,6 +877,7 @@ namespace ic {
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("n_deepbjets",       &n_deepbjets_);
+      outtree_->Branch("n_deepbjets_pt50",       &n_deepbjets_pt50_);
       outtree_->Branch("n_prebjets",        &n_prebjets_);
       outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
       outtree_->Branch("n_btag",            &n_btag_);
@@ -2635,6 +2636,10 @@ namespace ic {
     } 
 
     n_deepbjets_ = deepbjets.size();
+
+    std::vector<PFJet*> deepbjets_pt50 = deepbjets;
+    ic::erase_if(deepbjets_pt50,!boost::bind(MinPtMaxEta, _1, 50.0, eta_cut));
+    n_deepbjets_pt50_ = deepbjets_pt50.size();
 
     // Btag weights
     wt_btag_           = event->Exists("btag_evt_weight") ? event->Get<double>("btag_evt_weight") : 1.;

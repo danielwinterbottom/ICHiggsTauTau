@@ -1,6 +1,6 @@
 COUNT=0
 TOTAL=0
-for i in $(ls jobs/*.sh | grep -v svfit); do 
+for i in $(ls jobs/*2018*.sh | grep -v svfit); do 
   if [[ $i = *"parajob_"* ]]; then continue; fi
   if [[ $i = *"hadd_"* ]]; then continue; fi 
   (( TOTAL++ ))
