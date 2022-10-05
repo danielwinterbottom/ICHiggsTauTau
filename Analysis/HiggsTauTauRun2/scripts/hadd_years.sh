@@ -1,4 +1,5 @@
-dir="vlq_distributions_v4"
+dir="vlq_distributions_v14"
+#dir="vlq_jpt_1"
 for c in mt tt et; do
   mkdir -p $dir/$c/all
 done

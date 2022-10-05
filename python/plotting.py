@@ -2646,7 +2646,8 @@ def HTTPlot(nodename,
 
     c1 = R.TCanvas()
     c1.cd()    
-    
+
+   
     if ratio and not threePads:
         pads=TwoPadSplit(0.29,0.01,0.01)
     elif ratio and threePads:
@@ -3143,7 +3144,7 @@ def HTTPlot(nodename,
             axish[1+pad_shift].SetMinimum(round(min_val_om-min_val,min_val_om))
           else:
             axish[1+pad_shift].SetMinimum(round(min_val,min_val_om))
-          max_val = min(max_val,4)
+          max_val = max(min(max_val,4),0.01)
           if round(max_val, -int(floor(log10(abs(max_val))))) < max_val:
             axish[1+pad_shift].SetMaximum(round(max_val, -int(floor(log10(abs(max_val))))) + 10**int(floor(log10(abs(max_val)))))
           else:
@@ -3260,6 +3261,8 @@ def HTTPlot(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+
+    c1.Close()
 
 def CompareSysts(hists=[],
              plot_name="plot",

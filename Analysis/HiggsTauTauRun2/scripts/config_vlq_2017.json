@@ -60,7 +60,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": true,
     //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/gu18/Offline/output/MSSM/vlq_2017_split_weights/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/vlq_2017_sep28/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/Offline/output/MSSM/mssm_2017_embed_v2_svfit/",
