@@ -665,6 +665,11 @@ cats['qcd_shape']=''
 cats['w_shape_comp']=''
 cats['qcd_shape_comp']=''
 
+
+exo_btag = True
+mT70 = False
+nomT = False
+
 # MSSM run 2 categories
 if options.channel == "tt":
   cats['NbtagGt1'] = '(n_deepbjets>0)'
@@ -677,9 +682,6 @@ elif options.channel in ["et","mt"]:
 elif options.channel == "em":
   cats['NbtagGt1'] = '(n_deepbjets>0 && pzeta>-35)'
   cats['Nbtag0'] = '(n_deepbjets==0 && pzeta>-35)'
-
-
-
 
 cats['Nbtag0_MTLt40'] = '(n_deepbjets==0 && mt_1<40)'
 cats['Nbtag0_MT40To70'] = '(n_deepbjets==0 && mt_1>40 && mt_1<70)'
@@ -716,6 +718,29 @@ if options.channel == "tt":
   cats['qcd_control'] = '(1)'
 elif options.channel in ["et","mt"]:
   cats['qcd_control'] = 'mt_1<50 && iso_1>0.05'
+
+if mT70:
+  cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && mt_1<70 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag1_MTLt40'] = '(n_deepbjets==1 && mt_1<70)'
+
+if nomT:
+  cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag1_MTLt40'] = '(n_deepbjets==1)'
+
+if exo_btag:
+  # also has no mT cut
+  cats['Nbtag0_Njets0_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50) && m_vis>600)'
+  cats['Nbtag0_NjetsGt1_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100 && (pt_1+pt_2+jpt_1+met)>800)'
+  #cats['Nbtag0_Njets0_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  #cats['Nbtag0_NjetsGt1_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag1_MTLt40'] = '(n_loose_bjets>0&&bpt_1>50)'
+  cats['NbtagGt1'] = '(n_loose_bjets>0&&bpt_1>50)'
+  #cats['Nbtag0_Njets0'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  #cats['Nbtag0_NjetsGt1'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag0_Njets0'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50) && m_vis>600)'
+  cats['Nbtag0_NjetsGt1'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100 && (pt_1+pt_2+jpt_1+met)>800)'
 
 if options.cat == 'qcd_control':
   options.do_ss = True
