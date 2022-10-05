@@ -3,7 +3,7 @@
 # python scripts/makeDatacards_vlq.py --years='2016,2017,2018' --channels='tt,mt,et,em' --output_folder='vlq_dc' --batch
 
 # after running all jobs hadd them using this commnd inside the output folder:
-#for var in mt_tot_puppi stmet; do for ch in tt et mt em; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-${var}.root ${year}/${ch}/*${var}.root"; done; done
+#for var in mt_tot_puppi stmet; do for ch in tt et mt em; do for year in 2016 2017 2018; do eval "hadd -f ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-${var}.root ${year}/${ch}/*-${var}.root"; done; done; done
 
 # to copy them to the right combine directory
 #for ch in tt et mt em; do for year in 2016 2017 2018; do cp ${year}/${ch}/vlq.inputs-mssm-vs-sm-Run${year}-*.root /vols/cms/gu18/CH_unblinding/CMSSW_10_2_25/src/CombineHarvester/MSSMvsSMRun2Legacy/shapes/${year}/${ch}/; done; done
@@ -120,33 +120,33 @@ for year in years:
   BINS="[0,60,80,100,120,140,160,180,200,250,300,350,400,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"
 
   categories_et = [
-                   "Nbtag0_MTLt40",
-                   "Nbtag0_MT40To70",
-                   "NbtagGt1_MTLt40",
-                   "NbtagGt1_MT40To70",
+                   #"Nbtag0_MTLt40",
+                   #"Nbtag0_MT40To70",
+                   #"NbtagGt1_MTLt40",
+                   #"NbtagGt1_MT40To70",
                    "Nbtag0_Njets0_MTLt40",
-                   "Nbtag0_Njets0_MT40To70",
+                   #"Nbtag0_Njets0_MT40To70",
                    "Nbtag0_NjetsGt1_MTLt40",
-                   "Nbtag0_NjetsGt1_MT40To70",
+                   #"Nbtag0_NjetsGt1_MT40To70",
    #                "MTLt40",
    #                "MT40To70",
                    ]
 
   categories_mt = [
-                   "Nbtag0_MTLt40",
-                   "Nbtag0_MT40To70",
-                   "NbtagGt1_MTLt40",
-                   "NbtagGt1_MT40To70",
+                   #"Nbtag0_MTLt40",
+                   #"Nbtag0_MT40To70",
+                   #"NbtagGt1_MTLt40",
+                   #"NbtagGt1_MT40To70",
                    "Nbtag0_Njets0_MTLt40",
-                   "Nbtag0_Njets0_MT40To70",
+                   #"Nbtag0_Njets0_MT40To70",
                    "Nbtag0_NjetsGt1_MTLt40",
-                   "Nbtag0_NjetsGt1_MT40To70",
+                   #"Nbtag0_NjetsGt1_MT40To70",
   #                 "MTLt40",
   #                 "MT40To70",
                    ]
 
   categories_tt = [
-                   "Nbtag0",
+                   #"Nbtag0",
                    "NbtagGt1",
                    "Nbtag0_Njets0",
                    "Nbtag0_NjetsGt1",
@@ -279,7 +279,8 @@ for year in years:
     categories = cat_schemes[ch]
 
     for cat in categories:
-      add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
+#      add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire\''
+      add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire*wt_btag\''
       if ch == "em": method = '19'
       else: method = '17'
 
@@ -300,16 +301,47 @@ for year in years:
       run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var)s%(bins)s" --embedding --add_sm_background=125 --no_plot %(add_cond)s --only_sig' % vars()
       rename_cmd = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-mt_tot_puppi.root' % vars()
 
-      run_cmd_alt1 = ''
-      rename_cmd_alt1 = ''
-      if "NjetsGt1" in cat:
-        bins = BINS_STMET
-        var_alt = 'pt_1+pt_2+jpt_1+met'
-        run_cmd_alt1 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var="%(var_alt)s%(bins)s" --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s --only_sig --sel=\'m_vis>100\'' % vars()
-        rename_cmd_alt1 = 'mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-stmet.root' % vars()
+      run_cmd_alt1 = []
+      rename_cmd_alt1 = []
+      if "NjetsGt1" in cat or "Njets0" in cat:
+         alt_var = ["stmet","pt_1+pt_2+jpt_1+met","[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"],
+                   ["m_vis","m_vis","[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"],
+                   ["dphi","fabs(dphi)","[0.0,0.31416,0.62832,0.94248,1.25664,1.5708,1.88496,2.19912,2.51328,2.82744,3.1416]"],
+                   ["n_bjets","n_deepbjets","[0,1,2,3,4,5]"],
+                   ["n_jets","n_jets","[0,1,2,3,4,5,6,7]"],
+                   ["jpt_1","jpt_1","[0,60,120,180,240,300,360,420,480,540,600,660,720,780,840,900,1000,1400]"],
+                   ["jpt_2","jpt_2","[0,60,120,180,240,300,360,420,480,540,600,660,720,900]"],
+                   ["jeta_1","jeta_1","[-4.7,-4.0,-3.5,-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.7]"],
+                   ["jeta_2","jeta_2","[-4.7,-4.0,-3.5,-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.7]"],
+                   ["met","met","[0,60,120,180,240,300,360,420,480,540,600,660,780,900,1400]"],
+                   ["pt_1","pt_1","[0,60,120,180,240,300,360,420,480,540,600,900,1400]"],
+                   ["pt_2","pt_2","[0,60,120,180,240,300,360,420,480,540,600,900,1400]"],
+                   ["ip_sig_1","ip_sig_1","[0,0.5,1.0,1.5,2.0,3,4,5,10]"],
+                   ["ip_sig_2","ip_sig_2","[0,0.5,1.0,1.5,2.0,3,4,5,10]"],
+                   ["ip_mag_1","ip_mag_1","[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]"],
+                   ["ip_mag_2","ip_mag_2","[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]"],
+        #alt_var = [
+                   #["stmet","pt_1+pt_2+jpt_1+met","[0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000]"],
+                   #["dphi","fabs(dphi)","[0.0,0.31416,0.62832,0.94248,1.25664,1.5708,1.88496,2.19912,2.51328,2.82744,3.1416]"],
+                   #["n_bjets","n_deepbjets","[0,1,2,3,4,5]"],
+                   #["n_jets","n_jets","[0,1,2,3,4,5,6,7]"],
+                   #["jpt_1","jpt_1","[0,60,120,180,240,300,360,420,480,540,600,660,720,780,840,900,1000,1400]"],
+                   #["jpt_2","jpt_2","[0,60,120,180,240,300,360,420,480,540,600,660,720,900]"],
+                   #["met","met","[0,60,120,180,240,300,360,420,480,540,600,660,780,900,1400]"],
+                   #["pt_1","pt_1","[0,60,120,180,240,300,360,420,480,540,600,900,1400]"],
+                   #["pt_2","pt_2","[0,60,120,180,240,300,360,420,480,540,600,900,1400]"],
+                   #["ip_sig_1","ip_sig_1","[0,0.5,1.0,1.5,2.0,3,4,5,10]"],
+                   #["ip_sig_2","ip_sig_2","[0,0.5,1.0,1.5,2.0,3,4,5,10]"],
+                   #["ip_mag_1","ip_mag_1","[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]"],
+                   #["ip_mag_2","ip_mag_2","[0.001,0.002,0.003,0.004,0.005,0.006,0.008,0.010,0.014,0.020]"],
+                  #]
+        for var_name, var_alt, bins in alt_var:
+          run_cmd_alt1.append('python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --year=%(YEAR)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --datacard=%(cat)s --paramfile=%(PARAMS)s --folder=%(FOLDER)s --var=\'%(var_alt)s%(bins)s\' --embedding --doMSSMReWeighting --add_sm_background=125 --no_plot %(add_cond)s --only_sig --sel=\'(pt_1>50 && pt_2>50)\'' % vars())
+          rename_cmd_alt1.append('mv %(output_folder)s/%(year)s/%(ch)s/datacard_%(var_alt)s_%(cat)s_%(ch)s_%(YEAR)s.root %(output_folder)s/%(year)s/%(ch)s/htt_%(ch)s_%(cat)s.inputs-%(ANA)s-%(var_name)s.root' % vars())
 
       commands = [(run_cmd,rename_cmd)]
-      if run_cmd_alt1 != '': commands.append((run_cmd_alt1, rename_cmd_alt1))
+      for ind, val in enumerate(run_cmd_alt1):
+        commands.append((run_cmd_alt1[ind], rename_cmd_alt1[ind]))
 
       num = 0
       for run_cmd_, rename_cmd_ in commands:

@@ -837,6 +837,32 @@ elif options.channel in ["et","mt"]:
 if options.cat == 'qcd_control':
   options.do_ss = True
 
+exo_btag = True
+mT70 = False
+nomT = False
+
+if mT70:
+  cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && mt_1<70 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && mt_1<70 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag1_MTLt40'] = '(n_deepbjets==1 && mt_1<70)'
+
+if nomT:
+  cats['Nbtag0_Njets0_MTLt40'] = '(n_deepbjets==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  cats['Nbtag0_NjetsGt1_MTLt40'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag1_MTLt40'] = '(n_deepbjets==1)'
+
+if exo_btag:
+  # also has no mT cut
+  cats['Nbtag0_Njets0_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50) && m_vis>600)'
+  cats['Nbtag0_NjetsGt1_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100 && (pt_1+pt_2+jpt_1+met)>800)'
+  #cats['Nbtag0_Njets0_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  #cats['Nbtag0_NjetsGt1_MTLt40'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag1_MTLt40'] = '(n_loose_bjets>0&&bpt_1>50)'
+  cats['NbtagGt1'] = '(n_loose_bjets>0&&bpt_1>50)'
+  #cats['Nbtag0_Njets0'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50 && m_vis>100))'
+  #cats['Nbtag0_NjetsGt1'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
+  cats['Nbtag0_Njets0'] = '((n_loose_bjets>0&&bpt_1>50)==0 && !(n_jets>0 && jpt_1>50) && m_vis>600)'
+  cats['Nbtag0_NjetsGt1'] = '((n_loose_bjets>0&&bpt_1>50)==0 && n_jets>0 && jpt_1>50 && m_vis>100 && (pt_1+pt_2+jpt_1+met)>800)'
 
 cats['DZetaGtm35'] = '(pzeta>-35)'
 
@@ -5169,8 +5195,8 @@ def RenameMSSMrun2Datacards(outfile):
           directory.Delete(name+';1')
         elif isinstance(histo,ROOT.TDirectory):
           directory.Delete(name+';1')
-        #elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
-          #directory.Delete(name+';1')
+        elif not isinstance(histo,ROOT.TDirectory) and ('WplusH' in name or 'WminusH' in name):
+          directory.Delete(name+';1')
         elif not isinstance(histo,ROOT.TDirectory) and 'ggH' in name and name[:4].count('_') == 0 and 'ggH125_SM' not in name and 'ggH95' not in name:
           directory.Delete(name+';1')
         elif not isinstance(histo,ROOT.TDirectory) and 'ggH125_SM' in name :
