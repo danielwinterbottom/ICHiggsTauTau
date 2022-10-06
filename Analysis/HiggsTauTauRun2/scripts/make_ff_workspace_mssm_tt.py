@@ -62,7 +62,7 @@ histsToWrap = [(loc + 'fakefactor_fits_tt_%(wp)s_%(year)s.root:tt_fracs_n_deepbj
               ]
 
 
-w.factory('expr::pt_bounded("max(min(399.9,@0),40)",pt[0])' % vars())
+w.factory('expr::pt_bounded("max(min(399.9,@0),40.0)",pt[0])' % vars())
 
 for task in histsToWrap:
    wsptools.SafeWrapHist(
@@ -104,7 +104,8 @@ for njet in [0,1]:
     func = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s.root:%(name)s_fit' % vars())
     func_str=str(func.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
-    func_alt = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s_forcepol1.root:%(name)s_fit' % vars())
+    func_alt = GetFromTFile(loc.replace(input.split('/')[0],input.split('/')[0]+'_pol1')+'fakefactor_fits_tt_%(wp)s_%(year)s.root:%(name)s_fit' % vars())
+#    func_alt = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s_forcepol1.root:%(name)s_fit' % vars())
     func_str_alt=str(func_alt.GetExpFormula('p')).replace('x','@0').replace(',false','')
 
     hist = GetFromTFile(loc+'fakefactor_fits_tt_%(wp)s_%(year)s.root:%(name)s' % vars())
@@ -275,5 +276,5 @@ w.factory('expr::ff_total_ttbar_syst_up("@0*(1+@1*0.4)", ff_total, tt_fracs_ttba
 w.factory('expr::ff_total_ttbar_syst_down("@0*(1-@1*0.4)", ff_total, tt_fracs_ttbar)' % vars())
 
 w.Print()
-w.writeToFile('%(output)s/fakefactors_ws_tt_mssm_%(year)s_v3.root' % vars())
+w.writeToFile('%(output)s/fakefactors_ws_tt_mssm_%(year)s_v5.root' % vars())
 w.Delete() 

@@ -39,7 +39,7 @@ lumi=58826.8469
 if year == '2018':
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2018/' 
+    input_folder = '/vols/cms/dw515/outputs/MSSM/mssm_2018/' 
 
 out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2018.root' % vars()
 
@@ -102,7 +102,7 @@ if year == '2017':
   lumi=41530.
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2017/'
+    input_folder = '/vols/cms/dw515/outputs/MSSM/mssm_2017/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2017.root' % vars()
 
@@ -131,7 +131,7 @@ if year == '2016':
   lumi=35920.
 
   if input_folder is None:
-    input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802/'
+    input_folder = '/vols/cms/dw515/outputs/MSSM/mssm_2016/'
 
   out_file = '%(output_folder)s/fakefactor_fits_tt_%(wp)s_2016.root' % vars()
 
@@ -234,6 +234,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
   for i in other_files+wjets_files+ttbar_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
+    if t.GetEntries() == 0: continue
     h = hout.Clone()
     h.SetName('h')
     if not doOS:
@@ -279,6 +280,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
   for i in wjets_files+other_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
+    if t.GetEntries() == 0: continue
     h = hout.Clone()
     h.SetName('h')
     t.Draw('%(var)s>>h' % vars(),'wt*(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
@@ -303,6 +305,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
   for i in other_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
+    if t.GetEntries() == 0: continue
     h = hout.Clone()
     h.SetName('h')
     t.Draw('%(var)s>>h' % vars(),'wt*(%(cuts)s)' % vars(),'goff')

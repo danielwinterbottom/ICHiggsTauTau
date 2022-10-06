@@ -155,8 +155,8 @@ for i in ['qcd','wjets','ttbar']:
   w.factory('expr::lt_fracs_%(i)s("(@0>=0)*@0 + (@0<0)*@1", %(i)s_frac[-1], lt_fracs_%(i)s_nom)' % vars())
 
 
-w.factory('expr::pt_bounded("max(min(599.9,@0),20)",pt[30])' % vars())
-w.factory('expr::pt_bounded140("max(min(139.9,@0),20)",pt[30])' % vars())
+w.factory('expr::pt_bounded("max(min(599.9,@0),20.)",pt[30])' % vars())
+w.factory('expr::pt_bounded140("max(min(139.9,@0),20.)",pt[30])' % vars())
 
 # pT dependent fits
 

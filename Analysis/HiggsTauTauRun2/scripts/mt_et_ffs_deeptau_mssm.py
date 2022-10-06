@@ -77,7 +77,7 @@ elif channel == "et":
 if year == '2018':
   lumi = 58826.8469
   params_file = 'scripts/params_mssm_2018.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2018/'
+  input_folder = '/vols/cms/dw515/outputs/MSSM/mssm_2018/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -148,7 +148,7 @@ if year == '2018':
 elif year == "2017":
   lumi = 41530.
   params_file = 'scripts/params_mssm_2017.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2017/'
+  input_folder = '/vols/cms/dw515/outputs/MSSM/mssm_2017/'
 
   if channel == "mt":
     crosstrg_pt = 25
@@ -228,7 +228,7 @@ elif year == "2017":
 elif year == "2016":
   lumi = 35920.
   params_file = 'scripts/params_mssm_2016.json'
-  input_folder = '/vols/cms/dw515/Offline/output/MSSM/mssm_2016_0802/'
+  input_folder = '/vols/cms/dw515/outputs/MSSM/mssm_2016/'
 
   if channel == "mt":
     crosstrg_pt = 23
@@ -542,6 +542,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     for i in other_files+wjets_files+ttbar_files:
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
+      if t.GetEntries() == 0: continue
       h = hout.Clone()
       h.SetName('h')
       if not doOS:
@@ -583,6 +584,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     for i in other_files+ttbar_files:
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
+      if t.GetEntries() == 0: continue
       h = hout.Clone()
       h.SetName('h')
       t.Draw('%(var)s>>h' % vars(),'wt*((n_deepbjets==0)*(%(cuts)s)*((os==1)))*(%(mt_cut)s)*(%(add_wt)s)' % vars(),'goff')
@@ -607,6 +609,7 @@ def DrawHists(var_input, cuts, name, input_folder, file_ext,doOS=False,add_wt='1
     for i in other_files+ttbar_files+wjets_files:
       f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
       t = f.Get('ntuple')
+      if t.GetEntries() == 0: continue
       h = hout.Clone()
       h.SetName('h')
       t.Draw('%(var)s>>h' % vars(),'wt*((n_deepbjets==0)*(%(cuts)s)*((os==0)))*(%(mt_cut)s)*(%(add_wt)s)' % vars(),'goff')
@@ -694,6 +697,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
   for i in wjets_files+other_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
+    if t.GetEntries() == 0: continue
     h = hout.Clone()
     h.SetName('h')
     t.Draw('%(var)s>>h' % vars(),'wt*%(add_wt)s*(%(cuts)s)*(%(gen_extra)s)' % vars(),'goff')
@@ -718,6 +722,7 @@ def DrawHistsForFractions(var_input, cuts, name, input_folder, file_ext):
   for i in other_files:
     f = ROOT.TFile('%(input_folder)s/%(i)s%(file_ext)s' % vars())
     t = f.Get('ntuple')
+    if t.GetEntries() == 0: continue
     h = hout.Clone()
     h.SetName('h')
     t.Draw('%(var)s>>h' % vars(),'wt*%(add_wt)s*(%(cuts)s)' % vars(),'goff')
