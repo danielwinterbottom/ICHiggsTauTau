@@ -23,6 +23,7 @@ namespace ic {
     do_dy_soup_htbinned_      = false;
     do_w_soup_htbinned_      = false;
     do_ggH_soup_ = false;
+    do_dy_soup_NLO_ = false;
     fs_ = NULL;
   }
   HTTStitching::~HTTStitching() {
@@ -102,6 +103,27 @@ namespace ic {
       std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf2_ % zn2_ % zw2_;
       std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_ % zw3_;
       std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % zf4_ % zn4_ % zw4_;
+      if (fs_) {
+        t_gen_info_ = fs_->make<TTree>("genweights", "genweights");
+        t_gen_info_->Branch("decay", &t_decay_);
+        t_gen_info_->Branch("mll", &t_mll_);
+        t_gen_info_->Branch("ht", &t_ht_);
+        t_gen_info_->Branch("njets", &t_njets_);
+        t_gen_info_->Branch("wt", &t_wt_);
+      }
+    }
+    if (do_dy_soup_NLO_ && (era_==era::data_2015 || era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)) {
+      std::cout << boost::format(param_fmt()) % "make_dy_soup_NLO"      % true;
+      std::cout << "nInc = " << zn_inc_NLO_ << std::endl;
+      zf1_ = zxs1_NLO_/zxs0_NLO_;
+      zf2_ = zxs2_NLO_/zxs0_NLO_;
+      zf3_ = zxs3_NLO_/zxs0_NLO_;
+      zw1_ = (zn_inc_NLO_*zf1_) / ( (zn_inc_NLO_*zf1_) + zn1_NLO_ );
+      zw2_ = (zn_inc_NLO_*zf2_) / ( (zn_inc_NLO_*zf2_) + zn2_NLO_ );
+      zw3_ = (zn_inc_NLO_*zf3_) / ( (zn_inc_NLO_*zf3_) + zn3_NLO_ );
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % zf1_ % zn1_NLO_ % zw1_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf2_ % zn2_NLO_ % zw2_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_NLO_ % zw3_;
       if (fs_) {
         t_gen_info_ = fs_->make<TTree>("genweights", "genweights");
         t_gen_info_->Branch("decay", &t_decay_);
@@ -199,7 +221,7 @@ namespace ic {
     if (do_w_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if((era_ != era::data_2015 && era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018 && era_ != era::data_2016UL_preVFP && era_ != era::data_2016UL_postVFP && era_ != era::data_2017UL && era_ != era::data_2018UL) || !(event->ExistsInTree("lheParticles"))){ 
+      if((era_ != era::data_2015 && era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018 && era_ != era::data_2016UL_preVFP && era_ != era::data_2016UL_postVFP && era_ != era::data_2017UL && era_ != era::data_2018UL) || !(event->ExistsInTree("lheParticles"))){
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = true;
         for (unsigned i = 0; i < parts.size(); ++i) {
@@ -208,12 +230,12 @@ namespace ic {
           if (parts[i]->status()!=23) continue;
           if(parts[parts[i]->mothers()[0]]->pdgid() == 2212) continue;
           unsigned id = abs(parts[i]->pdgid());
-          if (count_jets) { 
+          if (count_jets) {
             if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) {
               partons++;
             }
           }
-          if (id == 24) count_jets = true; 
+          if (id == 24) count_jets = true;
         }
       } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
@@ -222,7 +244,7 @@ namespace ic {
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
          if(lhe_parts[i]->status() != 1) continue;
          unsigned id = abs(lhe_parts[i]->pdgid());
-         if ((id >= 1 && id <=6) || id == 21){ 
+         if ((id >= 1 && id <=6) || id == 21){
             t_ht_+=lhe_parts[i]->pt();
             partons++;
          }
@@ -247,31 +269,31 @@ namespace ic {
     if (do_dy_soup_) {
       unsigned partons = 0;
       double gen_mll = 0;
-      if((era_ != era::data_2015&&era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018 && era_ != era::data_2016UL_preVFP && era_ != era::data_2016UL_postVFP && era_ != era::data_2017UL && era_ != era::data_2018UL) || !(event->ExistsInTree("lheParticles"))){ 
-        
+      if((era_ != era::data_2015&&era_!=era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018 && era_ != era::data_2016UL_preVFP && era_ != era::data_2016UL_postVFP && era_ != era::data_2017UL && era_ != era::data_2018UL) || !(event->ExistsInTree("lheParticles"))){
+
         std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
         bool count_jets = true;
-      
+
         for (unsigned i = 0; i < parts.size(); ++i) {
           if (!(parts[i]->statusFlags()[IsHardProcess])) continue;
           if (parts[i]->status()!=23) continue;
           if(parts[parts[i]->mothers()[0]]->pdgid() == 2212) continue;
           unsigned id = abs(parts[i]->pdgid());
-          if (count_jets) { 
+          if (count_jets) {
             if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) {
               partons++;
             }
           }
           if (id == 23) count_jets = true;
         }
-      } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL ||  era_ == era::data_2018 || era_ == era::data_2018UL){ 
+      } else if(era_ == era::data_2015 || era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL ||  era_ == era::data_2018 || era_ == era::data_2018UL){
         t_ht_=0;
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
         for(unsigned i = 0; i< lhe_parts.size(); ++i){
          if(lhe_parts[i]->status() != 1) continue;
          unsigned id = abs(lhe_parts[i]->pdgid());
-         if ((id >= 1 && id <=6) || id == 21){ 
+         if ((id >= 1 && id <=6) || id == 21){
             partons++;
             t_ht_+=lhe_parts[i]->pt();
          }
@@ -281,7 +303,7 @@ namespace ic {
           gen_mll = (zll_cands[0]->vector()+zll_cands[1]->vector()).M();
           t_mll_ = gen_mll;
         } else {
-          std::cout << "event with failing dy soup: " << (unsigned long long) eventInfo->event() << std::endl; 
+          std::cout << "event with failing dy soup: " << (unsigned long long) eventInfo->event() << std::endl;
           std::cerr << "Error making soup, event has " << zll_cands.size() << " Z->ll candidates, 2 expected!" <<std::endl;
           throw;
         }
@@ -315,10 +337,15 @@ namespace ic {
 
       // unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
     }
-
+    if (do_dy_soup_NLO_){
+       int partons = eventInfo->npNLO();
+       if (partons == 1) eventInfo->set_weight("dysoup_NLO", zw1_);
+       if (partons == 2) eventInfo->set_weight("dysoup_NLO", zw2_);
+       if (partons == 3) eventInfo->set_weight("dysoup_NLO", zw3_);
+    }
 
     if (do_dy_soup_high_mass_) {
-        unsigned partons = 0; 
+        unsigned partons = 0;
         double gen_mll = 0;
         std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
         std::vector<GenParticle*> zll_cands;
@@ -334,7 +361,7 @@ namespace ic {
         } else {
           std::cerr << "Error making soup, event has " << zll_cands.size() << " Z->ll candidates, 2 expected!" <<std::endl;
           throw;
-        } 
+        }
       if (partons > 4) {
         std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
         throw;
@@ -392,10 +419,10 @@ namespace ic {
      if (400 <= gen_ht &&gen_ht<600) eventInfo->set_weight("dysoup", zw3_);
      if (gen_ht >= 600) eventInfo->set_weight("dysoup", zw4_);
    }
-  
+
    if(do_ggH_soup_) {
      int npNLO = eventInfo->npNLO();
-     if(npNLO<0) npNLO = 2; // this is tempoary as I didn't both re-running the H+2j ntuples to ass npNLO so this will always = the default value (=-1) 
+     if(npNLO<0) npNLO = 2; // this is tempoary as I didn't both re-running the H+2j ntuples to ass npNLO so this will always = the default value (=-1)
       if(npNLO>=2) {
           eventInfo->set_weight("ggHsoup", ggHw2_);
       }
@@ -444,6 +471,12 @@ namespace ic {
     zn3_ = zn3;
     zn4_ = zn4;
   }
+  void HTTStitching::SetDYInputYields_NLO(double zn_inc_NLO, double zn1_NLO, double zn2_NLO, double zn3_NLO) {
+    zn_inc_NLO_ = zn_inc_NLO;
+    zn1_NLO_ = zn1_NLO;
+    zn2_NLO_ = zn2_NLO;
+    zn3_NLO_ = zn3_NLO;
+  }
 
   void HTTStitching::SetDYInputYieldsHighMass(double zn_inc, double zn1, double zn2, double zn3, double zn4, double zn_hm) {
     zn_inc_ = zn_inc;
@@ -461,7 +494,12 @@ namespace ic {
     zxs3_ = zxs3;
     zxs4_ = zxs4;
   }
-
+  void HTTStitching::SetDYInputCrossSections_NLO(double zxs0_NLO, double zxs1_NLO, double zxs2_NLO, double zxs3_NLO) {
+    zxs0_NLO_ = zxs0_NLO;
+    zxs1_NLO_ = zxs1_NLO;
+    zxs2_NLO_ = zxs2_NLO;
+    zxs3_NLO_ = zxs3_NLO;
+  }
 
   void HTTStitching::SetDYInputCrossSectionsHighMass(double zxsinc, double zxs1, double zxs2, double zxs3, double zxs4, double zxshm) {
     zxsinc_ = zxsinc;
@@ -485,6 +523,5 @@ namespace ic {
     ggH_n_2_ = ggH_n2;
     ggH_frac_ = ggH_frac;
   }
-
 
 }
