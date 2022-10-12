@@ -8,6 +8,7 @@ lumi=$3
 # set the inclusive sample names for DY and W - the event numbers and xs for the N jets samples will be set to the values for these samples
 DY_inclusive_name_1="DYJetsToLL-LO"
 W_inclusive_name_1="WJetsToLNu-LO"
+DY_NLO_inclusive_name_1="DYJetsToLL-NLO"
 
 while read i; do 
     sample_name=$(echo $i | cut -d" " -f1)
@@ -16,10 +17,21 @@ while read i; do
       dy_xs=$xs
     elif [ "$sample_name" == "$W_inclusive_name_1" ]; then
       w_xs=$xs
+    elif [ "$sample_name" == "$DY_NLO_inclusive_name_1" ]; then
+      dy_nlo_xs=$xs
     fi
 done < $input_xs
-dy_evt=0
+dy_evtf [[ "$sample_name" == "W"*"JetsToLNu-LO"* ]]; then
+      xs=$w_xs
+      evt=$w_evt
+      loop=0
+    elif [[ "$sample_name" == "DY"*"NLO"* ]]; then
+      xs=$dy_nlo_xs
+      evt=$dy_nlo_evt
+      loop=0
+=0
 w_evt=0
+dy_nlo_evt=0
 while read i; do 
     sample_name=$(echo $i | cut -d" " -f1)
     evt=$(echo $i | cut -d" " -f2)
@@ -27,6 +39,8 @@ while read i; do
       dy_evt=$(bc -l <<<$dy_evt+$evt)
     elif [ "$sample_name" == "$W_inclusive_name_1" ]; then
       w_evt=$(bc -l <<<$w_evt+$evt)
+    elif [ "$sample_name" == "$DY_NLO_inclusive_name_1" ]; then
+      dy_nlo_evt=$(bc -l <<<$dy_nlo_evt+$evt)
     fi
 done < $input_evt
 
@@ -43,6 +57,10 @@ while read i; do
     elif [[ "$sample_name" == "W"*"JetsToLNu-LO"* ]]; then
       xs=$w_xs
       evt=$w_evt
+      loop=0
+    elif [[ "$sample_name" == "DY"*"NLO"* ]]; then
+      xs=$dy_nlo_xs
+      evt=$dy_nlo_evt
       loop=0
     fi
     if [ $loop == 1 ]; then
