@@ -147,6 +147,7 @@ namespace ic {
       outtree_->Branch("puweight",          &pu_weight_, "pu_weight/F");
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
+      outtree_->Branch("wt_dysoup_NLO",         &wt_dysoup_NLO_);
       outtree_->Branch("wt_wsoup",         &wt_wsoup_);
       // btag weights (for event reweighting method)
       outtree_->Branch("wt_btag",           &wt_btag_);
@@ -1720,6 +1721,7 @@ namespace ic {
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
+    wt_dysoup_NLO_ = eventInfo->weight_defined("dysoup_NLO") ? eventInfo->weight("dysoup_NLO") : 1.0;
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_weights();

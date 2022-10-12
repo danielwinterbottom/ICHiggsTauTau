@@ -115,23 +115,15 @@ namespace ic {
     if (do_dy_soup_NLO_ && (era_==era::data_2015 || era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup_NLO"      % true;
       std::cout << "nInc = " << zn_inc_NLO_ << std::endl;
-      zf1_ = zxs1_NLO_/zxs0_NLO_;
-      zf2_ = zxs2_NLO_/zxs0_NLO_;
-      zf3_ = zxs3_NLO_/zxs0_NLO_;
-      zw1_ = (zn_inc_NLO_*zf1_) / ( (zn_inc_NLO_*zf1_) + zn1_NLO_ );
-      zw2_ = (zn_inc_NLO_*zf2_) / ( (zn_inc_NLO_*zf2_) + zn2_NLO_ );
-      zw3_ = (zn_inc_NLO_*zf3_) / ( (zn_inc_NLO_*zf3_) + zn3_NLO_ );
-      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % zf1_ % zn1_NLO_ % zw1_;
-      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf2_ % zn2_NLO_ % zw2_;
-      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_NLO_ % zw3_;
-      if (fs_) {
-        t_gen_info_ = fs_->make<TTree>("genweights", "genweights");
-        t_gen_info_->Branch("decay", &t_decay_);
-        t_gen_info_->Branch("mll", &t_mll_);
-        t_gen_info_->Branch("ht", &t_ht_);
-        t_gen_info_->Branch("njets", &t_njets_);
-        t_gen_info_->Branch("wt", &t_wt_);
-      }
+      zf0_ = zxs_0J_/zxs_inc_;
+      zf1_ = zxs_1J_/zxs_inc_;
+      zf2_ = zxs_2J_/zxs_inc_;
+      zw0_ = (zn_inc_NLO_*zf0_) / ( (zn_inc_NLO_*zf0_) + zn_0J_ );
+      zw1_ = (zn_inc_NLO_*zf1_) / ( (zn_inc_NLO_*zf1_) + zn_1J_ );
+      zw2_ = (zn_inc_NLO_*zf2_) / ( (zn_inc_NLO_*zf2_) + zn_2J_ );
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % zf0_ % zn_0J_ % zw0_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf1_ % zn_1J_ % zw1_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf2_ % zn_2J_ % zw2_;
     }
     if (do_dy_soup_high_mass_ ) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup_high_mass"      % true;
@@ -339,9 +331,9 @@ namespace ic {
     }
     if (do_dy_soup_NLO_){
        int partons = eventInfo->npNLO();
+       if (partons == 0) eventInfo->set_weight("dysoup_NLO", zw0_);
        if (partons == 1) eventInfo->set_weight("dysoup_NLO", zw1_);
        if (partons == 2) eventInfo->set_weight("dysoup_NLO", zw2_);
-       if (partons == 3) eventInfo->set_weight("dysoup_NLO", zw3_);
     }
 
     if (do_dy_soup_high_mass_) {
@@ -471,11 +463,11 @@ namespace ic {
     zn3_ = zn3;
     zn4_ = zn4;
   }
-  void HTTStitching::SetDYInputYields_NLO(double zn_inc_NLO, double zn1_NLO, double zn2_NLO, double zn3_NLO) {
+  void HTTStitching::SetDYInputYields_NLO(double zn_inc_NLO, double zn_0J, double zn_1J, double zn_2J) {
     zn_inc_NLO_ = zn_inc_NLO;
-    zn1_NLO_ = zn1_NLO;
-    zn2_NLO_ = zn2_NLO;
-    zn3_NLO_ = zn3_NLO;
+    zn_0J_ = zn_0J;
+    zn_1J_ = zn_1J;
+    zn_2J_ = zn_2J;
   }
 
   void HTTStitching::SetDYInputYieldsHighMass(double zn_inc, double zn1, double zn2, double zn3, double zn4, double zn_hm) {
@@ -494,11 +486,11 @@ namespace ic {
     zxs3_ = zxs3;
     zxs4_ = zxs4;
   }
-  void HTTStitching::SetDYInputCrossSections_NLO(double zxs0_NLO, double zxs1_NLO, double zxs2_NLO, double zxs3_NLO) {
-    zxs0_NLO_ = zxs0_NLO;
-    zxs1_NLO_ = zxs1_NLO;
-    zxs2_NLO_ = zxs2_NLO;
-    zxs3_NLO_ = zxs3_NLO;
+  void HTTStitching::SetDYInputCrossSections_NLO(double zxs_inc, double zxs_0J, double zxs_1J, double zxs_2J) {
+    zxs_inc_ = zxs_inc;
+    zxs_0J_ = zxs_0J;
+    zxs_1J_ = zxs_1J;
+    zxs_2J_ = zxs_2J;
   }
 
   void HTTStitching::SetDYInputCrossSectionsHighMass(double zxsinc, double zxs1, double zxs2, double zxs3, double zxs4, double zxshm) {
