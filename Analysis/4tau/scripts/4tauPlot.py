@@ -405,6 +405,7 @@ if options.year == "2018":
       ewkz_samples = ['EWKZ2Jets_ZToLL']
       signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
 
+
 if options.year == "2017":
   if options.campaign == "ReReco":
     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
@@ -509,6 +510,7 @@ other_sels = {
               "LF":"({lfgm} > 0) && ({jfgm} == 0)".format(lfgm=summed_jfake_gen_matches,jfgm=summed_jfake_gen_matches),
               }
 
+z_sels = {"Z"+key:val for (key,val) in other_sels.items()}
 top_sels = {"TT"+key:val for (key,val) in other_sels.items()}
 vv_sels = {"VV"+key:val for (key,val) in other_sels.items()}
 w_sels = {"W"+key:val for (key,val) in other_sels.items()}
@@ -572,7 +574,7 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   else:
     vjf = "deepTauVsJets_" + VsJets_wp_fail
   
-  ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1")
+  ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1").replace("!1>0.5","(1)")
 
   # raw weight names
   ff_raw_1 = "(wt_ff_None_"+VsJets_wp+"_raw_1)"
@@ -593,6 +595,27 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   ff_raw_234 = "(wt_ff_None_"+VsJets_wp+"_raw_234)"
 
   ff_raw_1234 = "(wt_ff_None_"+VsJets_wp+"_raw_1234)"
+
+  # alt weight names
+  ff_alt_1 = "(wt_ff_None_"+VsJets_wp+"_alt_1)"
+  ff_alt_2 = "(wt_ff_None_"+VsJets_wp+"_alt_2)"
+  ff_alt_3 = "(wt_ff_None_"+VsJets_wp+"_alt_3)"
+  ff_alt_4 = "(wt_ff_None_"+VsJets_wp+"_alt_4)"
+
+  ff_alt_12 = "(wt_ff_None_"+VsJets_wp+"_alt_12)"
+  ff_alt_13 = "(wt_ff_None_"+VsJets_wp+"_alt_13)"
+  ff_alt_14 = "(wt_ff_None_"+VsJets_wp+"_alt_14)"
+  ff_alt_23 = "(wt_ff_None_"+VsJets_wp+"_alt_23)"
+  ff_alt_24 = "(wt_ff_None_"+VsJets_wp+"_alt_24)"
+  ff_alt_34 = "(wt_ff_None_"+VsJets_wp+"_alt_34)"
+
+  ff_alt_123 = "(wt_ff_None_"+VsJets_wp+"_alt_123)"
+  ff_alt_124 = "(wt_ff_None_"+VsJets_wp+"_alt_124)"
+  ff_alt_134 = "(wt_ff_None_"+VsJets_wp+"_alt_134)"
+  ff_alt_234 = "(wt_ff_None_"+VsJets_wp+"_alt_234)"
+
+  ff_alt_1234 = "(wt_ff_None_"+VsJets_wp+"_alt_1234)"
+
 
   # correction weight names
   ff_corr_1 = "(wt_ff_None_"+VsJets_wp+"_corr_1)"
@@ -630,7 +653,17 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
     ff_wt = "((%(ff_raw_3)s * %(ff_corr_3)s * %(fail_3)s * %(pass_4)s) \
             + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s) \
             - (%(ff_raw_34)s * %(ff_corr_34)s * %(fail_3)s * %(fail_4)s))" % vars()
-    #ff_wt = "((%(ff_raw_34)s * %(fail_3)s * %(fail_4)s))" % vars()
+    if options.charges_non_zero:
+      ff_wt = "((%(ff_raw_3)s * %(fail_3)s * %(pass_4)s) \
+              + (%(ff_raw_4)s * %(pass_3)s * %(fail_4)s) \
+              - (%(ff_raw_34)s * %(fail_3)s * %(fail_4)s))" % vars()
+    #ff_wt = "(%(ff_raw_3)s * %(ff_corr_3)s * %(fail_3)s * %(pass_4)s)" % vars()
+    #ff_wt = "(%(ff_alt_3)s * %(ff_corr_3)s * %(fail_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(%(ff_raw_3)s * %(fail_3)s * %(pass_4)s)" % vars()
+    #ff_wt = "(%(ff_alt_3)s * %(fail_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(%(ff_raw_4)s * %(pass_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(%(ff_raw_34)s * %(ff_corr_34)s * %(fail_3)s * %(fail_4)s)" % vars()
   elif options.channel in ["ettt","mttt"]:
     ff_wt = "((%(ff_raw_2)s * %(ff_corr_2)s * %(fail_2)s * %(pass_3)s * %(pass_4)s) \
             + (%(ff_raw_3)s * %(ff_corr_3)s * %(pass_2)s * %(fail_3)s * %(pass_4)s) \
