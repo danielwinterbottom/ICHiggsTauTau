@@ -291,6 +291,7 @@ if options.proc_bkg or options.proc_all:
 	 #'DYJetsToLL_0J-NLO',
 	 #'DYJetsToLL_1J-NLO',
 	 #'DYJetsToLL_2J-NLO',
+         #'DYJetsToLL-NLO',
 	 # Electroweak W and Z
  	 'EWKWMinus2Jets_WToLNu',
 	 'EWKWPlus2Jets_WToLNu',
@@ -341,12 +342,20 @@ if options.proc_bkg or options.proc_all:
  	# 'ZHToTauTau_M125',
  	# 'ttHToTauTau_M125',    
   	]
+
+  Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu","WZTo2Q2L"]
+
   for sa in central_samples:
+      FILELIST='filelists/Feb16_2017_MC_106X'
       JOB='%s_2017' % (sa)
       PREFIX='Feb16_MC_106X_2017'
-
-
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+
+      # New samples
+      if sa in Sep28_samples:
+        FILELIST='filelists/Sep28_2017_MC_106X'
+        PREFIX='Sep28_MC_106X_2017'
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
 
       #JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\",%(jetuncert_string)s}}' "%vars());

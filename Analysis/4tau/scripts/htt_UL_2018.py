@@ -212,19 +212,18 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     data_samples = []
     data_eras = ['A','B','C','D']
-    data_eras = ['D']
     for chn in channels:
         for era in data_eras:
-            #if 'mttt' in chn:
-            #    data_samples+=['SingleMuon'+era]
-            #if 'mmtt' in chn:
-            #    data_samples+=['SingleMuon'+era, 'DoubleMuon'+era]
+            if 'mttt' in chn:
+                data_samples+=['SingleMuon'+era]
+            if 'mmtt' in chn:
+                data_samples+=['SingleMuon'+era, 'DoubleMuon'+era]
             if 'ettt' in chn or 'eett' in chn:
                 data_samples+=['EGamma'+era]
-            #if 'emtt' in chn:
-            #    data_samples+=['MuonEG'+era]
-            #if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn or "ttt" in chn:
-            #    data_samples+=['Tau'+era]
+            if 'emtt' in chn:
+                data_samples+=['MuonEG'+era]
+            if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn or "ttt" in chn:
+                data_samples+=['Tau'+era]
     data_samples = list(set(data_samples))
 
     DATAFILELIST="./filelists/Apr22_2018_Data_106X"
@@ -290,75 +289,77 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-#    # Drell-Yan LO
-#    'DY1JetsToLL-LO',
-#    'DY2JetsToLL-LO',
-#    'DY3JetsToLL-LO',
-#    'DY4JetsToLL-LO',
-#    'DYJetsToLL-LO',
-#	  # Low mass Drell Yan LO
-#    'DYJetsToLL_M-10to50-LO',
-#  	#'DY1JetsToLL_M-10to50-LO',
-#  	#'DY2JetsToLL_M-10to50-LO',
-# 	  #'DY3JetsToLL_M-10to50-LO',
-# 	  #'DY4JetsToLL_M-10to50-LO',
-#	  # Drell-Yan NLO
-# 	  #'DYJetsToLL_0J-NLO',
-#    #'DYJetsToLL_1J-NLO',
-#	  #'DYJetsToLL_2J-NLO',
-#	  # Electroweak W and Z
-# 	  'EWKWMinus2Jets_WToLNu',
-# 	  'EWKWPlus2Jets_WToLNu',
-# 	  'EWKZ2Jets_ZToLL',
-#	  # W + Jets L0
-#	  'WJetsToLNu-LO',
-# 	  'W1JetsToLNu-LO',
-# 	  'W2JetsToLNu-LO',
-# 	  'W3JetsToLNu-LO',
-# 	  'W4JetsToLNu-LO',
-#	  # W + Jets NLO
-#	  #'WJetsToLNu_0J-NLO',
-#	  #'WJetsToLNu_1J-NLO',
-#    #'WJetsToLNu_2J-NLO',
-#    #'WJetsToLNu-NLO',
-#	  # ttbar
-# 	  'TTTo2L2Nu',
-#	  'TTToHadronic',
+   # Drell-Yan LO
+   'DY1JetsToLL-LO',
+   'DY2JetsToLL-LO',
+   'DY3JetsToLL-LO',
+   'DY4JetsToLL-LO',
+   'DYJetsToLL-LO',
+	  # Low mass Drell Yan LO
+   'DYJetsToLL_M-10to50-LO',
+ 	#'DY1JetsToLL_M-10to50-LO',
+ 	#'DY2JetsToLL_M-10to50-LO',
+	  #'DY3JetsToLL_M-10to50-LO',
+	  #'DY4JetsToLL_M-10to50-LO',
+	  # Drell-Yan NLO
+	#'DYJetsToLL-NLO',
+	  #'DYJetsToLL_0J-NLO',
+   #'DYJetsToLL_1J-NLO',
+	  #'DYJetsToLL_2J-NLO',
+	  # Electroweak W and Z
+	  'EWKWMinus2Jets_WToLNu',
+	  'EWKWPlus2Jets_WToLNu',
+	  'EWKZ2Jets_ZToLL',
+	  # W + Jets L0
+	  'WJetsToLNu-LO',
+	  'W1JetsToLNu-LO',
+	  'W2JetsToLNu-LO',
+	  'W3JetsToLNu-LO',
+	  'W4JetsToLNu-LO',
+	  # W + Jets NLO
+	  #'WJetsToLNu_0J-NLO',
+	  #'WJetsToLNu_1J-NLO',
+   #'WJetsToLNu_2J-NLO',
+   #'WJetsToLNu-NLO',
+	  # ttbar
+	  'TTTo2L2Nu',
+	  'TTToHadronic',
  	  'TTToSemiLeptonic',
-#	  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
-# 	  'WZTo1L1Nu2Q',
-# 	  'WZTo3LNu',
-# 	  'WWTo1L1Nu2Q',
-# 	  'WWTo2L2Nu',
-# 	  'ZZTo2L2Nu',
-#	  'ZZTo4L',
-#	  # Inclusive
-# 	  'WW',
-# 	  'WZ',
-# 	  'ZZ',
-# 	  # Triboson
-#  	'WWZ',
-# 	  'WWZ-ext1',
-# 	  'WZZ',
-# 	  'WZZ-ext1',
-#  	'WWW',
-# 	  'WWW-ext1',
-# 	  'ZZZ',
-# 	  'ZZZ-ext1',
-#	  # Other backgrounds
-# 	  'WGToLNuG',
-# 	  'Tbar-t',
-# 	  'Tbar-tW',
-# 	  'T-t',
-# 	  'T-tW',
-#	  # SM Higgs
-# 	 # 'GluGluHToTauTau_M125',
-# 	 # 'VBFHToTauTau_M125',
-# 	 # 'WminusHToTauTau_M125',
-# 	 # 'WplusHToTauTau_M125',
-# 	 # 'ttHToTauTau_M125',
+	  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
+	  'WZTo1L1Nu2Q',
+	  'WZTo3LNu',
+	  'WWTo1L1Nu2Q',
+	  'WWTo2L2Nu',
+	  'ZZTo2L2Nu',
+	  'ZZTo4L',
+	  # Inclusive
+	  'WW',
+	  'WZ',
+	  'ZZ',
+	  # Triboson
+ 	'WWZ',
+	  'WWZ-ext1',
+	  'WZZ',
+	  'WZZ-ext1',
+ 	'WWW',
+	  'WWW-ext1',
+	  'ZZZ',
+	  'ZZZ-ext1',
+	  # Other backgrounds
+	  'WGToLNuG',
+	  'Tbar-t',
+	  'Tbar-tW',
+	  'T-t',
+	  'T-tW',
+	  # SM Higgs
+	 # 'GluGluHToTauTau_M125',
+	 # 'VBFHToTauTau_M125',
+	 # 'WminusHToTauTau_M125',
+	 # 'WplusHToTauTau_M125',
+	 # 'ttHToTauTau_M125',
     ]
 
+    Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WZTo1L3Nu","WZTo2Q2L"]       
 
     for sa in central_samples:
         FILELIST='filelists/Jan10_2018_MC_106X'
@@ -367,6 +368,11 @@ if options.proc_bkg or options.proc_all:
         if sa == "TTToSemiLeptonic":
             FILELIST='filelists/Feb16_2018_MC_106X'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Feb16_MC_106X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        # New samples
+        if sa in Sep28_samples:
+            FILELIST='filelists/Sep28_2018_MC_106X'
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/Sep28_MC_106X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+
         job_num=0
         for FLATJSONPATCH in flatjsons:
             #nperjob = 40
