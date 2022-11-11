@@ -58,6 +58,9 @@ parser.add_option("--calc_lumi", dest="calc_lumi", action='store_true', default=
 parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
                   help="Process background mc samples")
 
+parser.add_option("--sig", dest="proc_sig", action='store_true', default=False,
+                  help="Process signal mc samples")
+
 parser.add_option("--all", dest="proc_all", action='store_true', default=False,
                   help="Process all samples")
 
@@ -400,4 +403,78 @@ if options.proc_bkg or options.proc_all:
         os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
         PARAJOBSUBMIT = getParaJobSubmit(job_num)
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
+
+if options.proc_sig:
+    grid_phi = ["100","110","125","140","160","180","200","250","300"]
+    grid_A = ["60","70","80","90","100","125","140","160"]
+    signal_mc = [
+    #"phi200A100To4Tau",
+    #"phi200A200To4Tau",
+    #"phi100A100To4Tau",
+    #"phi100A150To4Tau",
+    #"phi100A60To4Tau",
+    #"phi200A100To4Tau",
+    #"phi200A150To4Tau",
+    #"phi200A20To4Tau",
+    #"phi200A60To4Tau",
+    #"phi300A100To4Tau",
+    #"phi300A150To4Tau",
+    #"phi300A20To4Tau",
+    #"phi300A60To4Tau"
+    ]
+    for mp in grid_phi:
+      for mA in grid_A:
+        signal_mc.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
+    for sa in signal_mc:
+        print sa
+        #SIG_DIR = 'June03_Signal_106X_2018'
+        #SIG_FILELIST = "filelists/June03_2018_MC_106X"
+        #SIG_DIR = 'Jun15_Signal_106X_2018'
+        #SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
+        #user='guttley'
+        SIG_DIR = 'Nov09_Signal_106X_2017'
+        SIG_FILELIST = "filelists/Nov09_2017_MC_106X"
+        user='ksavva'
+        JOB='%s_2017' % (sa)
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        job_num=0
+        for FLATJSONPATCH in flatjsons:
+            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+            FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
+            if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
+            #print '%(SIG_FILELIST)s_%(sa)s.dat' %vars(), os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars())
+            if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
+                nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
+                nperjob = 5
+                n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
+                if n_scales*n_channels>=24: nperjob = 2
+                if n_scales*n_channels>=48: nperjob=1
+
+                if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
+
+                for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+                    os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
+                    if not parajobs and not options.condor:
+                        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+                    elif not parajobs and options.condor:
+                        outscriptname = '{}-{}.sh'.format(JOB, job_num)
+                        subfilename = '{}_{}.sub'.format(JOB, job_num)
+                        subfile = open("jobs/{}".format(subfilename), "w")
+                        condor_settings = CONDOR_TEMPLATE % {
+                          'EXE': outscriptname,
+                          'TASK': "{}-{}".format(JOB, job_num)
+                        }
+                        subfile.write(condor_settings)
+                        subfile.close()
+                        os.system('condor_submit jobs/{}'.format(subfilename))
+                        # print('condor_submit jobs/{}'.format(subfilename))
+                    job_num+=1
+                file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+        if parajobs:
+            os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+            PARAJOBSUBMIT = getParaJobSubmit(job_num)
+            os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
+
+
+
 

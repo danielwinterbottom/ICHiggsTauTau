@@ -419,35 +419,38 @@ if options.proc_bkg or options.proc_all:
 
 
 if options.proc_sig:
-
+    grid_phi = ["100","110","125","140","160","180","200","250","300"]
+    grid_A = ["60","70","80","90","100","125","140","160"]
     signal_mc = [
     #"phi200A100To4Tau",
     #"phi200A200To4Tau",
-    "phi100A100To4Tau",
-    "phi100A150To4Tau",
-    "phi100A60To4Tau",
-    "phi200A100To4Tau",
-    "phi200A150To4Tau",
-    "phi200A20To4Tau",
-    "phi200A60To4Tau",
-    "phi300A100To4Tau",
-    "phi300A150To4Tau",
-    "phi300A20To4Tau",
-    "phi300A60To4Tau"
+    #"phi100A100To4Tau",
+    #"phi100A150To4Tau",
+    #"phi100A60To4Tau",
+    #"phi200A100To4Tau",
+    #"phi200A150To4Tau",
+    #"phi200A20To4Tau",
+    #"phi200A60To4Tau",
+    #"phi300A100To4Tau",
+    #"phi300A150To4Tau",
+    #"phi300A20To4Tau",
+    #"phi300A60To4Tau"
     ]
-
+    for mp in grid_phi:
+      for mA in grid_A:
+        signal_mc.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
     for sa in signal_mc:
-
         print sa
         #SIG_DIR = 'June03_Signal_106X_2018'
         #SIG_FILELIST = "filelists/June03_2018_MC_106X"
-        SIG_DIR = 'Jun15_Signal_106X_2018'
-        SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
-        user='guttley'
-
+        #SIG_DIR = 'Jun15_Signal_106X_2018'
+        #SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
+        #user='guttley'
+        SIG_DIR = 'Nov09_Signal_106X_2018'
+        SIG_FILELIST = "filelists/Nov09_2018_MC_106X"
+        user='ksavva'
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
-
         job_num=0
         for FLATJSONPATCH in flatjsons:
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
