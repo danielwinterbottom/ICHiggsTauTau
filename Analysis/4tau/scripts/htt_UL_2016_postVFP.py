@@ -260,12 +260,12 @@ if options.proc_bkg or options.proc_all:
   central_samples = [
   # Drell-Yan LO
 	'DY1JetsToLL-LO',
-   'DY2JetsToLL-LO',
-   'DY3JetsToLL-LO',
-   'DY4JetsToLL-LO',
-   'DYJetsToLL-LO',
+        'DY2JetsToLL-LO',
+        'DY3JetsToLL-LO',
+        'DY4JetsToLL-LO',
+        'DYJetsToLL-LO',
 	 # Low mass Drell Yan LO
-   'DYJetsToLL_M-10to50-LO',
+        'DYJetsToLL_M-10to50-LO',
 	'DY1JetsToLL_M-10to50-LO',
 	'DY2JetsToLL_M-10to50-LO',
 	'DY3JetsToLL_M-10to50-LO',
@@ -295,11 +295,14 @@ if options.proc_bkg or options.proc_all:
 	'TTToHadronic',
 	'TTToSemiLeptonic',
 	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo1L1Nu2Q, WWTo1L1Nu2Q)
-	'WZTo2Q2L',
-	'WZTo3LNu',
-	'WWTo2L2Nu',
-	'ZZTo2L2Nu',
-	'ZZTo4L',
+        'WZTo2Q2L',
+        'WZTo3LNu',
+        'WWTo2L2Nu',
+        'ZZTo2L2Nu',
+        'ZZTo4L',
+        'WZTo1L3Nu',
+        'WZTo1L1Nu2Q',
+        'WWTo1L1Nu2Q',
 	 # Inclusive
 	'WW',
 	'WZ',
@@ -320,12 +323,12 @@ if options.proc_bkg or options.proc_all:
 	'T-t',
 	'T-tW',
 	 # SM Higgs
-	#'GluGluHToTauTau_M125',
-	#'VBFHToTauTau_M125',
-	#'WminusHToTauTau_M125',
-	#'WplusHToTauTau_M125',
-	#'ZHToTauTau_M125',
-	#'ttHToTauTau_M125',
+	'GluGluHToTauTau_M125',
+	'VBFHToTauTau_M125',
+	'WminusHToTauTau_M125',
+	'WplusHToTauTau_M125',
+	'ZHToTauTau_M125',
+	'ttHToTauTau_M125',
   ] 
 
   Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu"]
@@ -382,6 +385,7 @@ if options.proc_bkg or options.proc_all:
         os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars()) 
 
 if options.proc_sig:
+    counter = 0
     grid_phi = ["100","110","125","140","160","180","200","250","300"]
     grid_A = ["60","70","80","90","100","125","140","160"]
     signal_mc = [
@@ -401,13 +405,16 @@ if options.proc_sig:
     ]
     for mp in grid_phi:
       for mA in grid_A:
+        counter += 1
         signal_mc.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
+    print("Number of Signal Samples is: ", counter)
+
     for sa in signal_mc:
         print sa
         #SIG_DIR = 'June03_Signal_106X_2018'
         #SIG_FILELIST = "filelists/June03_2018_MC_106X"
         SIG_DIR = 'Nov09_Signal_106X_2016-postVFP'
-        SIG_FILELIST = "filelists/Nov09_2016-postVFP_MC_106X"
+        SIG_FILELIST = "filelists/Nov09_2016_postVFP_MC_106X"
         user='ksavva'
         JOB='%s_2016_postVFP' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());

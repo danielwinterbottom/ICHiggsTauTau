@@ -295,69 +295,71 @@ if options.proc_bkg or options.proc_all:
    'DY3JetsToLL-LO',
    'DY4JetsToLL-LO',
    'DYJetsToLL-LO',
-	  # Low mass Drell Yan LO
+   # Low mass Drell Yan LO
    'DYJetsToLL_M-10to50-LO',
- 	#'DY1JetsToLL_M-10to50-LO',
- 	#'DY2JetsToLL_M-10to50-LO',
-	  #'DY3JetsToLL_M-10to50-LO',
-	  #'DY4JetsToLL_M-10to50-LO',
-	  # Drell-Yan NLO
-	#'DYJetsToLL-NLO',
-	  #'DYJetsToLL_0J-NLO',
+   'DY1JetsToLL_M-10to50-LO',
+   'DY2JetsToLL_M-10to50-LO',
+   'DY3JetsToLL_M-10to50-LO',
+   'DY4JetsToLL_M-10to50-LO',
+   # Drell-Yan NLO
+   #'DYJetsToLL-NLO',
+   #'DYJetsToLL_0J-NLO',
    #'DYJetsToLL_1J-NLO',
-	  #'DYJetsToLL_2J-NLO',
-	  # Electroweak W and Z
-	  'EWKWMinus2Jets_WToLNu',
-	  'EWKWPlus2Jets_WToLNu',
-	  'EWKZ2Jets_ZToLL',
-	  # W + Jets L0
-	  'WJetsToLNu-LO',
-	  'W1JetsToLNu-LO',
-	  'W2JetsToLNu-LO',
-	  'W3JetsToLNu-LO',
-	  'W4JetsToLNu-LO',
-	  # W + Jets NLO
-	  #'WJetsToLNu_0J-NLO',
-	  #'WJetsToLNu_1J-NLO',
-   #'WJetsToLNu_2J-NLO',
-   #'WJetsToLNu-NLO',
-	  # ttbar
-	  'TTTo2L2Nu',
-	  'TTToHadronic',
- 	  'TTToSemiLeptonic',
-	  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
-	  'WZTo1L1Nu2Q',
-	  'WZTo3LNu',
-	  'WWTo1L1Nu2Q',
-	  'WWTo2L2Nu',
-	  'ZZTo2L2Nu',
-	  'ZZTo4L',
-	  # Inclusive
-	  'WW',
-	  'WZ',
-	  'ZZ',
-	  # Triboson
- 	'WWZ',
-	  'WWZ-ext1',
-	  'WZZ',
-	  'WZZ-ext1',
- 	'WWW',
-	  'WWW-ext1',
-	  'ZZZ',
-	  'ZZZ-ext1',
-	  # Other backgrounds
-	  'WGToLNuG',
-	  'Tbar-t',
-	  'Tbar-tW',
-	  'T-t',
-	  'T-tW',
-	  # SM Higgs
-	 # 'GluGluHToTauTau_M125',
-	 # 'VBFHToTauTau_M125',
-	 # 'WminusHToTauTau_M125',
-	 # 'WplusHToTauTau_M125',
-	 # 'ttHToTauTau_M125',
-    ]
+   #'DYJetsToLL_2J-NLO',
+   # Electroweak W and Z
+   'EWKWMinus2Jets_WToLNu',
+   'EWKWPlus2Jets_WToLNu',
+   'EWKZ2Jets_ZToLL',
+   # W + Jets L0
+   'WJetsToLNu-LO',
+   'W1JetsToLNu-LO',
+   'W2JetsToLNu-LO',
+   'W3JetsToLNu-LO',
+   'W4JetsToLNu-LO',
+  # W + Jets NLO
+  #'WJetsToLNu_0J-NLO',
+  #'WJetsToLNu_1J-NLO',
+  #'WJetsToLNu_2J-NLO',
+  #'WJetsToLNu-NLO',
+  # ttbar
+   'TTTo2L2Nu',
+   'TTToHadronic',
+   'TTToSemiLeptonic',
+  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
+  'WZTo1L3Nu',
+  'WZTo2Q2L',
+  'WZTo1L1Nu2Q',
+  'WZTo3LNu',
+  'WWTo1L1Nu2Q',
+  'WWTo2L2Nu',
+  'ZZTo2L2Nu',
+  'ZZTo4L',
+  # Inclusive
+  'WW',
+  'WZ',
+  'ZZ',
+  # Triboson
+  'WWZ',
+  'WWZ-ext1',
+  'WZZ',
+  'WZZ-ext1',
+  'WWW',
+  'WWW-ext1',
+  'ZZZ',
+  'ZZZ-ext1',
+  # Other backgrounds
+  'WGToLNuG',
+  'Tbar-t',
+  'Tbar-tW',
+  'T-t',
+  'T-tW',
+  # SM Higgs
+  'GluGluHToTauTau_M125',
+  'VBFHToTauTau_M125',
+  'WminusHToTauTau_M125',
+  'WplusHToTauTau_M125',
+  'ttHToTauTau_M125',
+   ]
 
     Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WZTo1L3Nu","WZTo2Q2L"]       
 
@@ -419,6 +421,7 @@ if options.proc_bkg or options.proc_all:
 
 
 if options.proc_sig:
+    counter = 0
     grid_phi = ["100","110","125","140","160","180","200","250","300"]
     grid_A = ["60","70","80","90","100","125","140","160"]
     signal_mc = [
@@ -438,7 +441,9 @@ if options.proc_sig:
     ]
     for mp in grid_phi:
       for mA in grid_A:
+        counter += 1
         signal_mc.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
+    print("Number of Signal Samples is: ", counter)
     for sa in signal_mc:
         print sa
         #SIG_DIR = 'June03_Signal_106X_2018'
