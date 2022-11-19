@@ -2455,17 +2455,17 @@ def HTTPlot(nodename,
 
     background_schemes = {
       'mttt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ettt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'tttt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ttt': [
         backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F"],R.TColor.GetColor(107,174,214)),
         backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VVV"],R.TColor.GetColor(136,65,157)),
@@ -2476,17 +2476,17 @@ def HTTPlot(nodename,
         backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
         backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
       'eett': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'mmtt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'emtt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
     }
 
 
