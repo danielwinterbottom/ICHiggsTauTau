@@ -107,6 +107,7 @@ sample_list = [
 	'TTToSemiLeptonic',
 	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
 	'WZTo3LNu',
+        'WZTo1L3Nu','WZTo2Q2L','WZTo1L1Nu2Q','WWTo1L1Nu2Q',
 	'WWTo2L2Nu',
 	'ZZTo2L2Nu',
 	'ZZTo4L',

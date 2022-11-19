@@ -109,6 +109,8 @@ sample_list = [
 	'TTToHadronic',
 	'TTToSemiLeptonic',
 	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
+	'WZTo1L3Nu',
+	'WZTo2Q2L',
 	'WZTo1L1Nu2Q',
 	'WZTo3LNu',
 	'WWTo1L1Nu2Q',
@@ -137,6 +139,7 @@ sample_list = [
    # SM Higgs (Missing Files: VBFHToTauTau_M125,WminusHToTauTau_M125,WplusHToTauTau_M125,ttHToTauTau_M125)
   'GluGluHToTauTau_M125',
   'ZHToTauTau_M125',
+  'VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ttHToTauTau_M125',
 
     ]
 grid_phi = ["100","110","125","140","160","180","200","250","300"]
