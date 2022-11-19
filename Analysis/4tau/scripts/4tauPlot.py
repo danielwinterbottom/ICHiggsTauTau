@@ -316,9 +316,9 @@ for i in options.set_alias:
 		
 # Add data sample names
 if (options.channel == 'tttt' or options.channel == 'ttt'):
-	if options.year == "2016-preVFP":
+	if options.year == "2016_preVFP":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF']
-	elif options.year == "2016-postVFP":
+	elif options.year == "2016_postVFP":
 		data_samples = ['TauF','TauG','TauH']
 	elif options.year == "2016":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
@@ -973,7 +973,7 @@ if options.plot_from_dc == "":
         if options.embed_folder: embed_input_folder_name = options.embed_folder
         else: embed_input_folder_name = options.folder
         if add_folder_name != '' and 'EmbedZTT' not in samples_to_skip: embed_input_folder_name += '/'+add_folder_name
-      
+         
         # Add all data files
         for sample_name in data_samples:
             ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
