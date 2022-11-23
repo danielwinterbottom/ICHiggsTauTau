@@ -254,17 +254,17 @@ if options.proc_bkg or options.proc_all:
      'DY3JetsToLL-LO',
      'DY4JetsToLL-LO',
      'DYJetsToLL-LO',
-      # Low mass Drell Yan LO
+#      # Low mass Drell Yan LO
      'DYJetsToLL_M-10to50-LO',
      'DY1JetsToLL_M-10to50-LO',
      'DY2JetsToLL_M-10to50-LO',
      'DY3JetsToLL_M-10to50-LO',
      'DY4JetsToLL_M-10to50-LO',
-      # Drell-Yan NLO
-     'DYJetsToLL_0J-NLO',
-     'DYJetsToLL_1J-NLO',
-     'DYJetsToLL_2J-NLO',
-     'DYJetstoLL-NLO',
+      # # Drell-Yan NLO
+      'DYJetsToLL_0J-NLO',
+      'DYJetsToLL_1J-NLO',
+      'DYJetsToLL_2J-NLO',
+      'DYJetstoLL-NLO',
       # Electroweak W and Z
      'EWKWMinus2Jets_WToLNu',
      'EWKWPlus2Jets_WToLNu',
@@ -291,7 +291,7 @@ if options.proc_bkg or options.proc_all:
      'ZZTo2L2Nu',
      'ZZTo4L',
      'WZTo1L3Nu',
-     'WZTo2L2Q',
+     'WZTo2Q2L',
       # Inclusive
      'WW',
      'WZ',
@@ -318,15 +318,19 @@ if options.proc_bkg or options.proc_all:
      'WminusHToTauTau_M125',
      'WplusHToTauTau_M125',
      'ttHToTauTau_M125',
-  ] 
+ ] 
 
-  Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J","DYJetsToLL_1J","DYJetsToLL_2J","VBFHToTauTau_M125","WZTo1L3Nu","WZTo2Q2L","WminusHToTauTau_M125","WplusHToTauTau_M125","ttHToTauTau_M125"]
+  Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","VBFHToTauTau_M125","WZTo1L3Nu","WZTo2Q2L","WminusHToTauTau_M125","WplusHToTauTau_M125","ttHToTauTau_M125"]
 
   for sa in central_samples:
       JOB='%s_2016preVFP' % (sa)
-      if sa in Sep28_samples:
-        FILELIST = 'filelists/Sep28_2016-preVFP_MC_106X' 
+      FILELIST='filelists/Feb16_2016-preVFP_MC_106X'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+
+      if sa in Sep28_samples:
+        FILELIST = 'filelists/Sep28_2016_preVFP_MC_106X' 
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/Sep28_MC_106X_2016-preVFP/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+
       job_num=0
       for FLATJSONPATCH in flatjsons: 
         nperjob = 20

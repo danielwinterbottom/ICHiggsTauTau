@@ -254,17 +254,17 @@ if options.proc_bkg or options.proc_all:
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
     'DYJetsToLL-LO',
-     # Low mass Drell Yan LO
+#     # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
     'DY1JetsToLL_M-10to50-LO',
     'DY2JetsToLL_M-10to50-LO',
     'DY3JetsToLL_M-10to50-LO',
     'DY4JetsToLL_M-10to50-LO',
-     # Drell-Yan NLO
-    'DYJetsToLL_0J-NLO',
-    'DYJetsToLL_1J-NLO',
-    'DYJetsToLL_2J-NLO',
-    'DYJetstoLL-NLO',
+      # Drell-Yan NLO
+     'DYJetsToLL_0J-NLO',
+     'DYJetsToLL_1J-NLO',
+     'DYJetsToLL_2J-NLO',
+     'DYJetstoLL-NLO',
      # Electroweak W and Z
     'EWKWMinus2Jets_WToLNu',
     'EWKWPlus2Jets_WToLNu',
@@ -276,10 +276,10 @@ if options.proc_bkg or options.proc_all:
     'W3JetsToLNu-LO',
     'W4JetsToLNu-LO',
      # W + Jets NLO
-    'WJetsToLNu_0J-NLO',
-    'WJetsToLNu_1J-NLO',
-    'WJetsToLNu_2J-NLO',
-    'WJetsToLNu-NLO',
+    #'WJetsToLNu_0J-NLO',
+    #'WJetsToLNu_1J-NLO',
+    #'WJetsToLNu_2J-NLO',
+    #'WJetsToLNu-NLO',
      # ttbar
     'TTTo2L2Nu',
     'TTToHadronic',
@@ -323,10 +323,13 @@ if options.proc_bkg or options.proc_all:
   Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu"]
   for sa in central_samples:
       JOB='%s_2016_postVFP' % (sa)
-      if sa in Sep28_samples:
-        FILELIST = 'filelists/Sep28_2016-postVFP_MC_106X'
-
+      FILELIST='filelists/Feb16_2016-postVFP_MC_106X'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+
+      if sa in Sep28_samples:
+        FILELIST = 'filelists/Sep28_2016_postVFP_MC_106X'
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/Sep28_MC_106X_2016-postVFP/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+
       job_num=0
       for FLATJSONPATCH in flatjsons: 
         nperjob = 20

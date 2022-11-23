@@ -274,13 +274,13 @@ if options.proc_bkg or options.proc_all:
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
     'DYJetsToLL-LO',
-     # Low mass Drell Yan LO
+#     # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
     'DY1JetsToLL_M-10to50-LO',
     'DY2JetsToLL_M-10to50-LO',
     'DY3JetsToLL_M-10to50-LO',
     'DY4JetsToLL_M-10to50-LO',
-     # Drell-Yan NLO
+      # Drell-Yan NLO
     'DYJetsToLL_0J-NLO',
     'DYJetsToLL_1J-NLO',
     'DYJetsToLL_2J-NLO',
@@ -309,7 +309,7 @@ if options.proc_bkg or options.proc_all:
     'ZZTo2L2Nu',
     'ZZTo4L',
     'WZTo1L3Nu',
-    'WZTo2L2Q',
+    'WZTo2Q2L',
     'WZTo1L1Nu2Q',
     'WWTo1L1Nu2Q',
      # Inclusive
@@ -338,7 +338,7 @@ if options.proc_bkg or options.proc_all:
     'WplusHToTauTau_M125',
     'ZHToTauTau_M125',
     'ttHToTauTau_M125',    
-  	]
+ 	]
 
   Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu","WZTo2Q2L"]
 
@@ -352,7 +352,7 @@ if options.proc_bkg or options.proc_all:
       if sa in Sep28_samples:
         FILELIST='filelists/Sep28_2017_MC_106X'
         PREFIX='Sep28_MC_106X_2017'
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
 
       job_num=0
