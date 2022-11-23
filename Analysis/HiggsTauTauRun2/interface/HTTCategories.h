@@ -116,6 +116,7 @@ class HTTCategories : public ModuleBase {
   double wt_ue_down_;
   float trigweight_1_;
   float trigweight_2_;
+  double tau_leg_SF_;
   double xtrg_sf_;
   double single_l_sf_;
   double et_trg_;
@@ -830,6 +831,12 @@ class HTTCategories : public ModuleBase {
   bool trg_singlemuon_;
   bool trg_muonelectron_;
   bool trg_doubletau_;
+  bool trg_tt_monitoring_1_;
+  bool trg_tt_monitoring_2_;
+  bool trg_tt_monitoring_3_;
+  bool trg_tt_monitoring_4_;
+  bool trg_tt_monitoring_5_;
+  bool trg_tt_monitoring_6_;
   bool trg_doubletau_mssm_;
   bool trg_vbfdoubletau_;
   bool trg_singletau_1_;
