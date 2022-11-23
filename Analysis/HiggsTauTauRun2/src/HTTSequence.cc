@@ -791,8 +791,13 @@ if (!is_data ) {
 }
 
 if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
-  httWeights.set_do_zpt_weight(false&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+  httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
 }
+
+if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
+  httWeights.set_do_zpt_weight_NLO(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+}
+
 
 if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
 if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
@@ -854,11 +859,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
     }
     if(era_type == era::data_2016UL_preVFP){
-      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
       httStitching.SetDYInputYields(92023543, 31026873, 12229520, 9084164, 4564320);
     }
     if(era_type == era::data_2016UL_postVFP){
-      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
       httStitching.SetDYInputYields(104133207, 33413859, 14377389, 10416356, 4543415);
     }
     if(era_type == era::data_2017) {

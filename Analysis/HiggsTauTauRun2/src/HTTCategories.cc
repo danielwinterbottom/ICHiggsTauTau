@@ -178,6 +178,7 @@ namespace ic {
       outtree_->Branch("wt_tau_id_extra", &wt_tau_id_extra_);
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
+      outtree_->Branch("tau_leg_SF", &tau_leg_SF_);
 
       outtree_->Branch("ip_mag_1", &ip_mag_1_);
       outtree_->Branch("ip_mag_2", &ip_mag_2_);
@@ -1114,6 +1115,14 @@ namespace ic {
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
       outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
+
+      outtree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
+      outtree_->Branch("trg_tt_monitoring_2",    &trg_tt_monitoring_2_);
+      outtree_->Branch("trg_tt_monitoring_3",    &trg_tt_monitoring_3_);
+      outtree_->Branch("trg_tt_monitoring_4",    &trg_tt_monitoring_4_);
+      outtree_->Branch("trg_tt_monitoring_5",    &trg_tt_monitoring_5_);
+      outtree_->Branch("trg_tt_monitoring_6",    &trg_tt_monitoring_6_);
+
       outtree_->Branch("trg_vbfdoubletau",    &trg_vbfdoubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
@@ -1463,6 +1472,14 @@ namespace ic {
       synctree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       synctree_->Branch("trg_doubletau",    &trg_doubletau_);
+
+      synctree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
+      synctree_->Branch("trg_tt_monitoring_2",    &trg_tt_monitoring_2_);
+      synctree_->Branch("trg_tt_monitoring_3",    &trg_tt_monitoring_3_);
+      synctree_->Branch("trg_tt_monitoring_4",    &trg_tt_monitoring_4_);
+      synctree_->Branch("trg_tt_monitoring_5",    &trg_tt_monitoring_5_);
+      synctree_->Branch("trg_tt_monitoring_6",    &trg_tt_monitoring_6_);
+
       synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
@@ -1677,6 +1694,14 @@ namespace ic {
     if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+
+    if (event->Exists("trg_tt_monitoring_1"))trg_tt_monitoring_1_ = event->Get<bool>("trg_tt_monitoring_1");
+    if (event->Exists("trg_tt_monitoring_2"))trg_tt_monitoring_2_ = event->Get<bool>("trg_tt_monitoring_2");
+    if (event->Exists("trg_tt_monitoring_3"))trg_tt_monitoring_3_ = event->Get<bool>("trg_tt_monitoring_3");
+    if (event->Exists("trg_tt_monitoring_4"))trg_tt_monitoring_4_ = event->Get<bool>("trg_tt_monitoring_4");
+    if (event->Exists("trg_tt_monitoring_5"))trg_tt_monitoring_5_ = event->Get<bool>("trg_tt_monitoring_5");
+    if (event->Exists("trg_tt_monitoring_6"))trg_tt_monitoring_6_ = event->Get<bool>("trg_tt_monitoring_6");
+
     if (event->Exists("trg_doubletau_mssm"))      trg_doubletau_mssm_      = event->Get<bool>("trg_doubletau_mssm");
     if (event->Exists("trg_vbfdoubletau"))   trg_vbfdoubletau_   = event->Get<bool>("trg_vbfdoubletau");
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
@@ -1689,6 +1714,12 @@ namespace ic {
       trg_singleelectron_ = true;
       trg_singlemuon_     = true;
       trg_doubletau_      = true;
+      trg_tt_monitoring_1_ = true;
+      trg_tt_monitoring_2_ = true;
+      trg_tt_monitoring_3_ = true;
+      trg_tt_monitoring_4_ = true;
+      trg_tt_monitoring_5_ = true;
+      trg_tt_monitoring_6_ = true;
       trg_vbfdoubletau_   = true;
       trg_muonelectron_   = true;
       trg_singletau_1_      = true;
@@ -2503,6 +2534,7 @@ namespace ic {
     if (!is_embedded_ && eventInfo->weight_defined("pileup")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
     if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 1.0;
     if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 1.0;
+    if (event->Exists("tau_leg_SF")) tau_leg_SF_ = event->Get<double>("tau_leg_SF"); else tau_leg_SF_ = 1.0;
     if (event->Exists("xtrg_sf")) xtrg_sf_ = event->Get<double>("xtrg_sf"); else xtrg_sf_ = 1.0;
     if (event->Exists("single_l_sf")) single_l_sf_ = event->Get<double>("single_l_sf"); else single_l_sf_ = 1.0;
     if (event->Exists("xtrg_notrig")) xtrg_notrig_ = event->Get<double>("xtrg_notrig"); else xtrg_notrig_ = 1.0;

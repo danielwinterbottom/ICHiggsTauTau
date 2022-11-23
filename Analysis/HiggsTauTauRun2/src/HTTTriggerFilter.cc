@@ -302,8 +302,9 @@ namespace ic {
         if (run >= 317509) {
           // trig monitoring path superseeds: triggerObjectsDoubleMediumIsoTauHPS35
           // HLT: HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v
+          
           monitoring_18_trig_obj_label = "triggerObjectsMu24MediumIsoTauHPS35";
-          monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f20QL3trkIsoFiltered0p07";
+          monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           monitoring_18_leg2_filter = "hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg";
         }
         // --------------------------
@@ -570,7 +571,7 @@ namespace ic {
           // ---------------------------
           // Monitoring Paths for double tau trigger checks
           monitoring_18_trig_obj_label = "triggerObjectsMu24MediumIsoTauHPS35";
-          monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f20QL3trkIsoFiltered0p07";
+          monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           monitoring_18_leg2_filter = "hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg";
         }
 
@@ -760,13 +761,15 @@ namespace ic {
           bool leg1_match_1 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_1, monitoring_16_leg1_filter, 0.5).first;
           bool leg2_match_1 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_1, monitoring_16_leg2_filter, 0.5).first;
           unsigned leg2_match_index_1 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_1, monitoring_16_leg2_filter, 0.5).second;
-	  if(monitoring_objs_1[leg2_match_index_1]->pt() < 35) leg2_match_1 = false;
-  
+	  if (leg2_match_1) {
+            if(monitoring_objs_1[leg2_match_index_1]->pt() < 35) leg2_match_1 = false;
+          }
           bool leg1_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_2, alt_monitoring_16_leg1_filter, 0.5).first;
           bool leg2_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_2, alt_monitoring_16_leg2_filter, 0.5).first;
           unsigned leg2_match_index_2 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_2, alt_monitoring_16_leg2_filter, 0.5).second;
-          if(monitoring_objs_2[leg2_match_index_2]->pt() < 35) leg2_match_2 = false;
-
+          if (leg2_match_2){
+            if(monitoring_objs_2[leg2_match_index_2]->pt() < 35) leg2_match_2 = false;
+          }
           if (leg1_match_1 && leg2_match_1){
             passed_monitoring_1 = true;
             dileptons_pass.push_back(dileptons[i]);
@@ -777,7 +780,7 @@ namespace ic {
           }
         }  
       }
-      if (era_ == era::data_2017UL || (is_data_ && (run >= 294927 && run < 317509))){
+      if ((era_ == era::data_2017UL && (!is_data_)) || (is_data_ && (run >= 294927 && run < 317509)) || (is_data_ && (run >= 294927 && run < 317509))){
         std::vector<TriggerObject *> const& monitoring_objs_3 = event->GetPtrVec<TriggerObject>(monitoring_17_trig_obj_label);
         std::vector<TriggerObject *> const& monitoring_objs_4 = event->GetPtrVec<TriggerObject>(alt_monitoring_17_trig_obj_label);
         std::vector<TriggerObject *> const& monitoring_objs_5 = event->GetPtrVec<TriggerObject>(alt_monitoring_17_trig_obj_label_2);
@@ -788,13 +791,15 @@ namespace ic {
           bool leg1_match_4 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_4, alt_monitoring_17_leg1_filter, 0.5).first;
           bool leg2_match_4 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_4, alt_monitoring_17_leg2_filter, 0.5).first;
           unsigned leg2_match_index_4 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_4, alt_monitoring_17_leg2_filter, 0.5).second;
-          if(monitoring_objs_4[leg2_match_index_4]->pt() < 40) leg2_match_4 = false;
-
+          if (leg2_match_4){
+            if(monitoring_objs_4[leg2_match_index_4]->pt() < 40) leg2_match_4 = false;
+          }
           bool leg1_match_5 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_5, alt_monitoring_17_leg1_filter_2, 0.5).first;
           bool leg2_match_5 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_5, alt_monitoring_17_leg2_filter_2, 0.5).first;
           unsigned leg2_match_index_5 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_5, alt_monitoring_17_leg2_filter_2, 0.5).second;
-          if(monitoring_objs_5[leg2_match_index_5]->pt() < 40) leg2_match_5 = false;
-
+          if (leg2_match_5){
+            if(monitoring_objs_5[leg2_match_index_5]->pt() < 40) leg2_match_5 = false;
+          }
           if (leg1_match_3 && leg2_match_3){
             passed_monitoring_3 = true;
             dileptons_pass.push_back(dileptons[i]);
@@ -809,7 +814,7 @@ namespace ic {
           }
         }
       }
-      if (era_ == era::data_2018UL || (is_data_ && (run >= 317509))){
+      if ((era_ == era::data_2018UL && (!is_data_)) || (is_data_ && (run >= 317509))){
         std::vector<TriggerObject *> const& monitoring_objs_6 = event->GetPtrVec<TriggerObject>(monitoring_18_trig_obj_label);
         for(unsigned i = 0; i < dileptons.size(); ++i){
           bool leg1_match_6 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_6, monitoring_18_leg1_filter, 0.5).first;

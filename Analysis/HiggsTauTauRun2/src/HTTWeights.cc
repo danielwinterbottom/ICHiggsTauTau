@@ -27,6 +27,7 @@ namespace ic {
     do_idiso_weights_           = false;
     do_id_weights_              = false;
     do_zpt_weight_              = false;
+    do_zpt_weight_NLO_        = false;
     do_tracking_eff_            = false;
     do_topquark_weights_        = false;
     do_tau_fake_weights_        = false;
@@ -67,6 +68,7 @@ int HTTWeights::PreAnalysis() {
   std::cout << boost::format(param_fmt()) % "do_etau_fakerate"    % do_etau_fakerate_;
   std::cout << boost::format(param_fmt()) % "do_mtau_fakerate"    % do_mtau_fakerate_;
   std::cout << boost::format(param_fmt()) % "do_zpt_weight"       % do_zpt_weight_;
+  std::cout << boost::format(param_fmt()) % "do_zpt_weight_NLO"       % do_zpt_weight_NLO_;
   std::cout << boost::format(param_fmt()) % "do_topquark_weights" % do_topquark_weights_;
   std::cout << boost::format(param_fmt()) % "do_tau_fake_weights" % do_tau_fake_weights_;
   std::cout << boost::format(param_fmt()) % "do_tau_id_weights"   % do_tau_id_weights_;
@@ -956,6 +958,11 @@ int HTTWeights::PreAnalysis() {
     // UL Scale Factors
     if(scalefactor_file_UL_!="" && (era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL)){
      
+
+
+    // zpt reweighting - LO
+      fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
+         w_UL_->function("zptmass_weight_nom")->functor(w_UL_->argSet("z_gen_pt,z_gen_mass")));            
 
       // zpt reweighting
       fns_["zpt_weight_nom_NLO"] = std::shared_ptr<RooFunctor>(
@@ -1946,17 +1953,44 @@ int HTTWeights::Execute(TreeEvent *event) {
       event->Add("zpt_sf",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);
+   }
+  if (do_zpt_weight_NLO_){
 
-      // NLO zpt
-      if ((era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL)){
-        double wtzpt_NLO = fns_["zpt_weight_nom_NLO"]->eval(args.data());
-        double wtzpt_down_NLO=1.0;
-        double wtzpt_up_NLO = wtzpt_NLO*wtzpt_NLO;
-        event->Add("zpt_sf_NLO",wtzpt_NLO);
-        event->Add("wt_zpt_up_NLO",wtzpt_up_NLO/wtzpt_NLO);
-        event->Add("wt_zpt_down_NLO",wtzpt_down_NLO/wtzpt_NLO);
+      double zpt = event->Exists("genpT") ? event->Get<double>("genpT") : 0;
+      double zmass = event->Exists("genM") ? event->Get<double>("genM") : 0;
+
+      if(!event->Exists("genpT") || !event->Exists("genM")) {
+
+        std::vector<GenParticle *> sel_gen_parts;
+        std::vector<GenParticle *> parts;
+        if(event->ExistsInTree("genParticles")) parts = event->GetPtrVec<GenParticle>("genParticles");
+
+        for(unsigned i = 0; i < parts.size(); ++i){
+          std::vector<bool> status_flags = parts[i]->statusFlags();
+          unsigned id = abs(parts[i]->pdgid());
+          unsigned status = abs(parts[i]->status());
+          if ( (id >= 11 && id <= 16 && status_flags[FromHardProcess] && status==1) || status_flags[IsDirectHardProcessTauDecayProduct]) sel_gen_parts.push_back(parts[i]);
+        }
+
+        ROOT::Math::PtEtaPhiEVector gen_boson;
+        for( unsigned i = 0; i < sel_gen_parts.size() ; ++i){
+          gen_boson += sel_gen_parts[i]->vector();
+        }
+        zpt = gen_boson.pt();
+        zmass = gen_boson.M();
+
       }
-  }
+
+      auto args = std::vector<double>{zpt,zmass};
+      double wtzpt_NLO = fns_["zpt_weight_nom_NLO"]->eval(args.data());
+      double wtzpt_down_NLO=1.0;
+      double wtzpt_up_NLO = wtzpt_NLO*wtzpt_NLO;
+      eventInfo->set_weight("wt_zpt_NLO",wtzpt_NLO);
+      event->Add("zpt_sf_NLO",wtzpt_NLO);
+      event->Add("wt_zpt_up_NLO",wtzpt_up_NLO/wtzpt_NLO);
+      event->Add("wt_zpt_down_NLO",wtzpt_down_NLO/wtzpt_NLO);
+   }
+  
   if(mssm_higgspt_file_!="" && do_mssm_higgspt_){
 
     double pT = -9999;  
@@ -2473,7 +2507,10 @@ int HTTWeights::Execute(TreeEvent *event) {
         xtrg_OR_sf = mu_trg*(1-tau_trg) + mu_xtrg*tau_trg;
         single_m_sf = mu_trg;
       }
-
+      // Tau Leg Scale Factor
+      double tau_trg_tt_leg;
+      tau_trg_tt_leg = fns_["t_trg_35_ratio"]->eval(args_4.data());
+      event->Add("tau_leg_SF", tau_trg_tt_leg);
       std::vector<double> args_mutau = std::vector<double>{pt,m_signed_eta,m_iso,t_pt,t_dm,t_signed_eta};
       std::string extra = ""; 
       if(is_embedded_){
