@@ -40,6 +40,14 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   if cores>1: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -pe hep.pe %(cores)s -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
+def BINS(start,end,interval,offset):
+  bins = np.arange(start,end+offset,interval)
+  bins_string = ','.join(str(x) for x in bins)
+  bins  = []
+  bins.append(bins_string)
+  return bins
+
+
 parser = OptionParser()
 parser.add_option('--channel',help= 'Name of input channels', default='et,mt,tt')
 parser.add_option("--years", dest="years", type='string', default='2016_preVFP,2016_postVFP,2017,2018',help="Year input")
@@ -75,49 +83,40 @@ cat_schemes = {'et' : categories_et,
 	       'zmm': categories_zmm,
 	       'zee': categories_zee}
 
-BINS = np.arange(0,251,10)
-BINS_str = ','.join(str(x) for x in BINS)
-BINS = []
-BINS.append(BINS_str)
-
-BINS_eta = np.arange(-2.1,2.3,0.2)
-BINS_eta_str = ','.join(str(x) for x in BINS_eta)
-BINS_eta = []
-BINS_eta.append(BINS_eta_str)
-
-BINS_pt = np.arange(0,151,10)
-BINS_pt_str = ','.join(str(x) for x in BINS_pt)
-BINS_pt = []
-BINS_pt.append(BINS_pt_str)
-
-
 var_tt = [
-         ['m_vis', BINS],
-         ['eta_2',BINS_eta],
-         ['tau_decay_mode_2','[0,1,2,3,4,5,6,7,8,9,10,11,12]'],
-         ['pt_2', BINS_pt],
-         ['eta_1',BINS_eta],
-         ['tau_decay_mode_1','[0,1,2,3,4,5,6,7,8,9,10,11,12]'],
-         ['pt_1', BINS_pt]
+         ['m_vis', BINS(0,300,10,1)],
+         ['n_jets', BINS(0,8,1,1)],
+         ['eta_2',BINS(-2.1,2.1,0.1,0.1)],
+         ['tau_decay_mode_2',BINS(0,12,1,1)],
+         ['pt_2', BINS(0,200,10,1)],
+         ['eta_1',BINS(-2.1,2.1,0.1,0.1)],
+         ['tau_decay_mode_1',BINS(0,12,1,1)],
+         ['pt_1', BINS(0,200,10,1)]
          ]        
 var_mt = [
-         ['m_vis', BINS],
-         ['eta_2',BINS_eta],
-         ['tau_decay_mode_2','[0,1,2,3,4,5,6,7,8,9,10,11,12]'],
-         ['pt_2', BINS_pt]
+         ['m_vis',BINS(0,300,10,1)], 
+         ['eta_2',BINS(-2.1,2.1,0.1,0.1)],
+         ['tau_decay_mode_2',BINS(0,12,1,1)],
+         ['pt_2', BINS(0,200,5,1)],
+         ['tau_decay_mode_2,pt_2', '[0,1,10,11],[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]']
          ]        
 var_et = [
-         ['m_vis', BINS],
-         ['eta_2',BINS_eta],
-         ['tau_decay_mode_2','[0,1,2,3,4,5,6,7,8,9,10,11,12]'],
-         ['pt_2', BINS_pt],
-         ]            
+         ['m_vis', BINS(0,300,10,1)],
+         ['eta_2',BINS(-2.1,2.1,0.1,0.1)],
+         ['tau_decay_mode_2',BINS(0,12,1,1)],
+         ['pt_2', BINS(0,200,10,1)]
+         ]
+
+var_zmm = [
+          ['pt_tt', '[0,10,20,30,40,60,80,100,120,160,200,280,320,400,600]'],
+          ['m_vis', BINS(0,300,10,1)],
+          ]
 
 var_schemes = {'et' : var_et,
                'mt' : var_mt,
-               'tt' : var_tt}
-tau_id = "pt_binned"
-print(tau_id)
+               'tt' : var_tt,
+	           'zmm': var_zmm}
+
 for year in years:
   if not os.path.isdir('%(output_folder)s/%(year)s' % vars()):
     os.system("mkdir %(output_folder)s/%(year)s" % vars())
@@ -125,34 +124,23 @@ for year in years:
   for ch in channels:
     if not os.path.isdir('%(output_folder)s/%(year)s/%(ch)s' % vars()):
       os.system("mkdir %(output_folder)s/%(year)s/%(ch)s" % vars())
-    if tau_id == "dm_binned":
-      if ch == "tt":
-         add_cond = '--add_wt=\'wt_prefire*(1/wt_tau_id_dm)*wt_tau_id_pt\''
-      if ch == "mt":
-         add_cond = '--add_wt=\'wt_prefire\''
-      if ch == "et":
-         add_cond = '--add_wt=\'wt_prefire\''
-    elif tau_id == "dm_binned":
-      if ch == "tt":
-         add_cond = '--add_wt=\'wt_prefire\''
-      if ch == "mt":
-         add_cond = '--add_wt=\'wt_prefire*(1/wt_tau_id_pt)*wt_tau_id_dm\''
-      if ch == "et":
-         add_cond = '--add_wt=\'wt_prefire*(1/wt_tau_id_pt)*wt_tau_id_dm\''
-    else:
+      method='12'
       add_cond = '--add_wt=\'wt_prefire\''
-      #add_cond = '--add_wt=\'wt_tau_trg_mssm*wt_tau_id_mssm*wt_prefire*(1/wt_dysoup)\''
-      #add_cond = '--add_wt =\'1/wt_dysoup\''
-    method='8'
+ 
+    if year == "2016_preVFP" or year == "2016_postVFP":
+      pt1_cut = 23
+    else:
+      pt1_cut = 25   
+
     categories = cat_schemes[ch]
     variables = var_schemes[ch]
     for cat in categories:
       for item in variables:
-        var_used = item[0]
-        bin_used = item[1]
-        #run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --ff_ss_closure  --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg=''  --var="%(var_used)s%(bin_used)s"  %(add_cond)s' % vars()
-        run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg=''  --var="%(var_used)s%(bin_used)s"  %(add_cond)s' % vars()
-        commands = [run_cmd]
-        job_file = '%(output_folder)s/jobs/%(var_used)s_%(cat)s_test_%(ch)s_%(year)s.sh' % vars()
-        CreateBatchJob(job_file,cmssw_base,[run_cmd])
-        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+           var_used = item[0]
+           bin_used = item[1]
+           run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<30) &&(m_vis>40) && (m_vis<80) && (pt_1>%(pt1_cut)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var="%(var_used)s%(bin_used)s" %(add_cond)s' % vars()
+           commands = [run_cmd]
+           job_file = '%(output_folder)s/jobs/%(var_used)s_%(cat)s_%(ch)s_%(year)s.sh' % vars()
+           CreateBatchJob(job_file,cmssw_base,[run_cmd])
+           SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+#
