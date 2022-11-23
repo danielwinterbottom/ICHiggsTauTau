@@ -1,4 +1,4 @@
-void zpt_reweighting(std::string outfile="Zpt2018.root"){
+void zpt_reweighting(std::string outfile="zpt_reweighting_LO.root"){
   // initialising binning
   double x_bins[17] = {0,50,60,70,80,90,100,120,140,160,180,200,300,400,600,800,1000};
   double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
@@ -7,66 +7,66 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
   TFile *fout = new TFile(outfile.c_str(),"RECREATE");
   // datacards (var pt_tt with mvis cuts)
   std::vector<std::string> file_names = {
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis50to60.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis60to70.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis70to80.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis80to90.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis90to100.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis100to120.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis120to140.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis140to160.root",	
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis160to180.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis180to200.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis200to300.root",	
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis300to400.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis400to600.root",
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis600to800.root",		 
-    "input/plots_NLO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis800to1000.root",	
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis50to60.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis60to70.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis70to80.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis80to90.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis90to100.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis100to120.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis120to140.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis140to160.root",	
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis160to180.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis180to200.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis200to300.root",	
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis300to400.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis400to600.root",
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis600to800.root",		 
-    "input/plots_NLO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis800to1000.root",		 
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis50to60.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis60to70.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis70to80.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis120to140.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis140to160.root",	
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis160to180.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis180to200.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis200to300.root",	
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis300to400.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis400to600.root",
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis600to800.root",		 
-    "input/plots_NLO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis800to1000.root",		 
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis50to60.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis60to70.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis70to80.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis120to140.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis140to160.root",	
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis160to180.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis180to200.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis200to300.root",	
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis300to400.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis400to600.root",
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis600to800.root",		 
-    "input/plots_NLO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis800to1000.root",			 
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis50to60.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis60to70.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis70to80.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis80to90.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis90to100.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis100to120.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis120to140.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis140to160.root",	
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis160to180.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis180to200.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis200to300.root",	
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis300to400.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis400to600.root",
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis600to800.root",		 
+    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis800toinf.root",	
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis50to60.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis60to70.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis70to80.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis80to90.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis90to100.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis100to120.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis120to140.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis140to160.root",	
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis160to180.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis180to200.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis200to300.root",	
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis300to400.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis400to600.root",
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis600to800.root",		 
+    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis800toinf.root",		 
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis50to60.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis60to70.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis70to80.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis120to140.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis140to160.root",	
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis160to180.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis180to200.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis200to300.root",	
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis300to400.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis400to600.root",
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis600to800.root",		 
+    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis800toinf.root",		 
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis50to60.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis60to70.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis70to80.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis120to140.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis140to160.root",	
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis160to180.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis180to200.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis200to300.root",	
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis300to400.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis400to600.root",
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis600to800.root",		 
+    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis800toinf.root",			 
   };
   
   std::vector<TH1D*> data_hist_vector;
@@ -77,8 +77,9 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
   h_first->SetBinContent(1,1);
   data_hist_vector.push_back(h_first);
   mc_hist_vector.push_back(h_first);
-  
-                
+ 
+  double data_integral = 0; 
+  double mc_integral = 0;
   for(unsigned i=0; i<file_names.size(); ++i){
     std::string file_name = file_names[i];
     TFile f(file_name.c_str());
@@ -107,7 +108,7 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
     h_VVL->SetDirectory(0);
 
     TH1* h_bkg = new TH1D(*h_ZTT);
-    h_bkg->SetDirectory(0); 
+    h_bkg->SetDirectory(0);
     //add all backgrounds except ZL
     h_bkg->Add(h_ZJ,1);
     h_bkg->Add(h_TTJ,1);
@@ -118,11 +119,13 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
     h_bkg->Add(h_VVL,1);
     // subtract backgrounds from data
     h1->Add(h_bkg,-1);
+
+    data_integral += h1->Integral(-1,-1);
+    mc_integral += h_ZL->Integral(-1,-1);    
     // store (data-bkg) and ZL histograms in vectors
     data_hist_vector.push_back(h1);
     mc_hist_vector.push_back(h_ZL);
     f.Close();
-
 
     // old code
     // --------
@@ -150,7 +153,19 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
   for(unsigned i=0; i<h_data->GetNbinsX(); ++i){
     unsigned x_bin = i+1;
     TH1D *h = data_hist_vector[i];
-    
+    if (i != 0) {
+      TH1D *h_2 = data_hist_vector[15+i];
+      TH1D *h_3 = data_hist_vector[30+i];
+      TH1D *h_4 = data_hist_vector[45+i];
+      h->SetDirectory(0);
+      h_2->SetDirectory(0);
+      h_3->SetDirectory(0);
+      h_4->SetDirectory(0);
+      h->Add(h_2,1);
+      h->Add(h_3,1);
+      h->Add(h_4,1);
+    }
+
     for(unsigned j=0; j<h_data->GetNbinsY(); ++j){
         unsigned y_bin = j+1;
         double z_pt = h_data->GetYaxis()->GetBinCenter(y_bin);
@@ -166,7 +181,19 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
   for(unsigned i=0; i<h_mc->GetNbinsX(); ++i){
     unsigned x_bin = i+1;
     TH1D *h = mc_hist_vector[i];
-    
+    if (i != 0) {
+      TH1D *h_2 = mc_hist_vector[15+i];
+      TH1D *h_3 = mc_hist_vector[30+i];
+      TH1D *h_4 = mc_hist_vector[45+i];
+      h->SetDirectory(0);
+      h_2->SetDirectory(0);
+      h_3->SetDirectory(0);
+      h_4->SetDirectory(0);
+      h->Add(h_2,1);
+      h->Add(h_3,1);
+      h->Add(h_4,1);
+    }
+ 
     for(unsigned j=0; j<h_mc->GetNbinsY(); ++j){
         unsigned y_bin = j+1;
         double z_pt = h_mc->GetYaxis()->GetBinCenter(y_bin);
@@ -179,15 +206,14 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
     }
   }
 
-  // now both TH2D have been filled but, we need to normalise them before dividing them through
-  double data_integral= h_data->Integral();
-  double mc_integral=h_mc->Integral();
 
+  // now both TH2D have been filled but, we need to normalise them before dividing them through
   for(unsigned i=1; i<=(unsigned)h_data->GetNbinsX();++i){
     for(unsigned j=1; j<=(unsigned)h_data->GetNbinsY();++j){
       if(!(i == 1 )){
           double data_content=h_data->GetBinContent(i,j);
           h_data->SetBinContent(i,j,data_content/data_integral);
+          //std::cout << i << " " << j << " "<< data_content/data_integral << std::endl;
           double data_error=h_data->GetBinError(i,j);
           h_data->SetBinError(i,j,data_error/data_integral);
           double mc_content=h_mc->GetBinContent(i,j);
@@ -198,13 +224,15 @@ void zpt_reweighting(std::string outfile="Zpt2018.root"){
     }
   }
   
+    
   double check = h_data->GetBinContent(2,1)/h_mc->GetBinContent(2,1);
   std::cout << "(2,1) data/MC: " << check << std::endl;
- 
+  std::cout << "(Data-Total_Bkg) + ZL = " << data_integral << " " << h_data->Integral(2,-1,1,-1) << std::endl;
+  std::cout << "ZL = " <<  mc_integral << " " << h_mc->Integral(2,-1,1,-1) << std::endl;
   // Divide the data/mc TH2Ds
   h_data->Divide(h_mc); 
-
-  TH2D *h_2dweights = new TH2D(hist_name.c_str(),hist_name.c_str(),n_xbins,x_bins,n_ybins,y_bins);
+  std::string hist_name_2D = "zptmass_histo_2D"; 
+  TH2D *h_2dweights = new TH2D(hist_name_2D.c_str(),hist_name_2D.c_str(),n_xbins,x_bins,n_ybins,y_bins);
   h_2dweights->Sumw2(); 
   // clone the divided TH2D
   h_2dweights = (TH2D*)h_data->Clone();
