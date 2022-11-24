@@ -1,4 +1,5 @@
 import ROOT
+import re
 import os
 import glob
 import json
@@ -316,9 +317,9 @@ for i in options.set_alias:
 		
 # Add data sample names
 if (options.channel == 'tttt' or options.channel == 'ttt'):
-	if options.year == "2016-preVFP":
+	if options.year == "2016_preVFP":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF']
-	elif options.year == "2016-postVFP":
+	elif options.year == "2016_postVFP":
 		data_samples = ['TauF','TauG','TauH']
 	elif options.year == "2016":
 		data_samples = ['TauB','TauC','TauD','TauE','TauF','TauG','TauH']
@@ -383,6 +384,24 @@ elif options.channel == 'emtt':
   elif options.year == "2018":
     data_samples = ['TauA','TauB','TauC','TauD','SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD','EGammaA','EGammaB','EGammaC','EGammaD']
 
+def ReformatSignals(signals,do_format):
+  rf_signals = []
+  for signal in signals:
+    if do_format==True:
+      split = re.split('(\d+)', signal)
+      reformat = split[2]+split[3]+split[0][-3:]+split[1]
+      rf_signals.append([signal,reformat])
+    else:
+      rf_signals.append([signal,signal])
+  return rf_signals
+
+sig_samples=[]
+grid_phi = ["100","110","125","140","160","180","200","250","300"]
+grid_A = ["60","70","80","90","100","125","140","160"]
+for mp in grid_phi:
+  for mA in grid_A:
+       sig_samples.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
+
 if options.year == "2018":
     if options.campaign == "ReReco":
       ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
@@ -404,7 +423,9 @@ if options.year == "2018":
       wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
       wgam_samples = ['WGToLNuG']
       ewkz_samples = ['EWKZ2Jets_ZToLL']
-      signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
+      #signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
+      signal_samples = sig_samples
+      signal_samples = ReformatSignals(signal_samples,True)
 
 
 if options.year == "2017":
@@ -425,7 +446,9 @@ if options.year == "2017":
     wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets_ZToLL']
-    signal_samples = []
+    signal_samples = sig_samples
+    signal_samples = ReformatSignals(signal_samples,True)
+
 
 if options.year == "2016_postVFP":
   ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
@@ -435,7 +458,9 @@ if options.year == "2016_postVFP":
   wgam_samples = ['WGToLNuG']
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
-  signal_samples = []
+  signal_samples = sig_samples
+  signal_samples = ReformatSignals(signal_samples,True)
+
 
 if options.year == "2016_preVFP":
   ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
@@ -445,7 +470,9 @@ if options.year == "2016_preVFP":
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
   wgam_samples = ['WGToLNuG']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
-  signal_samples = []
+  signal_samples = sig_samples
+  signal_samples = ReformatSignals(signal_samples,True)
+
 
 if options.year == "2016":
   ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO']
@@ -613,7 +640,7 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
 
 def GenerateSignal(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     for i in samples:
-      signal_node = GetNode(ana, i, add_name, [i], plot, wt, sel, cat)
+      signal_node = GetNode(ana, i[1], add_name, [i[0]], plot, wt, sel, cat)
       ana.nodes[nodename].AddNode(signal_node)
  
 def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
@@ -761,6 +788,18 @@ def UnrollHist3D(h3d,inc_y_of=False,inc_z_of=True):
           h1d.SetBinError(glob_bin+1,error)
     return h1d
 
+def NormSignals(outfile,add_name):
+    outfile.cd(nodename)
+    for samp in signal_samples:
+       xs = ana.info[samp[0]]['xs']
+       if xs == 1.: continue
+       sf = 1.0/xs
+       hist_ = outfile.Get(nodename+'/'+samp[1]+add_name)
+       hist_.Scale(sf)
+       hist_.Write("",ROOT.TObject.kOverwrite)
+    outfile.cd()
+
+
 
 # Create output file
 is_2d=False
@@ -848,7 +887,7 @@ if options.plot_from_dc == "":
         if options.embed_folder: embed_input_folder_name = options.embed_folder
         else: embed_input_folder_name = options.folder
         if add_folder_name != '' and 'EmbedZTT' not in samples_to_skip: embed_input_folder_name += '/'+add_folder_name
-      
+         
         # Add all data files
         for sample_name in data_samples:
             ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
@@ -857,7 +896,7 @@ if options.plot_from_dc == "":
         for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples:
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         for sample_name in signal_samples:
-            ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)         
+            ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name[0]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name[0])         
  
         ana.AddInfo(options.paramfile, scaleTo='data_obs')
     
@@ -1071,4 +1110,9 @@ if not options.no_plot:
       plot_signals=options.plot_signals.split(","),
       draw_data=(not options.no_data)
       )
+#norm signal yields on datacards to 1pb AFTER plotting    
+outfile =  ROOT.TFile(output_name, 'UPDATE')
+for add_name in add_names:
+    NormSignals(outfile,add_name)
+
 
