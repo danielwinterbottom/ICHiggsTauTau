@@ -247,6 +247,7 @@ elif options.channel == "emtt":
   cats['data_veto'] = "(!(isTau && (trg_singlemuon_2))) && (!(isSingleElectron && (trg_singlemuon_1 || trg_doubletau_34)))"
 elif options.channel == "mmtt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
+  #cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4").replace("Jets_loose_4>","Jets_loose_4<"))
   cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_doubletau_34)"
   cats['data_veto'] = "!(isTau && (trg_singlemuon_1 || trg_singlemuon_2))"
 elif options.channel == "eett":
@@ -455,6 +456,8 @@ if options.year == "2016":
   ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
   signal_samples = []
 
+vv_samples = ["ZZTo4L"]
+
 ROOT.TH1.SetDefaultSumw2(True)
 
 correct_gen_matches = []
@@ -574,68 +577,8 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   else:
     vjf = "deepTauVsJets_" + VsJets_wp_fail
   
-  ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1").replace("!1>0.5","(1)")
+  ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1").replace("!1>0.5","(1)").replace("&& 1>0.5","").replace("&& 1<0.5","")
 
-  # raw weight names
-  ff_raw_1 = "(wt_ff_None_"+VsJets_wp+"_raw_1)"
-  ff_raw_2 = "(wt_ff_None_"+VsJets_wp+"_raw_2)"
-  ff_raw_3 = "(wt_ff_None_"+VsJets_wp+"_raw_3)"
-  ff_raw_4 = "(wt_ff_None_"+VsJets_wp+"_raw_4)"
-
-  ff_raw_12 = "(wt_ff_None_"+VsJets_wp+"_raw_12)"
-  ff_raw_13 = "(wt_ff_None_"+VsJets_wp+"_raw_13)"
-  ff_raw_14 = "(wt_ff_None_"+VsJets_wp+"_raw_14)"
-  ff_raw_23 = "(wt_ff_None_"+VsJets_wp+"_raw_23)"
-  ff_raw_24 = "(wt_ff_None_"+VsJets_wp+"_raw_24)"
-  ff_raw_34 = "(wt_ff_None_"+VsJets_wp+"_raw_34)"
-
-  ff_raw_123 = "(wt_ff_None_"+VsJets_wp+"_raw_123)"
-  ff_raw_124 = "(wt_ff_None_"+VsJets_wp+"_raw_124)"
-  ff_raw_134 = "(wt_ff_None_"+VsJets_wp+"_raw_134)"
-  ff_raw_234 = "(wt_ff_None_"+VsJets_wp+"_raw_234)"
-
-  ff_raw_1234 = "(wt_ff_None_"+VsJets_wp+"_raw_1234)"
-
-  # alt weight names
-  ff_alt_1 = "(wt_ff_None_"+VsJets_wp+"_alt_1)"
-  ff_alt_2 = "(wt_ff_None_"+VsJets_wp+"_alt_2)"
-  ff_alt_3 = "(wt_ff_None_"+VsJets_wp+"_alt_3)"
-  ff_alt_4 = "(wt_ff_None_"+VsJets_wp+"_alt_4)"
-
-  ff_alt_12 = "(wt_ff_None_"+VsJets_wp+"_alt_12)"
-  ff_alt_13 = "(wt_ff_None_"+VsJets_wp+"_alt_13)"
-  ff_alt_14 = "(wt_ff_None_"+VsJets_wp+"_alt_14)"
-  ff_alt_23 = "(wt_ff_None_"+VsJets_wp+"_alt_23)"
-  ff_alt_24 = "(wt_ff_None_"+VsJets_wp+"_alt_24)"
-  ff_alt_34 = "(wt_ff_None_"+VsJets_wp+"_alt_34)"
-
-  ff_alt_123 = "(wt_ff_None_"+VsJets_wp+"_alt_123)"
-  ff_alt_124 = "(wt_ff_None_"+VsJets_wp+"_alt_124)"
-  ff_alt_134 = "(wt_ff_None_"+VsJets_wp+"_alt_134)"
-  ff_alt_234 = "(wt_ff_None_"+VsJets_wp+"_alt_234)"
-
-  ff_alt_1234 = "(wt_ff_None_"+VsJets_wp+"_alt_1234)"
-
-
-  # correction weight names
-  ff_corr_1 = "(wt_ff_None_"+VsJets_wp+"_corr_1)"
-  ff_corr_2 = "(wt_ff_None_"+VsJets_wp+"_corr_2)"
-  ff_corr_3 = "(wt_ff_None_"+VsJets_wp+"_corr_3)"
-  ff_corr_4 = "(wt_ff_None_"+VsJets_wp+"_corr_4)"
-
-  ff_corr_12 = "(wt_ff_None_"+VsJets_wp+"_corr_12)"
-  ff_corr_13 = "(wt_ff_None_"+VsJets_wp+"_corr_13)"
-  ff_corr_14 = "(wt_ff_None_"+VsJets_wp+"_corr_14)"
-  ff_corr_23 = "(wt_ff_None_"+VsJets_wp+"_corr_23)"
-  ff_corr_24 = "(wt_ff_None_"+VsJets_wp+"_corr_24)"
-  ff_corr_34 = "(wt_ff_None_"+VsJets_wp+"_corr_34)"
-
-  ff_corr_123 = "(wt_ff_None_"+VsJets_wp+"_corr_123)"
-  ff_corr_124 = "(wt_ff_None_"+VsJets_wp+"_corr_124)"
-  ff_corr_134 = "(wt_ff_None_"+VsJets_wp+"_corr_134)"
-  ff_corr_234 = "(wt_ff_None_"+VsJets_wp+"_corr_234)"
-
-  ff_corr_1234 = "(wt_ff_None_"+VsJets_wp+"_corr_1234)"
 
   # pass selections
   pass_1 = "({vjn}_1>0.5)".format(vjn=vj)
@@ -650,44 +593,15 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   fail_4 = "({vjn}_4<0.5)".format(vjn=vj)
 
   if options.channel in ["emtt","eett","mmtt"]:
-    ff_wt = "((%(ff_raw_3)s * %(ff_corr_3)s * %(fail_3)s * %(pass_4)s) \
-            + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s) \
-            - (%(ff_raw_34)s * %(ff_corr_34)s * %(fail_3)s * %(fail_4)s))" % vars()
-    if options.charges_non_zero:
-      ff_wt = "((%(ff_raw_3)s * %(fail_3)s * %(pass_4)s) \
-              + (%(ff_raw_4)s * %(pass_3)s * %(fail_4)s) \
-              - (%(ff_raw_34)s * %(fail_3)s * %(fail_4)s))" % vars()
-    #ff_wt = "(%(ff_raw_3)s * %(ff_corr_3)s * %(fail_3)s * %(pass_4)s)" % vars()
-    #ff_wt = "(%(ff_alt_3)s * %(ff_corr_3)s * %(fail_3)s * %(fail_4)s)" % vars()
-    #ff_wt = "(%(ff_raw_3)s * %(fail_3)s * %(pass_4)s)" % vars()
-    #ff_wt = "(%(ff_alt_3)s * %(fail_3)s * %(fail_4)s)" % vars()
-    #ff_wt = "(%(ff_raw_4)s * %(ff_corr_4)s * %(pass_3)s * %(fail_4)s)" % vars()
-    #ff_wt = "(%(ff_raw_4)s * %(pass_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(wt_ff_ml_3 * %(fail_3)s * %(pass_4)s)" % vars()
+    #ff_wt = "(wt_ff_ml_3 * %(fail_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(wt_ff_ml_4 * %(pass_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(wt_ff_ml_3 * wt_ff_ml_4 * %(fail_3)s * %(fail_4)s)" % vars()
+    #ff_wt = "(0.5*((wt_ff_ml_3 * %(fail_3)s * %(pass_4)s) + (wt_ff_ml_4 * %(pass_3)s * %(fail_4)s)))" % vars()
+    ff_wt = "((wt_ff_ml_3 * %(fail_3)s * %(pass_4)s) + (wt_ff_ml_4 * %(pass_3)s * %(fail_4)s)  - (wt_ff_ml_3 * wt_ff_ml_4 * %(fail_3)s * %(fail_4)s))" % vars()
     #ff_wt = "(%(ff_raw_34)s * %(ff_corr_34)s * %(fail_3)s * %(fail_4)s)" % vars()
-  elif options.channel in ["ettt","mttt"]:
-    ff_wt = "((%(ff_raw_2)s * %(ff_corr_2)s * %(fail_2)s * %(pass_3)s * %(pass_4)s) \
-            + (%(ff_raw_3)s * %(ff_corr_3)s * %(pass_2)s * %(fail_3)s * %(pass_4)s) \
-            + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_2)s * %(pass_3)s * %(fail_4)s) \
-            - (%(ff_raw_23)s * %(ff_corr_23)s * %(fail_2)s * %(fail_3)s * %(pass_4)s) \
-            - (%(ff_raw_24)s * %(ff_corr_24)s * %(fail_2)s * %(pass_3)s * %(fail_4)s) \
-            - (%(ff_raw_34)s * %(ff_corr_34)s * %(pass_2)s * %(fail_3)s * %(fail_4)s) \
-            + (%(ff_raw_234)s * %(ff_corr_234)s * %(fail_2)s * %(fail_3)s * %(fail_4)s))" % vars()
-  elif options.channel in ["tttt"]:
-    ff_wt = "((%(ff_raw_1)s * %(ff_corr_1)s * %(fail_1)s * %(pass_2)s * %(pass_3)s * %(pass_4)s) \
-            + (%(ff_raw_2)s * %(ff_corr_2)s * %(pass_1)s * %(fail_2)s * %(pass_3)s * %(pass_4)s) \
-            + (%(ff_raw_3)s * %(ff_corr_3)s * %(pass_1)s * %(pass_2)s * %(fail_3)s * %(pass_4)s) \
-            + (%(ff_raw_4)s * %(ff_corr_4)s * %(pass_1)s * %(pass_2)s * %(pass_3)s * %(fail_4)s) \
-            - (%(ff_raw_12)s * %(ff_corr_12)s * %(fail_1)s * %(fail_2)s * %(pass_3)s * %(pass_4)s) \
-            - (%(ff_raw_13)s * %(ff_corr_13)s * %(fail_1)s * %(pass_2)s * %(fail_3)s * %(pass_4)s) \
-            - (%(ff_raw_14)s * %(ff_corr_14)s * %(fail_1)s * %(pass_2)s * %(pass_3)s * %(fail_4)s) \
-            - (%(ff_raw_23)s * %(ff_corr_23)s * %(pass_1)s * %(fail_2)s * %(fail_3)s * %(pass_4)s) \
-            - (%(ff_raw_24)s * %(ff_corr_24)s * %(pass_1)s * %(fail_2)s * %(pass_3)s * %(fail_4)s) \
-            - (%(ff_raw_34)s * %(ff_corr_34)s * %(pass_1)s * %(pass_2)s * %(fail_3)s * %(fail_4)s) \
-            + (%(ff_raw_123)s * %(ff_corr_123)s * %(fail_1)s * %(fail_2)s * %(fail_3)s * %(pass_4)s) \
-            + (%(ff_raw_124)s * %(ff_corr_124)s * %(fail_1)s * %(fail_2)s * %(pass_3)s * %(fail_4)s) \
-            + (%(ff_raw_134)s * %(ff_corr_134)s * %(fail_1)s * %(pass_2)s * %(fail_3)s * %(fail_4)s) \
-            + (%(ff_raw_234)s * %(ff_corr_234)s * %(pass_1)s * %(fail_2)s * %(fail_3)s * %(fail_4)s) \
-            - (%(ff_raw_1234)s * %(ff_corr_1234)s * %(fail_1)s * %(fail_2)s * %(fail_3)s * %(fail_4)s))" % vars()
+  #elif options.channel in ["ettt","mttt"]:
+  #elif options.channel in ["tttt"]:
 
 
   if data_veto == None:
@@ -792,16 +706,16 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       elif options.channel in ["eett","mmtt","emtt"]:
         cat = "("+cat+")&&(gen_match_3<6 && gen_match_4<6)"
 
-      if 'ZTT' not in samples_to_skip:
-          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
-      if 'TT' not in samples_to_skip:
-          GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
+      #if 'ZTT' not in samples_to_skip:
+      #    GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
+      #if 'TT' not in samples_to_skip:
+      #    GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
       if 'VV' not in samples_to_skip:
           GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
-      if 'VVV' not in samples_to_skip:
-          GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
-      if 'W' not in samples_to_skip:
-          GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      #if 'VVV' not in samples_to_skip:
+      #    GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
+      #if 'W' not in samples_to_skip:
+      #    GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
       if 'signal' not in samples_to_skip:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
 

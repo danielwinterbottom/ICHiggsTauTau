@@ -320,7 +320,7 @@ namespace ic {
       outtree_->Branch("mt_lep_24",              &mt_lep_24_.var_double);
       outtree_->Branch("mt_lep_34",              &mt_lep_34_.var_double);
 
-
+      outtree_->Branch("mvis_1234",            &mvis_1234_.var_double);
       outtree_->Branch("mvis_12",              &mvis_12_.var_double);
       outtree_->Branch("mvis_13",              &mvis_13_.var_double);
       outtree_->Branch("mvis_14",              &mvis_14_.var_double);
@@ -351,6 +351,7 @@ namespace ic {
       outtree_->Branch("pt_tt_23",             &pt_tt_23_.var_double);
       outtree_->Branch("pt_tt_24",             &pt_tt_24_.var_double);
       outtree_->Branch("pt_tt_34",             &pt_tt_34_.var_double);
+      outtree_->Branch("pt_tttt",             &pt_tttt_.var_double);
       outtree_->Branch("pt_phi",               &pt_phi_.var_double);
       outtree_->Branch("pt_A",                 &pt_A_.var_double);
       outtree_->Branch("st",                   &st_.var_double);
@@ -949,7 +950,18 @@ namespace ic {
    
     q_sum_ = lep1->charge()+lep2->charge()+lep3->charge();
     st_ = lep1->pt()+lep2->pt()+lep3->pt()+mets->vector().pt();
-	 
+	
+    CompositeCandidate *total_product = new CompositeCandidate();
+    total_product->AddCandidate("lepton1",fourtau->GetCandidate("lepton1"));
+    total_product->AddCandidate("lepton2",fourtau->GetCandidate("lepton2"));
+    total_product->AddCandidate("lepton3",fourtau->GetCandidate("lepton3"));
+    if (channel_ != channel::ttt) {
+      total_product->AddCandidate("lepton4",fourtau->GetCandidate("lepton4"));
+    }
+   
+    mvis_1234_ = total_product->M();
+    pt_tttt_ = total_product->pt(); 
+
     // get ditau mass of all combinations:
     CompositeCandidate *pair12 = new CompositeCandidate();
     CompositeCandidate *pair13 = new CompositeCandidate();

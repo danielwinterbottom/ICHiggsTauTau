@@ -2301,9 +2301,9 @@ def HTTPlot(nodename,
         backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'mmtt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","ZTTJF","ZMMJF","ZEEJF","TTJF","VVJF","VVVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'emtt': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZTTLF","ZMMLF","ZEELF","TTLF","VVLF","VVVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZTTR","ZMMR","ZEER","TTR","VVR","VVVR","WR"],R.TColor.GetColor(136,65,157)),
@@ -2317,6 +2317,7 @@ def HTTPlot(nodename,
       total_datahist.SetMarkerStyle(20)
       blind_datahist.SetMarkerStyle(20)
       blind_datahist.SetLineColor(1)
+      total_datahist.Print("all")
 
     #Blinding by hand using requested range, set to 200-4000 by default:
     if blind and draw_data:
@@ -2359,7 +2360,6 @@ def HTTPlot(nodename,
       else:
           bkghist.Add(hists.Clone())
 
-      
     c1 = R.TCanvas()
     c1.cd()    
     

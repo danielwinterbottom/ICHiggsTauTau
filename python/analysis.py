@@ -667,8 +667,6 @@ class Analysis(object):
                 name = self.remaps[sa]
             if name in self.trees or name == 'data_obs':
                 self.info[name] = info[sa]
-        print scaleTo, self.info
-        print scaleTo is not None, scaleTo in self.info
         if scaleTo is not None and scaleTo in self.info:
             lumi = self.info[scaleTo]['lumi']
             for name, data in self.info.iteritems():
