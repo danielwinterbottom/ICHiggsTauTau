@@ -418,7 +418,7 @@ if options.proc_sig:
         SIG_DIR = 'Nov09_Signal_106X_2016-preVFP'
         SIG_FILELIST = "filelists/Nov09_2016_preVFP_MC_106X"
         user='ksavva'
-        JOB='%s_2016preVFP' % (sa)
+        JOB='%s_2016_preVFP' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         job_num=0
         for FLATJSONPATCH in flatjsons:

@@ -206,7 +206,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
         channels=cfg["job"]["channels"]
     else:
-        channels=["tttt","mttt","ettt","emtt","eett","mmtt"]
+        channels=["tttt","mttt","ettt","emtt","eett","mmtt","ttt"]
 
 if options.proc_data or options.proc_all or options.calc_lumi:
 
