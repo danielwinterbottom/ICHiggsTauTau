@@ -359,9 +359,12 @@ if options.proc_bkg or options.proc_all:
   'WminusHToTauTau_M125',
   'WplusHToTauTau_M125',
   'ttHToTauTau_M125',
+  'VBF_HToZZTo4L_M125',
+  'GluGlu_HToZZTo4L_M125',
    ]
 
     Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WZTo1L3Nu","WZTo2Q2L"]       
+    Nov23_samples = ["VBF_HToZZTo4L_M125","GluGlu_HToZZTo4L_M125"]
 
     for sa in central_samples:
         FILELIST='filelists/Jan10_2018_MC_106X'
@@ -374,6 +377,10 @@ if options.proc_bkg or options.proc_all:
         if sa in Sep28_samples:
             FILELIST='filelists/Sep28_2018_MC_106X'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/Sep28_MC_106X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        if sa in Nov23_samples:
+            FILELIST='filelists/Nov23_2018_MC_106X'
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/Nov23_MC_106X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+
 
         job_num=0
         for FLATJSONPATCH in flatjsons:
