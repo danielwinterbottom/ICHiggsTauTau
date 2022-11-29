@@ -28,20 +28,20 @@ cfg = {
        }
 
 gt = {
-      "MC"  :{"2016-preVFP":"106X_mcRun2_asymptotic_v13",
-              "2016-postVFP":"106X_mcRun2_asymptotic_v13",
-              "2017":"106X_mc2017_realistic_v6",
-              "2018":"106X_upgrade2018_realistic_v11_L1v1"
+      "MC"  :{"2016-preVFP":"106X_mcRun2_asymptotic_preVFP_v11",
+              "2016-postVFP":"106X_mcRun2_asymptotic_v17",
+              "2017":"106X_mc2017_realistic_v8",
+              "2018":"106X_upgrade2018_realistic_v15_L1v1"
               },
-      "Signal":{"2016-preVFP":"106X_mcRun2_asymptotic_v13",
-                "2016-postVFP":"106X_mcRun2_asymptotic_v13",
-                "2017":"106X_mc2017_realistic_v6",
-                "2018":"106X_upgrade2018_realistic_v11_L1v1"
+      "Signal":{"2016-preVFP":"106X_mcRun2_asymptotic_preVFP_v11",
+                "2016-postVFP":"106X_mcRun2_asymptotic_v17",
+                "2017":"106X_mc2017_realistic_v8",
+                "2018":"106X_upgrade2018_realistic_v15_L1v1"
               },
-      "Data":{"2016-preVFP":"106X_mcRun2_asymptotic_v13",
-              "2016-postVFP":"106X_mcRun2_asymptotic_v13",
-              "2017":"106X_mc2017_realistic_v9",
-              "2018":"106X_upgrade2018_realistic_v16_L1v1"
+      "Data":{"2016-preVFP":"106X_dataRun2_v35",
+              "2016-postVFP":"106X_dataRun2_v35",
+              "2017":"106X_dataRun2_v33",
+              "2018":"106X_dataRun2_v33"
               }
       }
 
