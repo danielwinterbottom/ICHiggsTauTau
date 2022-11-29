@@ -111,6 +111,8 @@ sample_list = [
 	 'TTToSemiLeptonic',
 	  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
 	 'WZTo1L1Nu2Q',
+	 'WZTo1L3Nu',
+         'WZTo2Q2L',
 	 'WZTo3LNu',
 	 'WWTo1L1Nu2Q',
 	 'WWTo2L2Nu',
@@ -155,6 +157,13 @@ sample_list = [
    "phi300A20To4Tau",
    "phi300A60To4Tau",
 	]
+
+grid_phi = ["100","110","125","140","160","180","200","250","300"]
+grid_A = ["60","70","80","90","100","125","140","160"]
+
+for mp in grid_phi:
+  for mA in grid_A:
+     sample_list.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
 
 
 sample_list = list(set(sample_list))

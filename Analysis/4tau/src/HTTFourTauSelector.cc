@@ -59,9 +59,7 @@ namespace ic {
     std::vector<CompositeCandidate *> result;
 
     // Remove duplicate decay products from multilepton
-    std::cout << multilepton.size() << std::endl;
     for (unsigned i = 0; i < multilepton.size(); ++i) {
-      std::cout << "RE " << i << std::endl;
       if (NoDuplicateParticle(multilepton[i],0.3)) {
         if (TotalZeroChargeFourParticles(multilepton[i])) zero_charge.push_back(multilepton[i]);
         if (TotalNonZeroChargeFourParticles(multilepton[i])) non_zero_charge.push_back(multilepton[i]);

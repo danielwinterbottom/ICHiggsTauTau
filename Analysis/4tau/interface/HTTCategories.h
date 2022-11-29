@@ -302,6 +302,7 @@ class HTTCategories : public ModuleBase {
   branch_var mt_lep_24_;
   branch_var mt_lep_34_;
 
+  branch_var mvis_1234_;
   branch_var mvis_12_;
   branch_var mvis_13_;
   branch_var mvis_14_;
@@ -334,6 +335,7 @@ class HTTCategories : public ModuleBase {
   branch_var pt_min_sum_dR_2_;
   branch_var pt_phi_;
   branch_var pt_A_;
+  branch_var pt_tttt_;
   branch_var met_;
   branch_var st_;
 

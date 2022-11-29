@@ -129,7 +129,8 @@ int main(int argc, char* argv[]) {
          (channel_str.find("mmtt") != channel_str.npos && !(output_name.find("SingleMuon") != output_name.npos || output_name.find("Tau") != output_name.npos || output_name.find("DoubleMuon") != output_name.npos)) ||
          (channel_str.find("ettt") != channel_str.npos && !(output_name.find("EGamma") != output_name.npos || output_name.find("SingleEle") != output_name.npos || output_name.find("Tau") != output_name.npos)) ||
          (channel_str.find("mttt") != channel_str.npos && !(output_name.find("SingleMuon") != output_name.npos || output_name.find("Tau") != output_name.npos)) ||
-         (channel_str.find("tttt") != channel_str.npos && !(output_name.find("Tau") != output_name.npos)) ))
+         (channel_str.find("tttt") != channel_str.npos && !(output_name.find("Tau") != output_name.npos)) ||
+         (channel_str.size() == 3 && channel_str.find("ttt") != channel_str.npos && !(output_name.find("Tau") != output_name.npos)) ))
         continue;
 
     if(is_embedded &&  ( (channel_str.find("em") != channel_str.npos &&

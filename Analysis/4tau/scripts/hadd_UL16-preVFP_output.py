@@ -109,6 +109,8 @@ sample_list = [
 	'TTToHadronic',
 	'TTToSemiLeptonic',
 	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
+	'WZTo1L3Nu',
+	'WZTo2Q2L',
 	'WZTo1L1Nu2Q',
 	'WZTo3LNu',
 	'WWTo1L1Nu2Q',
@@ -137,8 +139,16 @@ sample_list = [
    # SM Higgs (Missing Files: VBFHToTauTau_M125,WminusHToTauTau_M125,WplusHToTauTau_M125,ttHToTauTau_M125)
   'GluGluHToTauTau_M125',
   'ZHToTauTau_M125',
+  'VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ttHToTauTau_M125',
 
     ]
+grid_phi = ["100","110","125","140","160","180","200","250","300"]
+grid_A = ["60","70","80","90","100","125","140","160"]
+
+for mp in grid_phi:
+  for mA in grid_A:
+     sample_list.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
+
 
 sample_list = list(set(sample_list))
 
@@ -194,7 +204,7 @@ for sa in sample_list:
       infiles=jsdir[1]
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_%(ch)s_0.root'%vars()):
         if "%(sa)s_2016_preVFP"%vars() in nfiles or ignore==True:
-#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_%(ch)s_*.root'%vars())
+#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_preVFP_%(ch)s_*.root'%vars())
           no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles) 
           if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2016_preVFP_%(ch)s_*'%vars())) == nfiles["%(sa)s_2016_preVFP"%vars()]):
             if not batch:  
