@@ -204,11 +204,11 @@
     "evt": 21249456
   },
   "VBF_HToZZTo4L_M125": {
-    "xs": 3.935,
+    "xs": 0.001038159,
     "evt": 498286
   },
   "GluGlu_HToZZTo4L_M125": {
-    "xs": 28.87,
+    "xs": 0.01333521,
     "evt": 987728
   },
   "ZstarTophi100A100To4Tau": {
