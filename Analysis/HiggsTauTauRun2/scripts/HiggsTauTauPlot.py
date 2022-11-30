@@ -1364,6 +1364,7 @@ if options.era in ['cpsummer17','tauid2017']:
    # ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO','DYJetsToLL_M-10-50-LO-ext1']
     if options.channel == "tt": # remove 'DYJetsToLL_M-10-50-LO (zero entries)
         ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1']
+    else:     ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1','DYJetsToLL_M-10-50-LO']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WWToLNuQQ','WZTo2L2Q','WZTo1L1Nu2Q','WZTo1L3Nu','WZTo3LNu', 'WWTo2L2Nu', 'ZZTo2L2Nu', 'ZZTo2L2Q','ZZTo4L-ext','ZZTo4L']
     if options.analysis in ['mssmrun2','vlq']:
@@ -1401,6 +1402,7 @@ if options.era in ['cpsummer17','tauid2017']:
 
 if options.era in ['UL_17']:
     ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+    #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']
     #ztt_samples = ['DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
 
     # Question: Is this need for UL_17?
@@ -1408,6 +1410,7 @@ if options.era in ['UL_17']:
         #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY1JetsToLL-LO-ext','DY2JetsToLL-LO','DY2JetsToLL-LO-ext','DY3JetsToLL-LO','DY3JetsToLL-LO-ext','DY4JetsToLL-LO','DYJetsToLL_M-10-50-LO-ext1']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L']
+    #vv_samples = ['T-tW', 'Tbar-tW','T-t','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L']
     # if options.analysis in ['mssmrun2','vlq']:
       # vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo2L2Q','WZTo3LNu', 'ZZTo2L2Q','ZZTo4L-ext','ZZTo4L','VVTo2L2Nu']
     
@@ -1698,7 +1701,7 @@ if options.analysis in ['mssmrun2','vlq']:
   if (options.era == 'cp18' or options.era == 'UL_18'):
     sm_samples = { 'ggH125_SM' : 'GluGluHToTauTau_M-125',
                    'qqH125' : ['VBFHToTauTau_M-125-ext1','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-                   'qqH95' : 'VBFHToTauTau_M-95',
+#                   'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125-ext1',
                    #'ZH125' : 'ZHToTauTau_M-125',
                    #'WplusH125' : 'WplusHToTauTau_M-125',
@@ -1712,7 +1715,7 @@ if options.analysis in ['mssmrun2','vlq']:
   elif (options.era == 'cpsummer17' or options.era == 'UL_17'):
     sm_samples = { 'ggH125_SM' : ['GluGluHToTauTau_M-125','GluGluHToTauTau_M-125-ext'],
                    'qqH125' : ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-                   'qqH95' : 'VBFHToTauTau_M-95',
+                   #'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125',
                    #'ZH125' : 'ZHToTauTau_M-125',
                    #'WplusH125' : 'WplusHToTauTau_M-125',
@@ -1726,7 +1729,7 @@ if options.analysis in ['mssmrun2','vlq']:
   elif options.era in ['legacy16','UL_16_preVFP','UL_16_postVFP']:
     sm_samples = { 'ggH125_SM' : 'GluGluToHToTauTau_M-125',
                    'qqH125': ['VBFHToTauTau_M-125','ZHToTauTau_M-125','WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-                   'qqH95' : 'VBFHToTauTau_M-95',
+                   #'qqH95' : 'VBFHToTauTau_M-95',
                    #'qqH125' : 'VBFHToTauTau_M-125',
                    #'ZH125' : 'ZHToTauTau_M-125',
                    #'WplusH125' : 'WplusHToTauTau_M-125',
@@ -4782,6 +4785,7 @@ is_2d=False
 is_3d=False
 var_name = options.var.split('[')[0]
 var_name = var_name.split('(')[0]
+var_name = var_name.replace('/','_over_')
 if var_name.count(',') == 1:
     is_2d = True
     var_name = var_name.split(',')[0]+'_vs_'+var_name.split(',')[1]
