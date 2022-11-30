@@ -1,7 +1,7 @@
 import argparse
 import os
 
-#python crab_4tau.py --year=2016-postVFP --data --output_folder=Jan06
+#python crab_4tau.py --year=2016-postVFP --data --mc --signal --output_folder=Nov29
 #cmsRun higgstautau_cfg_106X_Nov21_2016_preVFP.py globalTag=106X_mcRun2_asymptotic_v13 doHT=1 isData=0 file=/store/mc/RunIISummer20UL16MiniAODAPVv2/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/270000/14874C82-12F0-DE44-B1FA-B05988B38C12.root
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Nov22')
@@ -238,345 +238,345 @@ for dm in dml:
           if yr == "2016-preVFP":
             # Spit MC into preVFP and postVFP (HIP fix)
             # Drell-Yan LO
-          #  tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
-          #  # Low mass Drell-Yan LO
-          #  tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
-          #  tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
-          #  tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            # Low mass Drell-Yan LO
+            tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
-          #  # Drell-Yan NLO
-          #  tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('DYJetsToLL-NLO','/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
+            # Drell-Yan NLO
+            tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL-NLO','/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
 
-          #  # Electroweak W and Z
-          #  tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            # Electroweak W and Z
+            tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
-          #  # W + Jets LO
-          #  tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
-          #  tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
-          #  tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
+            # W + Jets LO
+            tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
+            tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
+            tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
 
-          #  # W + Jets NLO
-          #  tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
-          #  tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
-          #  tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            # W + Jets NLO
+            tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
-          #  # ttbar
-          #  tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            # ttbar
+            tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
-          #  # Split diboson - missing files commented out
-          #  tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
-          #  tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v3/MINIAODSIM'))
-          #  tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
-          #  tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            # Split diboson - missing files commented out
+            tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
+            tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v3/MINIAODSIM'))
+            tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v2/MINIAODSIM'))
+            tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
 
-          #  # Inclusive diboson
-          #  tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            # Inclusive diboson
+            tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
-          #  # Triboson
-          #  tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
-          #  tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
-          #  tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
-          #  tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
+            # Triboson
+            tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
+            tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
+            tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
+            tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11_ext1-v1/MINIAODSIM'))
 
-          #  # Other backgrounds
-          #  tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('Tbar-t', '/ST_t-channel_antitop_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
-          #  tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-          #  tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v3/MINIAODSIM'))
-          #  tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            # Other backgrounds
+            tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('Tbar-t', '/ST_t-channel_antitop_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v1/MINIAODSIM'))
+            tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v3/MINIAODSIM'))
+            tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
-          #  # SM Higgs - missing files commented out
-          #  tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v4/MINIAODSIM'))
-          #  tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('ZHToTauTau_M125', '/ZHToTauTau_M125_CP5_13TeV-powheg-pythia8_ext1/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-          #  tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            # SM Higgs - missing files commented out
+            tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8-v4/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_M125', '/ZHToTauTau_M125_CP5_13TeV-powheg-pythia8_ext1/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
 
           elif yr == "2016-postVFP":
             # Spit MC into preVFP and postVFP (HIP fix)
             # Drell-Yan LO
-         #   tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
 
-         #   # Low mass Drell-Yan LO
-         #   tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            # Low mass Drell-Yan LO
+            tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
 
-         #   # Drell-Yan NLO
-         #   tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL-NLO', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            # Drell-Yan NLO
+            tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL-NLO', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
 
-         #   # Electroweak W and Z
-         #   tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            # Electroweak W and Z
+            tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
 
-         #   # W + Jets LO
-         #   tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            # W + Jets LO
+            tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
 
-         #   # W + Jets NLO
-         #   tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu-NLO', '/WJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            # W + Jets NLO
+            tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu-NLO', '/WJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
 
-         #   # ttbar
-         #   tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            # ttbar
+            tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
 
-         #   # Split diboson - missing files commented out 
-         #   tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-         #   tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            # Split diboson - missing files commented out 
+            tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
 
-         #   # Inclusive diboson
-         #   tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            # Inclusive diboson
+            tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
  
-         #   # Triboson
-         #   tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
+            # Triboson
+            tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
+            tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
+            tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
+            tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13_ext1-v2/MINIAODSIM'))
 
-         #   # Other backgrounds
-         #   tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('Tbar-t', '/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
-         #   tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
-         #   tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
-         #   tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            # Other backgrounds
+            tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('Tbar-t', '/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
+            tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
+            tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
+            tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v1/MINIAODSIM'))
 
-         #   # SM Higgs
-         #   tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
-         #   tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
-         #   tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
-         #   tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
-         #   tasks.append(('ZHToTauTau_M125', '/ZHToTauTau_M125_CP5_13TeV-powheg-pythia8_ext1/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
-         #   tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            # SM Higgs
+            tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_M125', '/ZHToTauTau_M125_CP5_13TeV-powheg-pythia8_ext1/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v3/MINIAODSIM'))
+            tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'))
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
 
           elif yr == "2017":
 
-         #   # Drell-Yan LO
-         #   tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            # Drell-Yan LO
+            tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
 
-         #   # Low mass Drell-Yan LO
-         #   tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            # Low mass Drell-Yan LO
+            tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
 
-         #   # Drell-Yan NLO
-         #   tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL-NLO', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            # Drell-Yan NLO
+            tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL-NLO', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
 
-         #   # Electroweak W and Z
-         #   tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            # Electroweak W and Z
+            tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
 
-         #   # W + Jets LO
-         #   tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            # W + Jets LO
+            tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
 
-         #   # W + Jets NLO
-         #   tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            # W + Jets NLO
+            tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
 
-         #   # ttbar
-         #   tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            # ttbar
+            tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
 
-         #   # Split diboson - missing files commented out
-         #   tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v3/MINIAODSIM'))
-         #   tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-         #   tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            # Split diboson - missing files commented out
+            tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v3/MINIAODSIM'))
+            tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
 
-         #   # Inclusive diboson
-         #   tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            # Inclusive diboson
+            tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
 
-         #   # Triboson
-         #   tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
+            # Triboson
+            tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
+            tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
+            tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
+            tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6_ext1-v2/MINIAODSIM'))
 
-         #   # Other backgrounds
-         #   tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('Tbar-t', '/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            # Other backgrounds
+            tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('Tbar-t', '/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
 
-         #   # SM Higgs
-         #   tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v3/MINIAODSIM'))
-         #   tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
-         #   tasks.append(('ZHToTauTau_M125', '/ZHToTauTau_M125_CP5_13TeV-powheg-pythia8_ext1/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
-         #   tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v3/MINIAODSIM'))
+            # SM Higgs
+            tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v3/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_M125', '/ZHToTauTau_M125_CP5_13TeV-powheg-pythia8_ext1/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM'))
+            tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v3/MINIAODSIM'))
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
 
           elif yr == "2018":
 
-         #   # Drell-Yan LO
-         #   tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            # Drell-Yan LO
+            tasks.append(('DYJetsToLL-LO', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL-LO', '/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL-LO', '/DY2JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL-LO', '/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL-LO', '/DY4JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
 
-         #   # Low mass Drell-Yan LO
-         #   tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            # Low mass Drell-Yan LO
+            tasks.append(('DYJetsToLL_M-10to50-LO', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('DY1JetsToLL_M-10to50-LO', '/DY1JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DY2JetsToLL_M-10to50-LO', '/DY2JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DY3JetsToLL_M-10to50-LO', '/DY3JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DY4JetsToLL_M-10to50-LO', '/DY4JetsToLL_M-10to50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
 
-         #   # Drell-Yan NLO
-         #   tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('DYJetsToLL-NLO', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-         #   
-         #   # Electroweak W and Z
-         #   tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            # Drell-Yan NLO
+            tasks.append(('DYJetsToLL_0J-NLO', '/DYJetsToLL_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_1J-NLO', '/DYJetsToLL_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL_2J-NLO', '/DYJetsToLL_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('DYJetsToLL-NLO', '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            
+            # Electroweak W and Z
+            tasks.append(('EWKWMinus2Jets_WToLNu', '/EWKWMinus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('EWKWPlus2Jets_WToLNu', '/EWKWPlus2Jets_WToLNu_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('EWKZ2Jets_ZToLL', '/EWKZ2Jets_ZToLL_M-50_TuneCP5_withDipoleRecoil_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
 
-         #   # W + Jets LO
-         #   tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            # W + Jets LO
+            tasks.append(('WJetsToLNu-LO', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('W1JetsToLNu-LO', '/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('W2JetsToLNu-LO', '/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('W3JetsToLNu-LO', '/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
 
-         #   # W + Jets NLO
-         #   tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('WJetsToLNu-NLO', '/WJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            # W + Jets NLO
+            tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu-NLO', '/WJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
 
-         #   # ttbar
-         #   tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            # ttbar
+            tasks.append(('TTTo2L2Nu', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('TTToHadronic', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('TTToSemiLeptonic', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
 
-         #   # Split diboson - missing files commented out
-         #   tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v3/MINIAODSIM'))
-         #   tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v3/MINIAODSIM'))
-         #   tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            # Split diboson - missing files commented out
+            tasks.append(('WZTo1L3Nu', '/WZTo1L3Nu_4f_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v3/MINIAODSIM'))
+            tasks.append(('WZTo1L1Nu2Q', '/WZTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WZTo2Q2L', '/WZTo2Q2L_mllmin4p0_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WZTo3LNu', '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v3/MINIAODSIM'))
+            tasks.append(('WWTo1L1Nu2Q', '/WWTo1L1Nu2Q_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('WWTo2L2Nu', '/WWTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('ZZTo2L2Nu', '/ZZTo2L2Nu_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('ZZTo4L', '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
 
-         #   # Inclusive diboson
-         #   tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            # Inclusive diboson
+            tasks.append(('WW', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WZ', '/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('ZZ', '/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
 
-         #   # Triboson
-         #   tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
-         #   tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
+            # Triboson
+            tasks.append(('WWZ', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WWZ-ext1', '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
+            tasks.append(('WZZ', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WZZ-ext1', '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
+            tasks.append(('WWW', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WWW-ext1', '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
+            tasks.append(('ZZZ', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('ZZZ-ext1', '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1_ext1-v2/MINIAODSIM'))
 
-         #   # Other backgrounds
-         #   tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('Tbar-t', '/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
-         #   tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            # Other backgrounds
+            tasks.append(('WGToLNuG', '/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('Tbar-t', '/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('Tbar-tW', '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('T-t', '/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
+            tasks.append(('T-tW', '/ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM'))
 
-         #   # SM Higgs
-         #   tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v3/MINIAODSIM'))
-         #   tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
-         #   tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v3/MINIAODSIM'))
+            # SM Higgs
+            tasks.append(('GluGluHToTauTau_M125', '/GluGluHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v3/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_M125', '/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_M125', '/WminusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_M125', '/WplusHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'))
+            tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v3/MINIAODSIM'))
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM'))
    
@@ -656,78 +656,78 @@ for dm in dml:
             tasks.append(('ZstarTophi300A90To4Tau', '/ZstarTophi300A90To4Tau/ksavva-ZstarTophi300A90To4Tau_2016_postVFP_MiniAOD-67102244c8e1178e7531c1c247fc23c5/USER'))
 
           elif yr == "2016-preVFP":
-           # tasks.append(('ZstarTophi100A100To4Tau', '/ZstarTophi100A100To4Tau/ksavva-ZstarTophi100A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi100A125To4Tau', '/ZstarTophi100A125To4Tau/ksavva-ZstarTophi100A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi100A140To4Tau', '/ZstarTophi100A140To4Tau/ksavva-ZstarTophi100A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi100A160To4Tau', '/ZstarTophi100A160To4Tau/ksavva-ZstarTophi100A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi100A60To4Tau', '/ZstarTophi100A60To4Tau/ksavva-ZstarTophi100A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi100A70To4Tau', '/ZstarTophi100A70To4Tau/ksavva-ZstarTophi100A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi100A80To4Tau', '/ZstarTophi100A80To4Tau/ksavva-ZstarTophi100A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi100A90To4Tau', '/ZstarTophi100A90To4Tau/ksavva-ZstarTophi100A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A100To4Tau', '/ZstarTophi110A100To4Tau/ksavva-ZstarTophi110A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A125To4Tau', '/ZstarTophi110A125To4Tau/ksavva-ZstarTophi110A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A140To4Tau', '/ZstarTophi110A140To4Tau/ksavva-ZstarTophi110A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A160To4Tau', '/ZstarTophi110A160To4Tau/ksavva-ZstarTophi110A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A60To4Tau', '/ZstarTophi110A60To4Tau/ksavva-ZstarTophi110A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A70To4Tau', '/ZstarTophi110A70To4Tau/ksavva-ZstarTophi110A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A80To4Tau', '/ZstarTophi110A80To4Tau/ksavva-ZstarTophi110A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi110A90To4Tau', '/ZstarTophi110A90To4Tau/ksavva-ZstarTophi110A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A100To4Tau', '/ZstarTophi125A100To4Tau/ksavva-ZstarTophi125A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A125To4Tau', '/ZstarTophi125A125To4Tau/ksavva-ZstarTophi125A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A140To4Tau', '/ZstarTophi125A140To4Tau/ksavva-ZstarTophi125A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A160To4Tau', '/ZstarTophi125A160To4Tau/ksavva-ZstarTophi125A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A60To4Tau', '/ZstarTophi125A60To4Tau/ksavva-ZstarTophi125A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A70To4Tau', '/ZstarTophi125A70To4Tau/ksavva-ZstarTophi125A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A80To4Tau', '/ZstarTophi125A80To4Tau/ksavva-ZstarTophi125A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi125A90To4Tau', '/ZstarTophi125A90To4Tau/ksavva-ZstarTophi125A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi140A100To4Tau', '/ZstarTophi140A100To4Tau/ksavva-ZstarTophi140A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-             tasks.append(('ZstarTophi140A125To4Tau', '/ZstarTophi140A125To4Tau/ksavva-ZstarTophi140A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi140A140To4Tau', '/ZstarTophi140A140To4Tau/ksavva-ZstarTophi140A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi140A160To4Tau', '/ZstarTophi140A160To4Tau/ksavva-ZstarTophi140A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi140A60To4Tau', '/ZstarTophi140A60To4Tau/ksavva-ZstarTophi140A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi140A70To4Tau', '/ZstarTophi140A70To4Tau/ksavva-ZstarTophi140A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi140A80To4Tau', '/ZstarTophi140A80To4Tau/ksavva-ZstarTophi140A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi140A90To4Tau', '/ZstarTophi140A90To4Tau/ksavva-ZstarTophi140A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A100To4Tau', '/ZstarTophi160A100To4Tau/ksavva-ZstarTophi160A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A125To4Tau', '/ZstarTophi160A125To4Tau/ksavva-ZstarTophi160A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A140To4Tau', '/ZstarTophi160A140To4Tau/ksavva-ZstarTophi160A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A160To4Tau', '/ZstarTophi160A160To4Tau/ksavva-ZstarTophi160A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A60To4Tau', '/ZstarTophi160A60To4Tau/ksavva-ZstarTophi160A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A70To4Tau', '/ZstarTophi160A70To4Tau/ksavva-ZstarTophi160A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A80To4Tau', '/ZstarTophi160A80To4Tau/ksavva-ZstarTophi160A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi160A90To4Tau', '/ZstarTophi160A90To4Tau/ksavva-ZstarTophi160A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A100To4Tau', '/ZstarTophi180A100To4Tau/ksavva-ZstarTophi180A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A125To4Tau', '/ZstarTophi180A125To4Tau/ksavva-ZstarTophi180A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A140To4Tau', '/ZstarTophi180A140To4Tau/ksavva-ZstarTophi180A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A160To4Tau', '/ZstarTophi180A160To4Tau/ksavva-ZstarTophi180A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A60To4Tau', '/ZstarTophi180A60To4Tau/ksavva-ZstarTophi180A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A70To4Tau', '/ZstarTophi180A70To4Tau/ksavva-ZstarTophi180A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A80To4Tau', '/ZstarTophi180A80To4Tau/ksavva-ZstarTophi180A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi180A90To4Tau', '/ZstarTophi180A90To4Tau/ksavva-ZstarTophi180A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A100To4Tau', '/ZstarTophi200A100To4Tau/ksavva-ZstarTophi200A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A125To4Tau', '/ZstarTophi200A125To4Tau/ksavva-ZstarTophi200A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A140To4Tau', '/ZstarTophi200A140To4Tau/ksavva-ZstarTophi200A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A160To4Tau', '/ZstarTophi200A160To4Tau/ksavva-ZstarTophi200A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A60To4Tau', '/ZstarTophi200A60To4Tau/ksavva-ZstarTophi200A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A70To4Tau', '/ZstarTophi200A70To4Tau/ksavva-ZstarTophi200A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A80To4Tau', '/ZstarTophi200A80To4Tau/ksavva-ZstarTophi200A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi200A90To4Tau', '/ZstarTophi200A90To4Tau/ksavva-ZstarTophi200A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A100To4Tau', '/ZstarTophi250A100To4Tau/ksavva-ZstarTophi250A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A125To4Tau', '/ZstarTophi250A125To4Tau/ksavva-ZstarTophi250A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A140To4Tau', '/ZstarTophi250A140To4Tau/ksavva-ZstarTophi250A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A160To4Tau', '/ZstarTophi250A160To4Tau/ksavva-ZstarTophi250A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A60To4Tau', '/ZstarTophi250A60To4Tau/ksavva-ZstarTophi250A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A70To4Tau', '/ZstarTophi250A70To4Tau/ksavva-ZstarTophi250A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A80To4Tau', '/ZstarTophi250A80To4Tau/ksavva-ZstarTophi250A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi250A90To4Tau', '/ZstarTophi250A90To4Tau/ksavva-ZstarTophi250A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A100To4Tau', '/ZstarTophi300A100To4Tau/ksavva-ZstarTophi300A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A125To4Tau', '/ZstarTophi300A125To4Tau/ksavva-ZstarTophi300A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A140To4Tau', '/ZstarTophi300A140To4Tau/ksavva-ZstarTophi300A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A160To4Tau', '/ZstarTophi300A160To4Tau/ksavva-ZstarTophi300A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A60To4Tau', '/ZstarTophi300A60To4Tau/ksavva-ZstarTophi300A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A70To4Tau', '/ZstarTophi300A70To4Tau/ksavva-ZstarTophi300A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A80To4Tau', '/ZstarTophi300A80To4Tau/ksavva-ZstarTophi300A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
-           # tasks.append(('ZstarTophi300A90To4Tau', '/ZstarTophi300A90To4Tau/ksavva-ZstarTophi300A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A100To4Tau', '/ZstarTophi100A100To4Tau/ksavva-ZstarTophi100A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A125To4Tau', '/ZstarTophi100A125To4Tau/ksavva-ZstarTophi100A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A140To4Tau', '/ZstarTophi100A140To4Tau/ksavva-ZstarTophi100A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A160To4Tau', '/ZstarTophi100A160To4Tau/ksavva-ZstarTophi100A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A60To4Tau', '/ZstarTophi100A60To4Tau/ksavva-ZstarTophi100A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A70To4Tau', '/ZstarTophi100A70To4Tau/ksavva-ZstarTophi100A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A80To4Tau', '/ZstarTophi100A80To4Tau/ksavva-ZstarTophi100A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi100A90To4Tau', '/ZstarTophi100A90To4Tau/ksavva-ZstarTophi100A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A100To4Tau', '/ZstarTophi110A100To4Tau/ksavva-ZstarTophi110A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A125To4Tau', '/ZstarTophi110A125To4Tau/ksavva-ZstarTophi110A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A140To4Tau', '/ZstarTophi110A140To4Tau/ksavva-ZstarTophi110A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A160To4Tau', '/ZstarTophi110A160To4Tau/ksavva-ZstarTophi110A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A60To4Tau', '/ZstarTophi110A60To4Tau/ksavva-ZstarTophi110A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A70To4Tau', '/ZstarTophi110A70To4Tau/ksavva-ZstarTophi110A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A80To4Tau', '/ZstarTophi110A80To4Tau/ksavva-ZstarTophi110A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi110A90To4Tau', '/ZstarTophi110A90To4Tau/ksavva-ZstarTophi110A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A100To4Tau', '/ZstarTophi125A100To4Tau/ksavva-ZstarTophi125A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A125To4Tau', '/ZstarTophi125A125To4Tau/ksavva-ZstarTophi125A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A140To4Tau', '/ZstarTophi125A140To4Tau/ksavva-ZstarTophi125A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A160To4Tau', '/ZstarTophi125A160To4Tau/ksavva-ZstarTophi125A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A60To4Tau', '/ZstarTophi125A60To4Tau/ksavva-ZstarTophi125A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A70To4Tau', '/ZstarTophi125A70To4Tau/ksavva-ZstarTophi125A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A80To4Tau', '/ZstarTophi125A80To4Tau/ksavva-ZstarTophi125A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi125A90To4Tau', '/ZstarTophi125A90To4Tau/ksavva-ZstarTophi125A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A100To4Tau', '/ZstarTophi140A100To4Tau/ksavva-ZstarTophi140A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A125To4Tau', '/ZstarTophi140A125To4Tau/ksavva-ZstarTophi140A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A140To4Tau', '/ZstarTophi140A140To4Tau/ksavva-ZstarTophi140A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A160To4Tau', '/ZstarTophi140A160To4Tau/ksavva-ZstarTophi140A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A60To4Tau', '/ZstarTophi140A60To4Tau/ksavva-ZstarTophi140A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A70To4Tau', '/ZstarTophi140A70To4Tau/ksavva-ZstarTophi140A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A80To4Tau', '/ZstarTophi140A80To4Tau/ksavva-ZstarTophi140A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi140A90To4Tau', '/ZstarTophi140A90To4Tau/ksavva-ZstarTophi140A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A100To4Tau', '/ZstarTophi160A100To4Tau/ksavva-ZstarTophi160A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A125To4Tau', '/ZstarTophi160A125To4Tau/ksavva-ZstarTophi160A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A140To4Tau', '/ZstarTophi160A140To4Tau/ksavva-ZstarTophi160A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A160To4Tau', '/ZstarTophi160A160To4Tau/ksavva-ZstarTophi160A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A60To4Tau', '/ZstarTophi160A60To4Tau/ksavva-ZstarTophi160A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A70To4Tau', '/ZstarTophi160A70To4Tau/ksavva-ZstarTophi160A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A80To4Tau', '/ZstarTophi160A80To4Tau/ksavva-ZstarTophi160A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi160A90To4Tau', '/ZstarTophi160A90To4Tau/ksavva-ZstarTophi160A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A100To4Tau', '/ZstarTophi180A100To4Tau/ksavva-ZstarTophi180A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A125To4Tau', '/ZstarTophi180A125To4Tau/ksavva-ZstarTophi180A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A140To4Tau', '/ZstarTophi180A140To4Tau/ksavva-ZstarTophi180A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A160To4Tau', '/ZstarTophi180A160To4Tau/ksavva-ZstarTophi180A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A60To4Tau', '/ZstarTophi180A60To4Tau/ksavva-ZstarTophi180A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A70To4Tau', '/ZstarTophi180A70To4Tau/ksavva-ZstarTophi180A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A80To4Tau', '/ZstarTophi180A80To4Tau/ksavva-ZstarTophi180A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi180A90To4Tau', '/ZstarTophi180A90To4Tau/ksavva-ZstarTophi180A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A100To4Tau', '/ZstarTophi200A100To4Tau/ksavva-ZstarTophi200A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A125To4Tau', '/ZstarTophi200A125To4Tau/ksavva-ZstarTophi200A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A140To4Tau', '/ZstarTophi200A140To4Tau/ksavva-ZstarTophi200A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A160To4Tau', '/ZstarTophi200A160To4Tau/ksavva-ZstarTophi200A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A60To4Tau', '/ZstarTophi200A60To4Tau/ksavva-ZstarTophi200A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A70To4Tau', '/ZstarTophi200A70To4Tau/ksavva-ZstarTophi200A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A80To4Tau', '/ZstarTophi200A80To4Tau/ksavva-ZstarTophi200A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi200A90To4Tau', '/ZstarTophi200A90To4Tau/ksavva-ZstarTophi200A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A100To4Tau', '/ZstarTophi250A100To4Tau/ksavva-ZstarTophi250A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A125To4Tau', '/ZstarTophi250A125To4Tau/ksavva-ZstarTophi250A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A140To4Tau', '/ZstarTophi250A140To4Tau/ksavva-ZstarTophi250A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A160To4Tau', '/ZstarTophi250A160To4Tau/ksavva-ZstarTophi250A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A60To4Tau', '/ZstarTophi250A60To4Tau/ksavva-ZstarTophi250A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A70To4Tau', '/ZstarTophi250A70To4Tau/ksavva-ZstarTophi250A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A80To4Tau', '/ZstarTophi250A80To4Tau/ksavva-ZstarTophi250A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi250A90To4Tau', '/ZstarTophi250A90To4Tau/ksavva-ZstarTophi250A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A100To4Tau', '/ZstarTophi300A100To4Tau/ksavva-ZstarTophi300A100To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A125To4Tau', '/ZstarTophi300A125To4Tau/ksavva-ZstarTophi300A125To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A140To4Tau', '/ZstarTophi300A140To4Tau/ksavva-ZstarTophi300A140To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A160To4Tau', '/ZstarTophi300A160To4Tau/ksavva-ZstarTophi300A160To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A60To4Tau', '/ZstarTophi300A60To4Tau/ksavva-ZstarTophi300A60To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A70To4Tau', '/ZstarTophi300A70To4Tau/ksavva-ZstarTophi300A70To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A80To4Tau', '/ZstarTophi300A80To4Tau/ksavva-ZstarTophi300A80To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
+            tasks.append(('ZstarTophi300A90To4Tau', '/ZstarTophi300A90To4Tau/ksavva-ZstarTophi300A90To4Tau_2016_preVFP_MiniAOD-9cb5b2c9e211636a35327a4eae3ac2a3/USER'))
 
           elif yr == "2017":
 
