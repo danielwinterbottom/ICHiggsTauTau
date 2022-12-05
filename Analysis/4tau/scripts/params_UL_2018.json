@@ -1,4 +1,8 @@
 {
+  "DYJetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 97808057
+  },
   "DY1JetsToLL-LO": {
     "xs": 6077.22,
     "evt": 97808057
@@ -12,10 +16,6 @@
     "evt": 97808057
   },
   "DY4JetsToLL-LO": {
-    "xs": 6077.22,
-    "evt": 97808057
-  },
-  "DYJetsToLL-LO": {
     "xs": 6077.22,
     "evt": 97808057
   },
@@ -198,6 +198,14 @@
   "ttHToTauTau_M125": {
     "xs": 0.0318,
     "evt": 21185196
+  },
+  "VBF_HToZZTo4L_M125": {
+    "xs": 0.001038159,
+    "evt": 476364
+  },
+  "GluGlu_HToZZTo4L_M125": {
+    "xs": 0.01333521,
+    "evt": 920362
   },
   "ZstarTophi100A100To4Tau": {
     "xs": 0.2902,
