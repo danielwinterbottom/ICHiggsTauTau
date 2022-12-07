@@ -24,45 +24,18 @@ conf_parser.add_argument("--cfg",
 options, remaining_argv = conf_parser.parse_known_args()
 
 defaults = { 
-    "channel":"mt" , "outputfolder":"output",
-    "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "embed_folder":"",
-    "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016",
+    "channel":"mmttt" , "outputfolder":"output",
+    "folder":"/vols/cms/gu18/Offline/output/4tau/2411_ff_v2" , "signal_folder":"",
+    "paramfile":"scripts/params_UL_2018.json", "cat":"inclusive", "year":"2018",
     "campaign":"UL", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)",
-    "method":1 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
-    "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"",
-    "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
-    "syst_tau_scale_1pi":"", "syst_tau_scale_3prong":"", "syst_tau_scale_3prong1pi0":"", "syst_eff_t":"", "syst_tquark":"",
-    "syst_zwt":"", "syst_w_fake_rate":"", "syst_scale_j":"", "syst_res_j":"", "syst_scale_j_rbal":"",
-    "syst_scale_j_rsamp":"", "syst_scale_j_full":"", "syst_scale_j_cent":"", "syst_scale_j_hf":"", 
-    "syst_scale_j_full_corr":"", "syst_scale_j_cent_corr":"", "syst_scale_j_hf_corr":"",
-    "syst_scale_j_full_uncorr":"", "syst_scale_j_cent_uncorr":"", "syst_scale_j_hf_uncorr":"",
-    "syst_scale_j_by_source":"","jes_sources":"1:27", "syst_eff_b":"", "syst_fake_b":"", "syst_eff_b_weights":"",
-    "norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False,
+    "method":1, "norm_bins":False, "blind":False, "x_blind_min":100, "x_blind_max":4000, "ratio":False,
     "y_title":"", "x_title":"", "custom_y_range":False, "y_axis_min":0.001,
     "y_axis_max":100,"custom_x_range":False, "x_axis_min":0.001, "x_axis_max":100, "log_x":False,
-    "log_y":False, "extra_pad":0.0, "signal_scale":1, "draw_signal_mass":"", "draw_signal_tanb":10,
-    "signal_scheme":"run2_mssm", "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False,
-    "ratio_range":"0.7,1.3", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Systematic uncertainty", 
-    "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0,
-    "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"",
-    "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"",
-    "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"",
-    "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"",
-    "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"", "syst_quarkmass":"",
-    "syst_ps":"", "syst_ue":"", "doNLOScales":False, "gen_signal":False, "doPDF":False,
-    "doMSSMReWeighting":False, "do_unrolling":True, "syst_tau_id_dm0":"", "syst_tau_id_dm1":"",
-    "syst_tau_id_dm10":"", "syst_lfake_dm0":"","syst_lfake_dm1":"","syst_qcd_shape_wsf":"",
-    "syst_scale_met_unclustered":"","syst_scale_met_clustered":"",
-    "extra_name":"", "no_default":False, "no_systs":False, "embedding":False,"syst_embedding_tt":"",
-    "vbf_background":False, "syst_em_qcd":"", "syst_prefire":"",
-    "syst_scale_met":"", "syst_res_met":"", "split_sm_scheme": False,
-    "ggh_scheme": "powheg", "symmetrise":False, "mergeXbins":False, 'em_qcd_weight':"",
-    "syst_scale_j_corr":"","syst_scale_j_uncorr":"", "syst_qcd_bkg":"",
-    "ff_ss_closure":False, "threePads":False,"auto_blind":False,
-    "syst_tau_id_diff":"", "syst_tau_trg_diff":"",
-    "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":""
-
+    "log_y":False, "extra_pad":0.0, "signal_scale":1, "lumi":"12.9 fb^{-1} (13 TeV)", "no_plot":False,
+    "ratio_range":"0.7,1.3", "datacard":"", "add_wt":"","do_unrolling":True, "extra_name":"",
+    "symmetrise":False, "mergeXbins":False, "threePads":False,"auto_blind":False,"plot_signals":""
 }
+
 
 if options.cfg:
     config = ConfigParser.SafeConfigParser()
@@ -169,6 +142,22 @@ parser.add_argument("--plot_from_dc", default="", type=str,
       help="If not empty will draw plot straight from datacard")
 parser.add_argument("--extra_name", default="", type=str,
       help="Extra name for plot")
+parser.add_argument("--replace_name", default=None, type=str,
+      help="Extra name for plot")
+parser.add_argument("--no_signal", dest="no_signal", action='store_true',
+    help="Do not run the signal samples.")
+parser.add_argument("--ff_from", default="all", type=str,
+      help="Which tau to use the ff from")
+parser.add_argument("--aiso", default="", type=str,
+      help="Which tau to ant isolate")
+parser.add_argument("--aiso_and_iso", default="", type=str,
+      help="Which tau to use full phase space")
+parser.add_argument("--under_legend", default="", type=str,
+      help="Text to go underneath the legend")
+parser.add_argument("--no_charge_sel", dest="no_charge_sel", action='store_true',
+    help="Run with no charge sel.")
+parser.add_argument("--no_sig_sel", dest="no_sig_sel", action='store_true',
+    help="Use all phase space except signal region.")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -192,6 +181,9 @@ if options.campaign == "ReReco" and options.channel in ["eett","mmtt"]:
 if (options.campaign == "ReReco" and options.year not in ["2016","2017","2018"]) or (options.campaign == "UL" and options.year not in ["2016_preVFP","2016_postVFP","2017","2018"]):
 	print "ERROR: Year requested not available for campaign"
 	exit()
+if options.no_sig_sel and options.ff_from == "all":
+  print "ERROR: Need to specify ff_from when using no_sig_sel"
+  exit()
 
 cats = {}
 
@@ -216,9 +208,15 @@ if t_sel == "": t_sel = "(1)"
 e_sel = "iso_X<%(lepton_iso)s" % vars()
 m_sel = "iso_X<%(lepton_iso)s" % vars()
 
+if options.no_sig_sel:
+  options.charges_non_zero = False
+  options.no_charge_sel = True
+
 
 if options.charges_non_zero: 
 	charge_sel = "(q_1+q_2+q_3+q_4)!=0"
+elif options.no_charge_sel:
+  charge_sel = "(1)"
 else:
 	charge_sel = "(q_1+q_2+q_3+q_4)==0"
 
@@ -228,7 +226,6 @@ if options.channel == 'ttt':
 if options.channel == "tttt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
   cats['trigger'] = "(trg_doubletau_12 || trg_doubletau_13 || trg_doubletau_14 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
-  cats['trigger'] = "(1)"
   cats['data_veto'] = "(1)"
 if options.channel == "ttt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"))
@@ -248,15 +245,33 @@ elif options.channel == "emtt":
   cats['data_veto'] = "(!(isTau && (trg_singlemuon_2))) && (!(isSingleElectron && (trg_singlemuon_1 || trg_doubletau_34)))"
 elif options.channel == "mmtt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  #cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4").replace("Jets_loose_4>","Jets_loose_4<"))
   cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_doubletau_34)"
   cats['data_veto'] = "!(isTau && (trg_singlemuon_1 || trg_singlemuon_2))"
 elif options.channel == "eett":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=e_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
   cats['trigger'] = "(trg_singleelectron_1 || trg_singleelectron_2 || trg_doubletau_34)"
   cats['data_veto'] = "!(isTau && (trg_singleelectron_1 || trg_singleelectron_2))"
- # cats['trigger'] = "(1)"
-  cats['data_veto'] = "(1)"
+
+if options.aiso != "":
+  for X in options.aiso:
+    cats['baseline'] = cats['baseline'].replace("deepTauVsJets_%(VsJets_wp)s_%(X)s>0.5" % vars(), "(deepTauVsJets_%(VsJets_wp)s_%(X)s<0.5 && deepTauVsJets_iso_%(X)s>0.1)" % vars() )
+
+if options.aiso_and_iso != "":
+  for X in options.aiso_and_iso:
+    cats['baseline'] = cats['baseline'].replace("deepTauVsJets_%(VsJets_wp)s_%(X)s>0.5" % vars(), "(deepTauVsJets_iso_%(X)s>0.1)" % vars() )
+
+if options.no_sig_sel:
+  remove = ""
+  for ind, s in enumerate(options.channel):
+    if s == "t": remove += str(ind+1)
+
+  for i in options.ff_from: remove = remove.replace(i,"")
+  no_sig = "(!((q_1+q_2+q_3+q_4)==0"
+  for X in remove:
+    no_sig += " && deepTauVsJets_%(VsJets_wp)s_%(X)s>0.5" % vars()
+    cats['baseline'] = cats['baseline'].replace("deepTauVsJets_%(VsJets_wp)s_%(X)s>0.5" % vars(), "(deepTauVsJets_iso_%(X)s>0.1)" % vars() )
+  no_sig += "))"
+  cats['baseline'] = "("+cats['baseline']+"*"+no_sig+")"
 
 cats['baseline'] = "(({charge_sel}) && {current_baseline} && {trigger_sel})".format(charge_sel=charge_sel,current_baseline=cats['baseline'],trigger_sel=cats['trigger'])
 
@@ -274,7 +289,7 @@ if options.do_trg_sf:
     sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlee_data_1 + trigeff_singlee_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_2) - (trigeff_singlee_data_1*trigeff_singlee_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlee_data_1*trigeff_singlee_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlee_mc_1 + trigeff_singlee_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_2) - (trigeff_singlee_mc_1*trigeff_singlee_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlee_mc_1*trigeff_singlee_mc_2)))"
   if options.channel == "mmtt":
     sf_string = "((trigeff_doubletau_data_3*trigeff_doubletau_data_4 + trigeff_singlem_data_1 + trigeff_singlem_data_2 - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1) - (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_2) - (trigeff_singlem_data_1*trigeff_singlem_data_2) + (trigeff_doubletau_data_3*trigeff_doubletau_data_4*trigeff_singlem_data_1*trigeff_singlem_data_2)) / (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4 + trigeff_singlem_mc_1 + trigeff_singlem_mc_2 - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1) - (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_2) - (trigeff_singlem_mc_1*trigeff_singlem_mc_2) + (trigeff_doubletau_mc_3*trigeff_doubletau_mc_4*trigeff_singlem_mc_1*trigeff_singlem_mc_2)))"
-  sf_string = "(1)"
+  #sf_string = "(1)"
   
   if options.add_wt == "":
     options.add_wt = "(" + sf_string + ")"
@@ -483,7 +498,7 @@ if options.year == "2016":
   ewkz_samples = ['EWKZ2Jets_ZToLL','EWKZ2Jets_ZToLL-ext1','EWKZ2Jets_ZToLL-ext2']
   signal_samples = []
 
-vv_samples = ["ZZTo4L"]
+#vv_samples = ["ZZTo4L"]
 
 ROOT.TH1.SetDefaultSumw2(True)
 
@@ -603,33 +618,56 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
     vjf = "1"
   else:
     vjf = "deepTauVsJets_" + VsJets_wp_fail
-  
-  ff_sel = cat.replace(vj,vjf).replace("1_1","1").replace("1_2","1").replace("1_3","1").replace("1_4","1").replace("!1>0.5","(1)").replace("&& 1>0.5","").replace("&& 1<0.5","")
-
-
-  # pass selections
-  pass_1 = "({vjn}_1>0.5)".format(vjn=vj)
-  pass_2 = "({vjn}_2>0.5)".format(vjn=vj)
-  pass_3 = "({vjn}_3>0.5)".format(vjn=vj)
-  pass_4 = "({vjn}_4>0.5)".format(vjn=vj)
-
-  # fail selections
-  fail_1 = "({vjn}_1<0.5)".format(vjn=vj)
-  fail_2 = "({vjn}_2<0.5)".format(vjn=vj)
-  fail_3 = "({vjn}_3<0.5)".format(vjn=vj)
-  fail_4 = "({vjn}_4<0.5)".format(vjn=vj)
-
-  if options.channel in ["emtt","eett","mmtt"]:
-    #ff_wt = "(wt_ff_ml_3 * %(fail_3)s * %(pass_4)s)" % vars()
-    #ff_wt = "(wt_ff_ml_3 * %(fail_3)s * %(fail_4)s)" % vars()
-    #ff_wt = "(wt_ff_ml_4 * %(pass_3)s * %(fail_4)s)" % vars()
-    #ff_wt = "(wt_ff_ml_3 * wt_ff_ml_4 * %(fail_3)s * %(fail_4)s)" % vars()
-    #ff_wt = "(0.5*((wt_ff_ml_3 * %(fail_3)s * %(pass_4)s) + (wt_ff_ml_4 * %(pass_3)s * %(fail_4)s)))" % vars()
-    ff_wt = "((wt_ff_ml_3 * %(fail_3)s * %(pass_4)s) + (wt_ff_ml_4 * %(pass_3)s * %(fail_4)s)  - (wt_ff_ml_3 * wt_ff_ml_4 * %(fail_3)s * %(fail_4)s))" % vars()
-    #ff_wt = "(%(ff_raw_34)s * %(ff_corr_34)s * %(fail_3)s * %(fail_4)s)" % vars()
-  #elif options.channel in ["ettt","mttt"]:
-  #elif options.channel in ["tttt"]:
-
+ 
+  ff_sel = copy.deepcopy(cat)
+  replace = "1234"
+  if options.ff_from != "all": replace = options.ff_from
+  pass_sel = {}
+  fail_sel = {}
+ 
+  for i in replace:
+#    ff_sel = ff_sel.replace("%(vj)s_%(i)s<0.5 && deepTauVsJets_iso_%(i)s>0.1" % vars(),"1").replace("%(vj)s_%(i)s>0.5" % vars(),"1")
+    ff_sel = ff_sel.replace("%(vj)s_%(i)s>0.5" % vars(),"1")
+    pass_sel[i] = "({vjn}_{ind}>0.5)".format(vjn=vj,ind=i)
+    fail_sel[i] = "({vjn}_{ind}<0.5 && deepTauVsJets_iso_{ind}>0.1)".format(vjn=vj,ind=i)
+   
+  if options.ff_from == "all":
+    if options.channel in ["emtt","eett","mmtt"]:
+      ff_wt = ("((wt_ff_ml_3 * {fail_3} * {pass_4})" 
+              "+ (wt_ff_ml_4 * {pass_3} * {fail_4})"  
+              "- (wt_ff_ml_3 * wt_ff_ml_4 * {fail_3} * {fail_4}))").format(fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_3=pass_sel["3"],pass_4=pass_sel["4"])
+    elif options.channel in ["ettt","mttt"]:
+      ff_wt = ("((wt_ff_ml_2 * {fail_2} * {pass_3} * {pass_4})"
+              "+ (wt_ff_ml_3 * {pass_2} * {fail_3} * {pass_4})" 
+              "+ (wt_ff_ml_4 * {pass_2} * {pass_3} * {fail_4})" 
+              "- (wt_ff_ml_2 * wt_ff_ml_3 * {fail_2} * {fail_3} * {pass_4})"
+              "- (wt_ff_ml_2 * wt_ff_ml_4 * {fail_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_3 * wt_ff_ml_4 * {pass_2} * {fail_3} * {fail_4})"
+              "+ (wt_ff_ml_2 * wt_ff_ml_3 * wt_ff_ml_4 * {fail_2} * {fail_3} * {fail_4}))").format(fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"])
+    elif options.channel in ["tttt"]:
+      ff_wt = ("((wt_ff_ml_1 * {fail_1} * {pass_2} * {pass_3} * {pass_4})" 
+              "+ (wt_ff_ml_2 * {pass_1} * {fail_2} * {pass_3} * {pass_4})"
+              "+ (wt_ff_ml_3 * {pass_1} * {pass_2} * {fail_3} * {pass_4})"
+              "+ (wt_ff_ml_4 * {pass_1} * {pass_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_1 * wt_ff_ml_2 * {fail_1} * {fail_2} * {pass_3} * {pass_4})"
+              "- (wt_ff_ml_1 * wt_ff_ml_3 * {fail_1} * {pass_2} * {fail_3} * {pass_4})"
+              "- (wt_ff_ml_1 * wt_ff_ml_4 * {fail_1} * {pass_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_2 * wt_ff_ml_3 * {pass_1} * {fail_2} * {fail_3} * {pass_4})"
+              "- (wt_ff_ml_2 * wt_ff_ml_4 * {pass_1} * {fail_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_3 * wt_ff_ml_4 * {pass_1} * {pass_2} * {fail_3} * {fail_4})"
+              "+ (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_3 * {fail_1} * {fail_2} * {fail_3} * {pass_4})"
+              "+ (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_4 * {fail_1} * {fail_2} * {pass_3} * {fail_4})"
+              "+ (wt_ff_ml_1 * wt_ff_ml_3 * wt_ff_ml_4 * {fail_1} * {pass_2} * {fail_3} * {fail_4})"
+              "+ (wt_ff_ml_2 * wt_ff_ml_3 * wt_ff_ml_4 * {pass_1} * {fail_2} * {fail_3} * {fail_4})"
+              "- (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_3 * wt_ff_ml_4 * {fail_1} * {fail_2} * {fail_3} * {fail_4}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"])
+  elif len(options.ff_from) == 1:
+    ff_wt = "(wt_ff_ml_{} * {})".format(options.ff_from,fail_sel[options.ff_from])
+  elif len(options.ff_from) == 2:
+    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * {} * {})".format(options.ff_from[0],options.ff_from[1],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]])
+  elif len(options.ff_from) == 3:
+    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * {} * {} * {})".format(options.ff_from[0],options.ff_from[1],options.ff_from[2],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]])
+  elif len(options.ff_from) == 4:
+    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * {} * {} * {} * {})".format(options.ff_from[0],options.ff_from[1],options.ff_from[2],options.ff_from[3],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]],fail_sel[options.ff_from[3]])
 
   if data_veto == None:
     ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, wt, sel, ff_sel)
@@ -681,11 +719,14 @@ def FixBins(ana,outfile='output.root'):
 
 def GetTotals(ana,add_name="",outfile='outfile.root'):
     # add histograms to get totals for backgrounds split into real/fake taus and make a total backgrounds histogram
+    from itertools import chain
     outfile.cd(nodename)
     nodes = ana.nodes[nodename].SubNodes()
     first_hist=True
     for node in nodes:
       if add_name not in node.name: continue
+      if node.name in list(chain.from_iterable(signal_samples)): continue
+      if node.name == "data_obs": continue
       if first_hist:
           total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
           first_hist=False
@@ -717,7 +758,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels) 
       if 'W' not in samples_to_skip:
           GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
-      if 'signal' not in samples_to_skip:
+      if 'signal' not in samples_to_skip and not options.no_signal:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
     elif options.method == 2:
       if 'jetFakes' not in samples_to_skip:
@@ -733,17 +774,17 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       elif options.channel in ["eett","mmtt","emtt"]:
         cat = "("+cat+")&&(gen_match_3<6 && gen_match_4<6)"
 
-      #if 'ZTT' not in samples_to_skip:
-      #    GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
+      if 'ZTT' not in samples_to_skip:
+          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
       #if 'TT' not in samples_to_skip:
       #    GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
       if 'VV' not in samples_to_skip:
           GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
-      #if 'VVV' not in samples_to_skip:
-      #    GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
-      #if 'W' not in samples_to_skip:
-      #    GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
-      if 'signal' not in samples_to_skip:
+      if 'VVV' not in samples_to_skip:
+          GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
+      if 'W' not in samples_to_skip:
+          GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      if 'signal' not in samples_to_skip and not options.no_signal:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
 
 def Get1DBinNumFrom2D(h2d,xbin,ybin):
@@ -795,10 +836,13 @@ def NormSignals(outfile,add_name):
        if xs == 1.: continue
        sf = 1.0/xs
        hist_ = outfile.Get(nodename+'/'+samp[1]+add_name)
-       hist_.Scale(sf)
-       hist_.Write("",ROOT.TObject.kOverwrite)
+       hist_norm = hist_.Clone()
+       hist_norm.SetName(hist_.GetName()+"_norm")
+       hist_norm.Scale(sf)
+       hist_norm.Write("",ROOT.TObject.kOverwrite)
+       #hist_.Scale(sf)
+       #hist_.Write("",ROOT.TObject.kOverwrite)
     outfile.cd()
-
 
 
 # Create output file
@@ -823,8 +867,12 @@ else:
     output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
   else: 
     output_name = options.outputfolder+'/datacard_'+var_name+'_'+options.cat+'_'+options.channel+'_'+options.year+'.root'
-outfile = ROOT.TFile(output_name, 'RECREATE')
-  
+
+if options.replace_name != None:
+  output_name = options.outputfolder+"/"+options.replace_name+".root"
+
+if options.plot_from_dc == "": outfile = ROOT.TFile(output_name, 'RECREATE')
+
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
 sel = options.sel
 plot = options.var
@@ -884,9 +932,6 @@ if options.plot_from_dc == "":
         else: signal_mc_input_folder_name = options.folder
         if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
         
-        if options.embed_folder: embed_input_folder_name = options.embed_folder
-        else: embed_input_folder_name = options.folder
-        if add_folder_name != '' and 'EmbedZTT' not in samples_to_skip: embed_input_folder_name += '/'+add_folder_name
          
         # Add all data files
         for sample_name in data_samples:
@@ -920,9 +965,11 @@ if options.plot_from_dc == "":
       GetTotals(ana,n,outfile)
     PrintSummary(nodename, ['data_obs'], add_names)
 
+
 # do rebinning
 def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
 
+  #hist.Print("all")
   # getting binning
   binning = []
   for i in range(1,hist.GetNbinsX()+2):
@@ -934,8 +981,9 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
   while finished == False and k < 1000:
     k += 1
     for i in range(1,hist.GetNbinsX()):
-      if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
+      if hist.GetBinContent(i) > 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
       else: uncert_frac = BinUncertFraction+1
+      #print hist.GetBinLowEdge(i), uncert_frac, BinUncertFraction,  hist.GetBinContent(i), BinThreshold
       if uncert_frac > BinUncertFraction and hist.GetBinContent(i) < BinThreshold:
         #binning.remove(hist.GetBinLowEdge(i+1))
         binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i+1))))
@@ -950,8 +998,9 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
   while finished == False and k < 1000:
     k+= 1
     for i in reversed(range(2,hist.GetNbinsX()+1)):
-      if hist.GetBinContent(i) != 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
+      if hist.GetBinContent(i) > 0: uncert_frac = hist.GetBinError(i)/hist.GetBinContent(i)
       else: uncert_frac = BinUncertFraction+1
+      #print hist.GetBinLowEdge(i), uncert_frac, BinUncertFraction,  hist.GetBinContent(i), BinThreshold
       if uncert_frac > BinUncertFraction and hist.GetBinContent(i) < BinThreshold:
 #        binning.remove(hist.GetBinLowEdge(i))
         binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i))))
@@ -959,7 +1008,8 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
         break
       elif i == 2:
         finished = True
-
+ 
+#  hist.Print("all")
   return binning  
 
 def RebinHist(hist,binning):
@@ -980,7 +1030,7 @@ def RebinHist(hist,binning):
   #hout.Print("all")
   return hout
 
-if is_2d and options.do_unrolling:
+if is_2d and options.do_unrolling and options.plot_from_dc == "":
   x_lines = []
   y_labels = []
   first_hist = True
@@ -1010,7 +1060,7 @@ if is_2d and options.do_unrolling:
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
 # sm 3D unrolling
-if is_3d and options.do_unrolling:
+if is_3d and options.do_unrolling and options.plot_from_dc == "":
   x_lines = []
   y_labels = []
   z_labels = []
@@ -1037,10 +1087,10 @@ if is_3d and options.do_unrolling:
         if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
-outfile.Close()
-
+if options.plot_from_dc == "": outfile.Close()
 
 if options.plot_from_dc != "": output_name = options.plot_from_dc
+
 plot_file = ROOT.TFile(output_name, 'READ')
 
 if options.auto_rebinning:
@@ -1059,7 +1109,8 @@ if options.auto_rebinning:
   outfile_rebin.Close()
   plot_file = ROOT.TFile(output_name.replace(".root","_rebinned.root"), 'READ')
 else:
-  plot_file = ROOT.TFile(output_name, 'READ')
+  plot_file = ROOT.TFile(output_name)
+
 
 if not options.no_plot:
     if options.extra_name != '': vname = options.extra_name
@@ -1071,9 +1122,11 @@ if not options.no_plot:
       else:
         plot_name = options.outputfolder+'/'+options.datacard
     else: plot_name = options.outputfolder+'/'+vname+'_'+options.cat+'_'+options.channel+'_'+options.year
+
     if options.charges_non_zero: plot_name += "_cnz"
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
+    if options.replace_name != None: plot_name = options.outputfolder+'/'+options.replace_name
     titles = plotting.SetAxisTitles(options.var,options.channel)
     if options.x_title == "": 
       x_title = titles[0]
@@ -1108,11 +1161,13 @@ if not options.no_plot:
       plot_name=plot_name,
       cat=options.cat,
       plot_signals=options.plot_signals.split(","),
-      draw_data=(not options.no_data)
+      draw_data=(not options.no_data),
+      under_legend=options.under_legend
       )
-#norm signal yields on datacards to 1pb AFTER plotting    
-outfile =  ROOT.TFile(output_name, 'UPDATE')
-for add_name in add_names:
-    NormSignals(outfile,add_name)
 
+#norm signal yields on datacards to 1pb AFTER plotting    
+if not options.no_signal and not options.plot_from_dc:
+  outfile =  ROOT.TFile(output_name, 'UPDATE')
+  for add_name in add_names:
+      NormSignals(outfile,add_name)
 

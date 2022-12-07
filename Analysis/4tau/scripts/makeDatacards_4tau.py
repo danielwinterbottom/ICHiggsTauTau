@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# python scripts/makeDatacards_4tau.py --channel=mmtt --year=2018 --output=ff_mmtt_plots
+# python scripts/makeDatacards_4tau.py --channel=mmtt --output=0512
 
 import os
 import argparse
@@ -8,13 +8,13 @@ import math as math
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--channel',help= 'Name of input channels', default='mttt,ettt,tttt,eett,mmtt,emtt')
-parser.add_argument('--year', help= 'Name of input years', default='2016,2017,2018')
 parser.add_argument('--output', help= 'Name of output folder to create', default='4tau_plots')
+parser.add_argument('--only_var', help= 'Only run for this variable', default='')
+parser.add_argument('--only_option', help= 'Only run for this option', default='')
 args = parser.parse_args()
       
 # Things to loop over
 channels = args.channel.split(',')
-years = args.year.split(',')
 output = args.output
 
 def myround(x, base=5):
@@ -69,178 +69,161 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
 all_ch_variables = [
-
-                    #GetBinning('pt_1',0,400,100,round=1),
-                    #GetBinning('pt_2',0,400,100,round=1),
-                    #GetBinning('pt_3',0,400,100,round=1),
-                    #GetBinning('mt_lep_12',0,400,100,round=1),
-                    #GetBinning('mt_lep_13',0,400,100,round=1),
-                    #GetBinning('mt_lep_23',0,400,100,round=1),
-                    #GetBinning('mvis_12',0,400,100,round=1),
-                    #GetBinning('mvis_13',0,400,100,round=1),
-                    #GetBinning('mvis_23',0,400,100,round=1),
+                    GetBinning('pt_1',0,400,100,round=1),
+                    GetBinning('pt_2',0,400,100,round=1),
+                    GetBinning('pt_3',0,400,100,round=1),
+                    GetBinning('pt_4',0,400,100,round=1),
+                    GetBinning('mt_1',0,250,50,round=1),
+                    GetBinning('mt_2',0,200,40,round=1),
+                    GetBinning('mt_3',0,150,30,round=1),
+                    GetBinning('mt_4',0,150,30,round=1),
+                    GetBinning('mt_lep_12',0,400,100,round=1),
+                    GetBinning('mt_lep_13',0,400,100,round=1),
+                    GetBinning('mt_lep_23',0,400,100,round=1),
+                    GetBinning('mvis_12',0,400,100,round=1),
+                    GetBinning('mvis_13',0,400,100,round=1),
+                    GetBinning('mvis_23',0,400,100,round=1),
                     GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
-                    #GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
-                    #GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
-                    #GetBinning('pt_min_dphi_1',0,300,60,round=1),
-                    #GetBinning('pt_min_dphi_2',0,300,60,round=1),
-                    #"mvis_min_sum_dR_1,mvis_min_sum_dR_2[0,50,100,150,200,250,300,350,400],[0,50,100,150,200,250,300,350,400]",
+                    GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
+                    GetBinning('pt_min_dphi_1',0,300,60,round=1),
+                    GetBinning('pt_min_dphi_2',0,300,60,round=1),
+                    GetBinning('pt_tt_12',0,300,60,round=1),
+                    GetBinning('pt_tt_13',0,300,60,round=1),
+                    GetBinning('pt_tt_14',0,300,60,round=1),
+                    GetBinning('pt_tt_23',0,300,60,round=1),
+                    GetBinning('pt_tt_24',0,300,60,round=1),
+                    GetBinning('pt_tt_34',0,300,60,round=1),
+                    GetBinning('met',0,250,50,round=1),
+                    "n_jets[0,1,2,3,4,5,6,7,8,9,10]",
+                    "n_bjets[0,1,2,3,4]",
+                    GetBinning('eta_1',-4.0,4.0,40,round=0.05),
+                    GetBinning('eta_2',-4.0,4.0,40,round=0.05),
+                    GetBinning('eta_3',-4.0,4.0,40,round=0.05),
+                    GetBinning('eta_4',-4.0,4.0,40,round=0.05),
+                    GetBinning('dR_12',0,5.0,50,round=0.1),
+                    GetBinning('dR_13',0,5.0,50,round=0.1),
+                    GetBinning('dR_14',0,5.0,50,round=0.1),
+                    GetBinning('dR_23',0,5.0,50,round=0.1),
+                    GetBinning('dR_24',0,5.0,50,round=0.1),
+                    GetBinning('dR_34',0,5.0,50,round=0.1),
+                    GetBinning('dphi_12',-3.2,3.2,40,round=0.05),
+                    GetBinning('dphi_13',-3.2,3.2,40,round=0.05),
+                    GetBinning('dphi_14',-3.2,3.2,40,round=0.05),
+                    GetBinning('dphi_23',-3.2,3.2,40,round=0.05),
+                    GetBinning('dphi_24',-3.2,3.2,40,round=0.05),
+                    GetBinning('dphi_34',-3.2,3.2,40,round=0.05),
                     ]
 
-ch_dep_var = {"mttt":[],
-              "ettt":[],
-              "mmtt":[],
-              "eett":[],
-              "tttt":[],
-              "emtt":[],
-	      "ttt":[],
-              }
-
-unb_ch_dep_var = {
-              "mttt":[],
-              "ettt":[],
+ch_dep_var = {"mttt":[
+                      "tau_decay_mode_2[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_3[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_4[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      ],
+              "ettt":[
+                      "tau_decay_mode_2[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_3[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_4[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      ],
               "mmtt":[
-                      GetBinning('mvis_12',0,300,60,round=1),
-                      GetBinning('mvis_13',0,300,60,round=1),
-                      GetBinning('mvis_14',0,300,60,round=1),
-                      GetBinning('mvis_23',0,300,60,round=1),
-                      GetBinning('mvis_24',0,300,60,round=1),
-                      GetBinning('mvis_34',0,300,60,round=1),
-                      GetBinning('mt_lep_12',0,300,60,round=1),
-                      GetBinning('mt_lep_13',0,300,60,round=1),
-                      GetBinning('mt_lep_14',0,300,60,round=1),
-                      GetBinning('mt_lep_23',0,300,60,round=1),
-                      GetBinning('mt_lep_24',0,300,60,round=1),
-                      GetBinning('mt_lep_34',0,300,60,round=1),
-                      GetBinning('pt_tt_12',0,300,60,round=1),
-                      GetBinning('pt_tt_13',0,300,60,round=1),
-                      GetBinning('pt_tt_14',0,300,60,round=1),
-                      GetBinning('pt_tt_23',0,300,60,round=1),
-                      GetBinning('pt_tt_24',0,300,60,round=1),
-                      GetBinning('pt_tt_34',0,300,60,round=1),
-                      GetBinning('mvis_min_sum_dR_1',0,300,60,round=1),
-                      GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
-                      GetBinning('pt_min_dphi_1',0,300,60,round=1),
-                      GetBinning('pt_min_dphi_2',0,300,60,round=1),
-                      GetBinning('mt_1',0,250,50,round=1),
-                      GetBinning('mt_2',0,200,40,round=1),
-                      GetBinning('mt_3',0,150,30,round=1),
-                      GetBinning('mt_4',0,150,30,round=1),
-                      GetBinning('pt_1',0,250,50,round=1),
-                      GetBinning('pt_2',0,200,40,round=1),
-                      GetBinning('pt_3',0,150,30,round=1),
-                      GetBinning('pt_4',0,150,30,round=1),
-                      GetBinning('met',0,250,50,round=1),
-                      "n_jets[0,1,2,3,4,5,6,7,8,9,10]",
-                      "n_bjets[0,1,2,3,4]",
-                      GetBinning('eta_1',-4.0,4.0,40,round=0.05),
-                      GetBinning('eta_2',-4.0,4.0,40,round=0.05),
-                      GetBinning('eta_3',-4.0,4.0,40,round=0.05),
-                      GetBinning('eta_4',-4.0,4.0,40,round=0.05),
-                      GetBinning('dR_12',0,5.0,50,round=0.1),
-                      GetBinning('dR_13',0,5.0,50,round=0.1),
-                      GetBinning('dR_14',0,5.0,50,round=0.1),
-                      GetBinning('dR_23',0,5.0,50,round=0.1),
-                      GetBinning('dR_24',0,5.0,50,round=0.1),
-                      GetBinning('dR_34',0,5.0,50,round=0.1),
-                      GetBinning('dphi_12',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_13',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_14',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_23',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_24',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_34',-3.2,3.2,40,round=0.05),
+                      "tau_decay_mode_3[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_4[0,1,2,3,4,5,6,7,8,9,10,11,12]",
                       ],
               "eett":[
-                      GetBinning('mvis_12',0,300,60,round=1),
-                      GetBinning('mvis_13',0,300,60,round=1),
-                      GetBinning('mvis_14',0,300,60,round=1),
-                      GetBinning('mvis_23',0,300,60,round=1),
-                      GetBinning('mvis_24',0,300,60,round=1),
-                      GetBinning('mvis_34',0,300,60,round=1),
-                      GetBinning('mt_lep_12',0,300,60,round=1),
-                      GetBinning('mt_lep_13',0,300,60,round=1),
-                      GetBinning('mt_lep_14',0,300,60,round=1),
-                      GetBinning('mt_lep_23',0,300,60,round=1),
-                      GetBinning('mt_lep_24',0,300,60,round=1),
-                      GetBinning('mt_lep_34',0,300,60,round=1),
-                      GetBinning('pt_tt_12',0,300,60,round=1),
-                      GetBinning('pt_tt_13',0,300,60,round=1),
-                      GetBinning('pt_tt_14',0,300,60,round=1),
-                      GetBinning('pt_tt_23',0,300,60,round=1),
-                      GetBinning('pt_tt_24',0,300,60,round=1),
-                      GetBinning('pt_tt_34',0,300,60,round=1),
-                      GetBinning('mvis_min_sum_dR_1',0,300,60,round=1),
-                      GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
-                      GetBinning('pt_min_dphi_1',0,300,60,round=1),
-                      GetBinning('pt_min_dphi_2',0,300,60,round=1),
-                      GetBinning('mt_1',0,250,50,round=1),
-                      GetBinning('mt_2',0,200,40,round=1),
-                      GetBinning('mt_3',0,150,30,round=1),
-                      GetBinning('mt_4',0,150,30,round=1),
-                      GetBinning('pt_1',0,250,50,round=1),
-                      GetBinning('pt_2',0,200,40,round=1),
-                      GetBinning('pt_3',0,150,30,round=1),
-                      GetBinning('pt_4',0,150,30,round=1),
-                      GetBinning('met',0,250,50,round=1),
-                      "n_jets[0,1,2,3,4,5,6,7,8,9,10]",
-                      "n_bjets[0,1,2,3,4]",
-                      GetBinning('eta_1',-4.0,4.0,40,round=0.05),
-                      GetBinning('eta_2',-4.0,4.0,40,round=0.05),
-                      GetBinning('eta_3',-4.0,4.0,40,round=0.05),
-                      GetBinning('eta_4',-4.0,4.0,40,round=0.05),
-                      GetBinning('dR_12',0,5.0,50,round=0.1),
-                      GetBinning('dR_13',0,5.0,50,round=0.1),
-                      GetBinning('dR_14',0,5.0,50,round=0.1),
-                      GetBinning('dR_23',0,5.0,50,round=0.1),
-                      GetBinning('dR_24',0,5.0,50,round=0.1),
-                      GetBinning('dR_34',0,5.0,50,round=0.1),
-                      GetBinning('dphi_12',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_13',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_14',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_23',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_24',-3.2,3.2,40,round=0.05),
-                      GetBinning('dphi_34',-3.2,3.2,40,round=0.05),
+                      "tau_decay_mode_3[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_4[0,1,2,3,4,5,6,7,8,9,10,11,12]",
                       ],
-              "tttt":[],
-              "emtt":[],
-	      "ttt":[],
+              "tttt":[
+                      "tau_decay_mode_2[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_3[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_4[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      ],
+              "emtt":[
+                      "tau_decay_mode_3[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_4[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      ],
+              "ttt" :[
+                      "tau_decay_mode_1[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_2[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      "tau_decay_mode_3[0,1,2,3,4,5,6,7,8,9,10,11,12]",
+                      ],
               }
-
-
-config_files = {'2016':'scripts/plot_UL_2016.cfg',
-                '2017':'scripts/plot_UL_2017.cfg',
-                '2018':'scripts/plot_UL_2018.cfg'
-               }
-
-#categories = {
-#              "tttt":["inclusive","nobtag","btag"],
-#              "ettt":["inclusive","nobtag","btag"],
-#              "mttt":["inclusive","nobtag","btag"],
-#              "emtt":["inclusive","nobtag","btag"],
-#              "eett":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
-#              "mmtt":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
-#              }
 
 categories = {
-              "ttt":["inclusive","nobtag","btag"],
-              "tttt":["inclusive","nobtag","btag"],
-              "ettt":["inclusive","nobtag","btag"],
-              "mttt":["inclusive","nobtag","btag"],
-              "emtt":["inclusive","nobtag","btag"],
-              "eett":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
-              "mmtt":["z_control","2l2t_sig","inclusive","nobtag","btag","z_control_nobtag","2l2t_sig_nobtag","z_control_btag","2l2t_sig_btag"],
+              "ttt" : ["inclusive"],
+              "tttt": ["inclusive"],
+              "ettt": ["inclusive"],
+              "mttt": ["inclusive"],
+              "emtt": ["inclusive"],
+              "eett": ["inclusive"],
+              "mmtt": ["inclusive"],
               }
 
 
-add_options = ''
-
-#add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10'
-
-add_options = '--ratio_range=\'0.6,1.4\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.08 --method=2'
-
-#add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10 --vsjets=None --add_wt=\'1/(idisoweight_3*idisoweight_4)\''
- 
-blind_options = '--blind --x_blind_min=-999 --x_blind_max=999'
+add_options = {              
+               "ttt" : [],
+               "tttt": [
+                        ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_1","--no_signal --ff_from=1 --no_sig_sel --under_legend='FF_{1}'"],
+                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{2}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{4}'"],
+                        ["ff_12","--no_signal --ff_from=12 --no_sig_sel --under_legend='FF_{1} x FF_{2}'"],
+                        ["ff_13","--no_signal --ff_from=13 --no_sig_sel --under_legend='FF_{1} x FF_{3}'"],
+                        ["ff_14","--no_signal --ff_from=14 --no_sig_sel --under_legend='FF_{1} x FF_{4}'"],
+                        ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}'"],
+                        ["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{2} x FF_{2}'"],
+                        ["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{3} x FF_{4}'"],
+                        ["ff_123","--no_signal --ff_from=123 --no_sig_sel --under_legend='FF_{1} x FF_{2} x FF_{3}'"],
+                        ["ff_124","--no_signal --ff_from=124 --no_sig_sel --under_legend='FF_{1} x FF_{2} x FF_{4}'"],
+                        ["ff_134","--no_signal --ff_from=134 --no_sig_sel --under_legend='FF_{1} x FF_{3} x FF_{4}'"],
+                        ["ff_234","--no_signal --ff_from=234 --no_sig_sel --under_legend='FF_{2} x FF_{3} x FF_{4}'"],
+                        ["ff_1234","--no_signal --charges_non_zero --ff_from=1234 --under_legend='FF_{1} x FF_{2} x FF_{3} x FF_{4}'"],
+                        ],
+               "ettt": [
+                        ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{2}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{4}'"],
+                        ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}'"],
+                        ["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{2} x FF_{2}'"],
+                        ["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{3} x FF_{4}'"],
+                        ["ff_123","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}'"],
+                        ],
+               "mttt": [
+                        ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{2}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{4}'"],
+                        ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}'"],
+                        ["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{2} x FF_{2}'"],
+                        ["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{3} x FF_{4}'"],
+                        ["ff_123","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}'"],
+                        ],
+               "emtt": [
+                        ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{4}'"],
+                        ["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{3} x FF_{4}'"],
+                        ],
+               "eett": [
+                        ["signal","--plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{4}'"],
+                        ["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{3} x FF_{4}'"],
+                        ],
+               "mmtt": [
+                        ["signal","--plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{4}'"],
+                        ["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{3} x FF_{4}'"],
+                        ],                    
+               }
 
 # Set up output directories
 
@@ -255,27 +238,24 @@ if not os.path.isdir('%(cmssw_base)s/%(output)s/jobs' % vars()):
 for channel in channels:
   if not os.path.isdir('%(cmssw_base)s/%(output)s/%(channel)s' % vars()):
     os.system("mkdir %(cmssw_base)s/%(output)s/%(channel)s" % vars())
-  for year in years:
-    if not os.path.isdir('%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()):
-      os.system("mkdir %(cmssw_base)s/%(output)s/%(channel)s/%(year)s" % vars())
 
 
 # Job loop
 
-for year in years:
-  for channel in channels:
+for channel in channels:
+  for name, option in add_options[channel]:
     for cat in categories[channel]:
-      variables = all_ch_variables+ch_dep_var[channel]+unb_ch_dep_var[channel]
+      variables = all_ch_variables+ch_dep_var[channel]
       for var in variables:
         if '[' in var: var_string = var.split('[')[0]
         elif '(' in var: var_string = var.split('(')[0]
-        #if var in unb_ch_dep_var[channel] and "control" not in cat: continue
-        if var not in unb_ch_dep_var[channel]:
-          add_options += " " + blind_options
-        output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()
-        cfg = config_files[year]
-        run_cmd = 'python %(cmssw_base)s/scripts/4tauPlot.py --cfg=\'%(cfg)s\' --channel=\'%(channel)s\' --var=\'%(var)s\' %(add_options)s --outputfolder=\'%(output_folder)s\' --cat=\'%(cat)s\'' % vars()
-        job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(year)s.sh" % vars()
+        if args.only_var != "" and args.only_var != var_string: continue
+        if args.only_option != "" and args.only_option != name: continue
+        output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
+        combined_options = ""
+        if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.4\\\""
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2411_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
+        job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
         SubmitBatchJob(job_file,time=180,memory=24,cores=1)
            
