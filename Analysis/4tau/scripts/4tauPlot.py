@@ -54,6 +54,8 @@ parser.add_argument("--folder", dest="folder", type=str,
     help="Name of input folder")
 parser.add_argument("--signal_folder", dest="signal_folder", type=str,
     help="If specified will use as input folder for signal samples, else will use same directroy specified by \"folder\" option.")
+parser.add_argument("--data_folder", dest="data_folder", type=str,
+    help="If specified will use as input folder for data samples, else will use same directroy specified by \"folder\" option.")
 parser.add_argument("--embed_folder", dest="embed_folder", type=str,
     help="If specified will use as input folder for embed samples, else will use same directroy specified by \"folder\" option.")
 parser.add_argument("--paramfile", dest="paramfile", type=str,
@@ -221,7 +223,12 @@ else:
 	charge_sel = "(q_1+q_2+q_3+q_4)==0"
 
 if options.channel == 'ttt':
-   charge_sel = "(1)"
+  if options.charges_non_zero:
+    charge_sel = "fabs(q_1+q_2+q_3)!=1"
+  elif options.no_charge_sel:
+    charge_sel = "(1)"
+  else:
+    charge_sel = "fabs(q_1+q_2+q_3)==1"
 
 if options.channel == "tttt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
@@ -644,6 +651,14 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
               "- (wt_ff_ml_2 * wt_ff_ml_4 * {fail_2} * {pass_3} * {fail_4})"
               "- (wt_ff_ml_3 * wt_ff_ml_4 * {pass_2} * {fail_3} * {fail_4})"
               "+ (wt_ff_ml_2 * wt_ff_ml_3 * wt_ff_ml_4 * {fail_2} * {fail_3} * {fail_4}))").format(fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"])
+    elif options.channel in ["ttt"]:
+      ff_wt = ("((wt_ff_ml_1 * {fail_1} * {pass_2} * {pass_3})"
+              "+ (wt_ff_ml_2 * {pass_1} * {fail_2} * {pass_3})"
+              "+ (wt_ff_ml_3 * {pass_1} * {pass_2} * {fail_3})"
+              "- (wt_ff_ml_1 * wt_ff_ml_2 * {fail_1} * {fail_2} * {pass_3})"
+              "- (wt_ff_ml_1 * wt_ff_ml_3 * {fail_1} * {pass_2} * {fail_3})"
+              "- (wt_ff_ml_2 * wt_ff_ml_3 * {pass_1} * {fail_2} * {fail_3})"
+              "+ (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_3 * {fail_1} * {fail_2} * {fail_3}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"])
     elif options.channel in ["tttt"]:
       ff_wt = ("((wt_ff_ml_1 * {fail_1} * {pass_2} * {pass_3} * {pass_4})" 
               "+ (wt_ff_ml_2 * {pass_1} * {fail_2} * {pass_3} * {pass_4})"
@@ -902,7 +917,7 @@ if options.plot_from_dc == "":
         ana.remaps['SingleElectron'] = 'data_obs'
     elif options.year == '2018' and options.channel in ['eett','ettt']:
         ana.remaps['EGamma'] = 'data_obs'
-    elif options.channel == 'tttt':
+    elif options.channel == 'tttt' or options.channel == 'ttt':
         ana.remaps['Tau'] = 'data_obs'  
         
     ana.nodes.AddNode(ListNode(nodename))
@@ -932,10 +947,12 @@ if options.plot_from_dc == "":
         else: signal_mc_input_folder_name = options.folder
         if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
         
+        if options.data_folder: data_input_folder_name = options.data_folder
+        else: data_input_folder_name = options.folder
          
         # Add all data files
         for sample_name in data_samples:
-            ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+            ana.AddSamples(data_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         
         # Add all MC background files
         for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples:

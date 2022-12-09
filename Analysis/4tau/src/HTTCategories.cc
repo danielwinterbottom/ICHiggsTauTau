@@ -247,6 +247,8 @@ namespace ic {
       outtree_->Branch("trigeff_emucross_low_mc_1",  &trigeff_emucross_low_mc_1_);
       outtree_->Branch("trigeff_emucross_low_mc_2",  &trigeff_emucross_low_mc_2_);
 
+      outtree_->Branch("total_trg",  &total_trg_);
+
       // dxy and dz
       outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
       outtree_->Branch("dZ_1", &dz_1_.var_float, "dz_1/F");
@@ -327,6 +329,7 @@ namespace ic {
       outtree_->Branch("mvis_23",              &mvis_23_.var_double);
       outtree_->Branch("mvis_24",              &mvis_24_.var_double);
       outtree_->Branch("mvis_34",              &mvis_34_.var_double);
+      outtree_->Branch("mvis_os",              &mvis_os_.var_double);
       outtree_->Branch("mvis_min_dphi_1",      &mvis_min_dphi_1_.var_double);
       outtree_->Branch("mvis_min_dphi_2",      &mvis_min_dphi_2_.var_double);
       outtree_->Branch("mvis_min_dR_1",        &mvis_min_dR_1_.var_double);
@@ -337,6 +340,7 @@ namespace ic {
       outtree_->Branch("mvis_min_sum_dR_2",    &mvis_min_sum_dR_2_.var_double);
       outtree_->Branch("mvis_phi",             &mvis_phi_.var_double);
       outtree_->Branch("mvis_A",               &mvis_A_.var_double);
+      outtree_->Branch("pt_tt_os",             &pt_tt_os_.var_double);
       outtree_->Branch("pt_min_dphi_1",        &pt_min_dphi_1_.var_double);
       outtree_->Branch("pt_min_dphi_2",        &pt_min_dphi_2_.var_double);
       outtree_->Branch("pt_min_dR_1",          &pt_min_dR_1_.var_double);
@@ -571,12 +575,9 @@ namespace ic {
     Candidate const* lep4 = 0;
     if (channel_ != channel::ttt) lep4 = fourtau->GetCandidate("lepton4");
     
-
-
     //std::cout << "lep 1 :" << " px " << lep1->px() << " py " << lep1->py() << " pz " << lep1->pz() << "energy : " << lep1->energy()  << std::endl;
     //std::cout << "lep 2 :" << " px " << lep2->px() << " py " << lep2->py() << " pz " << lep2->pz() << "energy : " << lep2->energy()  << std::endl;
     //std::cout << "lep 3 :" << " px " << lep3->px() << " py " << lep3->py() << " pz " << lep3->pz() << "energy : " << lep3->energy()  << std::endl;
-
 
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -829,20 +830,21 @@ namespace ic {
     trigeff_emucross_low_mc_1_ = event->Exists("trigeff_e_emucross_low_mc_1") ? event->Get<double>("trigeff_e_emucross_low_mc_1") : 1.0;
     trigeff_emucross_low_mc_2_ = event->Exists("trigeff_e_emucross_low_mc_2") ? event->Get<double>("trigeff_e_emucross_low_mc_2") : 1.0;
 
+    total_trg_ = event->Exists("total_trg") ? event->Get<double>("total_trg") : 1.0;
     
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     pt_3_ = lep3->pt();
 	
-	jet_pt_1_ = 0;
+    jet_pt_1_ = 0;
     jet_pt_2_ = 0;
     jet_pt_3_ = 0;
 	
-	jet_probb_1_ = 0;
-	jet_probb_2_ = 0;
+    jet_probb_1_ = 0;
+    jet_probb_2_ = 0;
     jet_probb_3_ = 0;
 	
-	jet_probbb_1_ = 0;    
+    jet_probbb_1_ = 0;    
     jet_probbb_2_ = 0;
     jet_probbb_3_ = 0;
 	
@@ -850,7 +852,7 @@ namespace ic {
     jet_problepb_2_ = 0;
     jet_problepb_3_ = 0;
 	
-	jet_probc_1_ = 0;    
+    jet_probc_1_ = 0;    
     jet_probc_2_ = 0;
     jet_probc_3_ = 0;
 	
@@ -862,16 +864,16 @@ namespace ic {
     jet_probg_2_ = 0;
     jet_probg_3_ = 0;    
 	
-	std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
     std::vector<Candidate *> lepvec1;
     std::vector<Candidate *> lepvec2;
     std::vector<Candidate *> lepvec3;    
 	
-	lepvec1.push_back(fourtau->GetCandidate("lepton1"));
+    lepvec1.push_back(fourtau->GetCandidate("lepton1"));
     lepvec2.push_back(fourtau->GetCandidate("lepton2"));
     lepvec3.push_back(fourtau->GetCandidate("lepton3"));    
 	
-	std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_2 = MatchByDR(uncleaned_jets, lepvec2, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_3 = MatchByDR(uncleaned_jets, lepvec3, 0.5, true, true);
 
@@ -988,15 +990,28 @@ namespace ic {
     pt_tt_13_ = pair13->pt();
     pt_tt_23_ = pair23->pt();
 
+    if (channel_ == channel::ttt) {
+      if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton2")->charge()) {
+        mvis_os_ = pair12->M();
+        pt_tt_os_ = pair12->pt();
+      } else if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+        mvis_os_ = pair13->M();
+        pt_tt_os_ = pair13->pt();
+      } else if (fourtau->GetCandidate("lepton2")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+        mvis_os_ = pair23->M();
+        pt_tt_os_ = pair23->pt();
+      }
+    }
+
     mvis_phi_ = 0.0;
     mvis_A_ = 0.0;
     pt_phi_ = 0.0;
     pt_A_ = 0.0;
- 
+
     if (channel_ != channel::ttt) {
       pt_4_= lep4->pt();
 	  
-	  jet_pt_4_ = 0;
+      jet_pt_4_ = 0;
       jet_probb_4_ = 0;
       jet_probbb_4_ = 0;    
       jet_problepb_4_ = 0;
@@ -1006,16 +1021,16 @@ namespace ic {
       std::vector<Candidate *> lepvec4;
       lepvec4.push_back(fourtau->GetCandidate("lepton4"));
       std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_4 = MatchByDR(uncleaned_jets, lepvec4, 0.5, true, true);
-	  
-	  if(tau_matches_4.size() > 0) {
-		jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
-		jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
-		jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
-		jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
-		jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
-		jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
-		jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
-	  }
+	    
+	    if(tau_matches_4.size() > 0) {
+		  jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
+		  jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+		  jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+		  jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+		  jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+		  jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+		  jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+	    }
 	  
       eta_4_ = lep4->eta();
       phi_4_ = lep4->phi();

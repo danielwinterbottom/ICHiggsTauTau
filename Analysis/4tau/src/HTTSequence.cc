@@ -439,7 +439,6 @@ if (channel == channel::ttt) {
    BuildModule(httFourTauSelector);
 }
 
-// TO DO: Update for 4tau UL
 BuildModule(HTTTriggerFilter("HTTTriggerFilter")
     .set_channel(channel)
     .set_mc(mc_type)
@@ -448,23 +447,9 @@ BuildModule(HTTTriggerFilter("HTTTriggerFilter")
     .set_is_data(is_data)
     .set_pair_label("4tau"));
 
-// TO DO: Implement extra lepton vetos for leptonic decay channels
-// Lepton Vetoes
-//if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
-//if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
 if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
 if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 if (js["baseline"]["extra_tau_veto"].asBool()) BuildExtraTauVeto();
-//std::cout << js["baseline"]["extra_elec_veto"].asBool() << std::endl;
-//std::cout << js["baseline"]["extra_muon_veto"].asBool() << std::endl;
-//std::cout << js["baseline"]["extra_tau_veto"].asBool() << std::endl;
-// do not need in this analysis as stats are low enough
-//if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
-//  BuildModule(PreselectionFilter("PreselectionFilter")
-//   .set_channel(channel)
-//   .set_do_preselection(true)
-//   .set_dilepton_label("4tau"));
-//}
 
 // Pileup Weighting
 TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
@@ -474,7 +459,6 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
       .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
 }
 
-// TO DO: Add missing UL filter once rerun MC
 if(do_met_filters){
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
@@ -553,6 +537,7 @@ BuildModule(jetIDFilter);
 //  })
 //);
 
+
 if ((era_type == era::data_2017 || era_type == era::data_2017UL)) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
@@ -573,6 +558,12 @@ if (!is_data && !is_embedded) {
      .set_shift_met(false)
    );
 }
+
+BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+  .set_input_label(jets_label)
+  .set_reference_label("4tau")
+  .set_min_dr(0.5));
+
 
 if(!is_data) {
 	
