@@ -8,7 +8,7 @@ import math as math
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--channel',help= 'Name of input channels', default='mttt,ettt,tttt,eett,mmtt,emtt')
-parser.add_argument('--year', help= 'Name of input years', default='2016,2017,2018')
+parser.add_argument('--year', help= 'Name of input years', default='2016_preVFP,2016_postVFP,2017,2018')
 parser.add_argument('--output', help= 'Name of output folder to create', default='4tau_plots')
 args = parser.parse_args()
       
@@ -93,7 +93,35 @@ ch_dep_var = {"mttt":[],
               "eett":[],
               "tttt":[],
               "emtt":[],
-	      "ttt":[],
+	          "ttt":[
+                      GetBinning('mvis_12',0,300,60,round=1),
+                      GetBinning('mvis_13',0,300,60,round=1),
+                      GetBinning('mvis_23',0,300,60,round=1),
+                      GetBinning('mt_lep_12',0,300,60,round=1),
+                      GetBinning('mt_lep_13',0,300,60,round=1),
+                      GetBinning('mt_lep_23',0,300,60,round=1),
+                      GetBinning('pt_tt_12',0,300,60,round=1),
+                      GetBinning('pt_tt_13',0,300,60,round=1),
+                      GetBinning('pt_tt_23',0,300,60,round=1),
+                      GetBinning('mt_1',0,250,50,round=1),
+                      GetBinning('mt_2',0,200,40,round=1),
+                      GetBinning('mt_3',0,150,30,round=1),
+                      GetBinning('pt_1',0,250,50,round=1),
+                      GetBinning('pt_2',0,200,40,round=1),
+                      GetBinning('pt_3',0,150,30,round=1),
+                      GetBinning('met',0,250,50,round=1),
+                      "n_jets[0,1,2,3,4,5,6,7,8,9,10]",
+                      "n_bjets[0,1,2,3,4]",
+                      GetBinning('eta_1',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_2',-4.0,4.0,40,round=0.05),
+                      GetBinning('eta_3',-4.0,4.0,40,round=0.05),
+                      GetBinning('dR_12',0,5.0,50,round=0.1),
+                      GetBinning('dR_13',0,5.0,50,round=0.1),
+                      GetBinning('dR_23',0,5.0,50,round=0.1),
+                      GetBinning('dphi_12',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_13',-3.2,3.2,40,round=0.05),
+                      GetBinning('dphi_23',-3.2,3.2,40,round=0.05),
+                      ],
               }
 
 unb_ch_dep_var = {
@@ -118,8 +146,8 @@ unb_ch_dep_var = {
                       GetBinning('pt_tt_23',0,300,60,round=1),
                       GetBinning('pt_tt_24',0,300,60,round=1),
                       GetBinning('pt_tt_34',0,300,60,round=1),
-                      GetBinning('mvis_min_sum_dR_1',0,300,60,round=1),
-                      GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
+                      #GetBinning('mvis_min_sum_dR_1',0,300,60,round=1),
+                      #GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
                       GetBinning('pt_min_dphi_1',0,300,60,round=1),
                       GetBinning('pt_min_dphi_2',0,300,60,round=1),
                       GetBinning('mt_1',0,250,50,round=1),
@@ -207,7 +235,8 @@ unb_ch_dep_var = {
               }
 
 
-config_files = {'2016':'scripts/plot_UL_2016.cfg',
+config_files = {'2016_preVFP':'scripts/plot_UL_2016_preVFP.cfg',
+                '2016_postVFP':'scripts/plot_UL_2016_postVFP.cfg',              
                 '2017':'scripts/plot_UL_2017.cfg',
                 '2018':'scripts/plot_UL_2018.cfg'
                }
@@ -234,9 +263,9 @@ categories = {
 
 add_options = ''
 
-#add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10'
+add_options = '--ratio_range=\'0,3\'  --auto_rebinning --bin_uncert_fraction=0.15'
 
-add_options = '--ratio_range=\'0.6,1.4\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.08 --method=2'
+#add_options = '--ratio_range=\'0.6,1.4\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.08 --method=2'
 
 #add_options = '--ratio_range=\'0,3\' --plot_signals=\'phi200A100To4Tau\'  --auto_rebinning --bin_uncert_fraction=0.15 --signal_scale=10 --vsjets=None --add_wt=\'1/(idisoweight_3*idisoweight_4)\''
  
@@ -272,12 +301,14 @@ for year in years:
         #if var in unb_ch_dep_var[channel] and "control" not in cat: continue
         if var not in unb_ch_dep_var[channel]:
           add_options += " " + blind_options
-        output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()
-        cfg = config_files[year]
-        run_cmd = 'python %(cmssw_base)s/scripts/4tauPlot.py --cfg=\'%(cfg)s\' --channel=\'%(channel)s\' --var=\'%(var)s\' %(add_options)s --outputfolder=\'%(output_folder)s\' --cat=\'%(cat)s\'' % vars()
-        job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(year)s.sh" % vars()
-        CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        
+	if var_string == 'mvis_min_sum_dR_1' and cat == 'inclusive': 
+          output_folder = '%(cmssw_base)s/%(output)s/%(channel)s/%(year)s' % vars()
+          cfg = config_files[year]
+          run_cmd = 'python %(cmssw_base)s/scripts/4tauPlot.py --cfg=\'%(cfg)s\' --channel=\'%(channel)s\' --var=\'%(var)s\' %(add_options)s --outputfolder=\'%(output_folder)s\' --cat=\'%(cat)s\'' % vars()
+          job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(year)s.sh" % vars()
+          CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
+          SubmitBatchJob(job_file,time=180,memory=24,cores=1)
            
     
 
