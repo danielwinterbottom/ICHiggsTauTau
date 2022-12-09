@@ -106,6 +106,10 @@ namespace ic {
            std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
            std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
         }
+        if(channel_ ==  channel::mmmm) {
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMMMM,_1,_2,strategy_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMMMM,_1,_2,strategy_)) ;
+        }
         if(channel_ ==  channel::emtt) { 
            std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
            std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
@@ -140,6 +144,9 @@ namespace ic {
         if(channel_ ==  channel::mmtt) {
            std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
         }
+        if(channel_ ==  channel::mmmm) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoMMMM,_1,_2,strategy_)) ;
+        }
         if(channel_ ==  channel::emtt) {
            std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
         }
@@ -172,6 +179,11 @@ namespace ic {
         std::sort(sort_collection_2.begin(),sort_collection_2.end(), SortByPt);
         pt_sorted_collection = sort_collection_1;
         pt_sorted_collection.insert(pt_sorted_collection.end(), sort_collection_2.begin(), sort_collection_2.end());
+      }
+      if (channel_ == channel::mmmm) {
+        sort_collection_1 = {lep1, lep2,lep3,lep4};
+        std::sort(sort_collection_1.begin(),sort_collection_1.end(), SortByPt);
+        pt_sorted_collection = sort_collection_1;
       }
       if (channel_ == channel::emtt) {
         sort_collection = {lep3, lep4};
@@ -361,7 +373,44 @@ namespace ic {
     return (t1_2->pt() > t2_2->pt());
   }
 
+  bool SortByIsoMMMM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+    Muon const* m1_1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m2_1 = static_cast<Muon const*>(c2->At(0));
+    double m_iso1_1;
+    m_iso1_1 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_1, 0.5, 0) : PF04IsolationVal(m1_1, 0.5, 0);
+    double m_iso2_1;
+    m_iso2_1 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_1, 0.5, 0) : PF04IsolationVal(m2_1, 0.5, 0);
+    if (m_iso1_1 != m_iso2_1) return m_iso1_1 < m_iso2_1;
+    if (m1_1->pt() != m2_1->pt()) return m1_1->pt() > m2_1->pt();
 
+    Muon const* m1_2 = static_cast<Muon const*>(c1->At(1));
+    Muon const* m2_2 = static_cast<Muon const*>(c2->At(1));
+    double m_iso1_2;
+    m_iso1_2 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_2, 0.5, 0) : PF04IsolationVal(m1_2, 0.5, 0);
+    double m_iso2_2;
+    m_iso2_2 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_2, 0.5, 0) : PF04IsolationVal(m2_2, 0.5, 0);
+    if (m_iso1_2 != m_iso2_2) return m_iso1_2 < m_iso2_2;
+    if (m1_2->pt() != m2_2->pt()) return m1_2->pt() > m2_2->pt();
+
+    Muon const* m1_3 = static_cast<Muon const*>(c1->At(2));
+    Muon const* m2_3 = static_cast<Muon const*>(c2->At(2));
+    double m_iso1_3;
+    m_iso1_3 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_3, 0.5, 0) : PF04IsolationVal(m1_3, 0.5, 0);
+    double m_iso2_3;
+    m_iso2_3 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_3, 0.5, 0) : PF04IsolationVal(m2_3, 0.5, 0);
+    if (m_iso1_3 != m_iso2_3) return m_iso1_3 < m_iso2_3;
+    if (m1_3->pt() != m2_3->pt()) return m1_3->pt() > m2_3->pt();
+
+    Muon const* m1_4 = static_cast<Muon const*>(c1->At(3));
+    Muon const* m2_4 = static_cast<Muon const*>(c2->At(3));
+    double m_iso1_4;
+    m_iso1_4 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_4, 0.5, 0) : PF04IsolationVal(m1_4, 0.5, 0);
+    double m_iso2_4;
+    m_iso2_4 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_4, 0.5, 0) : PF04IsolationVal(m2_4, 0.5, 0);
+    if (m_iso1_4 != m_iso2_4) return m_iso1_4 < m_iso2_4;
+    return (m1_4->pt() > m2_4->pt());
+
+  }
 
   bool SortByIsoMTTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, std::string tau_idiso_name) {
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));

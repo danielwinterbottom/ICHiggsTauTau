@@ -249,6 +249,8 @@ class HTTCategories : public ModuleBase {
 
   branch_var iso_1_;
   branch_var iso_2_;
+  branch_var iso_3_;
+  branch_var iso_4_;
 
   branch_var pt_1_;
   branch_var pt_2_;

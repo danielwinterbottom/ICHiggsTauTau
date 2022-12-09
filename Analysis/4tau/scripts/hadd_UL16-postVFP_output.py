@@ -136,6 +136,9 @@ sample_list = [
 	'WplusHToTauTau_M125',
 	'ZHToTauTau_M125',
 	'ttHToTauTau_M125',
+  'VBF_HToZZTo4L_M125',
+  'GluGlu_HToZZTo4L_M125',
+
 
 	]
 

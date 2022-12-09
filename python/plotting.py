@@ -2192,7 +2192,8 @@ def HTTPlot(nodename,
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
             cat="",
             plot_signals=[""],
-            draw_data=True
+            draw_data=True,
+            under_legend=""
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2203,7 +2204,7 @@ def HTTPlot(nodename,
         "ZstarTophi100A70To4Tau":"H(100)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi100A80To4Tau":"H(100)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi100A90To4Tau":"H(100)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi100A100To4Tau":"H(100)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A100To4Tau":"H(100)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi100A125To4Tau":"H(100)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi100A140To4Tau":"H(100)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi100A160To4Tau":"H(100)A(160) #rightarrow 4#tau (XS)",
@@ -2212,7 +2213,7 @@ def HTTPlot(nodename,
         "ZstarTophi110A70To4Tau":"H(110)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi110A80To4Tau":"H(110)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi110A90To4Tau":"H(110)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi110A100To4Tau":"H(110)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A100To4Tau":"H(110)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi110A125To4Tau":"H(110)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi110A140To4Tau":"H(110)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi110A160To4Tau":"H(110)A(160) #rightarrow 4#tau (XS)",
@@ -2221,7 +2222,7 @@ def HTTPlot(nodename,
         "ZstarTophi125A70To4Tau":"H(125)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi125A80To4Tau":"H(125)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi125A90To4Tau":"H(125)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi125A100To4Tau":"H(125)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A100To4Tau":"H(125)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi125A125To4Tau":"H(125)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi125A140To4Tau":"H(125)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi125A160To4Tau":"H(125)A(160) #rightarrow 4#tau (XS)",
@@ -2230,7 +2231,7 @@ def HTTPlot(nodename,
         "ZstarTophi140A70To4Tau":"H(140)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi140A80To4Tau":"H(140)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi140A90To4Tau":"H(140)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi140A100To4Tau":"H(140)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A100To4Tau":"H(140)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi140A125To4Tau":"H(140)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi140A140To4Tau":"H(140)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi140A160To4Tau":"H(140)A(160) #rightarrow 4#tau (XS)",
@@ -2239,7 +2240,7 @@ def HTTPlot(nodename,
         "ZstarTophi160A70To4Tau":"H(160)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi160A80To4Tau":"H(160)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi160A90To4Tau":"H(160)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi160A100To4Tau":"H(160)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A100To4Tau":"H(160)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi160A125To4Tau":"H(160)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi160A140To4Tau":"H(160)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi160A160To4Tau":"H(160)A(160) #rightarrow 4#tau (XS)",
@@ -2248,7 +2249,7 @@ def HTTPlot(nodename,
         "ZstarTophi180A70To4Tau":"H(180)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi180A80To4Tau":"H(180)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi180A90To4Tau":"H(180)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi180A100To4Tau":"H(180)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A100To4Tau":"H(180)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi180A125To4Tau":"H(180)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi180A140To4Tau":"H(180)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi180A160To4Tau":"H(180)A(160) #rightarrow 4#tau (XS)",
@@ -2257,7 +2258,7 @@ def HTTPlot(nodename,
         "ZstarTophi200A70To4Tau":"H(200)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi200A80To4Tau":"H(200)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi200A90To4Tau":"H(200)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi200A100To4Tau":"H(200)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A100To4Tau":"H(200)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi200A125To4Tau":"H(200)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi200A140To4Tau":"H(200)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi200A160To4Tau":"H(200)A(160) #rightarrow 4#tau (XS)",
@@ -2266,7 +2267,7 @@ def HTTPlot(nodename,
         "ZstarTophi250A70To4Tau":"H(250)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi250A80To4Tau":"H(250)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi250A90To4Tau":"H(250)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi250A100To4Tau":"H(250)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A100To4Tau":"H(250)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi250A125To4Tau":"H(250)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi250A140To4Tau":"H(250)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi250A160To4Tau":"H(250)A(160) #rightarrow 4#tau (XS)",
@@ -2275,7 +2276,7 @@ def HTTPlot(nodename,
         "ZstarTophi300A70To4Tau":"H(300)A(70) #rightarrow 4#tau (XS)",
         "ZstarTophi300A80To4Tau":"H(300)A(80) #rightarrow 4#tau (XS)",
         "ZstarTophi300A90To4Tau":"H(300)A(90) #rightarrow 4#tau (XS)",
-        "ZstarTophi300A100To4Tau":"H(300)A(1000) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A100To4Tau":"H(300)A(100) #rightarrow 4#tau (XS)",
         "ZstarTophi300A125To4Tau":"H(300)A(125) #rightarrow 4#tau (XS)",
         "ZstarTophi300A140To4Tau":"H(300)A(140) #rightarrow 4#tau (XS)",
         "ZstarTophi300A160To4Tau":"H(300)A(160) #rightarrow 4#tau (XS)",
@@ -2457,15 +2458,15 @@ def HTTPlot(nodename,
       'mttt': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ettt': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'tttt': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ttt': [
         backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F"],R.TColor.GetColor(107,174,214)),
         backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VVV"],R.TColor.GetColor(136,65,157)),
@@ -2478,15 +2479,15 @@ def HTTPlot(nodename,
       'eett': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'mmtt': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'emtt': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
     }
 
 
@@ -2496,7 +2497,7 @@ def HTTPlot(nodename,
       total_datahist.SetMarkerStyle(20)
       blind_datahist.SetMarkerStyle(20)
       blind_datahist.SetLineColor(1)
-      total_datahist.Print("all")
+#      total_datahist.Print("all")
 
     #Blinding by hand using requested range, set to 200-4000 by default:
     if blind and draw_data:
@@ -2603,7 +2604,7 @@ def HTTPlot(nodename,
     
     stack.Draw("histsame")
        
-    colours = [8,2,3,4,5,6,7,9,11,12,13,14,16]
+    colours = [4,2,3,5,6,7,9,11,12,13,14,16]
     h = []
     h_hist = []
     h_ratio = []
@@ -2669,7 +2670,7 @@ def HTTPlot(nodename,
     background_schemes[channel].reverse()
     num_leg = 0
     for legi,hists in enumerate(bkg_histos):
-        if hists.Integral()/bkghist.Integral() > 0.005:
+        if hists.Integral()/bkghist.Integral() > 0.001 and hists.Integral()>0:
           legend.AddEntry(hists,background_schemes[channel][legi]['leg_text'],"f")
           num_leg += 1
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
@@ -2707,6 +2708,13 @@ def HTTPlot(nodename,
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
     
+    latex2 = R.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(R.kBlack)
+    latex2.SetTextSize(0.03)
+    latex2.DrawLatex(0.68,0.55,under_legend)
+
 
     if ratio:
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
