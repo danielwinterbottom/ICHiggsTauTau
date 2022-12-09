@@ -262,6 +262,8 @@ namespace ic {
       // lepton isolations
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
+      outtree_->Branch("iso_3",             &iso_3_.var_double);
+      outtree_->Branch("iso_4",             &iso_4_.var_double);
 
       // transverse momentums
       outtree_->Branch("pt_1",              &pt_1_.var_double);
@@ -604,6 +606,9 @@ namespace ic {
     }
     if (channel_ == channel::ttt) {
       n_jetfakes_ = (gen_match_1_==6) + (gen_match_2_==6) + (gen_match_3_==6);
+    }
+    if (channel_ == channel::mmmm){
+      n_jetfakes_ = 0;
     }
 
     pdgid_mother_1_ = event->Exists("pdgid_mother_1") ? event->Get<int>("pdgid_mother_1") : 0;
@@ -1920,7 +1925,6 @@ namespace ic {
       tau_decay_mode_4_ = tau2->decay_mode();
 
 
-      // Raw DNN Scores
       deepTauVsJets_iso_3_      = tau1->HasTauID("byDeepTau2017v2p1VSjetraw")      ? tau1->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
       deepTauVsEle_iso_3_       = tau1->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau1->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
       deepTauVsMu_iso_3_        = tau1->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau1->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
@@ -1929,7 +1933,6 @@ namespace ic {
       deepTauVsEle_iso_4_       = tau2->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau2->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
       deepTauVsMu_iso_4_        = tau2->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau2->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
 
-      // Existing working points
       deepTauVsJets_vvvloose_3_ = tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") ? tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"): 0.;
       deepTauVsJets_vvloose_3_  = tau1->HasTauID("byVVLooseDeepTau2017v2p1VSjet")  ? tau1->GetTauID("byVVLooseDeepTau2017v2p1VSjet"):  0.;
       deepTauVsJets_vloose_3_   = tau1->HasTauID("byVLooseDeepTau2017v2p1VSjet")   ? tau1->GetTauID("byVLooseDeepTau2017v2p1VSjet"):   0.;
@@ -1985,6 +1988,26 @@ namespace ic {
       deepTauVsMu_vvtight_4_   = tau2->HasTauID("byVVTightDeepTau2017v2p1VSmu")    ? tau2->GetTauID("byVVTightDeepTau2017v2p1VSmu"):    0.;
 
     }
+
+    if (channel_ == channel::mmmm) {
+      Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
+      Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+      Muon const* muon3 = dynamic_cast<Muon const*>(lep3);
+      Muon const* muon4 = dynamic_cast<Muon const*>(lep4);
+      d0_1_ = muon1->dxy_vertex();
+      dz_1_ = muon1->dz_vertex();
+      d0_2_ = muon2->dxy_vertex();
+      dz_2_ = muon2->dz_vertex();
+      d0_3_ = muon3->dxy_vertex();
+      dz_3_ = muon3->dz_vertex();
+      d0_4_ = muon4->dxy_vertex();
+      dz_4_ = muon4->dz_vertex();
+      iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
+      iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
+      iso_3_ = PF04IsolationVal(muon3, 0.5, 0);
+      iso_4_ = PF04IsolationVal(muon4, 0.5, 0);
+    }
+
 
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);

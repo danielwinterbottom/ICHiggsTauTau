@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Feb16_MC_106X_2016-postVFP/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["tttt","mttt","ettt","emtt","eett","mmtt","ttt"],
-    //"channels":      ["ttt"],
+    // "channels":      ["tttt","mttt","ettt","emtt","eett","mmtt"],
+    "channels":      ["mmmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -59,6 +59,9 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
+
+    //"output_folder" : "/vols/cms/gu18/Offline/output/4tau/2016postVFP_0912",
+    //"output_folder" : "/vols/cms/ks1021/4tau/trees/2016postVFP_2911",
     "output_folder" : "/vols/cms/gu18/Offline/output/4tau/2411",
     //"output_folder" : "/vols/cms/ks1021/4tau/trees/2016_postVFP_2508/",
     "svfit_from_grid" : true,
@@ -193,6 +196,14 @@
         "extra_tau_veto": true,
         "max_extra_elecs": 0,
         "max_extra_muons": 0
+      }
+    },
+    "mmmm": {
+      "baseline": {
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 4
       }
     }
   },

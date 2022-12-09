@@ -233,6 +233,7 @@ struct channel_def {
     emtt,
     eett,
     mmtt,
+    mmmm,
     ttt,   
 		et,							
 		mt,		
@@ -259,6 +260,7 @@ inline std::string Channel2String(channel const& in) {
     (channel::emtt, "emtt")
     (channel::eett, "eett")
     (channel::mmtt, "mmtt")
+    (channel::mmmm, "mmmm")
     (channel::ttt, "ttt")
 		(channel::et, "et")
 		(channel::mt, "mt")
@@ -289,6 +291,7 @@ inline channel String2Channel(std::string const& in) {
   ("emtt", channel::emtt)
   ("eett", channel::eett)
   ("mmtt", channel::mmtt)
+  ("mmmm", channel::mmmm)
   ("ttt", channel::ttt)
 	("et", channel::et)
 	("mt", channel::mt)

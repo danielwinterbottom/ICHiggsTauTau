@@ -143,6 +143,8 @@ sample_list = [
    'WminusHToTauTau_M125',
    'WplusHToTauTau_M125',
    'ttHToTauTau_M125',
+  'VBF_HToZZTo4L_M125',
+  'GluGlu_HToZZTo4L_M125',
    #"phi200A100To4Tau",
    "phi200A200To4Tau",
    "phi100A100To4Tau",

@@ -160,6 +160,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(channel_str == "mmtt"){
     min_taus = 2;
   }
+  if(channel_str == "mmmm"){
+    min_taus = 0;
+  }
   if (channel_str == "ettt"){
     min_taus = 3;
   } 
@@ -410,6 +413,7 @@ if (channel == channel::emtt) BuildEMTTProducts();
 if (channel == channel::tttt) BuildTTTTProducts();
 if (channel == channel::eett) BuildEETTProducts();
 if (channel == channel::mmtt) BuildMMTTProducts();
+if (channel == channel::mmmm) BuildMMMMProducts();
 if (channel == channel::ttt)  BuildTTTProducts();
 
 
@@ -1227,6 +1231,48 @@ void HTTSequence::BuildMMTTProducts() {
       .set_input_label_second("sel_muons")
       .set_input_label_third(js["taus"].asString())
       .set_input_label_fourth(js["taus"].asString())
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_candidate_name_third("lepton3")
+      .set_candidate_name_fourth("lepton4")
+      .set_output_label("4tau"));
+}
+
+// --------------------------------------------------------------------------
+//  MMMM Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildMMMMProducts() {
+
+  if (mu_scale_mode > 0){
+    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
+       .set_input_label("muons")
+       .set_far_endcap(muon_shift_farendcap)
+       .set_near_endcap(muon_shift_nearendcap)
+       .set_barrel(muon_shift_barrel)
+       );
+  }
+
+  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+       js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+    .set_input_label("sel_muons").set_min(4)
+    .set_predicate([=](Muon const* m) {
+      return  m->pt()                 > muon_pt    &&
+              fabs(m->eta())          < muon_eta   &&
+              fabs(m->dxy_vertex())   < muon_dxy   &&
+              fabs(m->dz_vertex())    < muon_dz   &&
+              MuonID(m);
+    }));
+
+
+  BuildModule(FourParticleCompositeProducer<Muon, Muon, Muon, Muon>("MMMMProducer")
+      .set_input_label_first("sel_muons")
+      .set_input_label_second("sel_muons")
+      .set_input_label_third("sel_muons")
+      .set_input_label_fourth("sel_muons")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_candidate_name_third("lepton3")

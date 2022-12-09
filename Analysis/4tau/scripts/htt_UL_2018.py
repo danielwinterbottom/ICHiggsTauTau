@@ -206,7 +206,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
         channels=cfg["job"]["channels"]
     else:
-        channels=["tttt","mttt","ettt","emtt","eett","mmtt","ttt"]
+        channels=["tttt","mttt","ettt","emtt","eett","mmtt","ttt","mmmm"]
 
 if options.proc_data or options.proc_all or options.calc_lumi:
 
@@ -216,8 +216,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         for era in data_eras:
             if 'mttt' in chn:
                 data_samples+=['SingleMuon'+era]
-            if 'mmtt' in chn:
-                data_samples+=['SingleMuon'+era, 'DoubleMuon'+era]
+            if 'mmtt' in chn or 'mmmm' in chn:
+                data_samples+=['SingleMuon'+era]
             if 'ettt' in chn or 'eett' in chn:
                 data_samples+=['EGamma'+era]
             if 'emtt' in chn:

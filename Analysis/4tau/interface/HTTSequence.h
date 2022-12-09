@@ -60,6 +60,7 @@ class HTTSequence {
   void BuildEMTTProducts();
   void BuildEETTProducts();
   void BuildMMTTProducts();
+  void BuildMMMMProducts();
   void BuildTTTProducts();
   void BuildETPairs();
   void BuildMTPairs();
