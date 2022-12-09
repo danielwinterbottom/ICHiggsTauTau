@@ -446,6 +446,15 @@ int HTTWeights::Execute(TreeEvent *event) {
     m2 = event->Get<double>("trigeff_m_singlem_mc_2");
     m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
     m4 = event->Get<double>("trigeff_t_doubletau_mc_4");
+  } else if (channel_ == channel::mmmm) {
+    d1 = event->Get<double>("trigeff_m_singlem_data_1");
+    d2 = event->Get<double>("trigeff_m_singlem_data_2");
+    d3 = event->Get<double>("trigeff_m_singlem_data_3");
+    d4 = event->Get<double>("trigeff_m_singlem_data_4");
+    m1 = event->Get<double>("trigeff_m_singlem_mc_1");
+    m2 = event->Get<double>("trigeff_m_singlem_mc_2");
+    m3 = event->Get<double>("trigeff_m_singlem_mc_3");
+    m4 = event->Get<double>("trigeff_m_singlem_mc_4");
   }
 
   if (channel_ == channel::ttt) {
@@ -456,6 +465,8 @@ int HTTWeights::Execute(TreeEvent *event) {
     total_trg = ((d1 + (d2*d3) + (d2*d4) + (d3*d4) - (d1*(d2*d3)) - (d1*(d2*d4)) - (d1*(d3*d4)) - ((d2*d3)*(d2*d4)) - ((d2*d3)*(d3*d4)) - ((d2*d4)*(d3*d4)) + (d1*(d2*d3)*(d2*d4)) + (d1*(d2*d3)*(d3*d4)) + (d1*(d2*d4)*(d3*d4)) + ((d2*d3)*(d2*d4)*(d3*d4)) - (d1*(d2*d3)*(d2*d4)*(d3*d4))) / (m1 + (m2*m3) + (m2*m4) + (m3*m4) - (m1*(m2*m3)) - (m1*(m2*m4)) - (m1*(m3*m4)) - ((m2*m3)*(m2*m4)) - ((m2*m3)*(m3*m4)) - ((m2*m4)*(m3*m4)) + (m1*(m2*m3)*(m2*m4)) + (m1*(m2*m3)*(m3*m4)) + (m1*(m2*m4)*(m3*m4)) + ((m2*m3)*(m2*m4)*(m3*m4)) - (m1*(m2*m3)*(m2*m4)*(m3*m4))));
   } else if (channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt) {
     total_trg = ((d1 + d2 + (d3*d4) - (d1*d2) - (d1*(d3*d4)) - (d2*(d3*d4)) + (d1*d2*(d3*d4))) / (m1 + m2 + (m3*m4) - (m1*m2) - (m1*(m3*m4)) - (m2*(m3*m4)) + (m1*m2*(m3*m4))));
+  } else if (channel_ == channel::mmmm) {
+    total_trg = ((d1 + d2 + d3 + d4 - (d1*d2) - (d1*d3) - (d1*d4) - (d2*d3) - (d2*d4) - (d3*d4) + (d1*d2*d3) + (d1*d2*d4) + (d1*d3*d4) + (d2*d3*d4) - (d1*d2*d3*d4)) / (m1 + m2 + m3 + m4 - (m1*m2) - (m1*m3) - (m1*m4) - (m2*m3) - (m2*m4) - (m3*m4) + (m1*m2*m3) + (m1*m2*m4) + (m1*m3*m4) + (m2*m3*m4) - (m1*m2*m3*m4)));
   }
 
   event->Add("wt_total_trg", total_trg);

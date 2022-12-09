@@ -316,13 +316,13 @@ namespace ic {
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_3",              &mt_3_.var_double);
       outtree_->Branch("mt_4",              &mt_4_.var_double);
-
       outtree_->Branch("mt_lep_12",              &mt_lep_12_.var_double);
       outtree_->Branch("mt_lep_13",              &mt_lep_13_.var_double);
       outtree_->Branch("mt_lep_14",              &mt_lep_14_.var_double);
       outtree_->Branch("mt_lep_23",              &mt_lep_23_.var_double);
       outtree_->Branch("mt_lep_24",              &mt_lep_24_.var_double);
       outtree_->Branch("mt_lep_34",              &mt_lep_34_.var_double);
+      outtree_->Branch("mt_tot",                 &mt_tot_.var_double);
 
       outtree_->Branch("mvis_1234",            &mvis_1234_.var_double);
       outtree_->Branch("mvis_12",              &mvis_12_.var_double);
@@ -835,8 +835,7 @@ namespace ic {
     trigeff_emucross_low_mc_1_ = event->Exists("trigeff_e_emucross_low_mc_1") ? event->Get<double>("trigeff_e_emucross_low_mc_1") : 1.0;
     trigeff_emucross_low_mc_2_ = event->Exists("trigeff_e_emucross_low_mc_2") ? event->Get<double>("trigeff_e_emucross_low_mc_2") : 1.0;
 
-    total_trg_ = event->Exists("total_trg") ? event->Get<double>("total_trg") : 1.0;
-    
+    total_trg_ = event->Exists("wt_total_trg") ? event->Get<double>("wt_total_trg") : 1.0;
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     pt_3_ = lep3->pt();
@@ -967,7 +966,12 @@ namespace ic {
     }
    
     mvis_1234_ = total_product->M();
-    pt_tttt_ = total_product->pt(); 
+    pt_tttt_ = total_product->pt();
+    if (channel_ != channel::ttt) { 
+      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_14_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_lep_24_.var_double,2)+pow(mt_lep_34_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2)+pow(mt_4_.var_double,2));
+    } else {
+      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2));
+    }
 
     // get ditau mass of all combinations:
     CompositeCandidate *pair12 = new CompositeCandidate();

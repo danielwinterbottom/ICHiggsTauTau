@@ -25,10 +25,18 @@ import itertools
 #                "(d3*d4)",
 #                ]
 
+#replace_list = [
+#                "d1",
+#                "d2",
+#                "(d3*d4)",
+#                ]
+
+
 replace_list = [
                 "d1",
                 "d2",
-                "(d3*d4)",
+                "d3",
+                "d4"
                 ]
 
 

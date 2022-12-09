@@ -46,18 +46,18 @@ struct strategy_def {
 	enum type {
 		paper2013,				// Strategy for the final paper in 2013
 		phys14,				// Strategy for running on phys14 samples
-        spring15,    //Strategy for running on spring15 samples
-        fall15,    //Strategy for running on fall15 samples
-        mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
-        smspring16,    //Strategy for running on spring16 samples, SM analysis
-        mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
-        smsummer16,    //Strategy for running on summer16 samples, SM analysis
-        cpsummer16,
-        legacy16,
-        cpsummer17,
-        cpdecays16,
-        cpdecays17,
-        cpdecays18
+    spring15,    //Strategy for running on spring15 samples
+    fall15,    //Strategy for running on fall15 samples
+    mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
+    smspring16,    //Strategy for running on spring16 samples, SM analysis
+    mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
+    smsummer16,    //Strategy for running on summer16 samples, SM analysis
+    cpsummer16,
+    legacy16,
+    cpsummer17,
+    cpdecays16,
+    cpdecays17,
+    cpdecays18
 	};
 };
 typedef safe_enum<strategy_def> strategy;

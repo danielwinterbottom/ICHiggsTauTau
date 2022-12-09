@@ -305,6 +305,7 @@ class HTTCategories : public ModuleBase {
   branch_var mt_lep_23_;
   branch_var mt_lep_24_;
   branch_var mt_lep_34_;
+  branch_var mt_tot_;
 
   branch_var mvis_1234_;
   branch_var mvis_12_;
