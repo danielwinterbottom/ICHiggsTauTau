@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Feb16_MC_106X_2016-preVFP/",
     "max_events":   -1,
     "timings":      true,
-    //"channels":      ["tttt","mttt","ettt","emtt","eett","mmtt"],
-    "channels":      ["mmmm"],
+    "channels":      ["tttt","mttt","ettt","emtt","eett","mmtt","ttt","mmmm"],
+    //"channels":      ["mmmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -62,7 +62,7 @@
 
     //"output_folder" : "/vols/cms/gu18/Offline/output/4tau/2016preVFP_0912",
     //"output_folder" : "/vols/cms/ks1021/4tau/trees/2016preVFP_2911",
-    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/2411",
+    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/1012",
     //"output_folder" : "/vols/cms/ks1021/4tau/trees/2016_preVFP_2508/",
     //"output_folder" : "output/",
     "svfit_from_grid" : true,
@@ -106,10 +106,10 @@
       "efaketau_1pi_es_shift_endcap": 1.05,
       "mufaketau_0pi_es_shift": 1.0,
       "mufaketau_1pi_es_shift": 1.0,
-      "tau_1prong0pi0_es_shift": 0.991,
-      "tau_1prong1pi0_es_shift": 0.999,
-      "tau_3prong0pi0_es_shift": 1.003,
-      "tau_3prong1pi0_es_shift" : 0.998,
+      "tau_1prong0pi0_es_shift": 0.987,
+      "tau_1prong1pi0_es_shift": 0.998,
+      "tau_3prong0pi0_es_shift": 0.984,
+      "tau_3prong1pi0_es_shift" : 0.999,
       "embedtau_1prong1pi0_es_shift": 0.9978,  
       "embedtau_1prong0pi0_es_shift": 0.998,
       "embedtau_3prong0pi0_es_shift": 0.9874,
@@ -232,56 +232,56 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_shift_func_1prong0pi0": "0.9910 + (0.0080 + (0.0300-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong0pi0": "0.987 + (0.010 + (0.0300-0.010)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong0pi0_es_shift": 1.0026
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_shift_func_1prong0pi0": "0.9910 - (0.0080 + (0.0300-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong0pi0": "0.987 - (0.010 + (0.0300-0.010)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong0pi0_es_shift": 0.9934
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_shift_func_1prong1pi0": "0.9990 + (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong1pi0": "0.9980 + (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong1pi0_es_shift" : 1.0
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_shift_func_1prong1pi0": "0.9990 - (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong1pi0": "0.9980 - (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong1pi0_es_shift" : 0.9953
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_shift_func_3prong0pi0": "1.0030 + (0.0080 + (0.0120-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "0.984 + (0.0080 + (0.0120-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9907
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_shift_func_3prong0pi0": "1.0030 - (0.0080 + (0.0120-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "0.984 - (0.0080 + (0.0120-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9925
       }
     },
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
-         "tau_shift_func_3prong1pi0": "0.9980 + (0.0110 + (0.0270-0.0110)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong1pi0": "0.9990 + (0.0110 + (0.0270-0.0110)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong1pi0_es_shift" : 0.9907
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
-         "tau_shift_func_3prong1pi0": "0.9980 - (0.0110 + (0.0270-0.0110)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong1pi0": "0.9990 - (0.0110 + (0.0270-0.0110)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong1pi0_es_shift" : 0.9925
       }
     },
