@@ -510,6 +510,8 @@ class HTTCategories : public ModuleBase {
   bool trg_doublemuon_12_;
   bool trg_singlemuon_1_;
   bool trg_singlemuon_2_;
+  bool trg_singlemuon_3_;
+  bool trg_singlemuon_4_;
   bool trg_singleelectron_1_;
   bool trg_singleelectron_2_;
   bool trg_mutaucross_12_;

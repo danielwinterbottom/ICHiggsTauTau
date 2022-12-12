@@ -214,8 +214,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
     data_eras = ['A','B','C','D']
     for chn in channels:
         for era in data_eras:
-            if 'mttt' in chn:
-                data_samples+=['SingleMuon'+era]
             if 'mmtt' in chn or 'mmmm' in chn:
                 data_samples+=['SingleMuon'+era]
             if 'ettt' in chn or 'eett' in chn:

@@ -385,76 +385,51 @@ int HTTWeights::Execute(TreeEvent *event) {
   double m2 = 0.; 
   double m3 = 0.; 
   double m4 = 0.; 
-  if (channel_ == channel::ttt) {
-    d1 = event->Get<double>("trigeff_t_doubletau_data_1");
-    d2 = event->Get<double>("trigeff_t_doubletau_data_2");
-    d3 = event->Get<double>("trigeff_t_doubletau_data_3");
-    m1 = event->Get<double>("trigeff_t_doubletau_mc_1");
-    m2 = event->Get<double>("trigeff_t_doubletau_mc_2");
-    m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
-  } else if (channel_ == channel::tttt) {
-    d1 = event->Get<double>("trigeff_t_doubletau_data_1");
-    d2 = event->Get<double>("trigeff_t_doubletau_data_2");
-    d3 = event->Get<double>("trigeff_t_doubletau_data_3");
-    d4 = event->Get<double>("trigeff_t_doubletau_data_4");
-    m1 = event->Get<double>("trigeff_t_doubletau_mc_1");
-    m2 = event->Get<double>("trigeff_t_doubletau_mc_2");
-    m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
-    m4 = event->Get<double>("trigeff_t_doubletau_mc_4");
-  } else if (channel_ == channel::ettt) {
-    d1 = event->Get<double>("trigeff_e_singlee_data_1");
-    d2 = event->Get<double>("trigeff_t_doubletau_data_2");
-    d3 = event->Get<double>("trigeff_t_doubletau_data_3");
-    d4 = event->Get<double>("trigeff_t_doubletau_data_4");
-    m1 = event->Get<double>("trigeff_e_singlee_mc_1");
-    m2 = event->Get<double>("trigeff_t_doubletau_mc_2");
-    m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
-    m4 = event->Get<double>("trigeff_t_doubletau_mc_4");
-  } else if (channel_ == channel::mttt) {
-    d1 = event->Get<double>("trigeff_m_singlem_data_1");
-    d2 = event->Get<double>("trigeff_t_doubletau_data_2");
-    d3 = event->Get<double>("trigeff_t_doubletau_data_3");
-    d4 = event->Get<double>("trigeff_t_doubletau_data_4");
-    m1 = event->Get<double>("trigeff_m_singlem_mc_1");
-    m2 = event->Get<double>("trigeff_t_doubletau_mc_2");
-    m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
-    m4 = event->Get<double>("trigeff_t_doubletau_mc_4");
-  } else if (channel_ == channel::emtt) {
-    d1 = event->Get<double>("trigeff_e_singlee_data_1");
-    d2 = event->Get<double>("trigeff_m_singlem_data_2");
-    d3 = event->Get<double>("trigeff_t_doubletau_data_3");
-    d4 = event->Get<double>("trigeff_t_doubletau_data_4");
-    m1 = event->Get<double>("trigeff_e_singlee_mc_1");
-    m2 = event->Get<double>("trigeff_m_singlem_mc_2");
-    m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
-    m4 = event->Get<double>("trigeff_t_doubletau_mc_4");
-  } else if (channel_ == channel::eett) {
-    d1 = event->Get<double>("trigeff_e_singlee_data_1");
-    d2 = event->Get<double>("trigeff_e_singlee_data_2");
-    d3 = event->Get<double>("trigeff_t_doubletau_data_3");
-    d4 = event->Get<double>("trigeff_t_doubletau_data_4");
-    m1 = event->Get<double>("trigeff_e_singlee_mc_1");
-    m2 = event->Get<double>("trigeff_e_singlee_mc_2");
-    m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
-    m4 = event->Get<double>("trigeff_t_doubletau_mc_4");
-  } else if (channel_ == channel::mmtt) {
-    d1 = event->Get<double>("trigeff_m_singlem_data_1");
-    d2 = event->Get<double>("trigeff_m_singlem_data_2");
-    d3 = event->Get<double>("trigeff_t_doubletau_data_3");
-    d4 = event->Get<double>("trigeff_t_doubletau_data_4");
-    m1 = event->Get<double>("trigeff_m_singlem_mc_1");
-    m2 = event->Get<double>("trigeff_m_singlem_mc_2");
-    m3 = event->Get<double>("trigeff_t_doubletau_mc_3");
-    m4 = event->Get<double>("trigeff_t_doubletau_mc_4");
-  } else if (channel_ == channel::mmmm) {
-    d1 = event->Get<double>("trigeff_m_singlem_data_1");
-    d2 = event->Get<double>("trigeff_m_singlem_data_2");
-    d3 = event->Get<double>("trigeff_m_singlem_data_3");
-    d4 = event->Get<double>("trigeff_m_singlem_data_4");
-    m1 = event->Get<double>("trigeff_m_singlem_mc_1");
-    m2 = event->Get<double>("trigeff_m_singlem_mc_2");
-    m3 = event->Get<double>("trigeff_m_singlem_mc_3");
-    m4 = event->Get<double>("trigeff_m_singlem_mc_4");
+
+  if ( e_string == po[0] ) {
+    d1 = event->Exists("trigeff_e_singlee_data_1") ? event->Get<double>("trigeff_e_singlee_data_1") : 1.0;
+    m1 = event->Exists("trigeff_e_singlee_mc_1") ? event->Get<double>("trigeff_e_singlee_mc_1") : 1.0;
+  } else if ( m_string == po[0] ) {
+    d1 = event->Exists("trigeff_m_singlem_data_1") ? event->Get<double>("trigeff_m_singlem_data_1") : 1.0;
+    m1 = event->Exists("trigeff_m_singlem_mc_1") ? event->Get<double>("trigeff_m_singlem_mc_1") : 1.0;
+  } else if ( t_string == po[0] ) {
+    d1 = event->Exists("trigeff_t_doubletau_data_1") ? event->Get<double>("trigeff_t_doubletau_data_1") : 1.0;
+    m1 = event->Exists("trigeff_t_doubletau_mc_1") ? event->Get<double>("trigeff_t_doubletau_mc_1") : 1.0;
+  }
+
+  if ( e_string == po[1] ) {
+    d2 = event->Exists("trigeff_e_singlee_data_2") ? event->Get<double>("trigeff_e_singlee_data_2") : 1.0;
+    m2 = event->Exists("trigeff_e_singlee_mc_2") ? event->Get<double>("trigeff_e_singlee_mc_2") : 1.0;
+  } else if ( m_string == po[1] ) {
+    d2 = event->Exists("trigeff_m_singlem_data_2") ? event->Get<double>("trigeff_m_singlem_data_2") : 1.0;
+    m2 = event->Exists("trigeff_m_singlem_mc_2") ? event->Get<double>("trigeff_m_singlem_mc_2") : 1.0;
+  } else if ( t_string == po[1] ) {
+    d2 = event->Exists("trigeff_t_doubletau_data_2") ? event->Get<double>("trigeff_t_doubletau_data_2") : 1.0;
+    m2 = event->Exists("trigeff_t_doubletau_mc_2") ? event->Get<double>("trigeff_t_doubletau_mc_2") : 1.0;
+  }
+
+  if ( e_string == po[2] ) {
+    d3 = event->Exists("trigeff_e_singlee_data_3") ? event->Get<double>("trigeff_e_singlee_data_3") : 1.0;
+    m3 = event->Exists("trigeff_e_singlee_mc_3") ? event->Get<double>("trigeff_e_singlee_mc_3") : 1.0;
+  } else if ( m_string == po[2] ) {
+    d3 = event->Exists("trigeff_m_singlem_data_3") ? event->Get<double>("trigeff_m_singlem_data_3") : 1.0;
+    m3 = event->Exists("trigeff_m_singlem_mc_3") ? event->Get<double>("trigeff_m_singlem_mc_3") : 1.0;
+  } else if ( t_string == po[2] ) {
+    d3 = event->Exists("trigeff_t_doubletau_data_3") ? event->Get<double>("trigeff_t_doubletau_data_3") : 1.0;
+    m3 = event->Exists("trigeff_t_doubletau_mc_3") ? event->Get<double>("trigeff_t_doubletau_mc_3") : 1.0;
+  }
+
+  if (channel_ != channel::ttt) {
+    if ( e_string == po[3] ) {
+      d4 = event->Exists("trigeff_e_singlee_data_4") ? event->Get<double>("trigeff_e_singlee_data_4") : 1.0;
+      m4 = event->Exists("trigeff_e_singlee_mc_4") ? event->Get<double>("trigeff_e_singlee_mc_4") : 1.0;
+    } else if ( m_string == po[3] ) {
+      d4 = event->Exists("trigeff_m_singlem_data_4") ? event->Get<double>("trigeff_m_singlem_data_4") : 1.0;
+      m4 = event->Exists("trigeff_m_singlem_mc_4") ? event->Get<double>("trigeff_m_singlem_mc_4") : 1.0;
+    } else if ( t_string == po[3] ) {
+      d4 = event->Exists("trigeff_t_doubletau_data_4") ? event->Get<double>("trigeff_t_doubletau_data_4") : 1.0;
+      m4 = event->Exists("trigeff_t_doubletau_mc_4") ? event->Get<double>("trigeff_t_doubletau_mc_4") : 1.0;
+    }
   }
 
   if (channel_ == channel::ttt) {

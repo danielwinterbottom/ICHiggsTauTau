@@ -86,6 +86,8 @@ namespace ic {
       outtree_->Branch("trg_doublemuon_12",     &trg_doublemuon_12_);
       outtree_->Branch("trg_singlemuon_1",      &trg_singlemuon_1_);
       outtree_->Branch("trg_singlemuon_2",      &trg_singlemuon_2_);
+      outtree_->Branch("trg_singlemuon_3",      &trg_singlemuon_3_);
+      outtree_->Branch("trg_singlemuon_4",      &trg_singlemuon_4_);
       outtree_->Branch("trg_singleelectron_1",  &trg_singleelectron_1_);
       outtree_->Branch("trg_singleelectron_2",  &trg_singleelectron_2_);
       outtree_->Branch("trg_mutaucross_12",     &trg_mutaucross_12_);
@@ -646,6 +648,8 @@ namespace ic {
     trg_doublemuon_12_ = event->Exists("trg_doublemuon_12") ? event->Get<bool>("trg_doublemuon_12") : false;
     trg_singlemuon_1_ = event->Exists("trg_singlemuon_1") ? event->Get<bool>("trg_singlemuon_1") : false;
     trg_singlemuon_2_ = event->Exists("trg_singlemuon_2") ? event->Get<bool>("trg_singlemuon_2") : false;
+    trg_singlemuon_3_ = event->Exists("trg_singlemuon_3") ? event->Get<bool>("trg_singlemuon_3") : false;
+    trg_singlemuon_4_ = event->Exists("trg_singlemuon_4") ? event->Get<bool>("trg_singlemuon_4") : false;
     trg_singleelectron_1_ = event->Exists("trg_singleelectron_1") ? event->Get<bool>("trg_singleelectron_1") : false;
     trg_singleelectron_2_ = event->Exists("trg_singleelectron_2") ? event->Get<bool>("trg_singleelectron_2") : false;
     trg_mutaucross_12_ = event->Exists("trg_mutaucross_12") ? event->Get<bool>("trg_mutaucross_12") : false;
