@@ -136,6 +136,9 @@ sample_list = [
 	'WplusHToTauTau_M125',
 	'ZHToTauTau_M125',
 	'ttHToTauTau_M125',
+  'VBF_HToZZTo4L_M125',
+  'GluGlu_HToZZTo4L_M125',
+
 
 	]
 
@@ -152,7 +155,7 @@ sample_list = list(set(sample_list))
 out=''
 for s in sorted(sample_list): out+='    - %s\n' %s
 
-channel = ["ttt","tttt","mttt","ettt","emtt","eett","mmtt"]
+channel = ["ttt","tttt","mttt","ettt","emtt","eett","mmtt","mmmm"]
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()

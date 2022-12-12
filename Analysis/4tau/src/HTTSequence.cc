@@ -160,6 +160,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(channel_str == "mmtt"){
     min_taus = 2;
   }
+  if(channel_str == "mmmm"){
+    min_taus = 0;
+  }
   if (channel_str == "ettt"){
     min_taus = 3;
   } 
@@ -410,6 +413,7 @@ if (channel == channel::emtt) BuildEMTTProducts();
 if (channel == channel::tttt) BuildTTTTProducts();
 if (channel == channel::eett) BuildEETTProducts();
 if (channel == channel::mmtt) BuildMMTTProducts();
+if (channel == channel::mmmm) BuildMMMMProducts();
 if (channel == channel::ttt)  BuildTTTProducts();
 
 
@@ -439,7 +443,6 @@ if (channel == channel::ttt) {
    BuildModule(httFourTauSelector);
 }
 
-// TO DO: Update for 4tau UL
 BuildModule(HTTTriggerFilter("HTTTriggerFilter")
     .set_channel(channel)
     .set_mc(mc_type)
@@ -448,23 +451,9 @@ BuildModule(HTTTriggerFilter("HTTTriggerFilter")
     .set_is_data(is_data)
     .set_pair_label("4tau"));
 
-// TO DO: Implement extra lepton vetos for leptonic decay channels
-// Lepton Vetoes
-//if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
-//if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
 if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
 if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 if (js["baseline"]["extra_tau_veto"].asBool()) BuildExtraTauVeto();
-//std::cout << js["baseline"]["extra_elec_veto"].asBool() << std::endl;
-//std::cout << js["baseline"]["extra_muon_veto"].asBool() << std::endl;
-//std::cout << js["baseline"]["extra_tau_veto"].asBool() << std::endl;
-// do not need in this analysis as stats are low enough
-//if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
-//  BuildModule(PreselectionFilter("PreselectionFilter")
-//   .set_channel(channel)
-//   .set_do_preselection(true)
-//   .set_dilepton_label("4tau"));
-//}
 
 // Pileup Weighting
 TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
@@ -474,7 +463,6 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
       .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
 }
 
-// TO DO: Add missing UL filter once rerun MC
 if(do_met_filters){
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
@@ -553,6 +541,7 @@ BuildModule(jetIDFilter);
 //  })
 //);
 
+
 if ((era_type == era::data_2017 || era_type == era::data_2017UL)) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
@@ -573,6 +562,12 @@ if (!is_data && !is_embedded) {
      .set_shift_met(false)
    );
 }
+
+BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+  .set_input_label(jets_label)
+  .set_reference_label("4tau")
+  .set_min_dr(0.5));
+
 
 if(!is_data) {
 	
@@ -1236,6 +1231,48 @@ void HTTSequence::BuildMMTTProducts() {
       .set_input_label_second("sel_muons")
       .set_input_label_third(js["taus"].asString())
       .set_input_label_fourth(js["taus"].asString())
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_candidate_name_third("lepton3")
+      .set_candidate_name_fourth("lepton4")
+      .set_output_label("4tau"));
+}
+
+// --------------------------------------------------------------------------
+//  MMMM Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildMMMMProducts() {
+
+  if (mu_scale_mode > 0){
+    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
+       .set_input_label("muons")
+       .set_far_endcap(muon_shift_farendcap)
+       .set_near_endcap(muon_shift_nearendcap)
+       .set_barrel(muon_shift_barrel)
+       );
+  }
+
+  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+       js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+    .set_input_label("sel_muons").set_min(4)
+    .set_predicate([=](Muon const* m) {
+      return  m->pt()                 > muon_pt    &&
+              fabs(m->eta())          < muon_eta   &&
+              fabs(m->dxy_vertex())   < muon_dxy   &&
+              fabs(m->dz_vertex())    < muon_dz   &&
+              MuonID(m);
+    }));
+
+
+  BuildModule(FourParticleCompositeProducer<Muon, Muon, Muon, Muon>("MMMMProducer")
+      .set_input_label_first("sel_muons")
+      .set_input_label_second("sel_muons")
+      .set_input_label_third("sel_muons")
+      .set_input_label_fourth("sel_muons")
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_candidate_name_third("lepton3")

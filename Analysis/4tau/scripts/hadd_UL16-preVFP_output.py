@@ -140,6 +140,9 @@ sample_list = [
   'GluGluHToTauTau_M125',
   'ZHToTauTau_M125',
   'VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ttHToTauTau_M125',
+  'VBF_HToZZTo4L_M125',
+  'GluGlu_HToZZTo4L_M125',
+
 
     ]
 grid_phi = ["100","110","125","140","160","180","200","250","300"]
@@ -155,7 +158,7 @@ sample_list = list(set(sample_list))
 out=''
 for s in sorted(sample_list): out+='    - %s\n' %s
 
-channel = ["ttt","tttt","mttt","ettt","emtt","eett","mmtt"]
+channel = ["ttt","tttt","mttt","ettt","emtt","eett","mmtt","mmmm"]
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()

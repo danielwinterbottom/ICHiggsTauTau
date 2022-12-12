@@ -94,6 +94,12 @@ def SetAxisTitles(plot, channel):
     lep2_label = '#mu_{2}'
     lep3_label = '#tau_{1}'
     lep4_label = '#tau_{2}'
+  elif channel == 'mmmm':
+    chan_label = '#mu#mu#tau#tau'
+    lep1_label = '#mu_{1}'
+    lep2_label = '#mu_{2}'
+    lep3_label = '#mu_{3}'
+    lep4_label = '#mu_{4}'
 
   bin_width=''
   #if not isVarBins:
@@ -166,14 +172,13 @@ def SetAxisTitles(plot, channel):
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events']
       titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events']
 
-
-    
   if var not in titles: 
     if not isVarBins: return [var,'Events']
     else: return [var, 'dN/d'+var]
   else:
     if not isVarBins: return [titles[var][0],titles[var][1]]
     else: return [titles[var][0], titles[var][2]]
+
 
 def SetAxisTitles2D(plot, channel):
   if '[' in plot: 
@@ -276,7 +281,7 @@ def SetAxisTitles2D(plot, channel):
     unit = titles[yvar][3]  
     if not isVarBins: y_titles = [titles[yvar][0],titles[yvar][1],unit]
     else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
-    
+  
   return [x_titles, y_titles]
   
 
@@ -2468,14 +2473,9 @@ def HTTPlot(nodename,
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ttt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZMMR","ZMM1F","ZMM3F","ZEER","ZEE1F","ZEE3F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'eett': [
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
@@ -2488,6 +2488,10 @@ def HTTPlot(nodename,
         backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+      'mmmm': [
+        backgroundComp("Diboson",["VVR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("H #rightarrow ZZ",["HZZ"],R.TColor.GetColor(250,5,5)),
+        backgroundComp("Other",["ZR","TTR","WR"],R.TColor.GetColor(156,20,41))],
     }
 
 
@@ -2527,6 +2531,7 @@ def HTTPlot(nodename,
         h.SetMarkerSize(0)
     
         if norm_bins:
+            print "Normalising bins to bin width"
             h.Scale(1.0,"width")
         if h.GetName() == '': continue     
         bkg_histos.append(h)
@@ -2691,6 +2696,7 @@ def HTTPlot(nodename,
     if channel == "mttt": channel_label = "#mu_{}#tau_{h}#tau_{h}#tau_{h}"
     if channel == "ettt": channel_label = "e_{}#tau_{h}#tau_{h}#tau_{h}"
     if channel == "mmtt": channel_label = "#mu_{}#mu_{}#tau_{h}#tau_{h}"
+    if channel == "mmmm": channel_label = "#mu_{}#mu_{}#mu_{}#mu_{}"
     if channel == "eett": channel_label = "e_{}e_{}#tau_{h}#tau_{h}"
     if channel == "emtt": channel_label = "e_{}#mu_{}#tau_{h}#tau_{h}"
     if cat != "": channel_label+=" "+cat

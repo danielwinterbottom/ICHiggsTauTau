@@ -376,6 +376,77 @@ int HTTWeights::Execute(TreeEvent *event) {
     }
 
   }
+  double total_trg = 0.;
+  double d1 = 0.; 
+  double d2 = 0.; 
+  double d3 = 0.; 
+  double d4 = 0.; 
+  double m1 = 0.; 
+  double m2 = 0.; 
+  double m3 = 0.; 
+  double m4 = 0.; 
+
+  if ( e_string == po[0] ) {
+    d1 = event->Exists("trigeff_e_singlee_data_1") ? event->Get<double>("trigeff_e_singlee_data_1") : 1.0;
+    m1 = event->Exists("trigeff_e_singlee_mc_1") ? event->Get<double>("trigeff_e_singlee_mc_1") : 1.0;
+  } else if ( m_string == po[0] ) {
+    d1 = event->Exists("trigeff_m_singlem_data_1") ? event->Get<double>("trigeff_m_singlem_data_1") : 1.0;
+    m1 = event->Exists("trigeff_m_singlem_mc_1") ? event->Get<double>("trigeff_m_singlem_mc_1") : 1.0;
+  } else if ( t_string == po[0] ) {
+    d1 = event->Exists("trigeff_t_doubletau_data_1") ? event->Get<double>("trigeff_t_doubletau_data_1") : 1.0;
+    m1 = event->Exists("trigeff_t_doubletau_mc_1") ? event->Get<double>("trigeff_t_doubletau_mc_1") : 1.0;
+  }
+
+  if ( e_string == po[1] ) {
+    d2 = event->Exists("trigeff_e_singlee_data_2") ? event->Get<double>("trigeff_e_singlee_data_2") : 1.0;
+    m2 = event->Exists("trigeff_e_singlee_mc_2") ? event->Get<double>("trigeff_e_singlee_mc_2") : 1.0;
+  } else if ( m_string == po[1] ) {
+    d2 = event->Exists("trigeff_m_singlem_data_2") ? event->Get<double>("trigeff_m_singlem_data_2") : 1.0;
+    m2 = event->Exists("trigeff_m_singlem_mc_2") ? event->Get<double>("trigeff_m_singlem_mc_2") : 1.0;
+  } else if ( t_string == po[1] ) {
+    d2 = event->Exists("trigeff_t_doubletau_data_2") ? event->Get<double>("trigeff_t_doubletau_data_2") : 1.0;
+    m2 = event->Exists("trigeff_t_doubletau_mc_2") ? event->Get<double>("trigeff_t_doubletau_mc_2") : 1.0;
+  }
+
+  if ( e_string == po[2] ) {
+    d3 = event->Exists("trigeff_e_singlee_data_3") ? event->Get<double>("trigeff_e_singlee_data_3") : 1.0;
+    m3 = event->Exists("trigeff_e_singlee_mc_3") ? event->Get<double>("trigeff_e_singlee_mc_3") : 1.0;
+  } else if ( m_string == po[2] ) {
+    d3 = event->Exists("trigeff_m_singlem_data_3") ? event->Get<double>("trigeff_m_singlem_data_3") : 1.0;
+    m3 = event->Exists("trigeff_m_singlem_mc_3") ? event->Get<double>("trigeff_m_singlem_mc_3") : 1.0;
+  } else if ( t_string == po[2] ) {
+    d3 = event->Exists("trigeff_t_doubletau_data_3") ? event->Get<double>("trigeff_t_doubletau_data_3") : 1.0;
+    m3 = event->Exists("trigeff_t_doubletau_mc_3") ? event->Get<double>("trigeff_t_doubletau_mc_3") : 1.0;
+  }
+
+  if (channel_ != channel::ttt) {
+    if ( e_string == po[3] ) {
+      d4 = event->Exists("trigeff_e_singlee_data_4") ? event->Get<double>("trigeff_e_singlee_data_4") : 1.0;
+      m4 = event->Exists("trigeff_e_singlee_mc_4") ? event->Get<double>("trigeff_e_singlee_mc_4") : 1.0;
+    } else if ( m_string == po[3] ) {
+      d4 = event->Exists("trigeff_m_singlem_data_4") ? event->Get<double>("trigeff_m_singlem_data_4") : 1.0;
+      m4 = event->Exists("trigeff_m_singlem_mc_4") ? event->Get<double>("trigeff_m_singlem_mc_4") : 1.0;
+    } else if ( t_string == po[3] ) {
+      d4 = event->Exists("trigeff_t_doubletau_data_4") ? event->Get<double>("trigeff_t_doubletau_data_4") : 1.0;
+      m4 = event->Exists("trigeff_t_doubletau_mc_4") ? event->Get<double>("trigeff_t_doubletau_mc_4") : 1.0;
+    }
+  }
+
+  if (channel_ == channel::ttt) {
+    total_trg = (((d1*d2) + (d1*d3) + (d2*d3) - ((d1*d2)*(d1*d3)) - ((d1*d2)*(d2*d3)) - ((d1*d3)*(d2*d3)) + ((d1*d2)*(d1*d3)*(d2*d3))) / ((m1*m2) + (m1*m3) + (m2*m3) - ((m1*m2)*(m1*m3)) - ((m1*m2)*(m2*m3)) - ((m1*m3)*(m2*m3)) + ((m1*m2)*(m1*m3)*(m2*m3))));
+  } else if (channel_ == channel::tttt) {
+    total_trg = (((d1*d2) + (d1*d3) + (d1*d4) + (d2*d3) + (d2*d4) + (d3*d4) - ((d1*d2)*(d1*d3)) - ((d1*d2)*(d1*d4)) - ((d1*d2)*(d2*d3)) - ((d1*d2)*(d2*d4)) - ((d1*d2)*(d3*d4)) - ((d1*d3)*(d1*d4)) - ((d1*d3)*(d2*d3)) - ((d1*d3)*(d2*d4)) - ((d1*d3)*(d3*d4)) - ((d1*d4)*(d2*d3)) - ((d1*d4)*(d2*d4)) - ((d1*d4)*(d3*d4)) - ((d2*d3)*(d2*d4)) - ((d2*d3)*(d3*d4)) - ((d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)) + ((d1*d2)*(d1*d3)*(d2*d3)) + ((d1*d2)*(d1*d3)*(d2*d4)) + ((d1*d2)*(d1*d3)*(d3*d4)) + ((d1*d2)*(d1*d4)*(d2*d3)) + ((d1*d2)*(d1*d4)*(d2*d4)) + ((d1*d2)*(d1*d4)*(d3*d4)) + ((d1*d2)*(d2*d3)*(d2*d4)) + ((d1*d2)*(d2*d3)*(d3*d4)) + ((d1*d2)*(d2*d4)*(d3*d4)) + ((d1*d3)*(d1*d4)*(d2*d3)) + ((d1*d3)*(d1*d4)*(d2*d4)) + ((d1*d3)*(d1*d4)*(d3*d4)) + ((d1*d3)*(d2*d3)*(d2*d4)) + ((d1*d3)*(d2*d3)*(d3*d4)) + ((d1*d3)*(d2*d4)*(d3*d4)) + ((d1*d4)*(d2*d3)*(d2*d4)) + ((d1*d4)*(d2*d3)*(d3*d4)) + ((d1*d4)*(d2*d4)*(d3*d4)) + ((d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d2*d3)*(d2*d4)) - ((d1*d2)*(d1*d3)*(d2*d3)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d4)*(d2*d3)*(d2*d4)) - ((d1*d2)*(d1*d4)*(d2*d3)*(d3*d4)) - ((d1*d2)*(d1*d4)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)) - ((d1*d3)*(d1*d4)*(d2*d3)*(d3*d4)) - ((d1*d3)*(d1*d4)*(d2*d4)*(d3*d4)) - ((d1*d3)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4))) / ((m1*m2) + (m1*m3) + (m1*m4) + (m2*m3) + (m2*m4) + (m3*m4) - ((m1*m2)*(m1*m3)) - ((m1*m2)*(m1*m4)) - ((m1*m2)*(m2*m3)) - ((m1*m2)*(m2*m4)) - ((m1*m2)*(m3*m4)) - ((m1*m3)*(m1*m4)) - ((m1*m3)*(m2*m3)) - ((m1*m3)*(m2*m4)) - ((m1*m3)*(m3*m4)) - ((m1*m4)*(m2*m3)) - ((m1*m4)*(m2*m4)) - ((m1*m4)*(m3*m4)) - ((m2*m3)*(m2*m4)) - ((m2*m3)*(m3*m4)) - ((m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)) + ((m1*m2)*(m1*m3)*(m2*m3)) + ((m1*m2)*(m1*m3)*(m2*m4)) + ((m1*m2)*(m1*m3)*(m3*m4)) + ((m1*m2)*(m1*m4)*(m2*m3)) + ((m1*m2)*(m1*m4)*(m2*m4)) + ((m1*m2)*(m1*m4)*(m3*m4)) + ((m1*m2)*(m2*m3)*(m2*m4)) + ((m1*m2)*(m2*m3)*(m3*m4)) + ((m1*m2)*(m2*m4)*(m3*m4)) + ((m1*m3)*(m1*m4)*(m2*m3)) + ((m1*m3)*(m1*m4)*(m2*m4)) + ((m1*m3)*(m1*m4)*(m3*m4)) + ((m1*m3)*(m2*m3)*(m2*m4)) + ((m1*m3)*(m2*m3)*(m3*m4)) + ((m1*m3)*(m2*m4)*(m3*m4)) + ((m1*m4)*(m2*m3)*(m2*m4)) + ((m1*m4)*(m2*m3)*(m3*m4)) + ((m1*m4)*(m2*m4)*(m3*m4)) + ((m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m2*m3)*(m2*m4)) - ((m1*m2)*(m1*m3)*(m2*m3)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m4)*(m2*m3)*(m2*m4)) - ((m1*m2)*(m1*m4)*(m2*m3)*(m3*m4)) - ((m1*m2)*(m1*m4)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)) - ((m1*m3)*(m1*m4)*(m2*m3)*(m3*m4)) - ((m1*m3)*(m1*m4)*(m2*m4)*(m3*m4)) - ((m1*m3)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4))));
+  } else if (channel_ == channel::ettt || channel_ == channel::mttt) {
+    total_trg = ((d1 + (d2*d3) + (d2*d4) + (d3*d4) - (d1*(d2*d3)) - (d1*(d2*d4)) - (d1*(d3*d4)) - ((d2*d3)*(d2*d4)) - ((d2*d3)*(d3*d4)) - ((d2*d4)*(d3*d4)) + (d1*(d2*d3)*(d2*d4)) + (d1*(d2*d3)*(d3*d4)) + (d1*(d2*d4)*(d3*d4)) + ((d2*d3)*(d2*d4)*(d3*d4)) - (d1*(d2*d3)*(d2*d4)*(d3*d4))) / (m1 + (m2*m3) + (m2*m4) + (m3*m4) - (m1*(m2*m3)) - (m1*(m2*m4)) - (m1*(m3*m4)) - ((m2*m3)*(m2*m4)) - ((m2*m3)*(m3*m4)) - ((m2*m4)*(m3*m4)) + (m1*(m2*m3)*(m2*m4)) + (m1*(m2*m3)*(m3*m4)) + (m1*(m2*m4)*(m3*m4)) + ((m2*m3)*(m2*m4)*(m3*m4)) - (m1*(m2*m3)*(m2*m4)*(m3*m4))));
+  } else if (channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt) {
+    total_trg = ((d1 + d2 + (d3*d4) - (d1*d2) - (d1*(d3*d4)) - (d2*(d3*d4)) + (d1*d2*(d3*d4))) / (m1 + m2 + (m3*m4) - (m1*m2) - (m1*(m3*m4)) - (m2*(m3*m4)) + (m1*m2*(m3*m4))));
+  } else if (channel_ == channel::mmmm) {
+    total_trg = ((d1 + d2 + d3 + d4 - (d1*d2) - (d1*d3) - (d1*d4) - (d2*d3) - (d2*d4) - (d3*d4) + (d1*d2*d3) + (d1*d2*d4) + (d1*d3*d4) + (d2*d3*d4) - (d1*d2*d3*d4)) / (m1 + m2 + m3 + m4 - (m1*m2) - (m1*m3) - (m1*m4) - (m2*m3) - (m2*m4) - (m3*m4) + (m1*m2*m3) + (m1*m2*m4) + (m1*m3*m4) + (m2*m3*m4) - (m1*m2*m3*m4)));
+  }
+
+  event->Add("wt_total_trg", total_trg);
+  eventInfo->set_weight("wt_total_trg",total_trg);
+
   return 0;
 }
 

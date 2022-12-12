@@ -208,6 +208,8 @@ class HTTCategories : public ModuleBase {
   double trigeff_emucross_low_mc_1_;
   double trigeff_emucross_low_mc_2_;
 
+  double total_trg_;
+
   double jet_probb_1_;
   double jet_probb_2_;
   double jet_probb_3_;
@@ -249,6 +251,8 @@ class HTTCategories : public ModuleBase {
 
   branch_var iso_1_;
   branch_var iso_2_;
+  branch_var iso_3_;
+  branch_var iso_4_;
 
   branch_var pt_1_;
   branch_var pt_2_;
@@ -301,6 +305,7 @@ class HTTCategories : public ModuleBase {
   branch_var mt_lep_23_;
   branch_var mt_lep_24_;
   branch_var mt_lep_34_;
+  branch_var mt_tot_;
 
   branch_var mvis_1234_;
   branch_var mvis_12_;
@@ -309,6 +314,7 @@ class HTTCategories : public ModuleBase {
   branch_var mvis_23_;
   branch_var mvis_24_;
   branch_var mvis_34_;
+  branch_var mvis_os_;
   branch_var mvis_min_dphi_1_;
   branch_var mvis_min_dphi_2_;
   branch_var mvis_min_sum_dphi_1_;
@@ -325,6 +331,7 @@ class HTTCategories : public ModuleBase {
   branch_var pt_tt_23_;
   branch_var pt_tt_24_;
   branch_var pt_tt_34_;
+  branch_var pt_tt_os_;
   branch_var pt_min_dphi_1_;
   branch_var pt_min_dphi_2_;
   branch_var pt_min_sum_dphi_1_;
@@ -503,6 +510,8 @@ class HTTCategories : public ModuleBase {
   bool trg_doublemuon_12_;
   bool trg_singlemuon_1_;
   bool trg_singlemuon_2_;
+  bool trg_singlemuon_3_;
+  bool trg_singlemuon_4_;
   bool trg_singleelectron_1_;
   bool trg_singleelectron_2_;
   bool trg_mutaucross_12_;

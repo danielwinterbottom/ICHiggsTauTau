@@ -86,6 +86,8 @@ namespace ic {
       outtree_->Branch("trg_doublemuon_12",     &trg_doublemuon_12_);
       outtree_->Branch("trg_singlemuon_1",      &trg_singlemuon_1_);
       outtree_->Branch("trg_singlemuon_2",      &trg_singlemuon_2_);
+      outtree_->Branch("trg_singlemuon_3",      &trg_singlemuon_3_);
+      outtree_->Branch("trg_singlemuon_4",      &trg_singlemuon_4_);
       outtree_->Branch("trg_singleelectron_1",  &trg_singleelectron_1_);
       outtree_->Branch("trg_singleelectron_2",  &trg_singleelectron_2_);
       outtree_->Branch("trg_mutaucross_12",     &trg_mutaucross_12_);
@@ -247,6 +249,8 @@ namespace ic {
       outtree_->Branch("trigeff_emucross_low_mc_1",  &trigeff_emucross_low_mc_1_);
       outtree_->Branch("trigeff_emucross_low_mc_2",  &trigeff_emucross_low_mc_2_);
 
+      outtree_->Branch("total_trg",  &total_trg_);
+
       // dxy and dz
       outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
       outtree_->Branch("dZ_1", &dz_1_.var_float, "dz_1/F");
@@ -260,6 +264,8 @@ namespace ic {
       // lepton isolations
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
+      outtree_->Branch("iso_3",             &iso_3_.var_double);
+      outtree_->Branch("iso_4",             &iso_4_.var_double);
 
       // transverse momentums
       outtree_->Branch("pt_1",              &pt_1_.var_double);
@@ -312,13 +318,13 @@ namespace ic {
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_3",              &mt_3_.var_double);
       outtree_->Branch("mt_4",              &mt_4_.var_double);
-
       outtree_->Branch("mt_lep_12",              &mt_lep_12_.var_double);
       outtree_->Branch("mt_lep_13",              &mt_lep_13_.var_double);
       outtree_->Branch("mt_lep_14",              &mt_lep_14_.var_double);
       outtree_->Branch("mt_lep_23",              &mt_lep_23_.var_double);
       outtree_->Branch("mt_lep_24",              &mt_lep_24_.var_double);
       outtree_->Branch("mt_lep_34",              &mt_lep_34_.var_double);
+      outtree_->Branch("mt_tot",                 &mt_tot_.var_double);
 
       outtree_->Branch("mvis_1234",            &mvis_1234_.var_double);
       outtree_->Branch("mvis_12",              &mvis_12_.var_double);
@@ -327,6 +333,7 @@ namespace ic {
       outtree_->Branch("mvis_23",              &mvis_23_.var_double);
       outtree_->Branch("mvis_24",              &mvis_24_.var_double);
       outtree_->Branch("mvis_34",              &mvis_34_.var_double);
+      outtree_->Branch("mvis_os",              &mvis_os_.var_double);
       outtree_->Branch("mvis_min_dphi_1",      &mvis_min_dphi_1_.var_double);
       outtree_->Branch("mvis_min_dphi_2",      &mvis_min_dphi_2_.var_double);
       outtree_->Branch("mvis_min_dR_1",        &mvis_min_dR_1_.var_double);
@@ -337,6 +344,7 @@ namespace ic {
       outtree_->Branch("mvis_min_sum_dR_2",    &mvis_min_sum_dR_2_.var_double);
       outtree_->Branch("mvis_phi",             &mvis_phi_.var_double);
       outtree_->Branch("mvis_A",               &mvis_A_.var_double);
+      outtree_->Branch("pt_tt_os",             &pt_tt_os_.var_double);
       outtree_->Branch("pt_min_dphi_1",        &pt_min_dphi_1_.var_double);
       outtree_->Branch("pt_min_dphi_2",        &pt_min_dphi_2_.var_double);
       outtree_->Branch("pt_min_dR_1",          &pt_min_dR_1_.var_double);
@@ -571,12 +579,9 @@ namespace ic {
     Candidate const* lep4 = 0;
     if (channel_ != channel::ttt) lep4 = fourtau->GetCandidate("lepton4");
     
-
-
     //std::cout << "lep 1 :" << " px " << lep1->px() << " py " << lep1->py() << " pz " << lep1->pz() << "energy : " << lep1->energy()  << std::endl;
     //std::cout << "lep 2 :" << " px " << lep2->px() << " py " << lep2->py() << " pz " << lep2->pz() << "energy : " << lep2->energy()  << std::endl;
     //std::cout << "lep 3 :" << " px " << lep3->px() << " py " << lep3->py() << " pz " << lep3->pz() << "energy : " << lep3->energy()  << std::endl;
-
 
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -603,6 +608,9 @@ namespace ic {
     }
     if (channel_ == channel::ttt) {
       n_jetfakes_ = (gen_match_1_==6) + (gen_match_2_==6) + (gen_match_3_==6);
+    }
+    if (channel_ == channel::mmmm){
+      n_jetfakes_ = 0;
     }
 
     pdgid_mother_1_ = event->Exists("pdgid_mother_1") ? event->Get<int>("pdgid_mother_1") : 0;
@@ -640,6 +648,8 @@ namespace ic {
     trg_doublemuon_12_ = event->Exists("trg_doublemuon_12") ? event->Get<bool>("trg_doublemuon_12") : false;
     trg_singlemuon_1_ = event->Exists("trg_singlemuon_1") ? event->Get<bool>("trg_singlemuon_1") : false;
     trg_singlemuon_2_ = event->Exists("trg_singlemuon_2") ? event->Get<bool>("trg_singlemuon_2") : false;
+    trg_singlemuon_3_ = event->Exists("trg_singlemuon_3") ? event->Get<bool>("trg_singlemuon_3") : false;
+    trg_singlemuon_4_ = event->Exists("trg_singlemuon_4") ? event->Get<bool>("trg_singlemuon_4") : false;
     trg_singleelectron_1_ = event->Exists("trg_singleelectron_1") ? event->Get<bool>("trg_singleelectron_1") : false;
     trg_singleelectron_2_ = event->Exists("trg_singleelectron_2") ? event->Get<bool>("trg_singleelectron_2") : false;
     trg_mutaucross_12_ = event->Exists("trg_mutaucross_12") ? event->Get<bool>("trg_mutaucross_12") : false;
@@ -829,20 +839,20 @@ namespace ic {
     trigeff_emucross_low_mc_1_ = event->Exists("trigeff_e_emucross_low_mc_1") ? event->Get<double>("trigeff_e_emucross_low_mc_1") : 1.0;
     trigeff_emucross_low_mc_2_ = event->Exists("trigeff_e_emucross_low_mc_2") ? event->Get<double>("trigeff_e_emucross_low_mc_2") : 1.0;
 
-    
+    total_trg_ = event->Exists("wt_total_trg") ? event->Get<double>("wt_total_trg") : 1.0;
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     pt_3_ = lep3->pt();
 	
-	jet_pt_1_ = 0;
+    jet_pt_1_ = 0;
     jet_pt_2_ = 0;
     jet_pt_3_ = 0;
 	
-	jet_probb_1_ = 0;
-	jet_probb_2_ = 0;
+    jet_probb_1_ = 0;
+    jet_probb_2_ = 0;
     jet_probb_3_ = 0;
 	
-	jet_probbb_1_ = 0;    
+    jet_probbb_1_ = 0;    
     jet_probbb_2_ = 0;
     jet_probbb_3_ = 0;
 	
@@ -850,7 +860,7 @@ namespace ic {
     jet_problepb_2_ = 0;
     jet_problepb_3_ = 0;
 	
-	jet_probc_1_ = 0;    
+    jet_probc_1_ = 0;    
     jet_probc_2_ = 0;
     jet_probc_3_ = 0;
 	
@@ -862,16 +872,16 @@ namespace ic {
     jet_probg_2_ = 0;
     jet_probg_3_ = 0;    
 	
-	std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
     std::vector<Candidate *> lepvec1;
     std::vector<Candidate *> lepvec2;
     std::vector<Candidate *> lepvec3;    
 	
-	lepvec1.push_back(fourtau->GetCandidate("lepton1"));
+    lepvec1.push_back(fourtau->GetCandidate("lepton1"));
     lepvec2.push_back(fourtau->GetCandidate("lepton2"));
     lepvec3.push_back(fourtau->GetCandidate("lepton3"));    
 	
-	std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_2 = MatchByDR(uncleaned_jets, lepvec2, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_3 = MatchByDR(uncleaned_jets, lepvec3, 0.5, true, true);
 
@@ -960,7 +970,12 @@ namespace ic {
     }
    
     mvis_1234_ = total_product->M();
-    pt_tttt_ = total_product->pt(); 
+    pt_tttt_ = total_product->pt();
+    if (channel_ != channel::ttt) { 
+      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_14_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_lep_24_.var_double,2)+pow(mt_lep_34_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2)+pow(mt_4_.var_double,2));
+    } else {
+      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2));
+    }
 
     // get ditau mass of all combinations:
     CompositeCandidate *pair12 = new CompositeCandidate();
@@ -988,15 +1003,28 @@ namespace ic {
     pt_tt_13_ = pair13->pt();
     pt_tt_23_ = pair23->pt();
 
+    if (channel_ == channel::ttt) {
+      if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton2")->charge()) {
+        mvis_os_ = pair12->M();
+        pt_tt_os_ = pair12->pt();
+      } else if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+        mvis_os_ = pair13->M();
+        pt_tt_os_ = pair13->pt();
+      } else if (fourtau->GetCandidate("lepton2")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+        mvis_os_ = pair23->M();
+        pt_tt_os_ = pair23->pt();
+      }
+    }
+
     mvis_phi_ = 0.0;
     mvis_A_ = 0.0;
     pt_phi_ = 0.0;
     pt_A_ = 0.0;
- 
+
     if (channel_ != channel::ttt) {
       pt_4_= lep4->pt();
 	  
-	  jet_pt_4_ = 0;
+      jet_pt_4_ = 0;
       jet_probb_4_ = 0;
       jet_probbb_4_ = 0;    
       jet_problepb_4_ = 0;
@@ -1006,16 +1034,16 @@ namespace ic {
       std::vector<Candidate *> lepvec4;
       lepvec4.push_back(fourtau->GetCandidate("lepton4"));
       std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_4 = MatchByDR(uncleaned_jets, lepvec4, 0.5, true, true);
-	  
-	  if(tau_matches_4.size() > 0) {
-		jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
-		jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
-		jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
-		jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
-		jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
-		jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
-		jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
-	  }
+	    
+	    if(tau_matches_4.size() > 0) {
+		  jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
+		  jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+		  jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+		  jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+		  jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+		  jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+		  jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+	    }
 	  
       eta_4_ = lep4->eta();
       phi_4_ = lep4->phi();
@@ -1905,7 +1933,6 @@ namespace ic {
       tau_decay_mode_4_ = tau2->decay_mode();
 
 
-      // Raw DNN Scores
       deepTauVsJets_iso_3_      = tau1->HasTauID("byDeepTau2017v2p1VSjetraw")      ? tau1->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
       deepTauVsEle_iso_3_       = tau1->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau1->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
       deepTauVsMu_iso_3_        = tau1->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau1->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
@@ -1914,7 +1941,6 @@ namespace ic {
       deepTauVsEle_iso_4_       = tau2->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau2->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
       deepTauVsMu_iso_4_        = tau2->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau2->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
 
-      // Existing working points
       deepTauVsJets_vvvloose_3_ = tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") ? tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"): 0.;
       deepTauVsJets_vvloose_3_  = tau1->HasTauID("byVVLooseDeepTau2017v2p1VSjet")  ? tau1->GetTauID("byVVLooseDeepTau2017v2p1VSjet"):  0.;
       deepTauVsJets_vloose_3_   = tau1->HasTauID("byVLooseDeepTau2017v2p1VSjet")   ? tau1->GetTauID("byVLooseDeepTau2017v2p1VSjet"):   0.;
@@ -1970,6 +1996,26 @@ namespace ic {
       deepTauVsMu_vvtight_4_   = tau2->HasTauID("byVVTightDeepTau2017v2p1VSmu")    ? tau2->GetTauID("byVVTightDeepTau2017v2p1VSmu"):    0.;
 
     }
+
+    if (channel_ == channel::mmmm) {
+      Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
+      Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+      Muon const* muon3 = dynamic_cast<Muon const*>(lep3);
+      Muon const* muon4 = dynamic_cast<Muon const*>(lep4);
+      d0_1_ = muon1->dxy_vertex();
+      dz_1_ = muon1->dz_vertex();
+      d0_2_ = muon2->dxy_vertex();
+      dz_2_ = muon2->dz_vertex();
+      d0_3_ = muon3->dxy_vertex();
+      dz_3_ = muon3->dz_vertex();
+      d0_4_ = muon4->dxy_vertex();
+      dz_4_ = muon4->dz_vertex();
+      iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
+      iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
+      iso_3_ = PF04IsolationVal(muon3, 0.5, 0);
+      iso_4_ = PF04IsolationVal(muon4, 0.5, 0);
+    }
+
 
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
