@@ -259,28 +259,28 @@
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_shift_func_3prong0pi0": "1.0010 + (0.0160 + (0.0120-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "1.0010 + (0.0070 + (0.0120-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9907
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_shift_func_3prong0pi0": "1.0010 - (0.0080 + (0.0120-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "1.0010 - (0.0070 + (0.0120-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9925
       }
     },
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
-         "tau_shift_func_3prong1pi0": "0.9970 + (0.0110 + (0.0270-0.0160)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong1pi0": "0.9970 + (0.0160 + (0.0270-0.0160)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong1pi0_es_shift" : 0.9907
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
-         "tau_shift_func_3prong1pi0": "0.9970 - (0.0110 + (0.0270-0.0160)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong1pi0": "0.9970 - (0.0160 + (0.0270-0.0160)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong1pi0_es_shift" : 0.9925
       }
     },
