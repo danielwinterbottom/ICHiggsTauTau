@@ -321,6 +321,16 @@ for dm in dml:
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
 
+            # gg->ZZ
+            tasks.append(('GluGluToContinToZZTo2e2mu','/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2nu','/GluGluToContinToZZTo2e2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v3/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2tau','/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2mu','/GluGluToContinToZZTo2mu2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2tau','/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4e','/GluGluToContinToZZTo4e_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+
           elif yr == "2016-postVFP":
             # Spit MC into preVFP and postVFP (HIP fix)
             # Drell-Yan LO
@@ -408,6 +418,16 @@ for dm in dml:
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
 
+            # gg->ZZ
+            tasks.append(('GluGluToContinToZZTo2e2mu','/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2nu','/GluGluToContinToZZTo2e2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2tau','/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2nu','/GluGluToContinToZZTo2mu2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2tau','/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4e','/GluGluToContinToZZTo4e_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+
           elif yr == "2017":
 
             # Drell-Yan LO
@@ -493,6 +513,16 @@ for dm in dml:
             tasks.append(('ttHToTauTau_M125', '/ttHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v3/MINIAODSIM'))
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+
+            # gg->ZZ
+            tasks.append(('GluGluToContinToZZTo2e2mu','/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2nu','/GluGluToContinToZZTo2e2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2tau','/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2nu','/GluGluToContinToZZTo2mu2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2tau','/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4e','/GluGluToContinToZZTo4e_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
 
           elif yr == "2018":
 
@@ -580,6 +610,16 @@ for dm in dml:
             tasks.append(('VBF_HToZZTo4L_M125', '/VBF_HToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
             tasks.append(('GluGlu_HToZZTo4L_M125', '/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM'))
    
+            # gg->ZZ
+            tasks.append(('GluGluToContinToZZTo2e2mu','/GluGluToContinToZZTo2e2mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2nu','/GluGluToContinToZZTo2e2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2e2tau','/GluGluToContinToZZTo2e2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2nu','/GluGluToContinToZZTo2mu2nu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo2mu2tau','/GluGluToContinToZZTo2mu2tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4e','/GluGluToContinToZZTo4e_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+
         if dm == "Signal":
           if yr == "2016-postVFP":
             tasks.append(('ZstarTophi100A100To4Tau', '/ZstarTophi100A100To4Tau/ksavva-ZstarTophi100A100To4Tau_2016_postVFP_MiniAOD-67102244c8e1178e7531c1c247fc23c5/USER'))
@@ -922,7 +962,7 @@ for dm in dml:
               config.Data.splitting = 'EventAwareLumiBased'
               config.Data.unitsPerJob = 10000
 
-            if args.recovery: config.Data.unitsPerJob = 10000
+            if args.recovery: config.Data.unitsPerJob = 20000
 
             print(config)
     
