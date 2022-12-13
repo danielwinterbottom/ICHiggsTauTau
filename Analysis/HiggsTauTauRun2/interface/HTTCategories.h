@@ -278,10 +278,30 @@ class HTTCategories : public ModuleBase {
   double aco_angle_5_;
   double aco_angle_6_;
   double aco_angle_7_;
+
+  double aco_angle_5_scalepi0_up_;
+  double aco_angle_5_scalepi0_down_;
+  double aco_angle_5_smearIP_up_;
+  double aco_angle_5_smearIP_down_;
+  double aco_angle_5_smearpi0dir_up_;
+  double aco_angle_5_smearpi0dir_down_;
+
+  double gen_ip_phi_2_, gen_ip_eta_2_;
+  double gen_sv_phi_2_, gen_sv_eta_2_;
+  double ip_phi_raw_2_, ip_eta_raw_2_;
   double pv_angle_;
+  double pv_angle_smearsv_up_;
+  double pv_angle_smearsv_down_;
   double pv_angle_new_;
   double sv_mag_2_;
   double sv_dphi_2_, sv_deta_2_;
+  double rho_dphi_2_, rho_deta_2_;
+  double pi0_eta_2_, pi0_phi_2_;
+  double pi_eta_2_, pi_phi_2_;
+  double ip_L_2_, ip_eta_2_, ip_phi_2_;
+  double ip_dphi_2_, ip_deta_2_;
+  double sv_L_2_, sv_eta_2_, sv_phi_2_;
+
   bool hasSV_2_;
   double lead_pt_1_, lead_pt_2_;
   double mass0_=-1, mass1_=-1, mass2_=-1;
@@ -988,6 +1008,45 @@ class HTTCategories : public ModuleBase {
   double gen_neutral_phi_2_;
   double gen_neutral_eta_1_;
   double gen_neutral_eta_2_;
+
+  double jet_px_1_;
+  double jet_py_1_;
+  double jet_pz_1_;
+  double jet_m_1_;
+  double jet_px_2_;
+  double jet_py_2_;
+  double jet_pz_2_;
+  double jet_m_2_;
+  double jet_px_3_;
+  double jet_py_3_;
+  double jet_pz_3_;
+  double jet_m_3_;
+  double t_px_1_;
+  double t_py_1_;
+  double t_pz_1_;
+  double t_m_1_;
+  double t_px_2_;
+  double t_py_2_;
+  double t_pz_2_;
+  double t_m_2_;
+  double t_dm0raw_1_;
+  double t_dm1raw_1_;
+  double t_dm2raw_1_;
+  double t_dm10raw_1_;
+  double t_dm11raw_1_;
+  double t_dmotherraw_1_;
+
+  double t_dm0raw_2_;
+  double t_dm1raw_2_;
+  double t_dm2raw_2_;
+  double t_dm10raw_2_;
+  double t_dm11raw_2_;
+  double t_dmotherraw_2_;
+
+  double svfit_pt_1_;
+  double svfit_pt_2_;
+  double svfit_eta_1_;
+  double svfit_eta_2_;
 
  public:
   HTTCategories(std::string const& name);
