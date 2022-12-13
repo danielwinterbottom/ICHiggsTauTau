@@ -268,6 +268,17 @@ class HTTGenAnalysis : public ModuleBase {
   
   TH2D z_pt_weights_sm_;
 
+  double aco_lin_angle_1_;
+  double angle_1_;
+  double spin_var_;
+  double spin_var_vis_;
+  double mass_undecayed_taus_;
+
+  double t_E_frac_1_;
+  double t_E_frac_2_;
+  double t_c_1_;
+  double t_c_2_;
+
   double p_aco_angle_1_;
   double p_aco_angle_2_;
   double p_aco_angle_3_;
@@ -277,6 +288,13 @@ class HTTGenAnalysis : public ModuleBase {
   double aco_sign_;
   double aco_sign_smear_;
   double aco_angle_smear_;
+  double pv_lin_angle_;
+  double pv_aco_angle_;
+  double costheta_1_;
+  double costheta_tf_1_;
+  double costheta_2_;
+  double costheta_tf_2_;
+
   double aco_angle_1_;
   double aco_angle_2_;
   double aco_angle_3_;
@@ -291,6 +309,8 @@ class HTTGenAnalysis : public ModuleBase {
   double cp_sign_6_;
   double mass1_, mass2_; 
   double a1_mass_;
+  int q_1_;
+  int q_2_;
 
   double pt_rho_pi_ = -1;
   double pt_rho_pi0_ = -1;
@@ -372,6 +392,21 @@ class HTTGenAnalysis : public ModuleBase {
  
   double tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
   int gen_tau_dm_1_;
+
+  double gammas_deta_1_;
+  double gammas_dphi_1_;
+  double gammas_deta_2_;
+  double gammas_dphi_2_;
+
+  double pi0s_deta_1_;
+  double pi0s_dphi_1_;
+  double pi0s_deta_2_;
+  double pi0s_dphi_2_;
+
+  double rho_deta_1_;
+  double rho_dphi_1_;
+  double rho_deta_2_;
+  double rho_dphi_2_;
  
   const BTagCalibration *calib;
   BTagCalibrationReader* reader_incl;
@@ -383,6 +418,11 @@ class HTTGenAnalysis : public ModuleBase {
   TGraph *ggh_ph_2jet_;
   TGraph *ggh_ph_3jet_;
   double wt_nnlops_;
+
+  unsigned quarks_initial_;
+  unsigned quarks_final_;
+  unsigned gluons_initial_;
+  unsigned gluons_final_;
  
  public:
   HTTGenAnalysis(std::string const& name);

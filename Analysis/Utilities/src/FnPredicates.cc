@@ -2649,6 +2649,34 @@ namespace ic {
     return sign;
   }
 
+  std::pair<double,double> IPAcoAngleSep(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+    //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+
+    TVector3 boost, n1, n2;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+
+    n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();
+    n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+
+    //std::cout << n1.Eta() << "  " << n2.Eta() << "  " << n1.Phi() << "  " << n2.Phi() << std::endl;
+    double angle = acos(n1.Dot(n2));
+    double sign;
+
+    //sign = p2.Vect().Unit().Dot(n1.Cross(n2));
+    sign = p4.Vect().Unit().Dot(n1.Cross(n2));
+
+    if(sign<0) angle = 2*M_PI - angle;
+    return std::make_pair(angle,angle);
+  }
+
   double IPAcoAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
     //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
 
@@ -2675,6 +2703,152 @@ namespace ic {
     if(sign<0) angle = 2*M_PI - angle;
     return angle;
   }
+
+  double IPAcoLinAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+    //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+
+    TVector3 boost, n1, n2;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+
+    n1 = p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();
+    n2 = p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+
+    double angle = acos(n1.Dot(n2));
+
+    return angle;
+  }
+
+  double IPAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+    //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+  
+    TVector3 boost, n1, n2;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+    
+    n1 = p1.Vect();
+    n2 = p2.Vect();
+    
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+    
+    double angle = acos(n1.Dot(n2));
+    
+    return angle;
+  }
+
+  std::pair<double,double> CTauAngle(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+    //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+
+    TVector3 boost, n1, n2 ,n3, n4;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+
+    n1 = p1.Vect();
+    n2 = p2.Vect();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+
+    n3 = p3.Vect();
+    n4 = p4.Vect();
+    
+    n3 = n3.Unit();
+    n4 = n4.Unit();
+
+    double c1 = n1.Dot(n3);
+    double c2 = n2.Dot(n4);
+
+    return std::make_pair(c1,c2);
+  } 
+
+  std::pair<TVector3, TVector3> IPAcoAngleVectors(TLorentzVector p1, TLorentzVector p2, TLorentzVector p3, TLorentzVector p4, bool ZMF){
+    //p1 = ip+, p2 = pi0-, p3 = pi+, p4 = pi-  
+
+    TVector3 boost, n1, n2;
+    if(ZMF) boost = (p1+p2+p3+p4).BoostVector();
+    else boost = (p3+p4).BoostVector();
+    p1.Boost(-boost);
+    p2.Boost(-boost);
+    p3.Boost(-boost);
+    p4.Boost(-boost);
+
+    n1 = p1.Vect() - p1.Vect().Dot(p3.Vect().Unit())*p3.Vect().Unit();
+    n2 = p2.Vect() - p2.Vect().Dot(p4.Vect().Unit())*p4.Vect().Unit();
+
+    n1 = n1.Unit();
+    n2 = n2.Unit();
+
+    return std::make_pair(n1, n2);
+  }
+
+
+  ROOT::Math::PtEtaPhiEVector RotateToGJMax (ROOT::Math::PtEtaPhiEVector vis_tau_vec, ROOT::Math::PtEtaPhiEVector tau_vec) {
+    TVector3 tau_dir = ConvertToTVector3(tau_vec).Unit();
+    TVector3 vis_dir = ConvertToTVector3(vis_tau_vec).Unit();
+    TLorentzVector tau_vis = ConvertToLorentz(vis_tau_vec);
+
+    double m_tau = tau_vec.M();
+    double m_vis = vis_tau_vec.M();
+    double theta_GJ = std::acos(std::clamp(tau_dir.Dot(vis_dir.Unit()), -1.0, 1.0));
+    double theta_GJ_max = std::asin(std::clamp((m_tau*m_tau - m_vis*m_vis)/(2*m_tau*tau_vis.P()), -1.0, 1.0));
+
+    
+    ROOT::Math::PtEtaPhiEVector new_tau_vec(tau_vec.Pt(), tau_vec.Eta(), tau_vec.Phi(), tau_vec.E());
+
+    //std::cout << "GJ angles: " <<  theta_GJ << "  " << theta_GJ_max << std::endl;
+
+    // Rotate tau back if theta_GJ is in unphysical region
+    if (theta_GJ > theta_GJ_max)
+    {
+        TVector3 new_dir;
+	theta_GJ = theta_GJ_max;
+	// Create a normalised vector prependicular to a1
+	double n_1_x = 1/std::sqrt(1+std::pow(tau_vis.X()/tau_vis.Y(), 2));
+	double n_1_y = -n_1_x * tau_vis.X()/tau_vis.Y();
+	TVector3 n_1(n_1_x, n_1_y, 0);
+	// create n_2, a unit vector perpendicular to n_1 and the a1
+	TVector3 n_2 = n_1.Cross(tau_vis.Vect()).Unit();
+	
+	// optimal phi from calculus
+	double phi_opt_1 = std::atan(tau_dir.Dot(n_2)/tau_dir.Dot(n_1));
+	TVector3 new_dir_1 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_1)*n_1 + std::sin(phi_opt_1)*n_2);
+	
+	// tan so can have phi+pi solution
+	double phi_opt_2 = phi_opt_1 + M_PI;
+	TVector3 new_dir_2 = std::cos(theta_GJ)*vis_dir + std::sin(theta_GJ)*(std::cos(phi_opt_2)*n_1 + std::sin(phi_opt_2)*n_2);
+	
+	// test which solution maximises dot product
+	if ( new_dir_1.Dot(tau_dir) > new_dir_2.Dot(tau_dir) )
+	{
+		new_dir = new_dir_1;
+	}
+	else
+	{
+		new_dir = new_dir_2;
+	}
+        double new_pt = tau_vec.P()*sin(std::atan(std::exp(-new_dir.Eta()))*2);
+        new_tau_vec = ROOT::Math::PtEtaPhiEVector(new_pt, new_dir.Eta(), new_dir.Phi(), tau_vec.E());
+    }
+    return new_tau_vec;
+  }
+
+
 
   double PolarimetricA1A1(TVector3 tau1, TVector3 tau2, TLorentzVector a1_1, TLorentzVector a1_2, std::vector<TLorentzVector> pis_1, std::vector<TLorentzVector> pis_2, std::vector<double> charges_1, std::vector<double> charges_2) {
     double angle = -9999.;
