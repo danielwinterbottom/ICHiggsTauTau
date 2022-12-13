@@ -100,6 +100,7 @@ namespace { struct dictionary {
   edm::Wrapper<pat::PackedCandidateRefVector> dummy59;
   ic::L1TObject              dictL1TObject;
   std::vector<ic::L1TObject> dictL1TObjectCollection;
+  edm::Wrapper<ROOT::Math::SMatrix<double,2,2,ROOT::Math::MatRepSym<double,2> > > dummy60;
 };
 }
 

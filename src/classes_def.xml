@@ -60,4 +60,5 @@
   <class name="ic::L1TObject"/>
   <class name="std::vector<ic::L1TObject>"/>
   <function name="MultiDraw"/>
+  <class name="edm::Wrapper<ROOT::Math::SMatrix<double,2,2,ROOT::Math::MatRepSym<double,2> > >"/>
 </lcgdict>
