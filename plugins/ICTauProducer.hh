@@ -86,7 +86,7 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
   consumes<edm::View<T>>(input_);
   consumes<edm::View<reco::Vertex>>(input_vertices_);
   #if CMSSW_MAJOR_VERSION >= 12
-  tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>();
+  tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("","TransientTrackBuilder"));
   #endif
   taus_ = new std::vector<ic::Tau>();
 

@@ -80,7 +80,7 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
         consumes<reco::BeamSpot>(input_beamspot_);
         consumes<edm::ValueMap<bool>>(input_conversion_matches_);
         #if CMSSW_MAJOR_VERSION >= 12
-        tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>();
+        tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("","TransientTrackBuilder"));
         #endif
       
 

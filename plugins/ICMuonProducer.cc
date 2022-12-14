@@ -55,7 +55,7 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
   consumes<edm::View<reco::Vertex>>(input_vertices_);
   consumes<reco::BeamSpot>(input_beamspot_);
   #if CMSSW_MAJOR_VERSION >= 12
-  tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>();
+  tok_trackBuilder_ = esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("","TransientTrackBuilder"));
   #endif
   muons_ = new std::vector<ic::Muon>();
 
