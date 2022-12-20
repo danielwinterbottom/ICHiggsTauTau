@@ -29,6 +29,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_idiso_weights)
   CLASS_MEMBER(HTTWeights, bool, do_id_weights)
   CLASS_MEMBER(HTTWeights, bool, do_zpt_weight)
+  CLASS_MEMBER(HTTWeights, bool, do_zpt_weight_NLO)
   CLASS_MEMBER(HTTWeights, bool, do_tracking_eff)
   CLASS_MEMBER(HTTWeights, bool, do_topquark_weights)
   CLASS_MEMBER(HTTWeights, bool, do_tau_fake_weights)

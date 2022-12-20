@@ -147,6 +147,7 @@ namespace ic {
       outtree_->Branch("puweight",          &pu_weight_, "pu_weight/F");
       outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_dysoup",         &wt_dysoup_);
+      outtree_->Branch("wt_dysoup_NLO",         &wt_dysoup_NLO_);
       outtree_->Branch("wt_wsoup",         &wt_wsoup_);
       // btag weights (for event reweighting method)
       outtree_->Branch("wt_btag",           &wt_btag_);
@@ -177,6 +178,7 @@ namespace ic {
       outtree_->Branch("wt_tau_id_extra", &wt_tau_id_extra_);
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
+      outtree_->Branch("tau_leg_SF", &tau_leg_SF_);
 
       outtree_->Branch("ip_mag_1", &ip_mag_1_);
       outtree_->Branch("ip_mag_2", &ip_mag_2_);
@@ -227,6 +229,11 @@ namespace ic {
       outtree_->Branch("wt_tau_id_mssm_bin5_down",    &wt_tau_id_mssm_bin5_down_);
       outtree_->Branch("wt_tau_id_mssm_bin6_up",    &wt_tau_id_mssm_bin6_up_);
       outtree_->Branch("wt_tau_id_mssm_bin6_down",    &wt_tau_id_mssm_bin6_down_);
+
+      outtree_->Branch("wt_tau_id_dm_vs_pt",    &wt_tau_sf_id_dm_vs_pt_);
+      outtree_->Branch("wt_tau_id_dm",    &wt_tau_sf_id_dm_);
+      outtree_->Branch("wt_tau_id_pt",    &wt_tau_sf_id_pt_);
+
 
       outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
       outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
@@ -296,6 +303,9 @@ namespace ic {
       }
      
       outtree_->Branch("wt_prefire", &wt_prefire_);
+      outtree_->Branch("wt_zpt",&wt_zpt_);
+      outtree_->Branch("wt_zpt_NLO",&wt_zpt_NLO_);
+
       if(!systematic_shift_) {
         outtree_->Branch("wt_prefire_up", &wt_prefire_up_);
         outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
@@ -1105,6 +1115,14 @@ namespace ic {
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
       outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
+
+      outtree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
+      outtree_->Branch("trg_tt_monitoring_2",    &trg_tt_monitoring_2_);
+      outtree_->Branch("trg_tt_monitoring_3",    &trg_tt_monitoring_3_);
+      outtree_->Branch("trg_tt_monitoring_4",    &trg_tt_monitoring_4_);
+      outtree_->Branch("trg_tt_monitoring_5",    &trg_tt_monitoring_5_);
+      outtree_->Branch("trg_tt_monitoring_6",    &trg_tt_monitoring_6_);
+
       outtree_->Branch("trg_vbfdoubletau",    &trg_vbfdoubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
@@ -1164,6 +1182,7 @@ namespace ic {
         outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
         outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
         outtree_->Branch("wt_zpt_up",         &wt_zpt_up_);
+        outtree_->Branch("wt_zpt_up_NLO",         &wt_zpt_up_NLO_);
         outtree_->Branch("wt_efake_rate_up", &wt_efake_rate_up_);
         outtree_->Branch("wt_efake_rate_down", &wt_efake_rate_down_);
         outtree_->Branch("wt_mfake_rate_up", &wt_mfake_rate_up_);
@@ -1453,6 +1472,14 @@ namespace ic {
       synctree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       synctree_->Branch("trg_doubletau",    &trg_doubletau_);
+
+      synctree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
+      synctree_->Branch("trg_tt_monitoring_2",    &trg_tt_monitoring_2_);
+      synctree_->Branch("trg_tt_monitoring_3",    &trg_tt_monitoring_3_);
+      synctree_->Branch("trg_tt_monitoring_4",    &trg_tt_monitoring_4_);
+      synctree_->Branch("trg_tt_monitoring_5",    &trg_tt_monitoring_5_);
+      synctree_->Branch("trg_tt_monitoring_6",    &trg_tt_monitoring_6_);
+
       synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
@@ -1667,6 +1694,14 @@ namespace ic {
     if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+
+    if (event->Exists("trg_tt_monitoring_1"))trg_tt_monitoring_1_ = event->Get<bool>("trg_tt_monitoring_1");
+    if (event->Exists("trg_tt_monitoring_2"))trg_tt_monitoring_2_ = event->Get<bool>("trg_tt_monitoring_2");
+    if (event->Exists("trg_tt_monitoring_3"))trg_tt_monitoring_3_ = event->Get<bool>("trg_tt_monitoring_3");
+    if (event->Exists("trg_tt_monitoring_4"))trg_tt_monitoring_4_ = event->Get<bool>("trg_tt_monitoring_4");
+    if (event->Exists("trg_tt_monitoring_5"))trg_tt_monitoring_5_ = event->Get<bool>("trg_tt_monitoring_5");
+    if (event->Exists("trg_tt_monitoring_6"))trg_tt_monitoring_6_ = event->Get<bool>("trg_tt_monitoring_6");
+
     if (event->Exists("trg_doubletau_mssm"))      trg_doubletau_mssm_      = event->Get<bool>("trg_doubletau_mssm");
     if (event->Exists("trg_vbfdoubletau"))   trg_vbfdoubletau_   = event->Get<bool>("trg_vbfdoubletau");
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
@@ -1679,6 +1714,12 @@ namespace ic {
       trg_singleelectron_ = true;
       trg_singlemuon_     = true;
       trg_doubletau_      = true;
+      trg_tt_monitoring_1_ = true;
+      trg_tt_monitoring_2_ = true;
+      trg_tt_monitoring_3_ = true;
+      trg_tt_monitoring_4_ = true;
+      trg_tt_monitoring_5_ = true;
+      trg_tt_monitoring_6_ = true;
       trg_vbfdoubletau_   = true;
       trg_muonelectron_   = true;
       trg_singletau_1_      = true;
@@ -1711,6 +1752,7 @@ namespace ic {
     wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     wt_wsoup_ = eventInfo->weight_defined("wsoup") ? eventInfo->weight("wsoup") : 1.0;
     wt_dysoup_ = eventInfo->weight_defined("dysoup") ? eventInfo->weight("dysoup") : 1.0;
+    wt_dysoup_NLO_ = eventInfo->weight_defined("dysoup_NLO") ? eventInfo->weight("dysoup_NLO") : 1.0;
 
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_weights();
@@ -1812,6 +1854,12 @@ namespace ic {
     wt_tau_id_mssm_bin6_up_ =     (event->Exists("wt_tau_id_mssm_bin6_up")) ?    event->Get<double>("wt_tau_id_mssm_bin6_up") : 1.;
     wt_tau_id_mssm_bin6_down_ =     (event->Exists("wt_tau_id_mssm_bin6_down")) ?    event->Get<double>("wt_tau_id_mssm_bin6_down") : 1.;
 
+    wt_tau_sf_id_dm_vs_pt_ = (event->Exists("tau_sf_id_dm_vs_pt")) ?    event->Get<double>("tau_sf_id_dm_vs_pt") : 1.;
+    wt_tau_sf_id_dm_ = (event->Exists("tau_sf_id_dm")) ?    event->Get<double>("tau_sf_id_dm") : 1.;
+    wt_tau_sf_id_pt_ = (event->Exists("tau_sf_id_pt")) ?    event->Get<double>("tau_sf_id_pt") : 1.;
+
+    wt_zpt_ = (event->Exists("zpt_sf")) ?    event->Get<double>("zpt_sf") : 1.;
+    wt_zpt_NLO_ = (event->Exists("zpt_sf_NLO")) ?    event->Get<double>("zpt_sf_NLO") : 1.;
 
     if(do_mssm_higgspt_){
       wt_ggh_t_ = event->Exists("wt_ggh_t") ? event->Get<double>("wt_ggh_t") : 1.0;
@@ -2442,7 +2490,9 @@ namespace ic {
     wt_tquark_down_ = 1.0;
     wt_tquark_alt_ = 1.0;
     wt_zpt_up_ = 1.0;
+    wt_zpt_up_NLO_ = 1.0;
     wt_zpt_down_ = 1.0;
+    wt_zpt_down_NLO_ = 1.0;
     wt_zpt_embed_ic_ = 1.0;
     wt_em_qcd_ = 1.0;
     wt_efake_rate_up_ = 1.0;
@@ -2456,6 +2506,8 @@ namespace ic {
     if (event->Exists("wt_tquark_alt"))      wt_tquark_alt_   = event->Get<double>("wt_tquark_alt");
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
+    if (event->Exists("wt_zpt_up_NLO"))         wt_zpt_up_NLO_   = event->Get<double>("wt_zpt_up_NLO");
+    if (event->Exists("wt_zpt_down_NLO"))       wt_zpt_down_NLO_ = event->Get<double>("wt_zpt_down_NLO");
     if (event->Exists("wt_zpt_embed_ic"))      wt_zpt_embed_ic_ = event->Get<double>("wt_zpt_embed_ic");
     if (event->Exists("wt_efake_rate_up"))  wt_efake_rate_up_   = event->Get<double>("wt_efake_rate_up");
     if (event->Exists("wt_efake_rate_down")) wt_efake_rate_down_ = event->Get<double>("wt_efake_rate_down");
@@ -2482,6 +2534,7 @@ namespace ic {
     if (!is_embedded_ && eventInfo->weight_defined("pileup")) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
     if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 1.0;
     if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 1.0;
+    if (event->Exists("tau_leg_SF")) tau_leg_SF_ = event->Get<double>("tau_leg_SF"); else tau_leg_SF_ = 1.0;
     if (event->Exists("xtrg_sf")) xtrg_sf_ = event->Get<double>("xtrg_sf"); else xtrg_sf_ = 1.0;
     if (event->Exists("single_l_sf")) single_l_sf_ = event->Get<double>("single_l_sf"); else single_l_sf_ = 1.0;
     if (event->Exists("xtrg_notrig")) xtrg_notrig_ = event->Get<double>("xtrg_notrig"); else xtrg_notrig_ = 1.0;

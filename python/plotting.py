@@ -2895,7 +2895,7 @@ def HTTPlot(nodename,
     
     #Setup legend
     #legend = PositionedLegend(0.37,0.3,3,0.05) 
-    legend = PositionedLegend(0.4,0.37,3,0.03) # when showing plots of signal
+    legend = PositionedLegend(0.4,0.15,3,0.005) # when showing plots of signal
     legend.SetTextFont(42)
     #legend.SetTextSize(0.03)
     legend.SetTextSize(0.018) # when showing plots of signal
@@ -3814,12 +3814,12 @@ def TagAndProbePlot(graphs=[],
              ratio=True,
              log_y=False,
              log_x=False,
-             ratio_range="0.7,1.3",
+             ratio_range="0.1,2.0",
              custom_x_range=False,
-             x_axis_max=4000,
+             x_axis_max=100,
              x_axis_min=0,
              custom_y_range=False,
-             y_axis_max=4000,
+             y_axis_max=1.5,
              y_axis_min=0,
              x_title="",
              y_title="",
@@ -3828,7 +3828,6 @@ def TagAndProbePlot(graphs=[],
              label="",
              fits=None,
              ratio_fits=None):
-    
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
     ModTDRStyle(r=0.04, l=0.14)
@@ -3859,11 +3858,9 @@ def TagAndProbePlot(graphs=[],
     pads[0].cd()
     
     if(log_y): pads[0].SetLogy(1)
-    if(log_x): pads[0].SetLogx(1)
     if custom_x_range:
         if x_axis_max > graphs[0].GetHistogram().GetXaxis().GetXmax(): x_axis_max = graphs[0].GetHistogram().GetXaxis().GetXmax()
     if ratio:
-        if(log_x): pads[1].SetLogx(1)
         axish = createAxisHists(2,graphs[0].GetHistogram(),graphs[0].GetHistogram().GetXaxis().GetXmin(),graphs[0].GetHistogram().GetXaxis().GetXmax()-0.01)
         axish[1].GetXaxis().SetTitle(x_title)
         axish[1].GetXaxis().SetLabelSize(0.03)
@@ -3959,7 +3956,7 @@ def TagAndProbePlot(graphs=[],
         num = graphs[0].Clone()
         ratio_graphs=[]
         for i in range(1,len(graphs)):
-          sf_graph=GraphDivideErrors(num,graphs[i].Clone())
+          sf_graph=GraphDivide(num,graphs[i].Clone())
           sf_graph.SetLineWidth(3)
           sf_graph.SetLineColor(colourlist[i])
           sf_graph.SetMarkerSize(0)

@@ -4,9 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
+   "channels":     ["et","mt","tt","zmm"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
-   "channels":     ["tt"],
-   // "channels": ["tpzee","tpzmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -36,7 +35,7 @@
     "qcd_study" : false,
     "tau_id_study":true,
     "add_Hhh_variables" : false,
-    "get_effective" : true,
+    "get_effective" : false,
     "do_btag_eff": false,
     "trg_in_mc" : true,
     "do_vbftrg" : false,
@@ -58,15 +57,14 @@
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
     "do_mt_tagandprobe"    : false,
-    "do_recoil"            : true,
+    "do_recoil"            : false,
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/ks1021/output/trees/ditau/UL/2018_test",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_vs_preUL_UL2018/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -96,7 +94,7 @@
       "do_reshape"        : false,
       "use_deep_csv"      : false,
       "use_deep_jet"      : true,
-      "wp_to_check"       : "tight",
+      "wp_to_check"       : "loose",
       "bfake_mode"        : 0,
       "tau_es_shift"      : 1.0,
       "muon_es_shift"      : 1.0,
@@ -106,10 +104,10 @@
       "efaketau_1pi_es_shift_endcap": 0.985,
       "mufaketau_0pi_es_shift": 1.0,
       "mufaketau_1pi_es_shift": 1.0,
-      "tau_1prong0pi0_es_shift": 0.984,
-      "tau_1prong1pi0_es_shift": 0.996,
-      "tau_3prong0pi0_es_shift": 0.988,
-      "tau_3prong1pi0_es_shift": 0.996,
+      "tau_1prong0pi0_es_shift": 0.991,
+      "tau_1prong1pi0_es_shift": 1.004,
+      "tau_3prong0pi0_es_shift": 0.998,
+      "tau_3prong1pi0_es_shift": 1.004,
       "embedtau_1prong1pi0_es_shift": 0.9943, 
       "embedtau_1prong0pi0_es_shift": 0.9967,
       "embedtau_3prong0pi0_es_shift": 0.9926,
@@ -248,56 +246,56 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_shift_func_1prong0pi0": "0.9840 + (0.0090 + (0.0300-0.0090)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong0pi0": "0.991 + (0.0080 + (0.0300-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong0pi0_es_shift": 1.0006
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_shift_func_1prong0pi0": "0.9840 - (0.0090 + (0.0300-0.0090)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong0pi0": "0.991 - (0.0080 + (0.0300-0.0080)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong0pi0_es_shift": 0.9928
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_shift_func_1prong1pi0": "0.9960 + (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong1pi0": "1.004 + (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong1pi0_es_shift" : 0.998
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_shift_func_1prong1pi0": "0.9960 - (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_1prong1pi0": "1.004 - (0.0060 + (0.0200-0.0060)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_1prong1pi0_es_shift" : 0.9912
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_shift_func_3prong0pi0": "0.9880 + (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "0.998 + (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9958
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_shift_func_3prong0pi0": "0.9880 - (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "0.998 - (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9894
       }
     },
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
-         "tau_shift_func_3prong1pi0": "0.9960 + (0.0120 + (0.0390-0.0120)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong1pi0": "1.004 + (0.009 + (0.0390-0.009)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong1pi0_es_shift" : 0.9948
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
-         "tau_shift_func_3prong1pi0": "0.9960 - (0.0120 + (0.0390-0.0120)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong1pi0": "1.004 - (0.009 + (0.0390-0.009)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong1pi0_es_shift" : 0.985
       }
     },

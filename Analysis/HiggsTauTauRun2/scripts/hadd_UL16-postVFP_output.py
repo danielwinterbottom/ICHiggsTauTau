@@ -79,61 +79,65 @@ sample_list = [
 	'DY2JetsToLL_M-10to50-LO',
 	'DY3JetsToLL_M-10to50-LO',
 	'DY4JetsToLL_M-10to50-LO',
-	 # Drell-Yan NLO
-#	'DYJetsToLL_0J-NLO',
-#	'DYJetsToLL_1J-NLO',
-#	'DYJetsToLL_2J-NLO',
-	 # Electroweak W and Z
-	'EWKWMinus2Jets_WToLNu',
-	'EWKWPlus2Jets_WToLNu',
-	'EWKZ2Jets_ZToLL',
-	 # W + Jets L0
-	'WJetsToLNu-LO',
-	'W1JetsToLNu-LO',
-	'W2JetsToLNu-LO',
-	'W3JetsToLNu-LO',
-	'W4JetsToLNu-LO',
-	 # W + Jets NLO
-#	'WJetsToLNu_0J-NLO',
-#	'WJetsToLNu_1J-NLO',
-#	'WJetsToLNu_2J-NLO',
-#	'WJetsToLNu-NLO',
-	 # ttbar
-	'TTTo2L2Nu',
-	'TTToHadronic',
-	'TTToSemiLeptonic',
-	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo1L1Nu2Q, WWTo1L1Nu2Q)
-	'WZTo2Q2L',
-	'WZTo3LNu',
-	'WWTo2L2Nu',
-	'ZZTo2L2Nu',
-	'ZZTo4L',
-	 # Inclusive
-	'WW',
-	'WZ',
-	'ZZ',
-	 # Triboson
-	'WWZ',
-	'WWZ-ext1',
-	'WZZ',
-	'WZZ-ext1',
-	'WWW',
-	'WWW-ext1',
-	'ZZZ',
-	'ZZZ-ext1',
-	 # Other backgrounds
-	'WGToLNuG',
-	'Tbar-t',
-	'Tbar-tW',
-	'T-t',
-	'T-tW',
-	 # SM Higgs
-	'GluGluHToTauTau_M125',
-	'VBFHToTauTau_M125',
-	'WminusHToTauTau_M125',
-	'WplusHToTauTau_M125',
-	'ZHToTauTau_M125',
-	'ttHToTauTau_M125',
+	 # # Drell-Yan NLO
+	 'DYJetsToLL_0J-NLO',
+	 'DYJetsToLL_1J-NLO',
+	 'DYJetsToLL_2J-NLO',
+	 'DYJetstoLL-NLO',
+	 # # Electroweak W and Z
+	 'EWKWMinus2Jets_WToLNu',
+	 'EWKWPlus2Jets_WToLNu',
+	 'EWKZ2Jets_ZToLL',
+	# # W + Jets L0
+	 'WJetsToLNu-LO',
+	 'W1JetsToLNu-LO',
+	 'W2JetsToLNu-LO',
+	 'W3JetsToLNu-LO',
+	 'W4JetsToLNu-LO',
+	# # W + Jets NLO
+# #	WJetsToLNu_0J-NLO',
+# #	WJetsToLNu_1J-NLO',
+# #	WJetsToLNu_2J-NLO',
+# #	WJetsToLNu-NLO',
+	# # ttbar
+	 'TTTo2L2Nu',
+	 'TTToHadronic',
+	 'TTToSemiLeptonic',
+	# # Split diboson (Missing Files: WZTo1L3Nu, WZTo1L1Nu2Q, WWTo1L1Nu2Q)
+	 'WZTo1L3Nu',
+	 'WZTo1L1Nu2Q',
+	 'WWTo1L1Nu2Q',
+	 'WZTo2Q2L',
+	 'WZTo3LNu',
+	 'WWTo2L2Nu',
+	 'ZZTo2L2Nu',
+	 'ZZTo4L',
+	# # Inclusive
+	 'WW',
+	 'WZ',
+	 'ZZ',
+	# # Triboson
+	 'WWZ',
+	 'WWZ-ext1',
+	 'WZZ',
+	 'WZZ-ext1',
+	 'WWW',
+	 'WWW-ext1',
+	 'ZZZ',
+	 'ZZZ-ext1',
+	# # Other backgrounds
+	 'WGToLNuG',
+	 'Tbar-t',
+	 'Tbar-tW',
+	 'T-t',
+	 'T-tW',
+	# # SM Higgs
+	 'GluGluHToTauTau_M125',
+	 'VBFHToTauTau_M125',
+	 'WminusHToTauTau_M125',
+	 'WplusHToTauTau_M125',
+	 'ZHToTauTau_M125',
+	 'ttHToTauTau_M125',
 
 	]
 
@@ -187,7 +191,7 @@ for sa in sample_list:
   hadd_dirs=[]
   command=''
   if batch:
-    JOB='jobs/hadd_%s.sh' % sa
+    JOB='jobs/jobs16post/hadd_%s.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:

@@ -71,6 +71,25 @@ namespace ic {
     std::string alt_cross_leg1_filter;
     std::string alt_cross_leg2_filter;
     std::string alt_cross_extra_leg2_filter;
+
+    std::string monitoring_16_trig_obj_label;
+    std::string monitoring_16_leg1_filter;
+    std::string monitoring_16_leg2_filter;
+    std::string alt_monitoring_16_trig_obj_label;
+    std::string alt_monitoring_16_leg1_filter;
+    std::string alt_monitoring_16_leg2_filter;
+    std::string monitoring_17_trig_obj_label;
+    std::string monitoring_17_leg1_filter;
+    std::string monitoring_17_leg2_filter;
+    std::string alt_monitoring_17_trig_obj_label;
+    std::string alt_monitoring_17_leg1_filter;
+    std::string alt_monitoring_17_leg2_filter;
+    std::string alt_monitoring_17_trig_obj_label_2;
+    std::string alt_monitoring_17_leg1_filter_2;
+    std::string alt_monitoring_17_leg2_filter_2;
+    std::string monitoring_18_trig_obj_label;
+    std::string monitoring_18_leg1_filter;
+    std::string monitoring_18_leg2_filter;
     
     double alt_min_online_pt=0;
     double alt_trk_min_online_pt=0;
@@ -242,6 +261,53 @@ namespace ic {
           leg2_filter = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
+        // --------------------------
+        // Monitoring paths for checks
+        if(run >= 271036 && run <= 284044){
+          // trig monitoring path superseeds: triggerObjectsDoubleMediumTau35
+          // HLT: HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v
+          // Have to raise online pT cut to 35 
+          monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumTau32";
+          monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+          monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumIsolationL1HLTMatchedReg";
+          if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
+            // trig monitoring path superseeds: triggerObjectsDoubleMediumCombinedIsoTau35Reg
+            // HLT: HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v
+            // Have to raise online pT cut to 35 
+            alt_monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumCombinedIsoTau32Reg";
+            alt_monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+            alt_monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumCombinedIsolationL1HLTMatchedReg";
+          }
+        }
+        if(run >= 294927 && run < 317509){ // 2017 + 2018 pre HPS
+          // trig monitoring path superseeds: triggerObjectsDoubleTightIsoTau35
+          // HLT: HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v
+          monitoring_17_trig_obj_label = "triggerObjectsMu24TightIsoTightIDTau35";
+          monitoring_17_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          monitoring_17_leg2_filter = "hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+          // trig monitoring path superseeds: triggerObjectsDoubleMediumIsoTau40
+          // HLT: HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v   
+          // Have to raise online pT cut to 40
+          alt_monitoring_17_trig_obj_label = "triggerObjectsMu24MediumIsoTau35";
+          alt_monitoring_17_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          alt_monitoring_17_leg2_filter = "hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+          
+          // trig monitoring path superseeds: triggerObjectsDoubleTightIsoTau40 
+          // HLT: HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v 
+          // Have to raise online pT cut to 40
+          alt_monitoring_17_trig_obj_label_2 = "triggerObjectsMu24TightIsoTau35";
+          alt_monitoring_17_leg1_filter_2 = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          alt_monitoring_17_leg2_filter_2 = "hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg";
+        }
+        if (run >= 317509) {
+          // trig monitoring path superseeds: triggerObjectsDoubleMediumIsoTauHPS35
+          // HLT: HLT_DoubleMediumChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v
+          
+          monitoring_18_trig_obj_label = "triggerObjectsMu24MediumIsoTauHPS35";
+          monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          monitoring_18_leg2_filter = "hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg";
+        }
+        // --------------------------
 
       }
       if (channel_ == channel::em) {
@@ -443,6 +509,19 @@ namespace ic {
           //  alt_cross_extra_leg2_filter = "";
           //  extra_leg2_filter = "";
           //}
+
+          // ---------------------------
+          // Monitoring Paths for double tau trigger checks
+          monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumTau32";
+          monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+          monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumIsolationL1HLTMatchedReg";
+
+          alt_monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumCombinedIsoTau32Reg";
+          alt_monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+          alt_monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumCombinedIsolationL1HLTMatchedReg";
+
+         
+
         } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
@@ -457,6 +536,21 @@ namespace ic {
             leg2_filter="hltL1sMu18erTau24erIorMu20erTau24er";
             extra_leg2_filter="";
           }
+
+          // ---------------------------
+          // Monitoring Paths for double tau trigger checks
+          monitoring_17_trig_obj_label = "triggerObjectsMu24TightIsoTightIDTau35";
+          monitoring_17_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          monitoring_17_leg2_filter = "hltSelectedPFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+
+          alt_monitoring_17_trig_obj_label = "triggerObjectsMu24MediumIsoTau35";
+          alt_monitoring_17_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          alt_monitoring_17_leg2_filter = "hltSelectedPFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsL1HLTMatchedReg";
+
+          alt_monitoring_17_trig_obj_label_2 = "triggerObjectsMu24TightIsoTau35";
+          alt_monitoring_17_leg1_filter_2 = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          alt_monitoring_17_leg2_filter_2 = "hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg";
+          
         } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
@@ -474,6 +568,11 @@ namespace ic {
             leg2_filter = "hltL1sBigORMu18erTauXXer2p1";
             extra_leg2_filter = "";
           }
+          // ---------------------------
+          // Monitoring Paths for double tau trigger checks
+          monitoring_18_trig_obj_label = "triggerObjectsMu24MediumIsoTauHPS35";
+          monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
+          monitoring_18_leg2_filter = "hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg";
         }
 
       } else if (channel_ == channel::em) {
@@ -636,10 +735,104 @@ namespace ic {
     }
 
     if(is_data_ && channel_ == channel::mt && tau_dataset_) {
-      passed_mutaucross=false;
+      passed_mutaucross=false; 
       passed_mutaucross_alt=false;
     }
     event->Add("trg_mutaucross", passed_mutaucross || passed_mutaucross_alt);
+
+    // tt monitoring paths
+    bool passed_monitoring_1 = false; 
+    bool passed_monitoring_2 = false;
+    bool passed_monitoring_3 = false;
+    bool passed_monitoring_4 = false;
+    bool passed_monitoring_5 = false;
+    bool passed_monitoring_6 = false;
+
+    if (channel_ == channel::mt){
+      unsigned run = 0;
+      if (is_data_){
+        EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+        run = eventInfo->run();
+      }
+      if (era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){
+        std::vector<TriggerObject *> const& monitoring_objs_1 = event->GetPtrVec<TriggerObject>(monitoring_16_trig_obj_label);
+        std::vector<TriggerObject *> const& monitoring_objs_2 = event->GetPtrVec<TriggerObject>(alt_monitoring_16_trig_obj_label);
+        for(unsigned i = 0; i < dileptons.size(); ++i){
+          bool leg1_match_1 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_1, monitoring_16_leg1_filter, 0.5).first;
+          bool leg2_match_1 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_1, monitoring_16_leg2_filter, 0.5).first;
+          unsigned leg2_match_index_1 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_1, monitoring_16_leg2_filter, 0.5).second;
+	  if (leg2_match_1) {
+            if(monitoring_objs_1[leg2_match_index_1]->pt() < 35) leg2_match_1 = false;
+          }
+          bool leg1_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_2, alt_monitoring_16_leg1_filter, 0.5).first;
+          bool leg2_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_2, alt_monitoring_16_leg2_filter, 0.5).first;
+          unsigned leg2_match_index_2 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_2, alt_monitoring_16_leg2_filter, 0.5).second;
+          if (leg2_match_2){
+            if(monitoring_objs_2[leg2_match_index_2]->pt() < 35) leg2_match_2 = false;
+          }
+          if (leg1_match_1 && leg2_match_1){
+            passed_monitoring_1 = true;
+            dileptons_pass.push_back(dileptons[i]);
+          } 
+          if (leg1_match_2 && leg2_match_2){
+            passed_monitoring_2 = true;
+            dileptons_pass.push_back(dileptons[i]);
+          }
+        }  
+      }
+      if ((era_ == era::data_2017UL && (!is_data_)) || (is_data_ && (run >= 294927 && run < 317509)) || (is_data_ && (run >= 294927 && run < 317509))){
+        std::vector<TriggerObject *> const& monitoring_objs_3 = event->GetPtrVec<TriggerObject>(monitoring_17_trig_obj_label);
+        std::vector<TriggerObject *> const& monitoring_objs_4 = event->GetPtrVec<TriggerObject>(alt_monitoring_17_trig_obj_label);
+        std::vector<TriggerObject *> const& monitoring_objs_5 = event->GetPtrVec<TriggerObject>(alt_monitoring_17_trig_obj_label_2);
+        for(unsigned i = 0; i < dileptons.size(); ++i){
+          bool leg1_match_3 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_3, monitoring_17_leg1_filter, 0.5).first;
+          bool leg2_match_3 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_3, monitoring_17_leg2_filter, 0.5).first;
+
+          bool leg1_match_4 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_4, alt_monitoring_17_leg1_filter, 0.5).first;
+          bool leg2_match_4 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_4, alt_monitoring_17_leg2_filter, 0.5).first;
+          unsigned leg2_match_index_4 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_4, alt_monitoring_17_leg2_filter, 0.5).second;
+          if (leg2_match_4){
+            if(monitoring_objs_4[leg2_match_index_4]->pt() < 40) leg2_match_4 = false;
+          }
+          bool leg1_match_5 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_5, alt_monitoring_17_leg1_filter_2, 0.5).first;
+          bool leg2_match_5 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_5, alt_monitoring_17_leg2_filter_2, 0.5).first;
+          unsigned leg2_match_index_5 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_5, alt_monitoring_17_leg2_filter_2, 0.5).second;
+          if (leg2_match_5){
+            if(monitoring_objs_5[leg2_match_index_5]->pt() < 40) leg2_match_5 = false;
+          }
+          if (leg1_match_3 && leg2_match_3){
+            passed_monitoring_3 = true;
+            dileptons_pass.push_back(dileptons[i]);
+          }
+          if (leg1_match_4 && leg2_match_4){
+            passed_monitoring_4 = true;
+            dileptons_pass.push_back(dileptons[i]);
+          }
+          if (leg1_match_5 && leg2_match_5){
+            passed_monitoring_5 = true;
+            dileptons_pass.push_back(dileptons[i]);
+          }
+        }
+      }
+      if ((era_ == era::data_2018UL && (!is_data_)) || (is_data_ && (run >= 317509))){
+        std::vector<TriggerObject *> const& monitoring_objs_6 = event->GetPtrVec<TriggerObject>(monitoring_18_trig_obj_label);
+        for(unsigned i = 0; i < dileptons.size(); ++i){
+          bool leg1_match_6 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_6, monitoring_18_leg1_filter, 0.5).first;
+          bool leg2_match_6 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_6, monitoring_18_leg2_filter, 0.5).first;
+          if (leg1_match_6 && leg2_match_6){
+            passed_monitoring_6 = true;
+            dileptons_pass.push_back(dileptons[i]);
+          }
+        } 
+      }
+    }
+    event->Add("trg_tt_monitoring_1", passed_monitoring_1);
+    event->Add("trg_tt_monitoring_2", passed_monitoring_2);
+    event->Add("trg_tt_monitoring_3", passed_monitoring_3);
+    event->Add("trg_tt_monitoring_4", passed_monitoring_4);
+    event->Add("trg_tt_monitoring_5", passed_monitoring_5);
+    event->Add("trg_tt_monitoring_6", passed_monitoring_6);
+
     
     bool passed_etaucross = false;
     if (channel_ == channel::et){

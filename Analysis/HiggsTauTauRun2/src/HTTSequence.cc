@@ -794,6 +794,11 @@ if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO
   httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
 }
 
+if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
+  httWeights.set_do_zpt_weight_NLO(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+}
+
+
 if (output_name.find("TT") != output_name.npos) httWeights.set_do_topquark_weights(true);
 if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
      output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
@@ -854,11 +859,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
     }
     if(era_type == era::data_2016UL_preVFP){
-      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
       httStitching.SetDYInputYields(92023543, 31026873, 12229520, 9084164, 4564320);
     }
     if(era_type == era::data_2016UL_postVFP){
-      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
       httStitching.SetDYInputYields(104133207, 33413859, 14377389, 10416356, 4543415);
     }
     if(era_type == era::data_2017) {
@@ -876,6 +881,28 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(97808057, 65737507, 29077862, 20436016, 9205625);
+    }
+  }
+
+  if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
+    httStitching.set_do_dy_soup_NLO(true);
+    if(era_type == era::data_2016UL_preVFP){
+      httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+      httStitching.SetDYInputYields_NLO(61968877, 63927658, 41467188, 13149249);
+    }
+    if(era_type == era::data_2016UL_postVFP){
+      httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+      httStitching.SetDYInputYields_NLO(49687671,77292489,43799187,13744579);
+    }
+    if(era_type == era::data_2017UL) {
+      httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+      //httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields_NLO(132006980,70426128,44912593,14398418);
+    }
+    if(era_type == era::data_2018UL) {
+      httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+      //httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields_NLO(132322003,70018162,43196379,13761572);
     }
   }
   BuildModule(httStitching);   
@@ -1062,7 +1089,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     TH2D deepjet_othbtag_eff;
 	
  
-    if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP){
+    if (era_type == era::data_2016){
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_oth");
@@ -1074,7 +1101,25 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
       deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
       deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
-    } else if (era_type == era::data_2017 || era_type == era::data_2017UL) {
+    } else if (era_type == era::data_2016UL_preVFP) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpreVFP_medium.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpreVFP_medium.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpreVFP_medium.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpreVFP_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpreVFP_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpreVFP_loose.root","/","btag_eff_oth");
+	  
+    } else if (era_type == era::data_2016UL_postVFP) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpostVFP_medium.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpostVFP_medium.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpostVFP_medium.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpostVFP_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpostVFP_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2016ULpostVFP_loose.root","/","btag_eff_oth");
+	  
+    } else if (era_type == era::data_2017) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_oth");
@@ -1086,6 +1131,15 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
       deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
       deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
+    } else if (era_type == era::data_2017UL) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2017UL_medium.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2017UL_medium.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2017UL_medium.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2017UL_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2017UL_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2017UL_loose.root","/","btag_eff_oth");
+	  
     } else if (era_type == era::data_2018) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");

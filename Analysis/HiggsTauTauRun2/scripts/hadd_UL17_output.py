@@ -85,9 +85,10 @@ sample_list = [
 	'DY3JetsToLL_M-10to50-LO',
 	'DY4JetsToLL_M-10to50-LO',
 	 # Drell-Yan NLO
-	#'DYJetsToLL_0J-NLO',
-	#'DYJetsToLL_1J-NLO',
-	#'DYJetsToLL_2J-NLO',
+	'DYJetsToLL_0J-NLO',
+	'DYJetsToLL_1J-NLO',
+	'DYJetsToLL_2J-NLO',
+	'DYJetsToLL-NLO',
 	 # Electroweak W and Z
 	'EWKWMinus2Jets_WToLNu',
 	'EWKWPlus2Jets_WToLNu',
@@ -111,6 +112,10 @@ sample_list = [
 	'WWTo2L2Nu',
 	'ZZTo2L2Nu',
 	'ZZTo4L',
+        'WZTo1L3Nu',
+	'WZTo2Q2L',
+	'WZTo1L1Nu2Q',
+	'WWTo1L1Nu2Q',
 	 # Inclusive
 	'WW',
 	'WZ',

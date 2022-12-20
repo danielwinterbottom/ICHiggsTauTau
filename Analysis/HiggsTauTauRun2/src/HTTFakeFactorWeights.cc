@@ -94,9 +94,19 @@ namespace ic {
 };
 
       std::string mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2016_v3.root";
-      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2016_v3.root";
-      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2017_v3.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2018_v3.root";
+      if(strategy_==strategy::legacy16) {
+        if(era_ == era::data_2016) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2016_v3.root";
+        if(era_ == era::data_2016UL_preVFP) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_UL_2016_preVFP.root";
+        if(era_ == era::data_2016UL_postVFP) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_UL_2016_postVFP.root";
+      }
+      if(strategy_==strategy::cpdecays17) {
+        if(era_ == era::data_2017)  mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2017_v3.root";
+        if(era_ == era::data_2017UL) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_UL_2017.root";
+      }
+      if(strategy_==strategy::cpdecays18) {
+        if(era_ == era::data_2018) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2018_v3.root";
+        if(era_ == era::data_2018UL) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_UL_2018.root";
+      }
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -198,9 +208,20 @@ namespace ic {
 };
 
       std::string mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v6.root";
-      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v6.root";
-      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2017_v6.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018_v6.root";
+      if(strategy_==strategy::legacy16) {
+        if(era_ == era::data_2016) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v6.root";
+        if(era_ == era::data_2016UL_preVFP) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_UL_2016_preVFP.root";
+        if(era_ == era::data_2016UL_postVFP) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_UL_2016_postVFP.root";
+      }
+      if(strategy_==strategy::cpdecays17) {
+        if(era_ == era::data_2017) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2017_v6.root";
+        if(era_ == era::data_2017UL) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_UL_2017.root";
+      }
+      if(strategy_==strategy::cpdecays18) {
+        if(era_ == era::data_2018) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018_v6.root";
+        if(era_ == era::data_2018UL) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_UL_2018.root";
+      }
+
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -316,9 +337,19 @@ namespace ic {
 };
 
       std::string mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v6.root";
-      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v6.root";
-      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017_v6.root";
-      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v6.root";
+      if(strategy_==strategy::legacy16) {
+        if(era_ == era::data_2016) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v6.root";
+        if(era_ == era::data_2016UL_preVFP) mssm_file_ = "input/fake_factors/fakefactors_ws_et_UL_2016_preVFP.root";
+        if(era_ == era::data_2016UL_postVFP) mssm_file_ = "input/fake_factors/fakefactors_ws_et_UL_2016_postVFP.root";
+      }
+      if(strategy_==strategy::cpdecays17) {
+        if(era_ == era::data_2017) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017_v6.root";
+        if(era_ == era::data_2017UL) mssm_file_ = "input/fake_factors/fakefactors_ws_et_UL_2017.root";
+      }
+      if(strategy_==strategy::cpdecays18) {
+        if(era_ == era::data_2018) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v6.root";
+        if(era_ == era::data_2018UL) mssm_file_ = "input/fake_factors/fakefactors_ws_et_UL_2018.root";
+      }
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));

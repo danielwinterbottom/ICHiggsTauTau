@@ -223,7 +223,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   if options.calc_lumi:
     for sa in data_samples:
-        JOB='%s_2017UL' % (sa)
+        JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
@@ -238,7 +238,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
   else:
     for sa in data_samples:
-        JOB='%s_2017UL' % (sa)
+        JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
@@ -267,84 +267,93 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 
 if options.proc_bkg or options.proc_all:
-  central_samples = [
-  	 # Drell-Yan LO
- 	'DY1JetsToLL-LO',
+  central_samples = [ 
+     # Drell-Yan LO
+    'DY1JetsToLL-LO',
     'DY2JetsToLL-LO',
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
     'DYJetsToLL-LO',
-	 # Low mass Drell Yan LO
+#     # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
- 	'DY1JetsToLL_M-10to50-LO',
- 	'DY2JetsToLL_M-10to50-LO',
- 	'DY3JetsToLL_M-10to50-LO',
- 	'DY4JetsToLL_M-10to50-LO',
-	 # Drell-Yan NLO
-	#'DYJetsToLL_0J-NLO',
-	#'DYJetsToLL_1J-NLO',
-	#'DYJetsToLL_2J-NLO',
-	 # Electroweak W and Z
- 	'EWKWMinus2Jets_WToLNu',
-	'EWKWPlus2Jets_WToLNu',
-	'EWKZ2Jets_ZToLL',
-	 # W + Jets L0
- 	'WJetsToLNu-LO',
-	'W1JetsToLNu-LO',
-	'W2JetsToLNu-LO',
-	'W3JetsToLNu-LO',
-	'W4JetsToLNu-LO',
-	 # W + Jets NLO
-	#'WJetsToLNu_0J-NLO',
-	#'WJetsToLNu_1J-NLO',
-	#'WJetsToLNu_2J-NLO',
-	 # ttbar
-	'TTTo2L2Nu',
- 	'TTToHadronic',
-	'TTToSemiLeptonic',
-	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
- 	'WZTo3LNu',
- 	'WWTo2L2Nu',
- 	'ZZTo2L2Nu',
- 	'ZZTo4L',
-  	 # Inclusive
- 	'WW',
-  	'WZ',
- 	'ZZ',
- 	 # Triboson
- 	'WWZ',
- 	'WWZ-ext1',
- 	'WZZ',
- 	'WZZ-ext1',
- 	'WWW',
- 	'WWW-ext1',
- 	'ZZZ',
- 	'ZZZ-ext1',
- 	 # Other backgrounds
-  	'WGToLNuG',
- 	'Tbar-t',
- 	'Tbar-tW',
- 	'T-t',
- 	'T-tW',
- 	 # SM Higgs
- 	'GluGluHToTauTau_M125',
- 	'VBFHToTauTau_M125',
- 	'WminusHToTauTau_M125',
- 	'WplusHToTauTau_M125',
- 	'ZHToTauTau_M125',
- 	'ttHToTauTau_M125',    
-  	]
+    'DY1JetsToLL_M-10to50-LO',
+    'DY2JetsToLL_M-10to50-LO',
+    'DY3JetsToLL_M-10to50-LO',
+    'DY4JetsToLL_M-10to50-LO',
+      # Drell-Yan NLO
+    'DYJetsToLL_0J-NLO',
+    'DYJetsToLL_1J-NLO',
+    'DYJetsToLL_2J-NLO',
+    'DYJetsToLL-NLO',
+     # Electroweak W and Z
+    'EWKWMinus2Jets_WToLNu',
+    'EWKWPlus2Jets_WToLNu',
+    'EWKZ2Jets_ZToLL',
+     # W + Jets L0
+    'WJetsToLNu-LO',
+    'W1JetsToLNu-LO',
+    'W2JetsToLNu-LO',
+    'W3JetsToLNu-LO',
+    'W4JetsToLNu-LO',
+     # W + Jets NLO
+    #'WJetsToLNu_0J-NLO',
+    #'WJetsToLNu_1J-NLO',
+    #'WJetsToLNu_2J-NLO',
+     # ttbar
+    'TTTo2L2Nu',
+    'TTToHadronic',
+    'TTToSemiLeptonic',
+     # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
+    'WZTo3LNu',
+    'WWTo2L2Nu',
+    'ZZTo2L2Nu',
+    'ZZTo4L',
+    'WZTo1L3Nu',
+    'WZTo2Q2L',
+    'WZTo1L1Nu2Q',
+    'WWTo1L1Nu2Q',
+     # Inclusive
+    'WW',
+    'WZ',
+    'ZZ',
+     # Triboson
+    'WWZ',
+    'WWZ-ext1',
+    'WZZ',
+    'WZZ-ext1',
+    'WWW',
+    'WWW-ext1',
+    'ZZZ',
+    'ZZZ-ext1',
+     # Other backgrounds
+    'WGToLNuG',
+    'Tbar-t',
+    'Tbar-tW',
+    'T-t',
+    'T-tW',
+     # SM Higgs
+    'GluGluHToTauTau_M125',
+    'VBFHToTauTau_M125',
+    'WminusHToTauTau_M125',
+    'WplusHToTauTau_M125',
+    'ZHToTauTau_M125',
+    'ttHToTauTau_M125',    
+ 	]
+
+  Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu","WZTo2Q2L"]
+
   for sa in central_samples:
-      JOB='%s_2017UL' % (sa)
+      JOB='%s_2017' % (sa)
+      FILELIST='filelists/Feb16_2017_MC_106X'
       PREFIX='Feb16_MC_106X_2017'
-
-
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
+      # New samples
+      if sa in Sep28_samples:
+        FILELIST='filelists/Sep28_2017_MC_106X'
+        PREFIX='Sep28_MC_106X_2017'
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
-      #JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"mc_pu_file\":\"input/pileup/2017/pileup_2017_DYJetsToLL-ext.root\",%(jetuncert_string)s}}' "%vars());
-      #if "DYJetsToLL-LO" in sa or "W3JetsToLNu-LO" in sa or "WWTo1L1Nu2Q" in sa:
-       #   JSONPATCH = JSONPATCH.replace(r"pileup_2017_DYJetsToLL-ext",r"pileup_2017_%(sa)s"%vars())
 
       job_num=0
       for FLATJSONPATCH in flatjsons:
