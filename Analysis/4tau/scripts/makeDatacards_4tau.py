@@ -275,7 +275,7 @@ for channel in channels:
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
         if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.4\\\""
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 --add_stat_to_syst --do_ff_systs \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
         SubmitBatchJob(job_file,time=180,memory=24,cores=1)
