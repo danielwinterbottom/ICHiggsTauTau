@@ -81,6 +81,9 @@ while read i; do
     fi
 done < $input_evt
 
+echo "  \"EGamma\": {"
+echo "    \"lumi\": "$lumi
+echo "  },"
 echo "  \"SingleElectron\": {"
 echo "    \"lumi\": "$lumi
 echo "  },"
