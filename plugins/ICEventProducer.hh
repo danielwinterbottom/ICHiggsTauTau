@@ -4,6 +4,8 @@
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
+#include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -15,7 +17,9 @@
  * **Example usage**
  * @snippet python/default_producers_cfi.py Event
  */
-class ICEventProducer : public edm::stream::EDProducer<> {
+//class ICEventProducer : public edm::stream::EDProducer<> {
+class ICEventProducer : public edm::one::EDProducer<> {
+//class ICEventProducer : public edm::EDProducer {
  public:
   explicit ICEventProducer(const edm::ParameterSet&);
   ~ICEventProducer();
