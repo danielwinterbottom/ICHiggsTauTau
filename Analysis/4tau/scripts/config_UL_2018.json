@@ -258,14 +258,14 @@
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_shift_func_3prong0pi0": "0.9880 + (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "0.9980 + (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9958
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_shift_func_3prong0pi0": "0.9880 - (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
+         "tau_shift_func_3prong0pi0": "0.9980 - (0.0070 + (0.0110-0.0070)/(170.-34.)*(max(min(x,170.),34.)-34))",
          "embedtau_3prong0pi0_es_shift" : 0.9894
       }
     },
