@@ -10,6 +10,7 @@ parser.add_argument('--data', help= 'Run data samples',  action='store_true')
 parser.add_argument('--mc', help= 'Run mc samples',  action='store_true')
 parser.add_argument('--signal', help= 'Run signal samples',  action='store_true')
 parser.add_argument('--recovery', help= 'Do recovery jobs, make sure you run crab report on the samples you want to recover first',  action='store_true')
+parser.add_argument('--only_run', help= 'Only run this file', default=None)
 args = parser.parse_args()
 
 dml = []
@@ -940,6 +941,9 @@ for dm in dml:
 
  
         for task in tasks:
+
+            if not (args.only_run == None or args.only_run == task[0]): continue
+
             print(task[0])
             config.General.requestName = task[0]
             config.Data.inputDataset = task[1]
