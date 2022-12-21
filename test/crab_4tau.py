@@ -120,7 +120,7 @@ for dm in dml:
             tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronE', '/SingleElectron/Run2016E-HIPM_UL2016_MiniAODv2-v5/MINIAOD'))
-            tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-UL2016_MiniAODv2-v2/MINIAOD'))
+            tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
 
             # Tau
             tasks.append(('TauB', '/Tau/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
@@ -141,27 +141,32 @@ for dm in dml:
             tasks.append(('DoubleMuonC', '/DoubleMuon/Run2016C-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('DoubleMuonD', '/DoubleMuon/Run2016D-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('DoubleMuonE', '/DoubleMuon/Run2016E-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
-            tasks.append(('DoubleMuonF', '/DoubleMuon/Run2016F-UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonF', '/DoubleMuon/Run2016F-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
 
           elif yr == "2016-postVFP":
-            # HIP problem fixed in 2016 runs G and H
+            # HIP problem fixed in 2016 partial run F and runs G and H
             # SingleMuon
+            tasks.append(('SingleMuonF', '/SingleMuon/Run2016F-UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleMuonG', '/SingleMuon/Run2016G-UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleMuonH', '/SingleMuon/Run2016H-UL2016_MiniAODv2-v2/MINIAOD'))
 
             # SingleElectron
+            tasks.append(('SingleElectronF', '/SingleElectron/Run2016F-UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronG', '/SingleElectron/Run2016G-UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronH', '/SingleElectron/Run2016H-UL2016_MiniAODv2-v2/MINIAOD'))
 
             # Tau
+            tasks.append(('TauF', '/Tau/Run2016F-UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('TauG', '/Tau/Run2016G-UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('TauH', '/Tau/Run2016H-UL2016_MiniAODv2-v1/MINIAOD'))
 
             # MuonEG
+            tasks.append(('MuonEGF', '/MuonEG/Run2016F-UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('MuonEGG', '/MuonEG/Run2016G-UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('MuonEGH', '/MuonEG/Run2016H-UL2016_MiniAODv2-v2/MINIAOD'))
 
             # DoubleMuon
+            tasks.append(('DoubleMuonF', '/DoubleMuon/Run2016F-UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('DoubleMuonG', '/DoubleMuon/Run2016G-UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('DoubleMuonH', '/DoubleMuon/Run2016H-UL2016_MiniAODv2-v2/MINIAOD'))
 
