@@ -1,3 +1,4 @@
+#python check_and_resubmit_crab_jobs.py --directory=Nov30_Data_106X_2018 --user=gu18
 import argparse
 import os
 import time

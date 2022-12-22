@@ -961,7 +961,7 @@ for dm in dml:
             elif dm == "Signal":
               config.Data.splitting = 'EventAwareLumiBased'
               config.Data.unitsPerJob = 5000
-            elif task[0] == 'EGammaD' and yr == "2018":
+            elif (task[0] == 'SingleMuonD' or task[0] == 'EGammaD') and yr == "2018":
               config.Data.splitting = 'EventAwareLumiBased'
               config.Data.unitsPerJob = 100000
             elif (((task[0] == "DYJetsToLL_0J-NLO" or task[0] == "DYJetsToLL_1J-NLO") and yr == "2016-postVFP") or ((task[0] == "DYJetsToLL-NLO" or task[0] == "DYJetsToLL_1J-NLO") and yr == "2017") or (task[0] == "DYJetsToLL-NLO" and yr == "2018")):
@@ -969,9 +969,9 @@ for dm in dml:
               config.Data.unitsPerJob = 25000
             else:
               config.Data.splitting = 'EventAwareLumiBased'
-              config.Data.unitsPerJob = 10000
+              config.Data.unitsPerJob = 50000
 
-            if args.recovery: config.Data.unitsPerJob = 20000
+            if args.recovery: config.Data.unitsPerJob = 50000
 
             print(config)
     
