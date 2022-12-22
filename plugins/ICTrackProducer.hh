@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -16,7 +16,7 @@
 /**
  * @brief See documentation [here](\ref objs-track)
  */
-class ICTrackProducer : public edm::stream::EDProducer<> {
+class ICTrackProducer : public edm::one::EDProducer<> {
  public:
   explicit ICTrackProducer(const edm::ParameterSet &);
   ~ICTrackProducer();

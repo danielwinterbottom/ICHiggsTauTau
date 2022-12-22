@@ -5,7 +5,7 @@
 #include <typeinfo>
 #include "boost/functional/hash.hpp"
 #include "boost/format.hpp"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -37,7 +37,7 @@
  * @tparam U The input jet type, e.g. reco::CaloJet, reco::PFJet or pat::Jet
  */
 template <class T, class U>
-class ICJetProducer : public edm::stream::EDProducer<> {
+class ICJetProducer : public edm::one::EDProducer<> {
  public:
   explicit ICJetProducer(const edm::ParameterSet &);
   ~ICJetProducer();

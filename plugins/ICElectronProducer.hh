@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -20,7 +20,7 @@
 /**
  * @brief See documentation [here](\ref objs-electron)
  */
-class ICElectronProducer : public edm::stream::EDProducer<> {
+class ICElectronProducer : public edm::one::EDProducer<> {
  public:
   explicit ICElectronProducer(const edm::ParameterSet &);
   ~ICElectronProducer();

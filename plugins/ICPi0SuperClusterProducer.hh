@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -24,7 +24,7 @@
  * **Example usage**
  * @snippet python/default_producers_cfi.py SuperCluster
  */
-class ICPi0SuperClusterProducer : public edm::stream::EDProducer<> {
+class ICPi0SuperClusterProducer : public edm::one::EDProducer<> {
  public:
   explicit ICPi0SuperClusterProducer(const edm::ParameterSet&);
   ~ICPi0SuperClusterProducer();

@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -13,7 +13,7 @@
 #include "DataFormats/L1Trigger/interface/L1EtMissParticle.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 
-class ICL1EtMissProducer : public edm::stream::EDProducer<> {
+class ICL1EtMissProducer : public edm::one::EDProducer<> {
  public:
   explicit ICL1EtMissProducer(const edm::ParameterSet &);
   ~ICL1EtMissProducer();

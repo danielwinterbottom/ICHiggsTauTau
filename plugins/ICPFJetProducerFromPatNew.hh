@@ -5,7 +5,7 @@
 #include <typeinfo>
 #include "boost/functional/hash.hpp"
 #include "boost/format.hpp"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -30,7 +30,7 @@
  * @brief See documentation [here]
  *
  */
-class ICPFJetProducerFromPatNew : public edm::stream::EDProducer<> {
+class ICPFJetProducerFromPatNew : public edm::one::EDProducer<> {
  public:
   explicit ICPFJetProducerFromPatNew(const edm::ParameterSet &);
   ~ICPFJetProducerFromPatNew();

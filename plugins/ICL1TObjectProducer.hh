@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"             
 #include "FWCore/Framework/interface/Event.h"                       
 #include "FWCore/Framework/interface/EventSetup.h"                  
@@ -49,7 +49,7 @@
 
 
 template <class T>
-class ICL1TObjectProducer : public edm::stream::EDProducer<> {
+class ICL1TObjectProducer : public edm::one::EDProducer<> {
  
  public:
    explicit ICL1TObjectProducer(const edm::ParameterSet &);
