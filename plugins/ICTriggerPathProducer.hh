@@ -13,7 +13,7 @@
 /**
  * @brief See documentation [here](\ref objs-trig-path)
  */
-class ICTriggerPathProducer : public edm::one::EDProducer<> {
+class ICTriggerPathProducer : public edm::one::EDProducer<edm::one::WatchRuns> {
  public:
   explicit ICTriggerPathProducer(const edm::ParameterSet &);
   ~ICTriggerPathProducer();
@@ -23,6 +23,7 @@ class ICTriggerPathProducer : public edm::one::EDProducer<> {
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void beginRun(edm::Run const& run, edm::EventSetup const& es);
   virtual void endJob();
+  void endRun(edm::Run const&, edm::EventSetup const&) override {}
 
   void SetNameInfo(std::string name, ic::TriggerPath *path);
 

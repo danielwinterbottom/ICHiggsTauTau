@@ -18,7 +18,7 @@
 /**
  * @brief See documentation [here](\ref objs-trig-obj)
  */
-class ICTriggerObjectProducer : public edm::one::EDProducer<> {
+class ICTriggerObjectProducer : public edm::one::EDProducer<edm::one::WatchRuns> {
  public:
   explicit ICTriggerObjectProducer(const edm::ParameterSet&);
   ~ICTriggerObjectProducer();
@@ -28,6 +28,7 @@ class ICTriggerObjectProducer : public edm::one::EDProducer<> {
   virtual void produce(edm::Event&, const edm::EventSetup&);
   virtual void beginRun(edm::Run const& run, edm::EventSetup const& es);
   virtual void endJob();
+  void endRun(edm::Run const&, edm::EventSetup const&) override {}
 
   std::vector<ic::TriggerObject>* objects_;
   edm::InputTag input_;
