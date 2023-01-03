@@ -160,6 +160,10 @@ parser.add_argument("--no_charge_sel", dest="no_charge_sel", action='store_true'
     help="Run with no charge sel.")
 parser.add_argument("--no_sig_sel", dest="no_sig_sel", action='store_true',
     help="Use all phase space except signal region.")
+parser.add_argument("--do_ff_systs", dest="do_ff_systs", action='store_true',
+    help="Do fake factor systamatic shifts.")
+parser.add_argument("--add_stat_to_syst", dest="add_stat_to_syst", action='store_true',
+    help="Add custom uncertainty band to statistical uncertainty.")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -629,7 +633,7 @@ def GenerateHZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', hz
     hzz_node = GetNode(ana, "HZZ", add_name, samples, plot, wt, sel, cat)
     ana.nodes[nodename].AddNode(hzz_node)
 
-def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None):
+def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext=""):
   vj = "deepTauVsJets_" + VsJets_wp
   if VsJets_wp_fail == None:
     vjf = "1"
@@ -641,58 +645,72 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   if options.ff_from != "all": replace = options.ff_from
   pass_sel = {}
   fail_sel = {}
- 
+
+   
+  s_wt_ext = ""
+  d_wt_ext = ""
+  t_wt_ext = ""
+  q_wt_ext = ""
+  
+  if type_ext == "single":
+    s_wt_ext = wt_ext
+  elif type_ext == "double":
+    d_wt_ext = wt_ext
+  elif type_ext == "triple":
+    t_wt_ext = wt_ext
+  elif type_ext == "quadruple":
+    q_wt_ext = wt_ext
+
   for i in replace:
-#    ff_sel = ff_sel.replace("%(vj)s_%(i)s<0.5 && deepTauVsJets_iso_%(i)s>0.1" % vars(),"1").replace("%(vj)s_%(i)s>0.5" % vars(),"1")
     ff_sel = ff_sel.replace("%(vj)s_%(i)s>0.5" % vars(),"1")
     pass_sel[i] = "({vjn}_{ind}>0.5)".format(vjn=vj,ind=i)
     fail_sel[i] = "({vjn}_{ind}<0.5 && deepTauVsJets_iso_{ind}>0.1)".format(vjn=vj,ind=i)
    
   if options.ff_from == "all":
     if options.channel in ["emtt","eett","mmtt"]:
-      ff_wt = ("((wt_ff_ml_3 * {fail_3} * {pass_4})" 
-              "+ (wt_ff_ml_4 * {pass_3} * {fail_4})"  
-              "- (wt_ff_ml_3 * wt_ff_ml_4 * {fail_3} * {fail_4}))").format(fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_3=pass_sel["3"],pass_4=pass_sel["4"])
+      ff_wt = ("((wt_ff_ml_3{s_ext} * {fail_3} * {pass_4})" 
+              "+ (wt_ff_ml_4{s_ext} * {pass_3} * {fail_4})"  
+              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * {fail_3} * {fail_4}))").format(fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext)
     elif options.channel in ["ettt","mttt"]:
-      ff_wt = ("((wt_ff_ml_2 * {fail_2} * {pass_3} * {pass_4})"
-              "+ (wt_ff_ml_3 * {pass_2} * {fail_3} * {pass_4})" 
-              "+ (wt_ff_ml_4 * {pass_2} * {pass_3} * {fail_4})" 
-              "- (wt_ff_ml_2 * wt_ff_ml_3 * {fail_2} * {fail_3} * {pass_4})"
-              "- (wt_ff_ml_2 * wt_ff_ml_4 * {fail_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_3 * wt_ff_ml_4 * {pass_2} * {fail_3} * {fail_4})"
-              "+ (wt_ff_ml_2 * wt_ff_ml_3 * wt_ff_ml_4 * {fail_2} * {fail_3} * {fail_4}))").format(fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"])
+      ff_wt = ("((wt_ff_ml_2{s_ext} * {fail_2} * {pass_3} * {pass_4})"
+              "+ (wt_ff_ml_3{s_ext} * {pass_2} * {fail_3} * {pass_4})" 
+              "+ (wt_ff_ml_4{s_ext} * {pass_2} * {pass_3} * {fail_4})" 
+              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * {fail_2} * {fail_3} * {pass_4})"
+              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_4{d_ext} * {fail_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * {pass_2} * {fail_3} * {fail_4})"
+              "+ (wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * {fail_2} * {fail_3} * {fail_4}))").format(fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext)
     elif options.channel in ["ttt"]:
-      ff_wt = ("((wt_ff_ml_1 * {fail_1} * {pass_2} * {pass_3})"
-              "+ (wt_ff_ml_2 * {pass_1} * {fail_2} * {pass_3})"
-              "+ (wt_ff_ml_3 * {pass_1} * {pass_2} * {fail_3})"
-              "- (wt_ff_ml_1 * wt_ff_ml_2 * {fail_1} * {fail_2} * {pass_3})"
-              "- (wt_ff_ml_1 * wt_ff_ml_3 * {fail_1} * {pass_2} * {fail_3})"
-              "- (wt_ff_ml_2 * wt_ff_ml_3 * {pass_1} * {fail_2} * {fail_3})"
-              "+ (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_3 * {fail_1} * {fail_2} * {fail_3}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"])
+      ff_wt = ("((wt_ff_ml_1{s_ext} * {fail_1} * {pass_2} * {pass_3})"
+              "+ (wt_ff_ml_2{s_ext} * {pass_1} * {fail_2} * {pass_3})"
+              "+ (wt_ff_ml_3{s_ext} * {pass_1} * {pass_2} * {fail_3})"
+              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_2{d_ext} * {fail_1} * {fail_2} * {pass_3})"
+              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_3{d_ext} * {fail_1} * {pass_2} * {fail_3})"
+              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * {pass_1} * {fail_2} * {fail_3})"
+              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * {fail_1} * {fail_2} * {fail_3}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext)
     elif options.channel in ["tttt"]:
-      ff_wt = ("((wt_ff_ml_1 * {fail_1} * {pass_2} * {pass_3} * {pass_4})" 
-              "+ (wt_ff_ml_2 * {pass_1} * {fail_2} * {pass_3} * {pass_4})"
-              "+ (wt_ff_ml_3 * {pass_1} * {pass_2} * {fail_3} * {pass_4})"
-              "+ (wt_ff_ml_4 * {pass_1} * {pass_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_1 * wt_ff_ml_2 * {fail_1} * {fail_2} * {pass_3} * {pass_4})"
-              "- (wt_ff_ml_1 * wt_ff_ml_3 * {fail_1} * {pass_2} * {fail_3} * {pass_4})"
-              "- (wt_ff_ml_1 * wt_ff_ml_4 * {fail_1} * {pass_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_2 * wt_ff_ml_3 * {pass_1} * {fail_2} * {fail_3} * {pass_4})"
-              "- (wt_ff_ml_2 * wt_ff_ml_4 * {pass_1} * {fail_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_3 * wt_ff_ml_4 * {pass_1} * {pass_2} * {fail_3} * {fail_4})"
-              "+ (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_3 * {fail_1} * {fail_2} * {fail_3} * {pass_4})"
-              "+ (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_4 * {fail_1} * {fail_2} * {pass_3} * {fail_4})"
-              "+ (wt_ff_ml_1 * wt_ff_ml_3 * wt_ff_ml_4 * {fail_1} * {pass_2} * {fail_3} * {fail_4})"
-              "+ (wt_ff_ml_2 * wt_ff_ml_3 * wt_ff_ml_4 * {pass_1} * {fail_2} * {fail_3} * {fail_4})"
-              "- (wt_ff_ml_1 * wt_ff_ml_2 * wt_ff_ml_3 * wt_ff_ml_4 * {fail_1} * {fail_2} * {fail_3} * {fail_4}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"])
+      ff_wt = ("((wt_ff_ml_1{s_ext} * {fail_1} * {pass_2} * {pass_3} * {pass_4})" 
+              "+ (wt_ff_ml_2{s_ext} * {pass_1} * {fail_2} * {pass_3} * {pass_4})"
+              "+ (wt_ff_ml_3{s_ext} * {pass_1} * {pass_2} * {fail_3} * {pass_4})"
+              "+ (wt_ff_ml_4{s_ext} * {pass_1} * {pass_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_2{d_ext} * {fail_1} * {fail_2} * {pass_3} * {pass_4})"
+              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_3{d_ext} * {fail_1} * {pass_2} * {fail_3} * {pass_4})"
+              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_4{d_ext} * {fail_1} * {pass_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * {pass_1} * {fail_2} * {fail_3} * {pass_4})"
+              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_4{d_ext} * {pass_1} * {fail_2} * {pass_3} * {fail_4})"
+              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * {pass_1} * {pass_2} * {fail_3} * {fail_4})"
+              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * {fail_1} * {fail_2} * {fail_3} * {pass_4})"
+              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_4{t_ext} * {fail_1} * {fail_2} * {pass_3} * {fail_4})"
+              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * {fail_1} * {pass_2} * {fail_3} * {fail_4})"
+              "+ (wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * {pass_1} * {fail_2} * {fail_3} * {fail_4})"
+              "- (wt_ff_ml_1{q_ext} * wt_ff_ml_2{q_ext} * wt_ff_ml_3{q_ext} * wt_ff_ml_4{q_ext} * {fail_1} * {fail_2} * {fail_3} * {fail_4}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext,q_ext=q_wt_ext)
   elif len(options.ff_from) == 1:
-    ff_wt = "(wt_ff_ml_{} * {})".format(options.ff_from,fail_sel[options.ff_from])
+    ff_wt = "(wt_ff_ml_{} * {})".format(options.ff_from+wt_ext,fail_sel[options.ff_from])
   elif len(options.ff_from) == 2:
-    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * {} * {})".format(options.ff_from[0],options.ff_from[1],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]])
+    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]])
   elif len(options.ff_from) == 3:
-    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * {} * {} * {})".format(options.ff_from[0],options.ff_from[1],options.ff_from[2],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]])
+    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]])
   elif len(options.ff_from) == 4:
-    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * {} * {} * {} * {})".format(options.ff_from[0],options.ff_from[1],options.ff_from[2],options.ff_from[3],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]],fail_sel[options.ff_from[3]])
+    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * {} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,options.ff_from[3]+wt_ext,fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]],fail_sel[options.ff_from[3]])
 
   if data_veto == None:
     ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, wt, sel, ff_sel)
@@ -715,9 +733,10 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
     for node in nodes:
         if node.shape.rate.n == 0: per_err = 0
         else: per_err = node.shape.rate.s/node.shape.rate.n
-        print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err
+        print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err 
         if True in [node.name.find(add_name) != -1 and add_name is not '' for add_name in add_names]: continue
-        if node.name not in data_strings: bkg_total += node.shape.rate      
+        if node.name not in data_strings and not node.name.endswith("up") and not node.name.endswith("down"): 
+          bkg_total += node.shape.rate      
     if bkg_total.n == 0: per_err = 0        
     else: per_err = bkg_total.s/bkg_total.n
     print 'Total bkg'.ljust(10) , ("%.2f" % bkg_total.n).ljust(10), '+/-'.ljust(5), ("%.2f" % bkg_total.s).ljust(7), "(%.4f)" % per_err
@@ -752,6 +771,8 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
       if add_name not in node.name: continue
       if node.name in list(chain.from_iterable(signal_samples)): continue
       if node.name == "data_obs": continue
+      if node.name.endswith("up"): continue
+      if node.name.endswith("down"): continue
       if first_hist:
           total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
           first_hist=False
@@ -784,14 +805,35 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'W' not in samples_to_skip:
           GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
       if 'HZZ' not in samples_to_skip and options.channel == "mmmm": 
-          print "Running HZZ"
           GenerateHZZ(ana, add_name, hzz_samples, plot, wt, sel, cat)
       if 'signal' not in samples_to_skip and not options.no_signal:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
     elif options.method == 2:
       if 'jetFakes' not in samples_to_skip:
         mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples
-        GenerateFakeTaus(ana, add_name, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"]) 
+
+        if options.do_ff_systs and not options.no_sig_sel:
+          wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
+        elif options.do_ff_systs and options.no_sig_sel:
+          wt_exts = ["_non_closure_down","_non_closure_up"]
+        else:
+          wt_exts = []
+
+        type_exts = []
+        if options.do_ff_systs and options.ff_from == "all":
+          if options.channel.count("t") >= 1: type_exts.append("single")
+          if options.channel.count("t") >= 2: type_exts.append("double")
+          if options.channel.count("t") >= 3: type_exts.append("triple")
+          if options.channel.count("t") >= 4: type_exts.append("quadruple")
+        elif options.do_ff_systs and not options.ff_from == "all":
+          type_exts.append("")
+
+        GenerateFakeTaus(ana, add_name, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"])
+        for wt_ext in wt_exts: 
+          for type_ext in type_exts:
+            if type_ext == "": type_ext_name = ""
+            else: type_ext_name = "_"+type_ext
+            GenerateFakeTaus(ana, type_ext_name+wt_ext, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext) 
  
       if options.channel == "tttt":
         cat = "("+cat+")&&(gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6)"
@@ -1058,6 +1100,37 @@ def RebinHist(hist,binning):
   #hout.Print("all")
   return hout
 
+def TotalUnc(h0, hists=[]):
+  #sum in quadrature several systematic uncertainties to form total uncertainty band
+  hout = h0.Clone()
+  hup = h0.Clone()
+  hdown = h0.Clone()
+  hout.SetName(h0.GetName()+'_custom_uncerts')
+  hup.SetName(h0.GetName()+'_custom_uncerts_up')
+  hdown.SetName(h0.GetName()+'_custom_uncerts_down')
+  for i in range(1,h0.GetNbinsX()+2):
+    x0 = h0.GetBinContent(i)
+    uncerts_up = [0.]
+    uncerts_down = [0.]
+    for h in hists:
+      x = h.GetBinContent(i)
+      if x>x0: uncerts_up.append(x-x0)
+      if x<x0: uncerts_down.append(x0-x)
+    up = 0.
+    down = 0.
+    for u in uncerts_up: up+=u**2
+    for u in uncerts_down: down+=u**2
+    up = up**.5
+    down = down**.5
+
+    hup.SetBinContent(i,x0+up)
+    hdown.SetBinContent(i,x0-down)
+    c = (x0+up + x0-down)/2
+    u = (up+down)/2
+    hout.SetBinContent(i,c)
+    hout.SetBinError(i,u)
+  return (hout, hup, hdown)
+
 if is_2d and options.do_unrolling and options.plot_from_dc == "":
   x_lines = []
   y_labels = []
@@ -1115,8 +1188,36 @@ if is_3d and options.do_unrolling and options.plot_from_dc == "":
         if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
-if options.plot_from_dc == "": outfile.Close()
+if options.add_stat_to_syst and options.plot_from_dc == "":
 
+  custom_uncerts_up_name = 'total_bkg_uncerts_custom_up'
+  custom_uncerts_down_name = 'total_bkg_uncerts_custom_down'
+  directory = outfile.Get(nodename)
+  h0 = directory.Get('total_bkg')
+  hists=[]
+  for hist in directory.GetListOfKeys():
+    if ".subnodes" in hist.GetName(): continue
+
+    proc_names = ["jetFakes"]
+
+    if hist.GetName().endswith("up") or hist.GetName().endswith("down"):
+      for p in proc_names:
+        if p+"_" in hist.GetName():
+          no_syst_name = p
+          break
+      temp_hist = h0.Clone()
+      temp_hist.Add(directory.Get(no_syst_name),-1)
+      temp_hist.Add(directory.Get(hist.GetName()))
+      hists.append(temp_hist)
+
+  (uncert, up, down) = TotalUnc(h0, hists)
+  outfile.cd(nodename)
+  uncert.Write()
+  up.Write()
+  down.Write()
+
+
+if options.plot_from_dc == "": outfile.Close()
 if options.plot_from_dc != "": output_name = options.plot_from_dc
 
 plot_file = ROOT.TFile(output_name, 'READ')
@@ -1135,10 +1236,9 @@ if options.auto_rebinning:
           RebinHist(plot_file.Get(nodename+'/'+i.GetName()).Clone(),binning).Write()
           hists_done.append(i.GetName())
   outfile_rebin.Close()
-  plot_file = ROOT.TFile(output_name.replace(".root","_rebinned.root"), 'READ')
+  plot_file = ROOT.TFile(output_name.replace(".root","_rebinned.root"))
 else:
   plot_file = ROOT.TFile(output_name)
-
 
 if not options.no_plot:
     if options.extra_name != '': vname = options.extra_name
@@ -1190,7 +1290,9 @@ if not options.no_plot:
       cat=options.cat,
       plot_signals=options.plot_signals.split(","),
       draw_data=(not options.no_data),
-      under_legend=options.under_legend
+      under_legend=options.under_legend,
+      add_stat_to_syst=options.add_stat_to_syst,
+      do_custom_uncerts=options.add_stat_to_syst
       )
 
 #norm signal yields on datacards to 1pb AFTER plotting    
