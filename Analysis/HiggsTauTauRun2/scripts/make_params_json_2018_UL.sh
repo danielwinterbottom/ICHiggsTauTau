@@ -21,15 +21,7 @@ while read i; do
       dy_nlo_xs=$xs
     fi
 done < $input_xs
-dy_evtf [[ "$sample_name" == "W"*"JetsToLNu-LO"* ]]; then
-      xs=$w_xs
-      evt=$w_evt
-      loop=0
-    elif [[ "$sample_name" == "DY"*"NLO"* ]]; then
-      xs=$dy_nlo_xs
-      evt=$dy_nlo_evt
-      loop=0
-=0
+dy_evt=0
 w_evt=0
 dy_nlo_evt=0
 while read i; do 

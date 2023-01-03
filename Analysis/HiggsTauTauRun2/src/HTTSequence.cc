@@ -453,7 +453,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(98357936,65810202,29068773,20436016,9105126);
+      httStitching.SetDYInputYields(98192802, 65819247, 28973705, 20377562, 9127066);
     }
 
 
@@ -849,7 +849,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL){
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(82943459, 47420631, 28072865, 18020893, 9036122);
+      httStitching.SetWInputYields(82790743, 47381150, 27920092, 18020893, 9045482);
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -880,7 +880,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(98357936,65810202,29068773,20436016,9105126);
+      httStitching.SetDYInputYields(98192802, 65819247, 28973705, 20377562, 9127066);
     }
   }
 
@@ -896,13 +896,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2017UL) {
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-      //httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields_NLO(132089663, 70339337, 44681647, 14355932);
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-      //httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields_NLO(132287074, 70016286, 43116941, 13755111);
+      httStitching.SetDYInputYields_NLO(131789157, 70076006, 43102652, 13726101);
     }
   }
   BuildModule(httStitching);   

@@ -1,0 +1,214 @@
+{
+  "DYJetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 98192802
+  },
+  "DY1JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 98192802
+  },
+  "DY2JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 98192802
+  },
+  "DY3JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 98192802
+  },
+  "DY4JetsToLL-LO": {
+    "xs": 6077.22,
+    "evt": 98192802
+  },
+  "DYJetsToLL_M-10to50-LO": {
+    "xs": 18610.0,
+    "evt": 99369122
+  },
+  "DYJetsToLL-NLO": {
+    "xs": 6077.22,
+    "evt": 131789157
+  },
+  "DYJetsToLL_0J-NLO": {
+    "xs": 6077.22,
+    "evt": 131789157
+  },
+  "DYJetsToLL_1J-NLO": {
+    "xs": 6077.22,
+    "evt": 131789157
+  },
+  "DYJetsToLL_2J-NLO": {
+    "xs": 6077.22,
+    "evt": 131789157
+  },
+  "EWKWMinus2Jets_WToLNu": {
+    "xs": 20.25,
+    "evt": 4485000
+  },
+  "EWKWPlus2Jets_WToLNu": {
+    "xs": 25.62,
+    "evt": 4397000
+  },
+  "EWKZ2Jets_ZToLL": {
+    "xs": 3.987,
+    "evt": 1000000
+  },
+  "WJetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 82790743
+  },
+  "W1JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 82790743
+  },
+  "W2JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 82790743
+  },
+  "W3JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 82790743
+  },
+  "W4JetsToLNu-LO": {
+    "xs": 61526.7,
+    "evt": 82790743
+  },
+  "TTTo2L2Nu": {
+    "xs": 88.29,
+    "evt": 147027046
+  },
+  "TTToHadronic": {
+    "xs": 377.96,
+    "evt": 343674696
+  },
+  "TTToSemiLeptonic": {
+    "xs": 365.34,
+    "evt": 488511416
+  },
+  "WZTo1L3Nu": {
+    "xs": 3.416,
+    "evt": 1433640
+  },
+  "WZTo1L1Nu2Q": {
+    "xs": 10.71,
+    "evt": 12130730
+  },
+  "WZTo2Q2L": {
+    "xs": 6.419,
+    "evt": 17814080
+  },
+  "WZTo3LNu": {
+    "xs": 5.052,
+    "evt": 6388753
+  },
+  "WWTo1L1Nu2Q": {
+    "xs": 49.997,
+    "evt": 12084134
+  },
+  "WWTo2L2Nu": {
+    "xs": 11.09,
+    "evt": 9956710
+  },
+  "ZZTo2L2Nu": {
+    "xs": 0.9738,
+    "evt": 56651900
+  },
+  "ZZTo4L": {
+    "xs": 1.325,
+    "evt": 98249736
+  },
+  "WW": {
+    "xs": 75.95,
+    "evt": 15670000
+  },
+  "WZ": {
+    "xs": 27.59,
+    "evt": 7984926
+  },
+  "ZZ": {
+    "xs": 12.17,
+    "evt": 3897000
+  },
+  "WWZ": {
+    "xs": 0.1707,
+    "evt": 9277685
+  },
+  "WWZ-ext1": {
+    "xs": 0.1707,
+    "evt": 9277685
+  },
+  "WZZ": {
+    "xs": 0.05709,
+    "evt": 9344352
+  },
+  "WZZ-ext1": {
+    "xs": 0.05709,
+    "evt": 9344352
+  },
+  "WWW": {
+    "xs": 0.2158,
+    "evt": 9144240
+  },
+  "WWW-ext1": {
+    "xs": 0.2158,
+    "evt": 9144240
+  },
+  "ZZZ": {
+    "xs": 0.01476,
+    "evt": 9128080
+  },
+  "ZZZ-ext1": {
+    "xs": 0.01476,
+    "evt": 9128080
+  },
+  "WGToLNuG": {
+    "xs": 510.6,
+    "evt": 9850083
+  },
+  "Tbar-t": {
+    "xs": 80.95,
+    "evt": 89164454
+  },
+  "Tbar-tW": {
+    "xs": 34.97,
+    "evt": 7700692
+  },
+  "T-t": {
+    "xs": 136.02,
+    "evt": 166382876
+  },
+  "T-tW": {
+    "xs": 35.85,
+    "evt": 7916614
+  },
+  "GluGluHToTauTau_M125": {
+    "xs": 3.045966,
+    "evt": 12783909
+  },
+  "VBFHToTauTau_M125": {
+    "xs": 0.2371,
+    "evt": 2983092
+  },
+  "WminusHToTauTau_M125": {
+    "xs": 0.03340656,
+    "evt": 3586076
+  },
+  "WplusHToTauTau_M125": {
+    "xs": 0.052668,
+    "evt": 3750588
+  },
+  "ttHToTauTau_M125": {
+    "xs": 0.0318,
+    "evt": 21185196
+  },
+  "EGamma": {
+    "lumi": 59830
+  },
+  "SingleMuon": {
+    "lumi": 59830
+  },
+  "Tau": {
+    "lumi": 59830
+  },
+  "MuonEG": {
+    "lumi": 59830
+  }
+}
