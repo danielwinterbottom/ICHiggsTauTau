@@ -49,7 +49,7 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
-      pass_presel = (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && iso_1_<0.5); 
+      pass_presel = (((tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet")) || (tau->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSe") && tau->GetTauID("byVLooseDeepTau2018v2p5VSmu"))) && iso_1_<0.5);
   }
   if(channel_ == channel::mt) { 
       //if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
@@ -58,7 +58,8 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       Muon const* muon  = dynamic_cast<Muon const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
-      pass_presel = (tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && iso_1_<0.5); 
+      pass_presel = (((tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet")) || (tau->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSe") && tau->GetTauID("byVLooseDeepTau2018v2p5VSmu"))) && iso_1_<0.5);
+
   }
   if(channel_ == channel::em) { 
       if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -74,7 +75,7 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Tau  const* tau1  = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-      pass_presel = (tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau1->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && tau2->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau2->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau2->GetTauID("byVVVLooseDeepTau2017v2p1VSjet")) ; 
+      pass_presel = ((tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau1->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") && tau2->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau2->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau2->GetTauID("byVVVLooseDeepTau2017v2p1VSjet")) || (tau1->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau1->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau1->GetTauID("byVVVLooseDeepTau2018v2p5VSe") && tau1->GetTauID("byVLooseDeepTau2018v2p5VSmu") && tau2->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau2->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau2->GetTauID("byVVVLooseDeepTau2018v2p5VSe") && tau2->GetTauID("byVLooseDeepTau2018v2p5VSmu")) ); 
   }
   if(channel_ == channel::zmm || channel_ == channel::tpzmm) { 
       if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
