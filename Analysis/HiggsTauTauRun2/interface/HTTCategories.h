@@ -967,6 +967,33 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsMu_vvtight_1_;
   bool deepTauVsMu_vvtight_2_;
 
+  bool deepTauVsJetsV2p5_vvvloose_1_;
+  bool deepTauVsJetsV2p5_vvvloose_2_;
+  bool deepTauVsJetsV2p5_vvloose_1_;
+  bool deepTauVsJetsV2p5_vvloose_2_;
+  bool deepTauVsJetsV2p5_vloose_1_;
+  bool deepTauVsJetsV2p5_vloose_2_;
+  bool deepTauVsJetsV2p5_loose_1_;
+  bool deepTauVsJetsV2p5_loose_2_;
+  bool deepTauVsJetsV2p5_medium_1_;
+  bool deepTauVsJetsV2p5_medium_2_;
+  bool deepTauVsJetsV2p5_tight_1_;
+  bool deepTauVsJetsV2p5_tight_2_;
+  bool deepTauVsJetsV2p5_vtight_1_;
+  bool deepTauVsJetsV2p5_vtight_2_;
+  bool deepTauVsJetsV2p5_vvtight_1_;
+  bool deepTauVsJetsV2p5_vvtight_2_;
+  bool deepTauVsEleV2p5_vvloose_1_;
+  bool deepTauVsEleV2p5_vvloose_2_;
+  bool deepTauVsEleV2p5_tight_1_;
+  bool deepTauVsEleV2p5_tight_2_;
+  bool deepTauVsMuV2p5_tight_1_;
+  bool deepTauVsMuV2p5_tight_2_;
+  bool deepTauVsMuV2p5_vloose_1_;
+  bool deepTauVsMuV2p5_vloose_2_;
+  float iso_1_V2p5_;
+  float iso_2_V2p5_;
+
   double mt_1_nomu_, mu_pt_;
 
   unsigned ngenjets_, ngenjets20_, gen_sjdphi_;

@@ -168,7 +168,7 @@ for i in range(0,scale):
    flatjsons.append(temp)
 
 
-FILELIST='filelists/Feb16_2017_MC_106X'
+FILELIST='filelists/Nov30_2017_MC_MC_106X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -217,9 +217,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
   data_samples = list(set(data_samples))
 
-  DATAFILELIST="./filelists/Apr22_2017_Data_106X"
+  DATAFILELIST="./filelists/Nov30_2017_Data_temp_Data_106X"
 #  DATAPREFIX = DATAFILELIST.split("/")[2]
-  DATAPREFIX = 'Apr22_Data_106X_2017'
+  DATAPREFIX = 'Nov30_Data_106X_2017'
 
   if options.calc_lumi:
     for sa in data_samples:
@@ -329,14 +329,14 @@ if options.proc_bkg or options.proc_all:
     'WGToLNuG',
     'Tbar-t',
     'Tbar-tW',
-    'T-t',
+    #'T-t', # missing for now - add back later
     'T-tW',
      # SM Higgs
     'GluGluHToTauTau_M125',
     'VBFHToTauTau_M125',
     'WminusHToTauTau_M125',
     'WplusHToTauTau_M125',
-    'ZHToTauTau_M125',
+    #'ZHToTauTau_M125', # missing for now - add back later
     'ttHToTauTau_M125',    
  	]
 
@@ -344,15 +344,15 @@ if options.proc_bkg or options.proc_all:
 
   for sa in central_samples:
       JOB='%s_2017' % (sa)
-      FILELIST='filelists/Feb16_2017_MC_106X'
-      PREFIX='Feb16_MC_106X_2017'
+      FILELIST='filelists/Nov30_2017_MC_MC_106X'
+      PREFIX='Nov30_MC_106X_2017'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
       # New samples
       if sa in Sep28_samples:
-        FILELIST='filelists/Sep28_2017_MC_106X'
-        PREFIX='Sep28_MC_106X_2017'
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        FILELIST='filelists/Nov30_2017_MC_MC_106X'
+        PREFIX='Nov30_MC_106X_2017'
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
 
       job_num=0
