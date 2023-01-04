@@ -12,7 +12,7 @@ opts.register('file',
 'root://xrootd.unl.edu//store/mc/RunIISummer20UL18MiniAOD/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v11_L1v1-v2/100000/A6824A57-A304-E14E-8D8E-1EACD1EDA9EF.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', '102X_upgrade2018_realistic_v20', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '106X_upgrade2018_realistic_v15_L1v1', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -274,6 +274,21 @@ process.icPFSequence += process.icPFFromPackedProducer
 electronLabel = cms.InputTag("slimmedElectrons")
 
 process.icElectronSequence = cms.Sequence()
+
+process.icBasicElectronProducer = producers.icCandidateProducer.clone(
+  branch  = cms.string("slimmedElectrons"),
+  input   = cms.InputTag("slimmedElectrons")
+)
+
+process.icBasicSelElectronProducer = producers.icCandidateProducer.clone(
+  branch  = cms.string("selectedElectrons"),
+  input   = cms.InputTag("selectedElectrons")
+)
+
+process.icElectronSequence += cms.Sequence(
+  process.icBasicElectronProducer+
+  process.icBasicSelElectronProducer
+)
 
 # electron smear and scale
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
