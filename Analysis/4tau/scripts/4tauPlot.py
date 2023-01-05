@@ -633,7 +633,7 @@ def GenerateHZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', hz
     hzz_node = GetNode(ana, "HZZ", add_name, samples, plot, wt, sel, cat)
     ana.nodes[nodename].AddNode(hzz_node)
 
-def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext=""):
+def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
   vj = "deepTauVsJets_" + VsJets_wp
   if VsJets_wp_fail == None:
     vjf = "1"
@@ -659,6 +659,11 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   elif type_ext == "triple":
     t_wt_ext = wt_ext
   elif type_ext == "quadruple":
+    q_wt_ext = wt_ext
+  elif type_ext == "all":
+    s_wt_ext = wt_ext
+    d_wt_ext = wt_ext
+    t_wt_ext = wt_ext
     q_wt_ext = wt_ext
 
   for i in replace:
@@ -712,12 +717,26 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
   elif len(options.ff_from) == 4:
     ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * {} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,options.ff_from[3]+wt_ext,fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]],fail_sel[options.ff_from[3]])
 
-  if data_veto == None:
-    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, wt, sel, ff_sel)
-  else:
-    ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+  ff_wt_init = copy.deepcopy(ff_wt)
+  if wt_ext != "" and intermediate_shift != []:
+    for shift in intermediate_shift:
+      for n in ["1","2","3","4"]:  
+        for t in list(set([s_wt_ext,d_wt_ext,t_wt_ext,q_wt_ext])):
+          ff_wt = ff_wt_init.replace("wt_ff_ml_{}{}".format(n,t),"(wt_ff_ml_{} + {}*(wt_ff_ml_{}{} - wt_ff_ml_{}))".format(n,shift,n,t,n))
+      if data_veto == None:
+        ff_data = GetNode(ana, 'jetFakes', "_int_shift_"+shift.replace(".","p")+add_name, data_samples, plot, wt, sel, ff_sel)
+      else:
+        ff_data = GetNode(ana, 'jetFakes', "_int_shift_"+shift.replace(".","p")+add_name, data_samples, plot, ff_wt, sel, "("+ff_sel+")&&("+data_veto+")")
 
-  ana.nodes[nodename].AddNode(ff_data)
+      ana.nodes[nodename].AddNode(ff_data)
+  else:
+
+    if data_veto == None:
+      ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, wt, sel, ff_sel)
+    else:
+      ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+
+    ana.nodes[nodename].AddNode(ff_data)
 
 def GenerateSignal(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     for i in samples:
@@ -821,10 +840,11 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
 
         type_exts = []
         if options.do_ff_systs and options.ff_from == "all":
-          if options.channel.count("t") >= 1: type_exts.append("single")
-          if options.channel.count("t") >= 2: type_exts.append("double")
-          if options.channel.count("t") >= 3: type_exts.append("triple")
-          if options.channel.count("t") >= 4: type_exts.append("quadruple")
+          #if options.channel.count("t") >= 1: type_exts.append("single")
+          #if options.channel.count("t") >= 2: type_exts.append("double")
+          #if options.channel.count("t") >= 3: type_exts.append("triple")
+          #if options.channel.count("t") >= 4: type_exts.append("quadruple")
+          type_exts = ["all"]
         elif options.do_ff_systs and not options.ff_from == "all":
           type_exts.append("")
 
@@ -833,7 +853,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           for type_ext in type_exts:
             if type_ext == "": type_ext_name = ""
             else: type_ext_name = "_"+type_ext
-            GenerateFakeTaus(ana, type_ext_name+wt_ext, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext) 
+            #GenerateFakeTaus(ana, type_ext_name+wt_ext, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext,intermediate_shift=["0.01","0.02","0.05","0.1","0.2","0.4","0.6","0.8","1.0"]) 
+            GenerateFakeTaus(ana, type_ext_name+wt_ext, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext)
  
       if options.channel == "tttt":
         cat = "("+cat+")&&(gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6)"
@@ -844,16 +865,16 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       elif options.channel in ["eett","mmtt","emtt"]:
         cat = "("+cat+")&&(gen_match_3<6 && gen_match_4<6)"
 
-      if 'ZTT' not in samples_to_skip:
-          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
+      #if 'ZTT' not in samples_to_skip:
+      #    GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
       #if 'TT' not in samples_to_skip:
       #    GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
       if 'VV' not in samples_to_skip:
           GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
       if 'VVV' not in samples_to_skip:
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
-      if 'W' not in samples_to_skip:
-          GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      #if 'W' not in samples_to_skip:
+      #    GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
       if 'signal' not in samples_to_skip and not options.no_signal:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
 
@@ -1130,6 +1151,33 @@ def TotalUnc(h0, hists=[]):
     hout.SetBinContent(i,c)
     hout.SetBinError(i,u)
   return (hout, hup, hdown)
+
+
+def SymmetriseUncertainty(hist,hist_up,hist_down):
+  for i in range(0,hist_up.GetNbinsX()+1):
+    max_shift = max(abs(hist_up.GetBinContent(i)-hist.GetBinContent(i)),abs(hist_down.GetBinContent(i)-hist.GetBinContent(i)))
+    hist_up.SetBinContent(i,hist.GetBinContent(i)+max_shift)
+    hist_down.SetBinContent(i,hist.GetBinContent(i)-max_shift)
+  return hist_up, hist_down
+
+if options.do_ff_systs and options.plot_from_dc == "":
+  if options.ff_from == "all":
+    symmetrise_dict = {"jetFakes":["_all_non_closure"]}
+  else:
+    symmetrise_dict = {}
+  directory = outfile.Get(nodename)
+  outfile.cd(nodename)
+  for key in directory.GetListOfKeys():
+    if key.GetName() in symmetrise_dict.keys():
+      for syst in symmetrise_dict[key.GetName()]:
+        hist = directory.Get(key.GetName()).Clone()
+        hist_up = directory.Get(key.GetName()+syst+"_up").Clone()
+        hist_down = directory.Get(key.GetName()+syst+"_down").Clone()
+        hist_up, hist_down = SymmetriseUncertainty(hist,hist_up,hist_down)
+        outfile.cd(nodename)
+        hist_up.Write()
+        hist_down.Write()
+
 
 if is_2d and options.do_unrolling and options.plot_from_dc == "":
   x_lines = []

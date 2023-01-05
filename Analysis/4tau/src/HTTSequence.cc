@@ -1296,8 +1296,8 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->eta())              <  tau_eta    &&
                fabs(t->lead_dz_vertex())   <  tau_dz     &&
                fabs(t->charge())           == 1          &&
-               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
-               //t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
+               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
+               t->GetTauID("byDeepTau2017v2p1VSjetraw") > 0.1 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
      }));
  
   if (tau_scale_mode > 0 && !is_data){
@@ -1481,8 +1481,8 @@ void HTTSequence::BuildTauSelection(){
               fabs(t->eta())              <  tau_eta    &&
               fabs(t->lead_dz_vertex())   <  tau_dz     &&
               fabs(t->charge())           == 1          &&
-              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
-              //t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
+              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
+              t->GetTauID("byDeepTau2017v2p1VSjetraw") > 0.1 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
     }));
 
  }
@@ -1625,7 +1625,8 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->eta())              <  veto_tau_eta    &&
                fabs(t->lead_dz_vertex())   <  veto_tau_dz     &&
                fabs(t->charge())           == 1          &&
-               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
+               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && 
+               t->GetTauID("byLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
    });  
    BuildModule(extraTauFilter);
  }
