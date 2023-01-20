@@ -346,6 +346,16 @@ class HTTCategories : public ModuleBase {
   branch_var met_;
   branch_var st_;
 
+  float scale_1_;
+  float scale_2_;
+  float scale_3_;
+  float scale_4_;
+  float scale_5_;
+  float scale_6_;
+  float scale_7_;
+  float scale_8_;
+  float scale_9_;
+
   int p_min_dphi_1_;
   int p_min_dR_1_;
   int p_min_sum_dphi_1_;

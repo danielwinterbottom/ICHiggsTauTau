@@ -571,6 +571,17 @@ namespace ic {
       outtree_->Branch("wt_ggZZ_AsScaleDn",        &wt_ggZZ_AsScaleDn_);
       outtree_->Branch("wt_ggZZ_PDFReplicaScaleUp",&wt_ggZZ_PDFReplicaScaleUp_);
       outtree_->Branch("wt_ggZZ_PDFReplicaScaleDn",&wt_ggZZ_PDFReplicaScaleDn_);
+
+      outtree_->Branch("wt_mc_1001",&scale_1_);
+      outtree_->Branch("wt_mc_1002",&scale_2_);
+      outtree_->Branch("wt_mc_1003",&scale_3_);
+      outtree_->Branch("wt_mc_1004",&scale_4_);
+      outtree_->Branch("wt_mc_1005",&scale_5_);
+      outtree_->Branch("wt_mc_1006",&scale_6_);
+      outtree_->Branch("wt_mc_1007",&scale_7_);
+      outtree_->Branch("wt_mc_1008",&scale_8_);
+      outtree_->Branch("wt_mc_1009",&scale_9_);
+
     }
 
     return 0;
@@ -2129,6 +2140,16 @@ namespace ic {
     wt_ggZZ_AsScaleDn_ = event->Exists("wt_ggZZ_AsScaleDn") ? event->Get<float>("wt_ggZZ_AsScaleDn") : 1.0;
     wt_ggZZ_PDFReplicaScaleUp_ = event->Exists("wt_ggZZ_PDFReplicaScaleUp") ? event->Get<float>("wt_ggZZ_PDFReplicaScaleUp") : 1.0;
     wt_ggZZ_PDFReplicaScaleDn_ = event->Exists("wt_ggZZ_PDFReplicaScaleUp") ? event->Get<float>("wt_ggZZ_PDFReplicaScaleUp") : 1.0;
+
+   if(eventInfo->weight_defined("1001")) scale_1_ = eventInfo->weight("1001"); else scale_1_=1.0;
+   if(eventInfo->weight_defined("1002")) scale_2_ = eventInfo->weight("1002"); else scale_2_=1.0;
+   if(eventInfo->weight_defined("1003")) scale_3_ = eventInfo->weight("1003"); else scale_3_=1.0;
+   if(eventInfo->weight_defined("1004")) scale_4_ = eventInfo->weight("1004"); else scale_4_=1.0;
+   if(eventInfo->weight_defined("1005")) scale_5_ = eventInfo->weight("1005"); else scale_5_=1.0;
+   if(eventInfo->weight_defined("1006")) scale_6_ = eventInfo->weight("1006"); else scale_6_=1.0;
+   if(eventInfo->weight_defined("1007")) scale_7_ = eventInfo->weight("1007"); else scale_7_=1.0;
+   if(eventInfo->weight_defined("1008")) scale_8_ = eventInfo->weight("1008"); else scale_8_=1.0;
+   if(eventInfo->weight_defined("1009")) scale_9_ = eventInfo->weight("1009"); else scale_9_=1.0;
 
     if (write_tree_ && fs_) outtree_->Fill();
     return 0;
