@@ -311,6 +311,7 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     }
 
   }
+
 }
 
 void ICMuonProducer::beginJob() {

@@ -1,7 +1,7 @@
 #ifndef UserCode_ICHiggsTauTau_ICElectronConversionCalculator_h
 #define UserCode_ICHiggsTauTau_ICElectronConversionCalculator_h
 
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -19,7 +19,7 @@
  * @brief Produces an edm::ValueMap<bool> for the electron conversion-rejection
  *flag
  */
-class ICElectronConversionCalculator : public edm::stream::EDProducer<> {
+class ICElectronConversionCalculator : public edm::one::EDProducer<> {
  public:
   explicit ICElectronConversionCalculator(const edm::ParameterSet &);
   ~ICElectronConversionCalculator();

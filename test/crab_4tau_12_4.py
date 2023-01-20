@@ -949,9 +949,9 @@ for dm in dml:
             config.Data.inputDataset = task[1]
 
             if args.recovery:
-              os.system("crab kill {}_{}_106X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
-              os.system("crab report {}_{}_106X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
-              config.Data.lumiMask = "{}_{}_106X_{}/crab_{}/results/notFinishedLumis.json".format(args.output_folder,dm,yr,task[0])    
+              os.system("crab kill {}_{}_124X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
+              os.system("crab report {}_{}_124X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
+              config.Data.lumiMask = "{}_{}_124X_{}/crab_{}/results/notFinishedLumis.json".format(args.output_folder,dm,yr,task[0])    
             config.JobType.pyCfgParams = cfgParams
     
             config.Data.userInputFiles = None
@@ -971,7 +971,7 @@ for dm in dml:
               config.Data.splitting = 'EventAwareLumiBased'
               config.Data.unitsPerJob = 50000
 
-            if args.recovery: config.Data.unitsPerJob = 50000
+            if args.recovery: config.Data.unitsPerJob = 10000
 
             print(config)
     

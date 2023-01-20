@@ -96,7 +96,7 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
        consumes<edm::ValueMap<float>>(input_vmaps_[i].second);
   }
 
-  //PrintHeaderWithProduces(config, input_, branch_);
+  PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_r9_, "includeR9");
   PrintOptional(1, do_hcal_sum_, "includeHcalSum");
   PrintOptional(1, do_vertex_ip_, "includeVertexIP");
@@ -171,7 +171,6 @@ void ICElectronProducer::produce(edm::Event& event,
   // Prepare output collection
   electrons_->clear();
   electrons_->resize(elecs_handle->size(), ic::Electron());
-
   for (unsigned i = 0; i < elecs_handle->size(); ++i) {
     pat::Electron const& src = elecs_handle->at(i);
     edm::RefToBase<pat::Electron> ref = elecs_handle->refAt(i);
@@ -314,7 +313,6 @@ void ICElectronProducer::produce(edm::Event& event,
       #endif
       dest.set_bfield(magneticField);
     }
-
   }
 }
 

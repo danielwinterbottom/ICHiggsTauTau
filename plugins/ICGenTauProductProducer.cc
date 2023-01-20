@@ -4,7 +4,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -97,11 +97,11 @@ void ICGenTauProductProducer::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
-void ICGenTauProductProducer::beginRun(edm::Run&, edm::EventSetup const&) {
+void ICGenTauProductProducer::beginRun(edm::Run const& run, edm::EventSetup const& es) {
 }
 
 // ------------ method called when ending the processing of a run  ------------
-void ICGenTauProductProducer::endRun(edm::Run&, edm::EventSetup const&) {
+void ICGenTauProductProducer::endRun(edm::Run const& run, edm::EventSetup const& es) {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------

@@ -4,7 +4,7 @@
 #include <vector>
 #include <set>
 #include <memory>
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -15,7 +15,7 @@
 namespace ic {
 
 template <class T>
-class Concatenate : public edm::stream::EDProducer<> {
+class Concatenate : public edm::one::EDProducer<> {
  public:
   explicit Concatenate(const edm::ParameterSet &);
   ~Concatenate();

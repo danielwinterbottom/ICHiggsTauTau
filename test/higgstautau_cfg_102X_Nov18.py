@@ -238,7 +238,8 @@ process.icPFSequence += process.icPFFromPackedProducer
 ################################################################
 # Electrons
 ################################################################
-electronLabel = cms.InputTag("slimmedElectrons")
+#electronLabel = cms.InputTag("slimmedElectrons")
+electronLabel = cms.InputTag("selectedElectrons")
 
 process.icElectronSequence = cms.Sequence()
 

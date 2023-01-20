@@ -11,6 +11,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
+#include <iostream>
 
 ICEventProducer::ICEventProducer(const edm::ParameterSet& config)
     : processed_(0) {
@@ -25,14 +26,16 @@ ICEventProducer::~ICEventProducer() {}
 
 void ICEventProducer::produce(edm::Event& /*event*/,
                               const edm::EventSetup& /*setup*/) {
-  ic::StaticTree::tree_->Fill();
+  if (processed_>0) ic::StaticTree::tree_->Fill();
   ++processed_;
   if (processed_ == 500) ic::StaticTree::tree_->OptimizeBaskets();
 }
 
 void ICEventProducer::beginJob() {}
 
-void ICEventProducer::endJob() {}
+void ICEventProducer::endJob() {
+  ic::StaticTree::tree_->Fill();
+}
 
 // define this as a plug-in
 DEFINE_FWK_MODULE(ICEventProducer);

@@ -275,20 +275,20 @@ electronLabel = cms.InputTag("slimmedElectrons")
 
 process.icElectronSequence = cms.Sequence()
 
-process.icBasicElectronProducer = producers.icCandidateProducer.clone(
-  branch  = cms.string("slimmedElectrons"),
-  input   = cms.InputTag("slimmedElectrons")
-)
+#process.icBasicElectronProducer = producers.icCandidateProducer.clone(
+#  branch  = cms.string("slimmedElectrons"),
+#  input   = cms.InputTag("slimmedElectrons")
+#)
 
-process.icBasicSelElectronProducer = producers.icCandidateProducer.clone(
-  branch  = cms.string("selectedElectrons"),
-  input   = cms.InputTag("selectedElectrons")
-)
+#process.icBasicSelElectronProducer = producers.icCandidateProducer.clone(
+#  branch  = cms.string("selectedElectrons"),
+#  input   = cms.InputTag("selectedElectrons")
+#)
 
-process.icElectronSequence += cms.Sequence(
-  process.icBasicElectronProducer+
-  process.icBasicSelElectronProducer
-)
+#process.icElectronSequence += cms.Sequence(
+#  process.icBasicElectronProducer+
+#  process.icBasicSelElectronProducer
+#)
 
 # electron smear and scale
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
@@ -406,6 +406,12 @@ process.electronPFIsolationValuesSequence +=cms.Sequence(
     process.elHcalPFClusterIso
 )
 
+#process.icBasicSelElectronProducerAfter = producers.icCandidateProducer.clone(
+#  branch  = cms.string("selectedElectronsAfter"),
+#  input   = cms.InputTag("selectedElectrons")
+#)
+
+
 process.icElectronProducer = producers.icElectronProducer.clone(
     branch                    = cms.string("electrons"),
     input                     = cms.InputTag("selectedElectrons"),
@@ -438,6 +444,7 @@ process.icElectronProducer = producers.icElectronProducer.clone(
 
 process.icElectronSequence += cms.Sequence(
     process.icElectronConversionCalculator+
+    #process.icBasicSelElectronProducerAfter+
     process.icElectronProducer
 )
 
@@ -1686,6 +1693,7 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
+    process.icEventProducer+ # in 12_4 if we dont add EventProducer first then there is a bug where the electrons get added to the next event - not sure how to fix properly but seems to work as long as it comes first in the path
     process.icSelectionSequence+
     process.pfParticleSelectionSequence+
     process.icVertexSequence+
@@ -1704,8 +1712,7 @@ process.p = cms.Path(
     process.icTriggerObjectSequence+
     process.icTauSpinnerSequence+
     process.icHtxsSequence+
-    process.icEventInfoSequence+
-    process.icEventProducer
+    process.icEventInfoSequence
 )
 
 

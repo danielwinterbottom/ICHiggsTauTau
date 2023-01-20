@@ -1,7 +1,7 @@
 #ifndef UserCode_ICHiggsTauTau_ICElectronConversionFromPatCalculator_h
 #define UserCode_ICHiggsTauTau_ICElectronConversionFromPatCalculator_h
 
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -12,7 +12,7 @@
  *flag. The flag is extracted directly from the input PAT candidate 
  *
  */
-class ICElectronConversionFromPatCalculator : public edm::stream::EDProducer<> {
+class ICElectronConversionFromPatCalculator : public edm::one::EDProducer<> {
  public:
   explicit ICElectronConversionFromPatCalculator(const edm::ParameterSet &);
   ~ICElectronConversionFromPatCalculator();

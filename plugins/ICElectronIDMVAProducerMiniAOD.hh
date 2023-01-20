@@ -6,8 +6,8 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/stream/EDFilter.h"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDFilter.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
@@ -23,7 +23,7 @@
 
 //using namespace std;
 //using namespace reco;
-class ICElectronIDMVAProducerMiniAOD : public edm::stream::EDProducer<> {
+class ICElectronIDMVAProducerMiniAOD : public edm::one::EDProducer<> {
 public:
     explicit ICElectronIDMVAProducerMiniAOD(const edm::ParameterSet&);
     ~ICElectronIDMVAProducerMiniAOD();

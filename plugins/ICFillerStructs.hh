@@ -2,7 +2,7 @@
 #define UserCode_ICHiggsTauTau_ICFillerStructs_h
 
 #include "DataFormats/Provenance/interface/ProductID.h"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"

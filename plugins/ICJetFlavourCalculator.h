@@ -1,13 +1,13 @@
 #ifndef UserCode_ICHiggsTauTau_ICJetFlavourCalculator_h
 #define UserCode_ICHiggsTauTau_ICJetFlavourCalculator_h
 
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ICJetFlavourCalculator : public edm::stream::EDProducer<> {
+class ICJetFlavourCalculator : public edm::one::EDProducer<> {
  public:
   explicit ICJetFlavourCalculator(const edm::ParameterSet &);
   ~ICJetFlavourCalculator();

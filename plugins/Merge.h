@@ -4,7 +4,7 @@
 #include <vector>
 #include <set>
 #include <memory>
-#include "FWCore/Framework/interface/stream/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -42,7 +42,7 @@ namespace ic {
  * ~~~~~~~~~
  */
 template <class T>
-class Merge : public edm::stream::EDProducer<> {
+class Merge : public edm::one::EDProducer<> {
  public:
   explicit Merge(const edm::ParameterSet &);
   ~Merge();
