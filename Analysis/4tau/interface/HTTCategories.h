@@ -282,6 +282,8 @@ class HTTCategories : public ModuleBase {
   branch_var dR_23_;
   branch_var dR_24_;
   branch_var dR_34_;
+  branch_var dR_min_sum_dR_1_;
+  branch_var dR_min_sum_dR_2_;
   branch_var E_1_;
   branch_var E_2_;
   branch_var E_3_;
@@ -314,7 +316,6 @@ class HTTCategories : public ModuleBase {
   branch_var mvis_23_;
   branch_var mvis_24_;
   branch_var mvis_34_;
-  branch_var mvis_os_;
   branch_var mvis_min_dphi_1_;
   branch_var mvis_min_dphi_2_;
   branch_var mvis_min_sum_dphi_1_;
@@ -331,7 +332,6 @@ class HTTCategories : public ModuleBase {
   branch_var pt_tt_23_;
   branch_var pt_tt_24_;
   branch_var pt_tt_34_;
-  branch_var pt_tt_os_;
   branch_var pt_min_dphi_1_;
   branch_var pt_min_dphi_2_;
   branch_var pt_min_sum_dphi_1_;
@@ -531,6 +531,16 @@ class HTTCategories : public ModuleBase {
   bool isSingleMuon_;
   bool isMuonEG_;
 
+  float wt_ggZZ_;
+  float wt_qqZZ_;
+  float wt_ggZZ_PDFScaleUp_;
+  float wt_ggZZ_PDFScaleDn_;
+  float wt_ggZZ_QCDScaleUp_;
+  float wt_ggZZ_QCDScaleDn_;
+  float wt_ggZZ_AsScaleUp_;
+  float wt_ggZZ_AsScaleDn_;
+  float wt_ggZZ_PDFReplicaScaleUp_;
+  float wt_ggZZ_PDFReplicaScaleDn_;
 
  public:
   HTTCategories(std::string const& name);

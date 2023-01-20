@@ -628,7 +628,9 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_do_singlee_trg(!is_data)
  .set_do_mtaucross_trg(!is_data)
  .set_do_singlem_trg(!is_data)  
- .set_do_emucross_trg(!is_data); 
+ .set_do_emucross_trg(!is_data)
+ .set_do_ggZZ_k_fact(output_name.find("GluGluToContinToZZ") != output_name.npos || output_name.find("GluGlu_HToZZTo4L_M125") != output_name.npos)
+ .set_do_qqZZ_k_fact(output_name.find("ZZTo4L") != output_name.npos);
 
 BuildModule(httWeights);
 

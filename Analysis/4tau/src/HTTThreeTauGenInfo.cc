@@ -59,7 +59,8 @@ namespace ic {
     GenParticle *gen_match_undecayed_2_;
     GenParticle *gen_match_undecayed_3_;
 
-
+    CompositeCandidate *diZ = new CompositeCandidate();
+    std::vector<int> Z_decays_pdgid;
 
     ROOT::Math::PtEtaPhiEVector neutrinos; 
  
@@ -82,7 +83,22 @@ namespace ic {
           }
         }
       }
+      int j1 = 1;
+      if(status_flags_start[IsFirstCopy] && particles[i]->pdgid() == 23 && j1<3) {
+        diZ->AddCandidate("Z_"+std::to_string(i),particles[i]);
+        j1 = j1 + 1;
+      }
+      int j2 = 1;
+      Z_decays_pdgid = {};
+      if(status_flags_start[IsLastCopy] && particles[i]->pdgid() == 23 && j2<3) {
+        Z_decays_pdgid.push_back(abs(particles[particles[i]->daughters()[0]]->pdgid()));
+        j2 = j2 + 1;
+      }
     }
+    event->Add("diZ_pt",diZ->pt());
+    event->Add("diZ_mass",diZ->M());
+    event->Add("diZ_same_decay",Z_decays_pdgid[0] == Z_decays_pdgid[1]);
+
     gen_met=neutrinos.Pt();
 
     event->Add("gen_met",gen_met);

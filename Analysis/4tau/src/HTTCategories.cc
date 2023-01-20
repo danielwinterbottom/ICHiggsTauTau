@@ -312,6 +312,8 @@ namespace ic {
       outtree_->Branch("dR_23",              &dR_23_.var_double);
       outtree_->Branch("dR_24",              &dR_24_.var_double);
       outtree_->Branch("dR_34",              &dR_34_.var_double);
+      outtree_->Branch("dR_min_sum_dR_1",    &dR_min_sum_dR_1_.var_double);
+      outtree_->Branch("dR_min_sum_dR_2",    &dR_min_sum_dR_2_.var_double);
 
       // pair properties
       outtree_->Branch("mt_1",              &mt_1_.var_double);
@@ -333,7 +335,6 @@ namespace ic {
       outtree_->Branch("mvis_23",              &mvis_23_.var_double);
       outtree_->Branch("mvis_24",              &mvis_24_.var_double);
       outtree_->Branch("mvis_34",              &mvis_34_.var_double);
-      outtree_->Branch("mvis_os",              &mvis_os_.var_double);
       outtree_->Branch("mvis_min_dphi_1",      &mvis_min_dphi_1_.var_double);
       outtree_->Branch("mvis_min_dphi_2",      &mvis_min_dphi_2_.var_double);
       outtree_->Branch("mvis_min_dR_1",        &mvis_min_dR_1_.var_double);
@@ -344,7 +345,6 @@ namespace ic {
       outtree_->Branch("mvis_min_sum_dR_2",    &mvis_min_sum_dR_2_.var_double);
       outtree_->Branch("mvis_phi",             &mvis_phi_.var_double);
       outtree_->Branch("mvis_A",               &mvis_A_.var_double);
-      outtree_->Branch("pt_tt_os",             &pt_tt_os_.var_double);
       outtree_->Branch("pt_min_dphi_1",        &pt_min_dphi_1_.var_double);
       outtree_->Branch("pt_min_dphi_2",        &pt_min_dphi_2_.var_double);
       outtree_->Branch("pt_min_dR_1",          &pt_min_dR_1_.var_double);
@@ -560,6 +560,17 @@ namespace ic {
       outtree_->Branch("jet_probg_2",          &jet_probg_2_);
       outtree_->Branch("jet_probg_3",          &jet_probg_3_);
       outtree_->Branch("jet_probg_4",          &jet_probg_4_);
+
+      outtree_->Branch("wt_ggZZ_k_factor",         &wt_ggZZ_);
+      outtree_->Branch("wt_qqZZ_k_factor",         &wt_qqZZ_);
+      outtree_->Branch("wt_ggZZ_PDFScaleUp",       &wt_ggZZ_PDFScaleUp_);
+      outtree_->Branch("wt_ggZZ_PDFScaleDn",       &wt_ggZZ_PDFScaleDn_);
+      outtree_->Branch("wt_ggZZ_QCDScaleUp",       &wt_ggZZ_QCDScaleUp_);
+      outtree_->Branch("wt_ggZZ_QCDScaleDn",       &wt_ggZZ_QCDScaleDn_);
+      outtree_->Branch("wt_ggZZ_AsScaleUp",        &wt_ggZZ_AsScaleUp_);
+      outtree_->Branch("wt_ggZZ_AsScaleDn",        &wt_ggZZ_AsScaleDn_);
+      outtree_->Branch("wt_ggZZ_PDFReplicaScaleUp",&wt_ggZZ_PDFReplicaScaleUp_);
+      outtree_->Branch("wt_ggZZ_PDFReplicaScaleDn",&wt_ggZZ_PDFReplicaScaleDn_);
     }
 
     return 0;
@@ -1003,17 +1014,42 @@ namespace ic {
     pt_tt_13_ = pair13->pt();
     pt_tt_23_ = pair23->pt();
 
+//    if (channel_ == channel::ttt) {
+//      if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton2")->charge()) {
+//        mvis_os_ = pair12->M();
+//        pt_tt_os_ = pair12->pt();
+//      } else if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+//        mvis_os_ = pair13->M();
+//        pt_tt_os_ = pair13->pt();
+//      } else if (fourtau->GetCandidate("lepton2")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+//        mvis_os_ = pair23->M();
+//        pt_tt_os_ = pair23->pt();
+//      }
+//    }
+
+    double min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
+    p_min_dR_1_ = 1;
+    p_min_dR_2_ = 2;
     if (channel_ == channel::ttt) {
-      if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton2")->charge()) {
-        mvis_os_ = pair12->M();
-        pt_tt_os_ = pair12->pt();
-      } else if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
-        mvis_os_ = pair13->M();
-        pt_tt_os_ = pair13->pt();
-      } else if (fourtau->GetCandidate("lepton2")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
-        mvis_os_ = pair23->M();
-        pt_tt_os_ = pair23->pt();
+      for(int i = 1; i < 4; i++){
+        for(int j = 1; j < 4; j++){
+          if (i < j) {  
+            if (fourtau->GetCandidate("lepton"+std::to_string(i))->charge() == -fourtau->GetCandidate("lepton"+std::to_string(j))->charge()) {
+              if (std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector())) < min_dR_) {
+                min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()));
+                p_min_dphi_1_ = i;
+                p_min_dphi_2_ = j;
+              }
+            } 
+          }
+        }
       }
+      CompositeCandidate *pair_min_dR = new CompositeCandidate();
+      pair_min_dR->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_)));
+      pair_min_dR->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_)));
+      mvis_min_sum_dR_1_ = pair_min_dR->M();
+      pt_min_sum_dR_1_ = pair_min_dR->pt();
+      dR_min_sum_dR_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_))->vector(),fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_))->vector()));
     }
 
     mvis_phi_ = 0.0;
@@ -1128,7 +1164,6 @@ namespace ic {
        p_min_sum_dR_2_ = 2;
 
        double min_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
-       double min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
        double min_sum_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
        double min_sum_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
 
@@ -1205,11 +1240,13 @@ namespace ic {
 
        pair_min_sum_dR_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_1_)));
        pair_min_sum_dR_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_2_)));
+       dR_min_sum_dR_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_))->vector(),fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_))->vector()));
        vector<int> v4 {1,2,3,4};
        v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_1_), v4.end());
        v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_2_), v4.end());
        pair_min_sum_dR_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v4[0])));
        pair_min_sum_dR_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v4[1])));
+       dR_min_sum_dR_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(v4[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v4[1]))->vector()));
 
        if (pair_min_dphi_1->M()>pair_min_dphi_2->M()) {
          mvis_min_dphi_1_ = pair_min_dphi_1->M();
@@ -2081,6 +2118,17 @@ namespace ic {
         isMuonEG_ = true;
       }
     }
+
+    wt_ggZZ_ = event->Exists("wt_ggZZ") ? event->Get<float>("wt_ggZZ") : 1.0;
+    wt_qqZZ_ = event->Exists("wt_qqZZ") ? event->Get<float>("wt_qqZZ") : 1.0;
+    wt_ggZZ_PDFScaleUp_ = event->Exists("wt_ggZZ_PDFScaleUp") ? event->Get<float>("wt_ggZZ_PDFScaleUp") : 1.0;
+    wt_ggZZ_PDFScaleDn_ = event->Exists("wt_ggZZ_PDFScaleDn") ? event->Get<float>("wt_ggZZ_PDFScaleDn") : 1.0;
+    wt_ggZZ_QCDScaleUp_ = event->Exists("wt_ggZZ_QCDScaleUp") ? event->Get<float>("wt_ggZZ_QCDScaleUp") : 1.0;
+    wt_ggZZ_QCDScaleDn_ = event->Exists("wt_ggZZ_QCDScaleDn") ? event->Get<float>("wt_ggZZ_QCDScaleDn") : 1.0;
+    wt_ggZZ_AsScaleUp_ = event->Exists("wt_ggZZ_AsScaleUp") ? event->Get<float>("wt_ggZZ_AsScaleUp") : 1.0;
+    wt_ggZZ_AsScaleDn_ = event->Exists("wt_ggZZ_AsScaleDn") ? event->Get<float>("wt_ggZZ_AsScaleDn") : 1.0;
+    wt_ggZZ_PDFReplicaScaleUp_ = event->Exists("wt_ggZZ_PDFReplicaScaleUp") ? event->Get<float>("wt_ggZZ_PDFReplicaScaleUp") : 1.0;
+    wt_ggZZ_PDFReplicaScaleDn_ = event->Exists("wt_ggZZ_PDFReplicaScaleUp") ? event->Get<float>("wt_ggZZ_PDFReplicaScaleUp") : 1.0;
 
     if (write_tree_ && fs_) outtree_->Fill();
     return 0;

@@ -12,6 +12,8 @@
 #include "TSystem.h"
 #include "TFile.h"
 #include "boost/format.hpp"
+#include <TSpline.h>
+#include <TGraphErrors.h>
 
 namespace ic {
 
@@ -32,7 +34,9 @@ namespace ic {
     do_mtau_fakerate_           = false;
     do_mtaucross_trg_           = false;
     do_singlem_trg_             = false;
-    do_emucross_trg_           = false;
+    do_emucross_trg_            = false;
+    do_ggZZ_k_fact_             = false;
+    do_qqZZ_k_fact_             = false;
     }
 HTTWeights::~HTTWeights() {
   ;
@@ -50,7 +54,8 @@ int HTTWeights::PreAnalysis() {
   std::cout << boost::format(param_fmt()) % "do_tau_id_sf"        % do_tau_id_sf_;
   std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
   std::cout << boost::format(param_fmt()) % "ditau_label"         % ditau_label_;
-  std::cout << boost::format(param_fmt()) % "scalefactor_file"    % scalefactor_file_;
+  std::cout << boost::format(param_fmt()) % "do_ggZZ_k_fact"    % do_ggZZ_k_fact_;
+  std::cout << boost::format(param_fmt()) % "do_qqZZ_k_fact"    % do_qqZZ_k_fact_;
 
 
   if(scalefactor_file_!="") {
@@ -185,7 +190,85 @@ int HTTWeights::Execute(TreeEvent *event) {
   std::string m_string = "m";
   std::string t_string = "t";
 
+  /// K factors
+  if (do_ggZZ_k_fact_) {
+    TFile *fin = TFile::Open("input/k_factors/Kfactor_Collected_ggHZZ_2l2l_NNLO_NNPDF_NarrowWidth_13TeV.root");
+    TSpline3* ggZZ_kf_Nominal = (TSpline3*)fin->Get("sp_kfactor_Nominal");
+    double ggZZ_nom = ggZZ_kf_Nominal->Eval(event->Get<double>("diZ_mass"));
+    event->Add("wt_ggZZ", ggZZ_nom);
+    eventInfo->set_weight("wt_ggZZ",ggZZ_nom);
+    
+    TSpline3* ggZZ_kf_PDFScaleDn = (TSpline3*)fin->Get("sp_kfactor_PDFScaleDn");
+    event->Add("wt_ggZZ_PDFScaleDn_ratio", (ggZZ_kf_PDFScaleDn->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
+    TSpline3* ggZZ_kf_PDFScaleUp = (TSpline3*)fin->Get("sp_kfactor_PDFScaleUp");
+    event->Add("wt_ggZZ_PDFScaleUp_ratio", (ggZZ_kf_PDFScaleUp->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
 
+    TSpline3* ggZZ_kf_QCDScaleDn = (TSpline3*)fin->Get("sp_kfactor_QCDScaleDn");
+    event->Add("wt_ggZZ_QCDScaleDn_ratio", (ggZZ_kf_QCDScaleDn->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
+    TSpline3* ggZZ_kf_QCDScaleUp = (TSpline3*)fin->Get("sp_kfactor_QCDScaleUp");
+    event->Add("wt_ggZZ_QCDScaleUp_ratio", (ggZZ_kf_QCDScaleUp->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
+
+    TSpline3* ggZZ_kf_AsScaleDn = (TSpline3*)fin->Get("sp_kfactor_AsScaleDn");
+    event->Add("wt_ggZZ_AsScaleDn_ratio", (ggZZ_kf_AsScaleDn->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
+    TSpline3* ggZZ_kf_AsScaleUp = (TSpline3*)fin->Get("sp_kfactor_AsScaleUp");
+    event->Add("wt_ggZZ_AsScaleUp_ratio", (ggZZ_kf_AsScaleUp->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
+
+    TSpline3* ggZZ_kf_PDFReplicaScaleDn = (TSpline3*)fin->Get("sp_kfactor_PDFReplicaScaleDn");
+    event->Add("wt_ggZZ_PDFReplicaScaleDn_ratio", (ggZZ_kf_PDFReplicaScaleDn->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
+    TSpline3* ggZZ_kf_PDFReplicaScaleUp = (TSpline3*)fin->Get("sp_kfactor_PDFReplicaScaleUp");
+    event->Add("wt_ggZZ_PDFReplicaScaleUp_ratio", (ggZZ_kf_PDFReplicaScaleUp->Eval(event->Get<double>("diZ_mass")))/ggZZ_nom);
+  }
+  
+  if (do_qqZZ_k_fact_) {
+    float k=0.0;
+    float GENmassZZ = event->Get<double>("diZ_mass");
+    if (event->Get<bool>("diZ_same_decay")) {
+      k+=1.23613311013*(abs(GENmassZZ)>0.0&&abs(GENmassZZ)<=25.0);
+      k+=1.17550314639*(abs(GENmassZZ)>25.0&&abs(GENmassZZ)<=50.0);
+      k+=1.17044565911*(abs(GENmassZZ)>50.0&&abs(GENmassZZ)<=75.0);
+      k+=1.03141209689*(abs(GENmassZZ)>75.0&&abs(GENmassZZ)<=100.0);
+      k+=1.05285574912*(abs(GENmassZZ)>100.0&&abs(GENmassZZ)<=125.0);
+      k+=1.11287217794*(abs(GENmassZZ)>125.0&&abs(GENmassZZ)<=150.0);
+      k+=1.13361441158*(abs(GENmassZZ)>150.0&&abs(GENmassZZ)<=175.0);
+      k+=1.10355603327*(abs(GENmassZZ)>175.0&&abs(GENmassZZ)<=200.0);
+      k+=1.10053981637*(abs(GENmassZZ)>200.0&&abs(GENmassZZ)<=225.0);
+      k+=1.10972676811*(abs(GENmassZZ)>225.0&&abs(GENmassZZ)<=250.0);
+      k+=1.12069120525*(abs(GENmassZZ)>250.0&&abs(GENmassZZ)<=275.0);
+      k+=1.11589101635*(abs(GENmassZZ)>275.0&&abs(GENmassZZ)<=300.0);
+      k+=1.13906170314*(abs(GENmassZZ)>300.0&&abs(GENmassZZ)<=325.0);
+      k+=1.14854594271*(abs(GENmassZZ)>325.0&&abs(GENmassZZ)<=350.0);
+      k+=1.14616229031*(abs(GENmassZZ)>350.0&&abs(GENmassZZ)<=375.0);
+      k+=1.14573157789*(abs(GENmassZZ)>375.0&&abs(GENmassZZ)<=400.0);
+      k+=1.13829430515*(abs(GENmassZZ)>400.0&&abs(GENmassZZ)<=425.0);
+      k+=1.15521193686*(abs(GENmassZZ)>425.0&&abs(GENmassZZ)<=450.0);
+      k+=1.13679822698*(abs(GENmassZZ)>450.0&&abs(GENmassZZ)<=475.0);
+      k+=1.13223956942*(abs(GENmassZZ)>475.0);
+    }
+    if (!event->Get<bool>("diZ_same_decay")) {
+      k+=1.25094466582*(abs(GENmassZZ)>0.0&&abs(GENmassZZ)<=25.0);
+      k+=1.22459455362*(abs(GENmassZZ)>25.0&&abs(GENmassZZ)<=50.0);
+      k+=1.19287368979*(abs(GENmassZZ)>50.0&&abs(GENmassZZ)<=75.0);
+      k+=1.04597506451*(abs(GENmassZZ)>75.0&&abs(GENmassZZ)<=100.0);
+      k+=1.08323413771*(abs(GENmassZZ)>100.0&&abs(GENmassZZ)<=125.0);
+      k+=1.09994968030*(abs(GENmassZZ)>125.0&&abs(GENmassZZ)<=150.0);
+      k+=1.16698455800*(abs(GENmassZZ)>150.0&&abs(GENmassZZ)<=175.0);
+      k+=1.10399053155*(abs(GENmassZZ)>175.0&&abs(GENmassZZ)<=200.0);
+      k+=1.10592664340*(abs(GENmassZZ)>200.0&&abs(GENmassZZ)<=225.0);
+      k+=1.10690381480*(abs(GENmassZZ)>225.0&&abs(GENmassZZ)<=250.0);
+      k+=1.11194928918*(abs(GENmassZZ)>250.0&&abs(GENmassZZ)<=275.0);
+      k+=1.13522586553*(abs(GENmassZZ)>275.0&&abs(GENmassZZ)<=300.0);
+      k+=1.11895090244*(abs(GENmassZZ)>300.0&&abs(GENmassZZ)<=325.0);
+      k+=1.13898508615*(abs(GENmassZZ)>325.0&&abs(GENmassZZ)<=350.0);
+      k+=1.15463977506*(abs(GENmassZZ)>350.0&&abs(GENmassZZ)<=375.0);
+      k+=1.17341664594*(abs(GENmassZZ)>375.0&&abs(GENmassZZ)<=400.0);
+      k+=1.20093349763*(abs(GENmassZZ)>400.0&&abs(GENmassZZ)<=425.0);
+      k+=1.18915554919*(abs(GENmassZZ)>425.0&&abs(GENmassZZ)<=450.0);
+      k+=1.18546007375*(abs(GENmassZZ)>450.0&&abs(GENmassZZ)<=475.0);
+      k+=1.12864505708*(abs(GENmassZZ)>475.0);
+    }
+    event->Add("wt_qqZZ", k);
+    eventInfo->set_weight("wt_qqZZ",k);
+  }
 
   /// IDISO SCALE FACTORS
   if (do_tau_id_sf_) {
