@@ -977,7 +977,7 @@ int HTTWeights::PreAnalysis() {
       
       // deepTau Trigger SFs from TauPOG
       // triggers for tau legs in et, mt and tt channels
-      if (era_ != era::data_2018) {
+      if (era_ != era::data_2018UL) {
         fns_["t_trg_30_data"] = std::shared_ptr<RooFunctor>(
             w_UL_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_UL_->argSet("t_pt,t_dm")));
         fns_["t_trg_30_mc"] = std::shared_ptr<RooFunctor>(
