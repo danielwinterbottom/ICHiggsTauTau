@@ -167,7 +167,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
  
-FILELIST='filelists/Feb16_2016-preVFP_MC_106X'
+FILELIST='filelists/Nov29_2016-preVFP_MC_106X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -248,42 +248,49 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-      # Drell-Yan LO
+     # Drell-Yan LO
      'DY1JetsToLL-LO',
      'DY2JetsToLL-LO',
      'DY3JetsToLL-LO',
      'DY4JetsToLL-LO',
-     'DYJetsToLL-LO',
-#      # Low mass Drell Yan LO
+     'DYJetsToLL-LO',\
+
+     # Low mass Drell Yan LO
      'DYJetsToLL_M-10to50-LO',
      'DY1JetsToLL_M-10to50-LO',
      'DY2JetsToLL_M-10to50-LO',
      'DY3JetsToLL_M-10to50-LO',
      'DY4JetsToLL_M-10to50-LO',
-      # # Drell-Yan NLO
-      'DYJetsToLL_0J-NLO',
-      'DYJetsToLL_1J-NLO',
-      'DYJetsToLL_2J-NLO',
-      'DYJetstoLL-NLO',
-      # Electroweak W and Z
+
+     # Drell-Yan NLO
+     #'DYJetsToLL_0J-NLO',
+     # 'DYJetsToLL_1J-NLO',
+     # 'DYJetsToLL_2J-NLO',
+     # 'DYJetstoLL-NLO',
+
+     # Electroweak W and Z
      'EWKWMinus2Jets_WToLNu',
      'EWKWPlus2Jets_WToLNu',
      'EWKZ2Jets_ZToLL',
-      # W + Jets L0
+
+     # W + Jets L0
      'WJetsToLNu-LO',
      'W1JetsToLNu-LO',
      'W2JetsToLNu-LO',
      'W3JetsToLNu-LO',
      'W4JetsToLNu-LO',
-      # W + Jets NLO
+
+     # W + Jets NLO
      #'WJetsToLNu_0J-NLO',
      #'WJetsToLNu_1J-NLO',
-     #'WJetsToLNu_2J-NLO', 
-      # ttbar
+     #'WJetsToLNu_2J-NLO',
+ 
+     # ttbar
      'TTTo2L2Nu',
      'TTToHadronic',
      'TTToSemiLeptonic',
-      # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
+
+     # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
      'WZTo1L1Nu2Q',
      'WZTo3LNu',
      'WWTo1L1Nu2Q',
@@ -292,11 +299,13 @@ if options.proc_bkg or options.proc_all:
      'ZZTo4L',
      'WZTo1L3Nu',
      'WZTo2Q2L',
-      # Inclusive
+
+     # Inclusive
      'WW',
      'WZ',
      'ZZ',
-      # Triboson
+
+     # Triboson
      'WWZ',
      'WWZ-ext1',
      'WZZ',
@@ -305,13 +314,15 @@ if options.proc_bkg or options.proc_all:
      'WWW-ext1',
      'ZZZ',
      'ZZZ-ext1',
-      # Other backgrounds
+
+     # Other backgrounds
      'WGToLNuG',
      'Tbar-t',
      'Tbar-tW',
      'T-t',
      'T-tW',
-      # SM Higgs (Missing Files: VBFHToTauTau_M125,WminusHToTauTau_M125,WplusHToTauTau_M125,ttHToTauTau_M125)
+
+     # SM Higgs (Missing Files: VBFHToTauTau_M125,WminusHToTauTau_M125,WplusHToTauTau_M125,ttHToTauTau_M125)
      'GluGluHToTauTau_M125',
      'ZHToTauTau_M125',
      'VBFHToTauTau_M125',
@@ -320,16 +331,14 @@ if options.proc_bkg or options.proc_all:
      'ttHToTauTau_M125',
  ] 
 
-  Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","VBFHToTauTau_M125","WZTo1L3Nu","WZTo2Q2L","WminusHToTauTau_M125","WplusHToTauTau_M125","ttHToTauTau_M125"]
+  #Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","VBFHToTauTau_M125","WZTo1L3Nu","WZTo2Q2L","WminusHToTauTau_M125","WplusHToTauTau_M125","ttHToTauTau_M125"]
 
   for sa in central_samples:
       JOB='%s_2016preVFP' % (sa)
-      FILELIST='filelists/Feb16_2016-preVFP_MC_106X'
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
-
-      if sa in Sep28_samples:
-        FILELIST = 'filelists/Sep28_2016_preVFP_MC_106X' 
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/ksavva/Sep28_MC_106X_2016-preVFP/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+      FILELIST='filelists/Nov29_2016-preVFP_MC_106X'
+      user='ksavva'
+      PREFIX='Nov29_MC_106X_2016-preVFP'
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
       job_num=0
       for FLATJSONPATCH in flatjsons: 
