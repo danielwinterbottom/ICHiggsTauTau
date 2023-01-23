@@ -212,13 +212,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       for era in data_eras:
         data_samples+=['Tau'+era]        
 
-  DATAFILELIST="./filelists/Apr22_2016-preVFP_Data_106X"
+  DATAFILELIST="./filelists/Nov29_2016-preVFP_Data_106X"
 
   for sa in data_samples:
       JOB='%s_2016preVFP' % (sa)
       DATAFILELIST_ = DATAFILELIST
-      user='guttley'
-      prefix='Apr22_Data_106X_2016-preVFP'
+      user='ksavva'
+      prefix='Nov29_Data_106X_2016-preVFP'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST_)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST_)s_%(sa)s.dat' % vars()))
       nperjob = 40
