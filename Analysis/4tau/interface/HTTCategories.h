@@ -61,6 +61,10 @@ class HTTCategories : public ModuleBase {
   double wt_dysoup_;
   double wt_mc_sign_; 
 
+  double wt_prefire_;
+  double wt_prefire_up_;
+  double wt_prefire_down_;
+
   double gen_match_1_;
   double gen_match_2_;
   double gen_match_3_;
@@ -70,6 +74,16 @@ class HTTCategories : public ModuleBase {
   double idisoweight_2_;
   double idisoweight_3_;
   double idisoweight_4_;
+
+  double idisoweight_ratio_1_up_;
+  double idisoweight_ratio_2_up_;
+  double idisoweight_ratio_3_up_;
+  double idisoweight_ratio_4_up_;
+  double idisoweight_ratio_1_down_;
+  double idisoweight_ratio_2_down_;
+  double idisoweight_ratio_3_down_;
+  double idisoweight_ratio_4_down_;
+
 
   double idisoweight_vvvloose_1_;
   double idisoweight_vvvloose_2_;
@@ -106,6 +120,15 @@ class HTTCategories : public ModuleBase {
   double etau_fakerate_3_;
   double etau_fakerate_4_;
 
+  double etau_fakerate_ratio_1_up_;
+  double etau_fakerate_ratio_2_up_;
+  double etau_fakerate_ratio_3_up_;
+  double etau_fakerate_ratio_4_up_;
+  double etau_fakerate_ratio_1_down_;
+  double etau_fakerate_ratio_2_down_;
+  double etau_fakerate_ratio_3_down_;
+  double etau_fakerate_ratio_4_down_;
+
   double etau_fakerate_vvloose_1_;
   double etau_fakerate_vvloose_2_;
   double etau_fakerate_vvloose_3_;
@@ -140,6 +163,15 @@ class HTTCategories : public ModuleBase {
   double mtau_fakerate_2_;
   double mtau_fakerate_3_;
   double mtau_fakerate_4_;
+
+  double mtau_fakerate_ratio_1_up_;
+  double mtau_fakerate_ratio_2_up_;
+  double mtau_fakerate_ratio_3_up_;
+  double mtau_fakerate_ratio_4_up_;
+  double mtau_fakerate_ratio_1_down_;
+  double mtau_fakerate_ratio_2_down_;
+  double mtau_fakerate_ratio_3_down_;
+  double mtau_fakerate_ratio_4_down_;
 
   double mtau_fakerate_vloose_1_;
   double mtau_fakerate_vloose_2_;
@@ -209,6 +241,9 @@ class HTTCategories : public ModuleBase {
   double trigeff_emucross_low_mc_2_;
 
   double total_trg_;
+
+  double total_trg_ratio_doubletau_up_;
+  double total_trg_ratio_doubletau_down_;
 
   double jet_probb_1_;
   double jet_probb_2_;

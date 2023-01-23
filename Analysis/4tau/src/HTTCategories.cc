@@ -108,6 +108,16 @@ namespace ic {
       outtree_->Branch("idisoweight_3", &idisoweight_3_);
       outtree_->Branch("idisoweight_4", &idisoweight_4_);
 
+      outtree_->Branch("idisoweight_ratio_1_up", &idisoweight_ratio_1_up_);
+      outtree_->Branch("idisoweight_ratio_2_up", &idisoweight_ratio_2_up_);
+      outtree_->Branch("idisoweight_ratio_3_up", &idisoweight_ratio_3_up_);
+      outtree_->Branch("idisoweight_ratio_4_up", &idisoweight_ratio_4_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_down", &idisoweight_ratio_1_down_);
+      outtree_->Branch("idisoweight_ratio_2_down", &idisoweight_ratio_2_down_);
+      outtree_->Branch("idisoweight_ratio_3_down", &idisoweight_ratio_3_down_);
+      outtree_->Branch("idisoweight_ratio_4_down", &idisoweight_ratio_4_down_);
+
       outtree_->Branch("idisoweight_vvvloose_1", &idisoweight_vvvloose_1_);
       outtree_->Branch("idisoweight_vvvloose_2", &idisoweight_vvvloose_2_);
       outtree_->Branch("idisoweight_vvvloose_3", &idisoweight_vvvloose_3_);
@@ -144,6 +154,16 @@ namespace ic {
       outtree_->Branch("etau_fakerate_3", &etau_fakerate_3_);
       outtree_->Branch("etau_fakerate_4", &etau_fakerate_4_);
 
+      outtree_->Branch("etau_fakerate_ratio_1_up", &etau_fakerate_ratio_1_up_);
+      outtree_->Branch("etau_fakerate_ratio_2_up", &etau_fakerate_ratio_2_up_);
+      outtree_->Branch("etau_fakerate_ratio_3_up", &etau_fakerate_ratio_3_up_);
+      outtree_->Branch("etau_fakerate_ratio_4_up", &etau_fakerate_ratio_4_up_);
+
+      outtree_->Branch("etau_fakerate_ratio_1_down", &etau_fakerate_ratio_1_down_);
+      outtree_->Branch("etau_fakerate_ratio_2_down", &etau_fakerate_ratio_2_down_);
+      outtree_->Branch("etau_fakerate_ratio_3_down", &etau_fakerate_ratio_3_down_);
+      outtree_->Branch("etau_fakerate_ratio_4_down", &etau_fakerate_ratio_4_down_);
+
       outtree_->Branch("etau_fakerate_vvloose_1", &etau_fakerate_vvloose_1_);
       outtree_->Branch("etau_fakerate_vvloose_2", &etau_fakerate_vvloose_2_);
       outtree_->Branch("etau_fakerate_vvloose_3", &etau_fakerate_vvloose_3_);
@@ -179,6 +199,16 @@ namespace ic {
       outtree_->Branch("mtau_fakerate_2", &mtau_fakerate_2_);
       outtree_->Branch("mtau_fakerate_3", &mtau_fakerate_3_);
       outtree_->Branch("mtau_fakerate_4", &mtau_fakerate_4_);
+
+      outtree_->Branch("mtau_fakerate_ratio_1_up", &mtau_fakerate_ratio_1_up_);
+      outtree_->Branch("mtau_fakerate_ratio_2_up", &mtau_fakerate_ratio_2_up_);
+      outtree_->Branch("mtau_fakerate_ratio_3_up", &mtau_fakerate_ratio_3_up_);
+      outtree_->Branch("mtau_fakerate_ratio_4_up", &mtau_fakerate_ratio_4_up_);
+
+      outtree_->Branch("mtau_fakerate_ratio_1_down", &mtau_fakerate_ratio_1_down_);
+      outtree_->Branch("mtau_fakerate_ratio_2_down", &mtau_fakerate_ratio_2_down_);
+      outtree_->Branch("mtau_fakerate_ratio_3_down", &mtau_fakerate_ratio_3_down_);
+      outtree_->Branch("mtau_fakerate_ratio_4_down", &mtau_fakerate_ratio_4_down_);
 
       outtree_->Branch("mtau_fakerate_vloose_1", &mtau_fakerate_vloose_1_);
       outtree_->Branch("mtau_fakerate_vloose_2", &mtau_fakerate_vloose_2_);
@@ -250,6 +280,9 @@ namespace ic {
       outtree_->Branch("trigeff_emucross_low_mc_2",  &trigeff_emucross_low_mc_2_);
 
       outtree_->Branch("total_trg",  &total_trg_);
+
+      outtree_->Branch("total_trg_ratio_doubletau_up",    &total_trg_ratio_doubletau_up_);
+      outtree_->Branch("total_trg_ratio_doubletau_down",  &total_trg_ratio_doubletau_down_);
 
       // dxy and dz
       outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
@@ -582,6 +615,10 @@ namespace ic {
       outtree_->Branch("wt_mc_1008",&scale_8_);
       outtree_->Branch("wt_mc_1009",&scale_9_);
 
+      outtree_->Branch("wt_prefire",      &wt_prefire_);
+      outtree_->Branch("wt_prefire_up",   &wt_prefire_up_);
+      outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
+
     }
 
     return 0;
@@ -592,6 +629,11 @@ namespace ic {
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     wt_mc_sign_ = eventInfo->weight_defined("wt_mc_sign") ? eventInfo->weight("wt_mc_sign") : 1.0;
+
+    wt_prefire_ = eventInfo->weight_defined("wt_prefire") ? eventInfo->weight("wt_prefire") : 1.0;
+    wt_prefire_up_ = eventInfo->weight_defined("wt_prefire_up") ? eventInfo->weight("wt_prefire_up") : 1.0;
+    wt_prefire_down_ = eventInfo->weight_defined("wt_prefire_down") ? eventInfo->weight("wt_prefire_down") : 1.0;
+
     std::vector<CompositeCandidate *> const& fourtau_vec = event->GetPtrVec<CompositeCandidate>(fourtau_label_);
     CompositeCandidate const* fourtau = fourtau_vec.at(0);
 
@@ -601,9 +643,6 @@ namespace ic {
     Candidate const* lep4 = 0;
     if (channel_ != channel::ttt) lep4 = fourtau->GetCandidate("lepton4");
     
-    //std::cout << "lep 1 :" << " px " << lep1->px() << " py " << lep1->py() << " pz " << lep1->pz() << "energy : " << lep1->energy()  << std::endl;
-    //std::cout << "lep 2 :" << " px " << lep2->px() << " py " << lep2->py() << " pz " << lep2->pz() << "energy : " << lep2->energy()  << std::endl;
-    //std::cout << "lep 3 :" << " px " << lep3->px() << " py " << lep3->py() << " pz " << lep3->pz() << "energy : " << lep3->energy()  << std::endl;
 
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -692,6 +731,16 @@ namespace ic {
     idisoweight_3_ = event->Exists("idisoweight_3") ? event->Get<double>("idisoweight_3") : 1.0;
     idisoweight_4_ = event->Exists("idisoweight_4") ? event->Get<double>("idisoweight_4") : 1.0;
 
+    idisoweight_ratio_1_up_ = event->Exists("idisoweight_ratio_1_up") ? event->Get<double>("idisoweight_ratio_1_up") : 1.0;
+    idisoweight_ratio_2_up_ = event->Exists("idisoweight_ratio_2_up") ? event->Get<double>("idisoweight_ratio_2_up") : 1.0;
+    idisoweight_ratio_3_up_ = event->Exists("idisoweight_ratio_3_up") ? event->Get<double>("idisoweight_ratio_3_up") : 1.0;
+    idisoweight_ratio_4_up_ = event->Exists("idisoweight_ratio_4_up") ? event->Get<double>("idisoweight_ratio_4_up") : 1.0;
+
+    idisoweight_ratio_1_down_ = event->Exists("idisoweight_ratio_1_down") ? event->Get<double>("idisoweight_ratio_1_down") : 1.0;
+    idisoweight_ratio_2_down_ = event->Exists("idisoweight_ratio_2_down") ? event->Get<double>("idisoweight_ratio_2_down") : 1.0;
+    idisoweight_ratio_3_down_ = event->Exists("idisoweight_ratio_3_down") ? event->Get<double>("idisoweight_ratio_3_down") : 1.0;
+    idisoweight_ratio_4_down_ = event->Exists("idisoweight_ratio_4_down") ? event->Get<double>("idisoweight_ratio_4_down") : 1.0;
+
     idisoweight_vvvloose_1_ = event->Exists("idisoweight_vvvloose_1") ? event->Get<double>("idisoweight_vvvloose_1") : 1.0;
     idisoweight_vvvloose_2_ = event->Exists("idisoweight_vvvloose_2") ? event->Get<double>("idisoweight_vvvloose_2") : 1.0;
     idisoweight_vvvloose_3_ = event->Exists("idisoweight_vvvloose_3") ? event->Get<double>("idisoweight_vvvloose_3") : 1.0;
@@ -727,6 +776,16 @@ namespace ic {
     etau_fakerate_3_ = event->Exists("etau_fakerate_3") ? event->Get<double>("etau_fakerate_3") : 1.0;
     etau_fakerate_4_ = event->Exists("etau_fakerate_4") ? event->Get<double>("etau_fakerate_4") : 1.0;
 
+    etau_fakerate_ratio_1_up_ = event->Exists("etau_fakerate_ratio_1_up") ? event->Get<double>("etau_fakerate_ratio_1_up") : 1.0;
+    etau_fakerate_ratio_2_up_ = event->Exists("etau_fakerate_ratio_2_up") ? event->Get<double>("etau_fakerate_ratio_2_up") : 1.0;
+    etau_fakerate_ratio_3_up_ = event->Exists("etau_fakerate_ratio_3_up") ? event->Get<double>("etau_fakerate_ratio_3_up") : 1.0;
+    etau_fakerate_ratio_4_up_ = event->Exists("etau_fakerate_ratio_4_up") ? event->Get<double>("etau_fakerate_ratio_4_up") : 1.0;
+
+    etau_fakerate_ratio_1_down_ = event->Exists("etau_fakerate_ratio_1_down") ? event->Get<double>("etau_fakerate_ratio_1_down") : 1.0;
+    etau_fakerate_ratio_2_down_ = event->Exists("etau_fakerate_ratio_2_down") ? event->Get<double>("etau_fakerate_ratio_2_down") : 1.0;
+    etau_fakerate_ratio_3_down_ = event->Exists("etau_fakerate_ratio_3_down") ? event->Get<double>("etau_fakerate_ratio_3_down") : 1.0;
+    etau_fakerate_ratio_4_down_ = event->Exists("etau_fakerate_ratio_4_down") ? event->Get<double>("etau_fakerate_ratio_4_down") : 1.0;
+
     etau_fakerate_vvloose_1_ = event->Exists("etau_fakerate_vvloose_1") ? event->Get<double>("etau_fakerate_vvloose_1") : 1.0;
     etau_fakerate_vvloose_2_ = event->Exists("etau_fakerate_vvloose_2") ? event->Get<double>("etau_fakerate_vvloose_2") : 1.0;
     etau_fakerate_vvloose_3_ = event->Exists("etau_fakerate_vvloose_3") ? event->Get<double>("etau_fakerate_vvloose_3") : 1.0;
@@ -761,7 +820,17 @@ namespace ic {
     mtau_fakerate_2_ = event->Exists("mtau_fakerate_2") ? event->Get<double>("mtau_fakerate_2") : 1.0;
     mtau_fakerate_3_ = event->Exists("mtau_fakerate_3") ? event->Get<double>("mtau_fakerate_3") : 1.0;
     mtau_fakerate_4_ = event->Exists("mtau_fakerate_4") ? event->Get<double>("mtau_fakerate_4") : 1.0;
-    
+   
+    mtau_fakerate_ratio_1_up_ = event->Exists("mtau_fakerate_ratio_1_up") ? event->Get<double>("mtau_fakerate_ratio_1_up") : 1.0;
+    mtau_fakerate_ratio_2_up_ = event->Exists("mtau_fakerate_ratio_2_up") ? event->Get<double>("mtau_fakerate_ratio_2_up") : 1.0;
+    mtau_fakerate_ratio_3_up_ = event->Exists("mtau_fakerate_ratio_3_up") ? event->Get<double>("mtau_fakerate_ratio_3_up") : 1.0;
+    mtau_fakerate_ratio_4_up_ = event->Exists("mtau_fakerate_ratio_4_up") ? event->Get<double>("mtau_fakerate_ratio_4_up") : 1.0;
+
+    mtau_fakerate_ratio_1_down_ = event->Exists("mtau_fakerate_ratio_1_down") ? event->Get<double>("mtau_fakerate_ratio_1_down") : 1.0;
+    mtau_fakerate_ratio_2_down_ = event->Exists("mtau_fakerate_ratio_2_down") ? event->Get<double>("mtau_fakerate_ratio_2_down") : 1.0;
+    mtau_fakerate_ratio_3_down_ = event->Exists("mtau_fakerate_ratio_3_down") ? event->Get<double>("mtau_fakerate_ratio_3_down") : 1.0;
+    mtau_fakerate_ratio_4_down_ = event->Exists("mtau_fakerate_ratio_4_down") ? event->Get<double>("mtau_fakerate_ratio_4_down") : 1.0;
+ 
     mtau_fakerate_vloose_1_ = event->Exists("mtau_fakerate_vloose_1") ? event->Get<double>("mtau_fakerate_vloose_1") : 1.0;
     mtau_fakerate_vloose_2_ = event->Exists("mtau_fakerate_vloose_2") ? event->Get<double>("mtau_fakerate_vloose_2") : 1.0;
     mtau_fakerate_vloose_3_ = event->Exists("mtau_fakerate_vloose_3") ? event->Get<double>("mtau_fakerate_vloose_3") : 1.0;
@@ -862,6 +931,10 @@ namespace ic {
     trigeff_emucross_low_mc_2_ = event->Exists("trigeff_e_emucross_low_mc_2") ? event->Get<double>("trigeff_e_emucross_low_mc_2") : 1.0;
 
     total_trg_ = event->Exists("wt_total_trg") ? event->Get<double>("wt_total_trg") : 1.0;
+
+    total_trg_ratio_doubletau_up_ = event->Exists("wt_tau_trg_ratio_up") ? event->Get<double>("wt_tau_trg_ratio_up") : 1.0;
+    total_trg_ratio_doubletau_down_ = event->Exists("wt_tau_trg_ratio_down") ? event->Get<double>("wt_tau_trg_ratio_down") : 1.0;
+
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     pt_3_ = lep3->pt();
