@@ -102,6 +102,11 @@ namespace ic {
       outtree_->Branch("trg_etaucross_24",      &trg_etaucross_24_);
       outtree_->Branch("trg_emucross_12",       &trg_emucross_12_);
 
+      outtree_->Branch("trg_doubletau_leg_1",      &trg_doubletau_leg_1_);
+      outtree_->Branch("trg_doubletau_leg_2",      &trg_doubletau_leg_2_);
+      outtree_->Branch("trg_doubletau_leg_3",      &trg_doubletau_leg_3_);
+      outtree_->Branch("trg_doubletau_leg_4",      &trg_doubletau_leg_4_);
+
       // idiso weights
       outtree_->Branch("idisoweight_1", &idisoweight_1_);
       outtree_->Branch("idisoweight_2", &idisoweight_2_);
@@ -600,10 +605,10 @@ namespace ic {
       outtree_->Branch("wt_ggZZ_PDFScaleDn",       &wt_ggZZ_PDFScaleDn_);
       outtree_->Branch("wt_ggZZ_QCDScaleUp",       &wt_ggZZ_QCDScaleUp_);
       outtree_->Branch("wt_ggZZ_QCDScaleDn",       &wt_ggZZ_QCDScaleDn_);
-      outtree_->Branch("wt_ggZZ_AsScaleUp",        &wt_ggZZ_AsScaleUp_);
-      outtree_->Branch("wt_ggZZ_AsScaleDn",        &wt_ggZZ_AsScaleDn_);
-      outtree_->Branch("wt_ggZZ_PDFReplicaScaleUp",&wt_ggZZ_PDFReplicaScaleUp_);
-      outtree_->Branch("wt_ggZZ_PDFReplicaScaleDn",&wt_ggZZ_PDFReplicaScaleDn_);
+      outtree_->Branch("wt_ggZZ_AsUp",             &wt_ggZZ_AsUp_);
+      outtree_->Branch("wt_ggZZ_AsDn",             &wt_ggZZ_AsDn_);
+      outtree_->Branch("wt_ggZZ_PDFReplicaUp",&wt_ggZZ_PDFReplicaUp_);
+      outtree_->Branch("wt_ggZZ_PDFReplicaDn",&wt_ggZZ_PDFReplicaDn_);
 
       outtree_->Branch("wt_mc_1001",&scale_1_);
       outtree_->Branch("wt_mc_1002",&scale_2_);
@@ -725,6 +730,10 @@ namespace ic {
     trg_etaucross_24_ = event->Exists("trg_etaucross_24") ? event->Get<bool>("trg_etaucross_24") : false;
     trg_emucross_12_ = event->Exists("trg_emucross_12") ? event->Get<bool>("trg_emucross_12") : false;
 
+    trg_doubletau_leg_1_ = event->Exists("trg_doubletau_leg_1") ? event->Get<bool>("trg_doubletau_leg_1") : false;
+    trg_doubletau_leg_2_ = event->Exists("trg_doubletau_leg_2") ? event->Get<bool>("trg_doubletau_leg_2") : false;
+    trg_doubletau_leg_3_ = event->Exists("trg_doubletau_leg_3") ? event->Get<bool>("trg_doubletau_leg_3") : false;
+    trg_doubletau_leg_4_ = event->Exists("trg_doubletau_leg_4") ? event->Get<bool>("trg_doubletau_leg_4") : false;
 
     idisoweight_1_ = event->Exists("idisoweight_1") ? event->Get<double>("idisoweight_1") : 1.0;
     idisoweight_2_ = event->Exists("idisoweight_2") ? event->Get<double>("idisoweight_2") : 1.0;
@@ -2203,16 +2212,16 @@ namespace ic {
       }
     }
 
-    wt_ggZZ_ = event->Exists("wt_ggZZ") ? event->Get<float>("wt_ggZZ") : 1.0;
+    wt_ggZZ_ = event->Exists("wt_ggZZ") ? event->Get<double>("wt_ggZZ") : 1.0;
     wt_qqZZ_ = event->Exists("wt_qqZZ") ? event->Get<float>("wt_qqZZ") : 1.0;
-    wt_ggZZ_PDFScaleUp_ = event->Exists("wt_ggZZ_PDFScaleUp") ? event->Get<float>("wt_ggZZ_PDFScaleUp") : 1.0;
-    wt_ggZZ_PDFScaleDn_ = event->Exists("wt_ggZZ_PDFScaleDn") ? event->Get<float>("wt_ggZZ_PDFScaleDn") : 1.0;
-    wt_ggZZ_QCDScaleUp_ = event->Exists("wt_ggZZ_QCDScaleUp") ? event->Get<float>("wt_ggZZ_QCDScaleUp") : 1.0;
-    wt_ggZZ_QCDScaleDn_ = event->Exists("wt_ggZZ_QCDScaleDn") ? event->Get<float>("wt_ggZZ_QCDScaleDn") : 1.0;
-    wt_ggZZ_AsScaleUp_ = event->Exists("wt_ggZZ_AsScaleUp") ? event->Get<float>("wt_ggZZ_AsScaleUp") : 1.0;
-    wt_ggZZ_AsScaleDn_ = event->Exists("wt_ggZZ_AsScaleDn") ? event->Get<float>("wt_ggZZ_AsScaleDn") : 1.0;
-    wt_ggZZ_PDFReplicaScaleUp_ = event->Exists("wt_ggZZ_PDFReplicaScaleUp") ? event->Get<float>("wt_ggZZ_PDFReplicaScaleUp") : 1.0;
-    wt_ggZZ_PDFReplicaScaleDn_ = event->Exists("wt_ggZZ_PDFReplicaScaleUp") ? event->Get<float>("wt_ggZZ_PDFReplicaScaleUp") : 1.0;
+    wt_ggZZ_PDFScaleUp_ = event->Exists("wt_ggZZ_PDFScaleUp") ? event->Get<double>("wt_ggZZ_PDFScaleUp") : 1.0;
+    wt_ggZZ_PDFScaleDn_ = event->Exists("wt_ggZZ_PDFScaleDn") ? event->Get<double>("wt_ggZZ_PDFScaleDn") : 1.0;
+    wt_ggZZ_QCDScaleUp_ = event->Exists("wt_ggZZ_QCDScaleUp") ? event->Get<double>("wt_ggZZ_QCDScaleUp") : 1.0;
+    wt_ggZZ_QCDScaleDn_ = event->Exists("wt_ggZZ_QCDScaleDn") ? event->Get<double>("wt_ggZZ_QCDScaleDn") : 1.0;
+    wt_ggZZ_AsUp_ = event->Exists("wt_ggZZ_AsUp") ? event->Get<double>("wt_ggZZ_AsUp") : 1.0;
+    wt_ggZZ_AsDn_ = event->Exists("wt_ggZZ_AsDn") ? event->Get<double>("wt_ggZZ_AsDn") : 1.0;
+    wt_ggZZ_PDFReplicaUp_ = event->Exists("wt_ggZZ_PDFReplicaUp") ? event->Get<double>("wt_ggZZ_PDFReplicaUp") : 1.0;
+    wt_ggZZ_PDFReplicaDn_ = event->Exists("wt_ggZZ_PDFReplicaUp") ? event->Get<double>("wt_ggZZ_PDFReplicaUp") : 1.0;
 
    if(eventInfo->weight_defined("1001")) scale_1_ = eventInfo->weight("1001"); else scale_1_=1.0;
    if(eventInfo->weight_defined("1002")) scale_2_ = eventInfo->weight("1002"); else scale_2_=1.0;

@@ -471,8 +471,8 @@ if options.proc_sig:
         #SIG_DIR = 'Jun15_Signal_106X_2018'
         #SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
         #user='guttley'
-        SIG_DIR = 'Nov30_Signal_106X_2017'
-        SIG_FILELIST = "filelists/Nov30_2017_MC_106X"
+        SIG_DIR = 'Jan20_Signal_106X_2017'
+        SIG_FILELIST = "filelists/Jan20_2017_MC_106X"
         user='guttley'
         JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());

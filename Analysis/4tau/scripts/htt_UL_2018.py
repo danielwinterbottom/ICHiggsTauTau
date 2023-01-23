@@ -2,7 +2,7 @@
 
 # python scripts/htt_UL_2018.py --bkg --data --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
 
-# python scripts/htt_UL_2018.py --bkg --signal --batch --parajobs
+# python scripts/htt_UL_2018.py --bkg --signal --data --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --batch --parajobs
 
 # importing libraries
 import sys
@@ -254,7 +254,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         for sa in data_samples:
             DATAFILELIST="./filelists/Nov30_2018_Data_106X"
             JOB='%s_2018' % (sa)
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(DATAPREFIX)/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars())
             # if sa == "EGammaD":
                 # DATAFILELIST="./filelists/Feb16_2018_Data_106X"   
                 # JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/guttley/Feb16_Data_106X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars()); 
@@ -476,13 +476,8 @@ if options.proc_sig:
     print("Number of Signal Samples is: ", counter)
     for sa in signal_mc:
         print sa
-        #SIG_DIR = 'June03_Signal_106X_2018'
-        #SIG_FILELIST = "filelists/June03_2018_MC_106X"
-        #SIG_DIR = 'Jun15_Signal_106X_2018'
-        #SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
-        #user='guttley'
-        SIG_DIR = 'Nov30_Signal_106X_2018'
-        SIG_FILELIST = "filelists/Nov30_2018_MC_106X"
+        SIG_DIR = 'Jan20_Signal_106X_2018'
+        SIG_FILELIST = "filelists/Jan20_2018_MC_106X"
         user='guttley'
         JOB='%s_2018' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());

@@ -113,8 +113,6 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   era_str = js["era"].asString();
   if(js["strategy"].asString()==""){std::cout<<"ERROR: strategy not set"<<std::endl; exit(1);}
   strategy_str = js["strategy"].asString();
-  ic::strategy strategy_type  = String2Strategy(strategy_str);
-  //ic::era  era_type  = String2Era(era_str);
   veto_elec_pt = 10;
   veto_elec_eta = 2.5;
   veto_elec_dxy = 0.045;
@@ -135,8 +133,6 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   veto_tau_eta = 2.3;
   veto_tau_dz = 0.2;
 
-
-  // TO DO: Check these and try changing them
   elec_dz = 0.2;
   elec_dxy = 0.045;
   muon_dxy = 0.045;
@@ -180,73 +176,44 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   }
 
 
- do_qcd_scale_wts_=false;
- do_qcd_scale_wts_ = js["do_qcd_scale_wts"].asBool();
- if (output_name.find("SUSYGluGluToBBHToTauTau_M") != output_name.npos && output_name.find("NLO") != output_name.npos) do_qcd_scale_wts_=true;
-  
- is_data      = json["is_data"].asBool();
- is_embedded  = json["is_embedded"].asBool();
- jets_label   = json["jets"].asString();
- met_label    = json["met"].asString();
- if(json["baseline"]["mass_scale_mode"].asBool()==true){
-   mass_shift = json["baseline"]["mass_shift"].asDouble();
- } else mass_shift=1.00;
- do_met_filters = json["do_met_filters"].asBool();
- tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
- e_scale_mode = json["baseline"]["e_scale_mode"].asBool();
- e_unc_mode = js["baseline"]["e_unc_mode"].asUInt();
- mu_scale_mode = json["baseline"]["mu_scale_mode"].asBool();
- //Need this to correctly set tau /elec ES
- muon_shift = json["baseline"]["muon_es_shift"].asDouble();
- muon_shift_barrel = json["baseline"]["muon_es_shift_barrel"].asDouble();
- muon_shift_nearendcap = json["baseline"]["muon_es_shift_nearendcap"].asDouble();
- muon_shift_farendcap = json["baseline"]["muon_es_shift_farendcap"].asDouble();
- elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
- elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
- tau_shift_1prong0pi0 = 1.0;
- tau_shift_1prong1pi0 = 1.0;
- tau_shift_3prong0pi0 = 1.0;
- tau_shift_3prong1pi0 = 1.0;
- fakeE_tau_shift_0pi = 1.0;
- fakeE_tau_shift_1pi = 1.0;
- fakeE_tau_shift_0pi_endcap = 1.0;
- fakeE_tau_shift_1pi_endcap = 1.0;
- fakeMu_tau_shift_0pi = 1.0;
- fakeMu_tau_shift_1pi = 1.0;
- if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
-   fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
-   fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
-   fakeE_tau_shift_0pi_endcap = json["baseline"]["efaketau_0pi_es_shift_endcap"].asDouble();
-   fakeE_tau_shift_1pi_endcap = json["baseline"]["efaketau_1pi_es_shift_endcap"].asDouble();
-   if(!is_embedded){
-     tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
-     tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
-     tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
-     tau_shift_3prong1pi0 = json["baseline"]["tau_3prong1pi0_es_shift"].asDouble();
-   } else {
-     tau_shift_1prong0pi0 = json["baseline"]["embedtau_1prong0pi0_es_shift"].asDouble();
-     tau_shift_1prong1pi0 = json["baseline"]["embedtau_1prong1pi0_es_shift"].asDouble();
-     tau_shift_3prong0pi0 = json["baseline"]["embedtau_3prong0pi0_es_shift"].asDouble();
-     tau_shift_3prong1pi0 = json["baseline"]["embedtau_3prong1pi0_es_shift"].asDouble();
-   }
- }
- if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
-   fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
-   fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
- }
-
-tau_shift_func_1prong0pi0 = "";
-tau_shift_func_1prong1pi0 = "";
-tau_shift_func_3prong0pi0 = "";
-tau_shift_func_3prong1pi0 = "";
-if(!is_embedded){
-  if(json["baseline"]["tau_shift_func_1prong0pi0"].asString()!="") tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
-  if(json["baseline"]["tau_shift_func_1prong1pi0"].asString()!="") tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
-  if(json["baseline"]["tau_shift_func_3prong0pi0"].asString()!="") tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
-  if(json["baseline"]["tau_shift_func_3prong1pi0"].asString()!="") tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
-}
-
-alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
+  do_qcd_scale_wts_=false;
+  do_qcd_scale_wts_ = js["do_qcd_scale_wts"].asBool();
+  if (output_name.find("SUSYGluGluToBBHToTauTau_M") != output_name.npos && output_name.find("NLO") != output_name.npos) do_qcd_scale_wts_=true;
+   
+  is_data      = json["is_data"].asBool();
+  is_embedded  = json["is_embedded"].asBool();
+  jets_label   = json["jets"].asString();
+  met_label    = json["met"].asString();
+  if(json["baseline"]["mass_scale_mode"].asBool()==true){
+    mass_shift = json["baseline"]["mass_shift"].asDouble();
+  } else mass_shift=1.00;
+  do_met_filters = json["do_met_filters"].asBool();
+  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
+  e_scale_mode = json["baseline"]["e_scale_mode"].asBool();
+  e_unc_mode = js["baseline"]["e_unc_mode"].asUInt();
+  mu_scale_mode = json["baseline"]["mu_scale_mode"].asBool();
+  //Need this to correctly set tau /elec ES
+  muon_shift = json["baseline"]["muon_es_shift"].asDouble();
+  muon_shift_barrel = json["baseline"]["muon_es_shift_barrel"].asDouble();
+  muon_shift_nearendcap = json["baseline"]["muon_es_shift_nearendcap"].asDouble();
+  muon_shift_farendcap = json["baseline"]["muon_es_shift_farendcap"].asDouble();
+  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
+  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
+  fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
+  fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
+  fakeE_tau_shift_0pi_endcap = json["baseline"]["efaketau_0pi_es_shift_endcap"].asDouble();
+  fakeE_tau_shift_1pi_endcap = json["baseline"]["efaketau_1pi_es_shift_endcap"].asDouble();
+  tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
+  tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+  tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
+  tau_shift_3prong1pi0 = json["baseline"]["tau_3prong1pi0_es_shift"].asDouble();
+  fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
+  fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
+  tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
+  tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
+  tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
+  tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
+  alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
 
 }
 
@@ -330,7 +297,6 @@ void HTTSequence::BuildSequence(){
     file.close();
   }
 
-  // TO DO: Check good-lumi jsons haven't changed for UL
   // Defining good-lumi jsons
   std::string data_json = "";
   if ((era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP))
@@ -375,7 +341,6 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-// TO DO: Build new gen analysis module for 4taus
 if(!is_data && js["do_gen_analysis"].asBool()){
 
   std::string mass_str = output_name;
@@ -672,7 +637,6 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
 if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
   httStitching.set_do_dy_soup(true);
   if(era_type == era::data_2016) {
-    // TO DO: Check the new inclusive cross sections looks fine
     httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
     httStitching.SetDYInputYields(146280395, 63730337, 19879279, 5857441, 4197868);
   }
@@ -840,7 +804,6 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
    
   }
  
-  // TO DO: Ignoring this for now, will need to fix for 4tau 
   if(js["do_btag_eff"].asBool()){
      BuildModule(BTagCheck("BTagCheck")
       .set_fs(fs.get())

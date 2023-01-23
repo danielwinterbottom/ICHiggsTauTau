@@ -571,6 +571,11 @@ class HTTCategories : public ModuleBase {
   bool trg_etaucross_24_;
   bool trg_emucross_12_;
 
+  bool trg_doubletau_leg_1_;
+  bool trg_doubletau_leg_2_;
+  bool trg_doubletau_leg_3_;
+  bool trg_doubletau_leg_4_;
+
   bool isTau_;
   bool isSingleElectron_;
   bool isSingleMuon_;
@@ -582,10 +587,10 @@ class HTTCategories : public ModuleBase {
   float wt_ggZZ_PDFScaleDn_;
   float wt_ggZZ_QCDScaleUp_;
   float wt_ggZZ_QCDScaleDn_;
-  float wt_ggZZ_AsScaleUp_;
-  float wt_ggZZ_AsScaleDn_;
-  float wt_ggZZ_PDFReplicaScaleUp_;
-  float wt_ggZZ_PDFReplicaScaleDn_;
+  float wt_ggZZ_AsUp_;
+  float wt_ggZZ_AsDn_;
+  float wt_ggZZ_PDFReplicaUp_;
+  float wt_ggZZ_PDFReplicaDn_;
 
  public:
   HTTCategories(std::string const& name);

@@ -65,6 +65,11 @@ namespace ic {
     bool passed_etaucross_24 = false;
     bool passed_emucross_12 = false;
 
+    bool passed_doubletau_leg_1 = false;
+    bool passed_doubletau_leg_2 = false;
+    bool passed_doubletau_leg_3 = false;
+    bool passed_doubletau_leg_4 = false;
+
     std::vector<std::string> trg_obj_label_doubletau;
     std::vector<std::string> trg_obj_label_doubleelectron; 
     std::vector<std::string> trg_obj_label_doublemuon;
@@ -257,20 +262,27 @@ namespace ic {
         passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_14 =  passed_doubletau_14 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_1 = passed_doubletau_leg_1 || IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first;
       }
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt) {
         passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_24 =  passed_doubletau_24 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_2 = passed_doubletau_leg_2 || IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first;
       }
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt ||  channel_ == channel::eett || channel_ == channel::mmtt || channel_ == channel::emtt) {
         passed_doubletau_34 =  passed_doubletau_34 || ((IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_3 = passed_doubletau_leg_3 || IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first;
+        passed_doubletau_leg_4 = passed_doubletau_leg_4 || IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first;
       }
       if (channel_ == channel::ttt){
         passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_1 = passed_doubletau_leg_1 || IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first;
+        passed_doubletau_leg_2 = passed_doubletau_leg_2 || IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first;
+        passed_doubletau_leg_3 = passed_doubletau_leg_3 || IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first;
+
       }
-     // std::cout << passed_doubletau_12 << " " << passed_doubletau_13 << " " << passed_doubletau_14 << " " << passed_doubletau_23 << " " << passed_doubletau_24 << " " << passed_doubletau_34 << std::endl;
     }
 
     ////doubleelectron
@@ -383,6 +395,10 @@ namespace ic {
     event->Add("trg_etaucross_24", passed_etaucross_24);
     event->Add("trg_emucross_12", passed_emucross_12);
 
+    event->Add("trg_doubletau_leg_1", passed_doubletau_leg_1);
+    event->Add("trg_doubletau_leg_2", passed_doubletau_leg_2);
+    event->Add("trg_doubletau_leg_3", passed_doubletau_leg_3);
+    event->Add("trg_doubletau_leg_4", passed_doubletau_leg_4);
 
     return 0;
   }

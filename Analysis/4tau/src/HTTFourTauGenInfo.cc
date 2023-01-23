@@ -88,13 +88,12 @@ namespace ic {
 
       // Check if parent is a Z and add it
       int j1 = 1;
-      if(status_flags_start[IsFirstCopy] && particles[i]->pdgid() == 23 && j1<3) {
+      if(status_flags_start[IsFirstCopy] && particles[i]->pdgid() == 23 && j1<3) { 
         diZ->AddCandidate("Z_"+std::to_string(i),particles[i]);
         j1 = j1 + 1;
       }
       // Find the decay products of the Z
       int j2 = 1;
-      Z_decays_pdgid = {};
       if(status_flags_start[IsLastCopy] && particles[i]->pdgid() == 23 && j2<3) {
         Z_decays_pdgid.push_back(abs(particles[particles[i]->daughters()[0]]->pdgid()));
         j2 = j2 + 1;
