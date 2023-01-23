@@ -453,7 +453,8 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(98192802, 65819247, 28973705, 20377562, 9127066);
+      httStitching.SetDYInputYields(98433266,65828807,28979228,20386860,9155994); // 124
+//      httStitching.SetDYInputYields(98357936,65810202,29068773,20436016,9105126); // 106
     }
 
 
@@ -849,7 +850,8 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL){
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(82790743, 47381150, 27920092, 18020893, 9045482);
+      httStitching.SetWInputYields(82959375,47429123,27947927,17971598,8846225); // 124
+      //httStitching.SetWInputYields(82943459, 47420631, 28072865, 18020893, 9036122); // 106
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -880,7 +882,8 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(98192802, 65819247, 28973705, 20377562, 9127066);
+      httStitching.SetDYInputYields(98433266,65828807,28979228,20386860,9155994); // 124
+      //httStitching.SetDYInputYields(98357936,65810202,29068773,20436016,9105126); // 106
     }
   }
 
@@ -900,7 +903,8 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-      httStitching.SetDYInputYields_NLO(131789157, 70076006, 43102652, 13726101);
+      httStitching.SetDYInputYields_NLO(132205657,70059556,43107720,13716227); // 124
+      //httStitching.SetDYInputYields_NLO(132287074, 70016286, 43116941, 13755111); //106
     }
   }
   BuildModule(httStitching);   
@@ -2560,7 +2564,7 @@ void HTTSequence::BuildTauSelection(){
               fabs(t->charge())           == 1          &&
               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && 
               ((t->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") && t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5) ||
-              (t->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && t->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5));
+              (false&&t->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && t->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5));
 
     }));
 
@@ -2645,6 +2649,7 @@ void HTTSequence::BuildTauSelection(){
  
    BuildModule(CopyCollection<Electron>("CopyToExtraElecs",
        js["electrons"].asString(), "extra_elecs"));
+
  
    BuildModule(GenericModule("ExtraElecIsoFilter")
      .set_function([=](ic::TreeEvent *event){
@@ -2653,12 +2658,27 @@ void HTTSequence::BuildTauSelection(){
         ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3)); //lepton_rho
         return 0;
    }));
+   
+   BuildModule(CopyCollection<Electron>("CopyToExtraElecs",
+       "extra_elecs", "veto_elecs_test"));
  
+   BuildModule(SimpleFilter<Electron>("VetoElecsTest")
+     .set_input_label("veto_elecs_test").set_min(0)
+     .set_predicate([=](Electron const* e) {
+      return  e->pt()                 > veto_elec_pt    &&
+              fabs(e->eta())          < veto_elec_eta   &&
+              fabs(e->dxy_vertex())   < veto_elec_dxy   &&
+              fabs(e->dz_vertex())    < veto_elec_dz    &&
+              ElectronHTTIdFall17V2(e, true);
+    }));
+
+
    HTTFilter<Electron> extraElecFilter = HTTFilter<Electron>("ExtraElecFilter")
        .set_input_label("extra_elecs")
        .set_veto_name("extra_elec_veto")
        .set_min(0).set_max(js["baseline"]["max_extra_elecs"].asUInt());
    extraElecFilter.set_no_filter(true);
+   //extraElecFilter.set_no_filter(false);
    extraElecFilter.set_predicate([=](Electron const* e) {
       return  e->pt()                 > veto_elec_pt    &&
               fabs(e->eta())          < veto_elec_eta   &&
@@ -2681,6 +2701,7 @@ void HTTSequence::BuildTauSelection(){
        .set_min(0).set_max(js["baseline"]["max_extra_muons"].asUInt());
    std::function<bool(Muon const*)> ExtraMuonID = [](Muon const* m) {return MuonMedium(m); };
    extraMuonFilter.set_no_filter(true);
+   //extraMuonFilter.set_no_filter(false);
    extraMuonFilter.set_predicate([=](Muon const* m) {
      return  m->pt()                 > veto_muon_pt    &&
              fabs(m->eta())          < veto_muon_eta   &&

@@ -82,6 +82,7 @@ class HTTCategories : public ModuleBase {
   double wt_tquark_up_;
   double wt_tquark_down_;
   double wt_tquark_alt_;
+  double wt_tquark_alt_2_;
   double wt_zpt_;
   double wt_zpt_up_;
   double wt_zpt_down_;
@@ -1161,6 +1162,7 @@ class HTTCategories : public ModuleBase {
   double gen_nu_eta_2_;
 
   double pf_met_;
+  float pf_mt_1_;
 
   double generatorWeight_;
   double muonEffTrgWeight_;
@@ -1170,6 +1172,9 @@ class HTTCategories : public ModuleBase {
   double mt_triggerweight_ic_;
   double tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_;
   double tauIDScaleFactorWeight_highpt_deeptauid_2_;
+
+  unsigned N_veto_electrons_, N_electrons_;
+  float mean_top_pt_, max_top_pt_, min_top_pt_;
 
  public:
   HTTCategories(std::string const& name);

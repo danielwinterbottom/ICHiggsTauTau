@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
 //   "channels":     ["et","mt","tt","zmm"],
-   "channels":     ["mt","zmm"],
+   "channels":     ["mt","et","tt","em"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -65,7 +65,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_vs_preUL_UL2018/",
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Dec20_2018/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_106_ttbar/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -145,7 +145,7 @@
       "baseline": {
         "pair_dr": 0.5,
         "di_elec_veto"   :true,
-        "di_muon_veto"   :true,
+        "di_muon_veto"   :false,
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 1,
@@ -163,8 +163,8 @@
       "baseline": {
         "max_extra_elecs": 0,
         "max_extra_muons": 0,
-        "di_muon_veto"   :true,
-        "di_elec_veto"   :true,
+        "di_muon_veto"   :false,
+        "di_elec_veto"   :false,
         "extra_elec_veto" : true,
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
@@ -181,7 +181,7 @@
       "baseline": {
         "pair_dr": 0.5,
         "di_muon_veto"   :true,
-        "di_elec_veto"   :true,
+        "di_elec_veto"   :false,
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 0,

@@ -382,6 +382,10 @@ class HTTGenAnalysis : public ModuleBase {
   TGraph *ggh_ph_2jet_;
   TGraph *ggh_ph_3jet_;
   double wt_nnlops_;
+
+  int N_electrons_, N_taus_, N_muons_;
+  int N_gen_electrons_, N_gen_taus_, N_gen_muons_;
+  float pt_recoe_;
  
  public:
   HTTGenAnalysis(std::string const& name);

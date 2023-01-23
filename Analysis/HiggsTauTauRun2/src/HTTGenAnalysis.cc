@@ -245,6 +245,15 @@ namespace ic {
       outtree_->Branch("n_bjets_eta2p5_noscale"     , &n_bjets_eta2p5_noscale_);
       outtree_->Branch("n_bpartons"     , &n_bpartons_     );
       outtree_->Branch("n_jets"      , &n_jets_      );
+      outtree_->Branch("pt_recoe"      , &pt_recoe_      );
+      outtree_->Branch("N_electrons"      , &N_electrons_      );
+      outtree_->Branch("N_muons"      , &N_muons_      );
+      outtree_->Branch("N_taus"      , &N_taus_      );
+
+      outtree_->Branch("N_gen_electrons"      , &N_gen_electrons_      );
+      outtree_->Branch("N_gen_muons"      , &N_gen_muons_      );
+      outtree_->Branch("N_gen_taus"      , &N_gen_taus_      );
+
       outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_);
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
@@ -412,6 +421,27 @@ namespace ic {
 	  }
 
 	  int HTTGenAnalysis::Execute(TreeEvent *event) {
+
+            // testing electron collection
+            std::vector<Electron*> all_elecs = event->GetPtrVec<Electron>("electrons");
+            std::vector<Muon*> all_mus = event->GetPtrVec<Muon>("muons");
+            std::vector<Tau*> all_taus = event->GetPtrVec<Tau>("taus");
+            N_electrons_ = all_elecs.size();
+            N_muons_ = all_mus.size();
+
+            pt_recoe_ = -9999;
+            if(all_elecs.size()>0) pt_recoe_ = all_elecs[0]->pt();
+
+            ic::erase_if(all_taus,!boost::bind(MinPtMaxEta, _1, 20.0, 2.3));
+            std::vector<Tau *> taus_filtered;
+
+            for(auto t : all_taus) {
+              if(t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_filtered.push_back(t);
+            }
+
+            N_taus_ = taus_filtered.size();
+        
+            // end of testing electron collection
 	    
 	    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 	    event_ = (unsigned long long) eventInfo->event();
@@ -870,6 +900,10 @@ namespace ic {
       }
     }
 
+    N_gen_taus_ = taus.size();
+    N_gen_muons_ = muons.size();
+    N_gen_electrons_ = electrons.size();
+
     std::vector<GenJet> gen_tau_jets = BuildTauJets(gen_particles, false,true);
     std::vector<GenJet *> gen_tau_jets_ptr;
     for (auto & x : gen_tau_jets) gen_tau_jets_ptr.push_back(&x);
@@ -951,8 +985,8 @@ namespace ic {
       if(!(channel_str_ == "zmm") && !(channel_str_ == "zee")){
         mt_1_ = MT(&lep1, &met);
         mt_2_ = MT(&lep2, &met);
-        double mt_lep = MT(&lep1, &lep1);
-        mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
+        //double mt_lep = MT(&lep1, &lep1);
+        //mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
       }
 
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();

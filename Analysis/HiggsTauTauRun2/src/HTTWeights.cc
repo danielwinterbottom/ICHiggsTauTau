@@ -1222,21 +1222,36 @@ int HTTWeights::Execute(TreeEvent *event) {
   if (do_topquark_weights_) {
     double top_wt = 1.0;
     double top_wt_alt = 1.0;
+    double top_wt_alt_2 = 1.0;
     double top_wt_up = 1.0;
     double top_wt_down = 1.0;
+    unsigned Ntops = 0;
     std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+    float max_top_pt=-1.;
+    float mean_top_pt=-1.;
+    float min_top_pt=-1.;
     for (unsigned i = 0; i < parts.size(); ++i){
       std::vector<bool> status_flags = parts[i]->statusFlags();
       unsigned id = abs(parts[i]->pdgid());
       if(id == 6 && status_flags[FromHardProcess] && status_flags[IsLastCopy]){
         double pt = parts[i]->pt();
+        max_top_pt = std::max(max_top_pt, (float)pt);
+        if(min_top_pt<0 || pt<min_top_pt) min_top_pt = pt;
+        mean_top_pt += pt;
+        Ntops++;
         pt = std::min(pt, 472.);
         double pt_max2000 = std::min(parts[i]->pt(), 2000.);
         double a = 0.088, b = -0.00087, c = 9.2e-07;
-        top_wt *= std::exp(a + b * pt + c * pt*pt);
-        top_wt_alt *= 0.103*std::exp(-0.0118*pt_max2000) - 0.000134*pt_max2000 + 0.973; 
+        top_wt *= std::exp(a + b * pt + c * pt*pt); // this is the ttH one - need to check how it is derived
+        // this is the topPAG NLO to NNLO reweighting (https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting)
+        top_wt_alt *= 0.103*std::exp(-0.0118*pt_max2000) - 0.000134*pt_max2000 + 0.973; // this is the top NLO to data correction (https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting)
+        top_wt_alt_2 *= std::exp(0.00615 - 0.0005*min(pt,500.)); 
       }
     }
+    if (Ntops>0) mean_top_pt/=Ntops;
+    event->Add("mean_top_pt", mean_top_pt);
+    event->Add("max_top_pt", max_top_pt);
+    event->Add("min_top_pt", min_top_pt);
         
     top_wt = std::sqrt(top_wt);
     top_wt_up = top_wt * top_wt;
@@ -1244,6 +1259,7 @@ int HTTWeights::Execute(TreeEvent *event) {
     event->Add("wt_tquark_up", top_wt_up / top_wt);
     event->Add("wt_tquark_down", top_wt_down / top_wt);
     event->Add("wt_tquark_alt", top_wt_alt / top_wt);
+    event->Add("wt_tquark_alt_2", top_wt_alt_2 / top_wt);
     eventInfo->set_weight("topquark_weight", top_wt);
   }
   

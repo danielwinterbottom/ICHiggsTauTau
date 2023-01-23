@@ -172,7 +172,7 @@ for i in range(0,scale):
    flatjsons.append(temp)
 
 
-FILELIST='filelists/Dec22_2018_MC_124X'
+FILELIST='filelists/Jan08_2018_MC_124X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -205,6 +205,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     data_samples = []
     data_eras = ['A','B','C','D']
+    #data_eras = ['A']
   
     for chn in channels:
         for era in data_eras:
@@ -221,13 +222,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         data_samples+=['Tau'+era]
 
 
-    DATAFILELIST="./filelists/Dec22_2018_Data_124X"
+    DATAFILELIST="./filelists/Jan08_2018_Data_124X"
 
     if options.calc_lumi:
         for sa in data_samples:
-            DATAFILELIST="./filelists/Dec22_2018_Data_124X"
+            DATAFILELIST="./filelists/Jan08_2018_Data_124X"
             JOB='%s_2018' % (sa)
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Dec22_Data_106X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan08_Data_124X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
             #if sa == "EGammaD": 
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 500 
@@ -245,9 +246,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     else:
         for sa in data_samples:
-            DATAFILELIST="./filelists/Dec22_2018_Data_124X"
+            DATAFILELIST="./filelists/Jan08_2018_Data_124X"
             JOB='%s_2018' % (sa)
-            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Dec22_Data_106X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
+            JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan08_Data_124X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 30
       
@@ -359,8 +360,8 @@ if options.proc_bkg or options.proc_all:
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
-        FILELIST='filelists/Dec22_2018_MC_124X'
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Dec22_MC_106X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+        FILELIST='filelists/Jan08_2018_MC_124X'
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jan08_MC_124X_2018/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         
         job_num=0
         for FLATJSONPATCH in flatjsons:

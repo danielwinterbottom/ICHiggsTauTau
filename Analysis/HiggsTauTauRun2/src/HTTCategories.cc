@@ -890,6 +890,7 @@ namespace ic {
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
+      outtree_->Branch("pf_mt_1",              &pf_mt_1_);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
@@ -909,6 +910,8 @@ namespace ic {
       outtree_->Branch("deep_problepb_1",       &deep_problepb_1_);
       outtree_->Branch("deepcsv_probb_1",       &deepcsv_probb_1_);
       outtree_->Branch("deepcsv_probbb_1",       &deepcsv_probbb_1_);
+      outtree_->Branch("N_electrons",            &N_electrons_);
+      outtree_->Branch("N_veto_electrons",            &N_veto_electrons_);
 
       outtree_->Branch("n_prebjets",        &n_prebjets_);
       outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
@@ -1203,6 +1206,10 @@ namespace ic {
       outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
       outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
       outtree_->Branch("wt_tquark_alt",      &wt_tquark_alt_);
+      outtree_->Branch("wt_tquark_alt_2",      &wt_tquark_alt_2_);
+      outtree_->Branch("mean_top_pt",      &mean_top_pt_);
+      outtree_->Branch("max_top_pt",      &max_top_pt_);
+      outtree_->Branch("min_top_pt",      &min_top_pt_);
                                                                 
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
@@ -2516,6 +2523,7 @@ namespace ic {
     wt_tquark_up_ = 1.0;
     wt_tquark_down_ = 1.0;
     wt_tquark_alt_ = 1.0;
+    wt_tquark_alt_2_ = 1.0;
     wt_zpt_up_ = 1.0;
     wt_zpt_up_NLO_ = 1.0;
     wt_zpt_down_ = 1.0;
@@ -2531,6 +2539,13 @@ namespace ic {
     if (event->Exists("wt_tquark_up"))      wt_tquark_up_   = event->Get<double>("wt_tquark_up");
     if (event->Exists("wt_tquark_down"))    wt_tquark_down_ = event->Get<double>("wt_tquark_down");
     if (event->Exists("wt_tquark_alt"))      wt_tquark_alt_   = event->Get<double>("wt_tquark_alt");
+    if (event->Exists("wt_tquark_alt_2"))      wt_tquark_alt_2_   = event->Get<double>("wt_tquark_alt_2");
+    mean_top_pt_ = -1; 
+    if (event->Exists("mean_top_pt"))      mean_top_pt_   = event->Get<float>("mean_top_pt");
+    max_top_pt_ = -1; 
+    if (event->Exists("max_top_pt"))      max_top_pt_   = event->Get<float>("max_top_pt");
+    min_top_pt_ = -1; 
+    if (event->Exists("min_top_pt"))      min_top_pt_   = event->Get<float>("min_top_pt");
     if (event->Exists("wt_zpt_up"))         wt_zpt_up_   = event->Get<double>("wt_zpt_up");
     if (event->Exists("wt_zpt_down"))       wt_zpt_down_ = event->Get<double>("wt_zpt_down");
     if (event->Exists("wt_zpt_up_NLO"))         wt_zpt_up_NLO_   = event->Get<double>("wt_zpt_up_NLO");
@@ -2589,6 +2604,7 @@ namespace ic {
     if (eventInfo->weight_defined("tauIDScaleFactorWeight_highpt_deeptauid_2")) tauIDScaleFactorWeight_highpt_deeptauid_2_ = eventInfo->weight("tauIDScaleFactorWeight_highpt_deeptauid_2"); else tauIDScaleFactorWeight_highpt_deeptauid_2_ = 0.0;
 
 
+
     mvadm_idiso_et_ =  (event->Exists("wt_tau_id_mvadm_sync")) ? event->Get<double>("wt_tau_id_mvadm_sync") : 1.0; 
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
@@ -2596,6 +2612,18 @@ namespace ic {
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
     Met const* mets = NULL;
     mets = event->GetPtr<Met>(met_label_);
+
+    // testing electron collection
+    std::vector<Electron*> all_elecs = event->GetPtrVec<Electron>("electrons");
+    std::vector<Muon*> all_mus = event->GetPtrVec<Muon>("muons");
+    std::vector<Electron*> all_veto_elecs = event->GetPtrVec<Electron>("veto_elecs_test");
+    N_electrons_ = all_elecs.size();
+    //std::cout << "-------- " << event_ << "  " << lep1->pt() << " " << lep2->pt() << std::endl;
+    //for (auto e : all_elecs) std::cout << "elec: " << e->pt() << "  " << e->eta() << "  " << e->phi() << std::endl;
+    ////for (auto m : all_mus) std::cout << "muon: "   << m->pt() << "  " << m->eta() << "  " << m->phi() << std::endl;
+    N_veto_electrons_ = all_veto_elecs.size();
+
+    // end of testing electron collection
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
@@ -2908,6 +2936,7 @@ namespace ic {
 
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     pf_met_ = pfMet_vec[0]->pt();
+    pf_mt_1_ = MT(lep1, pfMet_vec[0]);
 
 
     metCov00_ = mets->xx_sig();
