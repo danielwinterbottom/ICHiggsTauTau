@@ -38,6 +38,8 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_mtaucross_trg)
   CLASS_MEMBER(HTTWeights, bool, do_singlem_trg) 
   CLASS_MEMBER(HTTWeights, bool, do_emucross_trg)
+  CLASS_MEMBER(HTTWeights, bool, do_ggZZ_k_fact)
+  CLASS_MEMBER(HTTWeights, bool, do_qqZZ_k_fact)
 
   std::shared_ptr<RooWorkspace> w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
