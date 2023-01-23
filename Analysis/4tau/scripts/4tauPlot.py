@@ -265,8 +265,8 @@ elif options.channel == "eett":
   cats['data_veto'] = "!(isTau && (trg_singleelectron_1 || trg_singleelectron_2))"
 elif options.channel == "mmmm":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=m_sel.replace("X","3"),sel_4=m_sel.replace("X","4"))
-  #cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_singlemuon_3 || trg_singlemuon_4)"
-  cats['trigger'] = "(trg_singlemuon_1)"
+  cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_singlemuon_3 || trg_singlemuon_4)"
+  #cats['trigger'] = "(trg_singlemuon_1)"
   cats['data_veto'] = "(1)"
 
 
@@ -294,10 +294,14 @@ if options.no_sig_sel:
 cats['baseline'] = "(({charge_sel}) && {current_baseline} && {trigger_sel})".format(charge_sel=charge_sel,current_baseline=cats['baseline'],trigger_sel=cats['trigger'])
 
 cats['inclusive'] = '(1)' 
-cats['btag'] = '(n_bjets>=1)'
 cats['nobtag'] = '(n_bjets==0)'
+cats['mvis2_0-100'] = '(mvis_min_sum_dR_2 > 0) && (mvis_min_sum_dR_2 < 100)'
+cats['mvis2_100-200'] = '(mvis_min_sum_dR_2 > 100) && (mvis_min_sum_dR_2 < 200)'
+cats['mvis2_200-500'] = '(mvis_min_sum_dR_2 > 200) && (mvis_min_sum_dR_2 < 500)'
 cats['z_control'] = '((q_1==-q_2) && (q_3==-q_4))'
 cats['2l2t_sig'] = '((q_1==q_2) && (q_3==q_4))'
+
+cats['btag'] = '(n_bjets>=1)'
 cats['z_control_nobtag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets==0))'
 cats['2l2t_sig_nobtag'] = '((q_1==q_2) && (q_3==q_4) && (n_bjets==0))'
 cats['z_control_btag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets>0))'
@@ -440,12 +444,14 @@ if options.year == "2018":
     elif options.campaign == "UL":
       ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
       top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-      vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WWTo1L1Nu2Q','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','Tbar-t','Tbar-tW','T-t','T-tW']
+      vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WWTo1L1Nu2Q','WWTo2L2Nu','ZZTo2L2Nu','Tbar-t','Tbar-tW','T-t','T-tW']
       vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
       wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
       wgam_samples = ['WGToLNuG']
       ewkz_samples = ['EWKZ2Jets_ZToLL']
+      qqzz_samples = ['ZZTo4L']
       hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
+      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
       #signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
       signal_samples = sig_samples
       signal_samples = ReformatSignals(signal_samples,True)
@@ -465,12 +471,14 @@ if options.year == "2017":
   elif options.campaign == "UL":
     ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L']
+    vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu']
     vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
     wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets_ZToLL']
+    qqzz_samples = ['ZZTo4L']
     hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
+    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
     signal_samples = sig_samples
     signal_samples = ReformatSignals(signal_samples,True)
 
@@ -478,11 +486,13 @@ if options.year == "2017":
 if options.year == "2016_postVFP":
   ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
   top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-  vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
+  vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','T-tW', 'Tbar-tW','Tbar-t','T-t']
   vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
   wgam_samples = ['WGToLNuG']
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+  qqzz_samples = ['ZZTo4L']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
+  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
   signal_samples = ReformatSignals(signal_samples,True)
@@ -491,10 +501,12 @@ if options.year == "2016_postVFP":
 if options.year == "2016_preVFP":
   ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
   top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
-  vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
+  vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','T-tW', 'Tbar-tW','Tbar-t','T-t']
   vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
+  qqzz_samples = ['ZZTo4L']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
+  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
   wgam_samples = ['WGToLNuG']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
@@ -632,6 +644,14 @@ def GenerateW(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', w_se
 def GenerateHZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', hzz_sels={}):
     hzz_node = GetNode(ana, "HZZ", add_name, samples, plot, wt, sel, cat)
     ana.nodes[nodename].AddNode(hzz_node)
+    
+def GenerateGGZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', ggzz_sels={}):
+    ggzz_node = GetNode(ana, "ggZZ", add_name, samples, plot, wt, sel, cat)
+    ana.nodes[nodename].AddNode(ggzz_node)
+
+def GenerateQQZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', qqzz_sels={}):
+    qqzz_node = GetNode(ana, "qqZZ", add_name, samples, plot, wt, sel, cat)
+    ana.nodes[nodename].AddNode(qqzz_node)
 
 def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
   vj = "deepTauVsJets_" + VsJets_wp
@@ -823,8 +843,12 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels) 
       if 'W' not in samples_to_skip:
           GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      if 'qqZZ' not in samples_to_skip:
+          GenerateQQZZ(ana, add_name, qqzz_samples, plot, wt, sel, cat)         
       if 'HZZ' not in samples_to_skip and options.channel == "mmmm": 
           GenerateHZZ(ana, add_name, hzz_samples, plot, wt, sel, cat)
+      if 'ggZZ' not in samples_to_skip and options.channel == "mmmm": 
+          GenerateGGZZ(ana, add_name, ggzz_samples, plot, wt, sel, cat)          
       if 'signal' not in samples_to_skip and not options.no_signal:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
     elif options.method == 2:
@@ -1029,7 +1053,7 @@ if options.plot_from_dc == "":
             ana.AddSamples(data_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         
         # Add all MC background files
-        for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + hzz_samples:
+        for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + qqzz_samples + hzz_samples + ggzz_samples:
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         for sample_name in signal_samples:
             ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name[0]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name[0])         
