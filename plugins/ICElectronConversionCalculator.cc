@@ -75,9 +75,11 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
 
   for (unsigned i = 0; i < n; ++i) {
     reco::GsfElectron const& src = elecs_handle->at(i);
-    values[i] = ConversionTools::hasMatchedConversion(
-        src, conversions_handle, beamspot_handle->position(),
-        true, 2.0, 1e-6, 0);
+    #if CMSSW_MAJOR_VERSION >= 10 && CMSSW_MINOR_VERSION >= 6
+      values[i] = ConversionTools::hasMatchedConversion(src, *conversions_handle, beamspot_handle->position(),true, 2.0, 1e-6, 0);
+    #else
+      values[i] = ConversionTools::hasMatchedConversion(src, conversions_handle, beamspot_handle->position(),true, 2.0, 1e-6, 0);
+    #endif
   }
 
   edm::ValueMap<bool>::Filler filler(*product);

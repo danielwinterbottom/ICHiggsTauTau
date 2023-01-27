@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2018.py --cfg=scripts/plot_cpdecays_2018.cfg -c 'tt' scripts/params_2018.json -s 'cpdecay' --embedding --output_folder datacards --batch
+#./scripts/makeDatacards_cpdecay_2018.py -c 'tt'  -s 'cpdecay' --embedding --output_folder datacards --batch
 
 import sys
 from optparse import OptionParser
@@ -123,9 +123,7 @@ no_shift_systs = options.no_shift_systs
 
 # create separate output folder for scheme and year
 output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
-os.system('mkdir {}'.format(output_folder))
-os.system('mkdir {}/{}'.format(output_folder, SCHEME))
-os.system('mkdir {}/{}/{}'.format(output_folder, SCHEME, YEAR))
+os.system('mkdir -p {}'.format(output_folder))
 
 ########## Set up schemes and options
 
@@ -249,6 +247,10 @@ if SCHEME == 'cpdecay':
   VAR_0A1RHO ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8,0.9],(4,0,6.28319)"
   VAR_0A1A1 ="IC_01Jun2020_max_score,aco_angle_1[0.,0.7,0.8],(4,0,6.28319)"
 
+  VAR_A1RHO_PolVec ="IC_01Jun2020_max_score,pv_angle[0.,0.7,0.8,0.9],(4,0,6.28319)"
+  VAR_0A1A1_PolVec ="IC_01Jun2020_max_score,pv_angle[0.,0.7,0.8],(4,0,6.28319)"
+  VAR_PIA1_PolVec ="IC_01Jun2020_max_score,pv_angle[0.,0.7,0.8,0.9],(4,0,6.28319)"
+
   ADD_STRING_MT = ' --set_alias "sel:(mt_1<50)" '
 
   scheme_et = [
@@ -268,54 +270,57 @@ if SCHEME == 'cpdecay':
     ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho",  VAR_RHORHO, ' '),
     ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
     ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho",  VAR_A1RHO, ' '),
+    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_PolVec",  VAR_A1RHO_PolVec, ' '),
     ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1",  VAR_A1A1, ' '),
     ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_PolVec",  VAR_A1A1_PolVec, ' '),
     ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi",  VAR_PIPI, ' '),
     ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
     ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
     ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed",  VAR_PIA1, ' '),
+    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_PolVec",  VAR_PIA1_PolVec, ' '),
     ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1",  VAR_0A1A1, ' '),
+    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_PolVec",  VAR_0A1A1_PolVec, ' '),
 
     # ("17",   "higgs_mvaother",    "2018_higgs_other",  VAR_H_TT_Other, ' '),
     ("17",   "higgs",       "2018_higgs",     VAR_H_TT, ' '),
     ("17",   "zttEmbed",    "2018_zttEmbed",  VAR_ZTTEMBED_TT, ' '),
     ("17",   "jetFakes",    "2018_jetFakes",  VAR_JETFAKES_TT, ' '),
 
-    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_ss",  VAR_RHORHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_ss",  VAR_0A1RHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_ss",  VAR_A1RHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_ss",  VAR_A1A1, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_PolVec_ss",  VAR_A1A1_PolVec, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_ss",  VAR_PIPI, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_ss",  VAR_PIRHO, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_ss",  VAR_PI0A1, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_ss",  VAR_PIA1, ' --do_ss --no_systs '),
-    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_ss",  VAR_0A1A1, ' --do_ss --no_systs '),
-    ("17",   "higgs",       "2018_higgs_ss",     VAR_H_TT, ' --do_ss --no_systs '),
-    ("17",   "zttEmbed",    "2018_zttEmbed_ss",  VAR_ZTTEMBED_TT, ' --do_ss --no_systs '),
-    ("17",   "jetFakes",    "2018_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
-
-     ("17",   "zttEmbed_mvarhorho",    "2018_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
-     ("17",   "zttEmbed_mvarho0a1",    "2018_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-     ("17",   "zttEmbed_mvaa1rho",    "2018_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
-     ("17",   "zttEmbed_mvaa1a1",    "2018_zttEmbed_A1_A1",  VAR_A1A1, ' '),
-     ("17",   "zttEmbed_mvaa1a1",    "2018_zttEmbed_A1_A1_PolVec",  VAR_A1A1_PolVec, ' '),
-     ("17",   "zttEmbed_mvapipi",    "2018_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
-     ("17",   "zttEmbed_mvapirho",    "2018_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-     ("17",   "zttEmbed_mvapi0a1",    "2018_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-     ("17",   "zttEmbed_mvaa1pi",    "2018_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
-     ("17",   "zttEmbed_mvaa10a1",    "2018_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
-  
-     ("17",   "jetFakes_mvarhorho",    "2018_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
-     ("17",   "jetFakes_mvarho0a1",    "2018_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
-     ("17",   "jetFakes_mvaa1rho",    "2018_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
-     ("17",   "jetFakes_mvaa1a1",    "2018_jetFakes_A1_A1",  VAR_A1A1, ' '),
-     ("17",   "jetFakes_mvaa1a1",    "2018_jetFakes_A1_A1_PolVec",  VAR_A1A1_PolVec, ' '),
-     ("17",   "jetFakes_mvapipi",    "2018_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
-     ("17",   "jetFakes_mvapirho",    "2018_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
-     ("17",   "jetFakes_mvapi0a1",    "2018_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
-     ("17",   "jetFakes_mvaa1pi",    "2018_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
-     ("17",   "jetFakes_mvaa10a1",    "2018_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
+#    ("17",   "higgs_mvarhorho",    "2018_higgs_Rho_Rho_ss",  VAR_RHORHO, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvarho0a1",    "2018_higgs_0A1_Rho_and_0A1_0A1_ss",  VAR_0A1RHO, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvaa1rho",    "2018_higgs_A1_Rho_ss",  VAR_A1RHO, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_ss",  VAR_A1A1, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvaa1a1",    "2018_higgs_A1_A1_PolVec_ss",  VAR_A1A1_PolVec, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvapipi",    "2018_higgs_Pi_Pi_ss",  VAR_PIPI, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvapirho",    "2018_higgs_Pi_Rho_Mixed_ss",  VAR_PIRHO, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvapi0a1",    "2018_higgs_Pi_0A1_Mixed_ss",  VAR_PI0A1, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvaa1pi",    "2018_higgs_Pi_A1_Mixed_ss",  VAR_PIA1, ' --do_ss --no_systs '),
+#    ("17",   "higgs_mvaa10a1",    "2018_higgs_A1_0A1_ss",  VAR_0A1A1, ' --do_ss --no_systs '),
+#    ("17",   "higgs",       "2018_higgs_ss",     VAR_H_TT, ' --do_ss --no_systs '),
+#    ("17",   "zttEmbed",    "2018_zttEmbed_ss",  VAR_ZTTEMBED_TT, ' --do_ss --no_systs '),
+#    ("17",   "jetFakes",    "2018_jetFakes_ss",  VAR_JETFAKES_TT, ' --do_ss --no_systs '),
+#
+#     ("17",   "zttEmbed_mvarhorho",    "2018_zttEmbed_Rho_Rho",  VAR_RHORHO, ' '),
+#     ("17",   "zttEmbed_mvarho0a1",    "2018_zttEmbed_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+#     ("17",   "zttEmbed_mvaa1rho",    "2018_zttEmbed_A1_Rho",  VAR_A1RHO, ' '),
+#     ("17",   "zttEmbed_mvaa1a1",    "2018_zttEmbed_A1_A1",  VAR_A1A1, ' '),
+#     ("17",   "zttEmbed_mvaa1a1",    "2018_zttEmbed_A1_A1_PolVec",  VAR_A1A1_PolVec, ' '),
+#     ("17",   "zttEmbed_mvapipi",    "2018_zttEmbed_Pi_Pi",  VAR_PIPI, ' '),
+#     ("17",   "zttEmbed_mvapirho",    "2018_zttEmbed_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+#     ("17",   "zttEmbed_mvapi0a1",    "2018_zttEmbed_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+#     ("17",   "zttEmbed_mvaa1pi",    "2018_zttEmbed_Pi_A1_Mixed",  VAR_PIA1, ' '),
+#     ("17",   "zttEmbed_mvaa10a1",    "2018_zttEmbed_A1_0A1",  VAR_0A1A1, ' '),
+#  
+#     ("17",   "jetFakes_mvarhorho",    "2018_jetFakes_Rho_Rho",  VAR_RHORHO, ' '),
+#     ("17",   "jetFakes_mvarho0a1",    "2018_jetFakes_0A1_Rho_and_0A1_0A1",  VAR_0A1RHO, ' '),
+#     ("17",   "jetFakes_mvaa1rho",    "2018_jetFakes_A1_Rho",  VAR_A1RHO, ' '),
+#     ("17",   "jetFakes_mvaa1a1",    "2018_jetFakes_A1_A1",  VAR_A1A1, ' '),
+#     ("17",   "jetFakes_mvaa1a1",    "2018_jetFakes_A1_A1_PolVec",  VAR_A1A1_PolVec, ' '),
+#     ("17",   "jetFakes_mvapipi",    "2018_jetFakes_Pi_Pi",  VAR_PIPI, ' '),
+#     ("17",   "jetFakes_mvapirho",    "2018_jetFakes_Pi_Rho_Mixed",  VAR_PIRHO, ' '),
+#     ("17",   "jetFakes_mvapi0a1",    "2018_jetFakes_Pi_0A1_Mixed",  VAR_PI0A1, ' '),
+#     ("17",   "jetFakes_mvaa1pi",    "2018_jetFakes_Pi_A1_Mixed",  VAR_PIA1, ' '),
+#     ("17",   "jetFakes_mvaa10a1",    "2018_jetFakes_A1_0A1",  VAR_0A1A1, ' '),
   ]
   ANA = 'sm'
 
@@ -449,7 +454,7 @@ for ch in channels:
         if options.embedding: extra+=' --embedding'
         if ch in ['em','et','mt']: extra+=' --add_wt=\"wt_btag*wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
         if ch in ['tt']: extra+=' --add_wt=\"wt_tau_trg_mvadm*wt_tau_id_mvadm\" '
-        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'ip_uncert': extra+=' --do_ff_systs '
+        if ch in ['et','mt','tt'] and cat_num in ['17','18'] and SCHEME != 'ip_uncert' and not options.no_shape_systs: extra+=' --do_ff_systs '
         extra_jes = options.extra + ' ' + extra_global + ' ' + jes_systematics + ' ' + opts + ' --no_default '
 
         if not options.hadd:

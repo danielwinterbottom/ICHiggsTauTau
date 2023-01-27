@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#./scripts/makeDatacards_cpdecay_2016.py --cfg=scripts/plot_cpdecays_leg2016.cfg -c 'tt' scripts/params_leg2016.json -s 'cpdecay' --embedding  --output_folder datacards --batch
+#./scripts/makeDatacards_cpdecay_2016.py -c 'tt' -s 'cpdecay' --embedding  --output_folder datacards --batch
 
 import sys
 from optparse import OptionParser
@@ -123,9 +123,7 @@ no_shift_systs = options.no_shift_systs
 
 # create separate output folder for scheme and year
 output_folder = "{}/{}/{}".format(options.output_folder, SCHEME, YEAR)
-os.system('mkdir {}'.format(output_folder))
-os.system('mkdir {}/{}'.format(output_folder, SCHEME))
-os.system('mkdir {}/{}/{}'.format(output_folder, SCHEME, YEAR))
+os.system('mkdir -p {}'.format(output_folder))
 
 ########## Set up schemes and options
 

@@ -23,7 +23,7 @@ ICTauSpinnerProducer::ICTauSpinnerProducer(const edm::ParameterSet& config)
   consumes<edm::View<reco::GenParticle>>(input_);
 
   PrintHeaderWithProduces(config, input_, branch_);
-  TauSpinnerSettingsPDF="NNPDF30_nlo_as_0118";
+  TauSpinnerSettingsPDF="NNPDF31_nnlo_as_0118";
   Ipp=true;
   Ipol=0;
   nonSM2=0;
@@ -193,6 +193,8 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
   getTauDaughters(tau2_daughters,type2,taus[1],parts_handle); 
   
   TauSpinner::SimpleParticle simple_boson = ConvertToSimplePart(boson);
+  TauSpinner::SimpleParticle simple_bosonZ = ConvertToSimplePart(boson);
+  simple_bosonZ.setPdgid(23);
   TauSpinner::SimpleParticle simple_tau1 = ConvertToSimplePart(taus[0]);
   TauSpinner::SimpleParticle simple_tau2 = ConvertToSimplePart(taus[1]);
   std::vector<TauSpinner::SimpleParticle> simple_tau1_daughters;
@@ -214,16 +216,21 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
 
     TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters);
 
-    //std::cout << "--------" << std::endl;
-    //std::cout << simple_tau1_daughters.size() << "    " << simple_tau2_daughters.size() << std::endl;
-    //std::cout << TauSpinner::getWtamplitP() << "    " << WTp << "    " << TauSpinner::getWtamplitP()/WTp <<  std::endl;
-    //std::cout << TauSpinner::getWtamplitM() << "    " << WTm << "    " << TauSpinner::getWtamplitM()/WTm <<std::endl;
-
     WTp = TauSpinner::getWtamplitP()/WTp;
     WTm = TauSpinner::getWtamplitM()/WTm;
  
     info_->set_weight("WTp",WTp,false);
     info_->set_weight("WTm",WTm,false);
+
+  TauSpinner::setZgamMultipliersTR(1., 1., 1., 1. );
+  Tauolapp::Tauola::setNewCurrents(0);
+  TauSpinner::setHiggsParametersTR(-cos(2*M_PI*0),cos(2*M_PI*0),-sin(2*M_PI*0),-sin(2*M_PI*0));
+  double weightZ = TauSpinner::calculateWeightFromParticlesH(simple_bosonZ,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters); 
+  info_->set_weight("Z",weightZ,false);
+
+  TauSpinner::setZgamMultipliersTR(0., 0., 0., 0. );
+  double weightZ2 = TauSpinner::calculateWeightFromParticlesH(simple_bosonZ,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters);
+  info_->set_weight("Z2",weightZ2,false);
 
   for(unsigned i=0; i<theta_vec_.size(); ++i){
     double theta_val_ = theta_vec_[i].second;
@@ -236,7 +243,6 @@ void ICTauSpinnerProducer::produce(edm::Event& event,
     Tauolapp::Tauola::setNewCurrents(1);
     double weight_2_ = TauSpinner::calculateWeightFromParticlesH(simple_boson,simple_tau1,simple_tau2,simple_tau1_daughters,simple_tau2_daughters); 
     info_->set_weight(weight_name_+"_alt",weight_2_,false);
-
   }
 
 }

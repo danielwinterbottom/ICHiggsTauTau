@@ -460,8 +460,13 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     .set_max_tau_eta(1000)
     .set_do_theory_uncert(true)
     .set_mssm_mass(mass_str)
+<<<<<<< FF_MSSM
     .set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
     .set_era(era_type)
+=======
+    .set_make_mva_ntuple(js["make_mva_ntuple"].asBool())
+    .set_mva_output_name(js["output_folder"].asString()+"/MVAFILE_"+output_name)
+>>>>>>> master
   );
   return;  
 }
@@ -1099,7 +1104,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     .set_legacy_svfit(true)
     .set_do_preselection(false)
     .set_MC(true)
-    .set_do_light(true)
+    .set_do_light(false)
+    .set_do_taus(true)
     .set_do_vloose_preselection(js["baseline"]["do_ff_weights"].asBool());
    svFitTest.set_legacy_svfit(false);
    //svFitTest.set_do_preselection(!js["make_sync_ntuple"].asBool() && !js["baseline"]["do_faketaus"].asBool());

@@ -13,6 +13,10 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 
+<<<<<<< FF_MSSM
+=======
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/test/pola_module.hpp"
+>>>>>>> master
 
 double CPWeight(double x, double sm, double ps, double mm ){
         x*=M_PI/180; //convert to radians
@@ -913,6 +917,10 @@ namespace ic {
       outtree_->Branch("pt_1",              &pt_1_.var_double);
       outtree_->Branch("eta_1",             &eta_1_.var_double);
       outtree_->Branch("eta_2",             &eta_2_.var_double);
+      outtree_->Branch("svfit_pt_1",              &svfit_pt_1_);
+      outtree_->Branch("svfit_pt_2",              &svfit_pt_2_);
+      outtree_->Branch("svfit_eta_1",              &svfit_eta_1_);
+      outtree_->Branch("svfit_eta_2",              &svfit_eta_2_);
       outtree_->Branch("gen_match_1", &gen_match_1_);
       outtree_->Branch("gen_match_2", &gen_match_2_);
       outtree_->Branch("gen_match_1_pt", &gen_match_1_pt_);
@@ -920,6 +928,8 @@ namespace ic {
       outtree_->Branch("gen_match_undecayed_1_pt", &gen_match_undecayed_1_pt_);
       outtree_->Branch("gen_match_undecayed_2_pt", &gen_match_undecayed_2_pt_);
       outtree_->Branch("gen_sjdphi", &gen_sjdphi_);
+      outtree_->Branch("gen_mjj", &gen_mjj_);
+      outtree_->Branch("gen_jdeta", &gen_jdeta_);
       outtree_->Branch("ngenjets" , &ngenjets_);
       outtree_->Branch("ngenjets20" , &ngenjets20_);
       outtree_->Branch("genjetpt_1" , &genjetpt_1_);
@@ -928,6 +938,16 @@ namespace ic {
       outtree_->Branch("genjeteta_2" , &genjeteta_2_);
       outtree_->Branch("genM", &gen_m_);
       outtree_->Branch("genpT", &gen_pt_);
+
+      outtree_->Branch("wt_vbf_pt", &wt_vbf_pt_);
+      outtree_->Branch("wt_vbf_njets", &wt_vbf_njets_);
+      outtree_->Branch("wt_vbf_pt_njets", &wt_vbf_pt_njets_);
+      outtree_->Branch("wt_vbf_deta", &wt_vbf_deta_);
+      outtree_->Branch("wt_vbf_dphi", &wt_vbf_dphi_);
+      outtree_->Branch("wt_vbf_nlo_scale_up", &wt_vbf_nlo_scale_up_);
+      outtree_->Branch("wt_vbf_nlo_scale_down", &wt_vbf_nlo_scale_down_);
+      outtree_->Branch("wt_ggh_dphi", &wt_ggh_dphi_);
+
       outtree_->Branch("m_1", &m_1_, "m_1/F");
       outtree_->Branch("m_2", &m_2_, "m_2/F");
 
@@ -948,6 +968,30 @@ namespace ic {
       outtree_->Branch("mva_dm_1", &tau_mva_decay_mode_1_);
       outtree_->Branch("mva_dm_2", &tau_mva_decay_mode_2_);
 
+      outtree_->Branch("t_dm0raw_1", &t_dm0raw_1_);
+      outtree_->Branch("t_dm1raw_1", &t_dm1raw_1_);
+      outtree_->Branch("t_dm2raw_1", &t_dm2raw_1_);
+      outtree_->Branch("t_dm10raw_1", &t_dm10raw_1_);
+      outtree_->Branch("t_dm11raw_1", &t_dm11raw_1_);
+      outtree_->Branch("t_dmotherraw_1", &t_dmotherraw_1_);
+
+      outtree_->Branch("t_dm0raw_2", &t_dm0raw_2_);
+      outtree_->Branch("t_dm1raw_2", &t_dm1raw_2_);
+      outtree_->Branch("t_dm2raw_2", &t_dm2raw_2_);
+      outtree_->Branch("t_dm10raw_2", &t_dm10raw_2_);
+      outtree_->Branch("t_dm11raw_2", &t_dm11raw_2_);
+      outtree_->Branch("t_dmotherraw_2", &t_dmotherraw_2_);
+
+      outtree_->Branch("photon_pt", &photon_pt_);
+      outtree_->Branch("photon_r9", &photon_r9_);
+      outtree_->Branch("photon_ietaieta", &photon_ietaieta_);
+      outtree_->Branch("electron_pt", &electron_pt_);
+      outtree_->Branch("electron_r9", &electron_r9_);
+      outtree_->Branch("electron_ietaieta", &electron_ietaieta_);
+      outtree_->Branch("sc_pt", &sc_pt_);
+      outtree_->Branch("sc_r9", &sc_r9_);
+      outtree_->Branch("sc_ietaieta", &sc_ietaieta_);
+
       outtree_->Branch("a1_flag", &a1_flag_);
       outtree_->Branch("a1_flag_2", &a1_flag_2_);
       outtree_->Branch("aco_angle_1", &aco_angle_1_);
@@ -955,8 +999,49 @@ namespace ic {
       outtree_->Branch("aco_angle_3", &aco_angle_3_);
       outtree_->Branch("aco_angle_4", &aco_angle_4_);
       outtree_->Branch("aco_angle_5", &aco_angle_5_);
+      outtree_->Branch("aco_angle_5_smearpi0dir_up", &aco_angle_5_smearpi0dir_up_);
+      outtree_->Branch("aco_angle_5_smearpi0dir_down", &aco_angle_5_smearpi0dir_down_);
+      outtree_->Branch("aco_angle_5_smearIP_down", &aco_angle_5_smearIP_down_);
+      outtree_->Branch("aco_angle_5_smearIP_up", &aco_angle_5_smearIP_up_);
+      outtree_->Branch("aco_angle_5_scalepi0_down", &aco_angle_5_scalepi0_down_);
+      outtree_->Branch("aco_angle_5_scalepi0_up", &aco_angle_5_scalepi0_up_);
+
       outtree_->Branch("aco_angle_6", &aco_angle_6_);
       outtree_->Branch("pv_angle", &pv_angle_);
+      outtree_->Branch("pv_angle_smearsv_up", &pv_angle_smearsv_up_);
+      outtree_->Branch("pv_angle_smearsv_down", &pv_angle_smearsv_down_);
+      outtree_->Branch("pv_angle_new", &pv_angle_new_);
+      outtree_->Branch("rho_dphi_2", &rho_dphi_2_);
+      outtree_->Branch("rho_deta_2", &rho_deta_2_);
+      outtree_->Branch("pi0_E_2", &pi0_E_2_);
+      outtree_->Branch("pi0_phi_2", &pi0_phi_2_);
+      outtree_->Branch("pi0_eta_2", &pi0_eta_2_);
+      outtree_->Branch("pi_E_2", &pi_E_2_);
+      outtree_->Branch("pi_phi_2", &pi_phi_2_);
+      outtree_->Branch("pi_eta_2", &pi_eta_2_);
+      outtree_->Branch("ip_phi_2", &ip_phi_2_);
+      outtree_->Branch("gen_ip_phi_2", &gen_ip_phi_2_);
+      outtree_->Branch("ip_phi_raw_2", &ip_phi_raw_2_);
+      outtree_->Branch("gen_ip_eta_2", &gen_ip_eta_2_);
+      outtree_->Branch("gen_sv_phi_2", &gen_sv_phi_2_);
+      outtree_->Branch("gen_sv_eta_2", &gen_sv_eta_2_);
+      outtree_->Branch("ip_eta_2", &ip_eta_2_);
+      outtree_->Branch("ip_eta_raw_2", &ip_eta_raw_2_);
+      outtree_->Branch("ip_L_2", &ip_L_2_);
+      outtree_->Branch("sv_phi_2", &sv_phi_2_);
+      outtree_->Branch("sv_eta_2", &sv_eta_2_);
+      outtree_->Branch("sv_L_2", &sv_L_2_);
+      outtree_->Branch("ip_dphi_2", &ip_dphi_2_);
+      outtree_->Branch("ip_deta_2", &ip_deta_2_);
+
+      outtree_->Branch("gen_neutral_p_1",   &gen_neutral_p_1_);
+      outtree_->Branch("gen_neutral_p_2",   &gen_neutral_p_2_);
+      outtree_->Branch("gen_neutral_E_1",   &gen_neutral_E_1_);
+      outtree_->Branch("gen_neutral_E_2",   &gen_neutral_E_2_);
+      outtree_->Branch("gen_neutral_phi_1", &gen_neutral_phi_1_);
+      outtree_->Branch("gen_neutral_phi_2", &gen_neutral_phi_2_);
+      outtree_->Branch("gen_neutral_eta_1", &gen_neutral_eta_1_);
+      outtree_->Branch("gen_neutral_eta_2", &gen_neutral_eta_2_);
 
       outtree_->Branch("sv_x_2", &sv_x_2_);
       outtree_->Branch("sv_y_2", &sv_y_2_);
@@ -1012,6 +1097,7 @@ namespace ic {
       outtree_->Branch("fake_met_dphi_1",             &fake_met_dphi_1_);
       outtree_->Branch("fake_met_dphi_2",             &fake_met_dphi_2_);
       outtree_->Branch("newmet",             &newmet_);
+<<<<<<< FF_MSSM
       outtree_->Branch("fake_met",             &fake_met_);
       outtree_->Branch("gen_met",             &gen_met_);
 
@@ -1029,6 +1115,9 @@ namespace ic {
       outtree_->Branch("fake_tau_metx", &fake_tau_metx_);
       outtree_->Branch("fake_tau_mety", &fake_tau_mety_);
 
+=======
+      outtree_->Branch("met_shift",             &met_shift_);
+>>>>>>> master
       outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
       outtree_->Branch("w_frac_score",             &w_frac_score_);
 
@@ -1096,6 +1185,8 @@ namespace ic {
       outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
       outtree_->Branch("trg_vbfdoubletau",    &trg_vbfdoubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      outtree_->Branch("trg_ehigh_mulow",    &trg_ehigh_mulow_);
+      outtree_->Branch("trg_muhigh_elow",    &trg_muhigh_elow_);
       outtree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       outtree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       outtree_->Branch("trg_mutaucross",    &trg_mutaucross_);
@@ -1111,6 +1202,7 @@ namespace ic {
 
       if (channel_ == channel::em) {
         outtree_->Branch("wt_em_qcd",         &wt_em_qcd_);
+        outtree_->Branch("wt_em_qcd_alt",         &wt_em_qcd_alt_);
         if(!systematic_shift_) {
           outtree_->Branch("wt_em_qcd_extrapup",      &wt_em_qcd_extrapup_);
           outtree_->Branch("wt_em_qcd_extrapdown",    &wt_em_qcd_extrapdown_);
@@ -1183,6 +1275,125 @@ namespace ic {
           outtree_->Branch("dz_2",              &dz_2_.var_double);
         } 
       }
+      outtree_->Branch("metcov00", &metCov00_, "metCov00/F");
+      outtree_->Branch("metcov01", &metCov01_, "metCov01/F");
+      outtree_->Branch("metcov10", &metCov10_, "metCov10/F");
+      outtree_->Branch("metcov11", &metCov11_, "metCov11/F");
+      outtree_->Branch("metx", &metx_);
+      outtree_->Branch("mety", &mety_);
+      outtree_->Branch("jet_px_1", &jet_px_1_);
+      outtree_->Branch("jet_py_1", &jet_py_1_);
+      outtree_->Branch("jet_pz_1", &jet_pz_1_);
+      outtree_->Branch("jet_m_1", &jet_m_1_);
+
+      outtree_->Branch("jet_px_2", &jet_px_2_);
+      outtree_->Branch("jet_py_2", &jet_py_2_);
+      outtree_->Branch("jet_pz_2", &jet_pz_2_);
+      outtree_->Branch("jet_m_2", &jet_m_2_);
+
+      outtree_->Branch("jet_px_3", &jet_px_3_);
+      outtree_->Branch("jet_py_3", &jet_py_3_);
+      outtree_->Branch("jet_pz_3", &jet_pz_3_);
+      outtree_->Branch("jet_m_3", &jet_m_3_);
+
+      outtree_->Branch("t_px_1", &t_px_1_);
+      outtree_->Branch("t_py_1", &t_py_1_);
+      outtree_->Branch("t_pz_1", &t_pz_1_);
+      outtree_->Branch("t_m_1",  &t_m_1_);
+      outtree_->Branch("t_px_2", &t_px_2_);
+      outtree_->Branch("t_py_2", &t_py_2_);
+      outtree_->Branch("t_pz_2", &t_pz_2_);
+      outtree_->Branch("t_m_2",  &t_m_2_);
+
+      outtree_->Branch("gen_nu_p_1",   &gen_nu_p_1_);
+      outtree_->Branch("gen_nu_p_2",   &gen_nu_p_2_);
+      outtree_->Branch("gen_nu_phi_1", &gen_nu_phi_1_);
+      outtree_->Branch("gen_nu_phi_2", &gen_nu_phi_2_);
+      outtree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
+      outtree_->Branch("gen_nu_eta_2", &gen_nu_eta_2_);
+
+      outtree_->Branch("pi_px_1", &pi_px_1_);
+      outtree_->Branch("pi_py_1", &pi_py_1_);
+      outtree_->Branch("pi_pz_1", &pi_pz_1_);
+      outtree_->Branch("pi_E_1", &pi_E_1_);
+      outtree_->Branch("pi2_px_1", &pi2_px_1_);
+      outtree_->Branch("pi2_py_1", &pi2_py_1_);
+      outtree_->Branch("pi2_pz_1", &pi2_pz_1_);
+      outtree_->Branch("pi2_E_1", &pi2_E_1_);
+      outtree_->Branch("pi3_px_1", &pi3_px_1_);
+      outtree_->Branch("pi3_py_1", &pi3_py_1_);
+      outtree_->Branch("pi3_pz_1", &pi3_pz_1_);
+      outtree_->Branch("pi3_E_1", &pi3_E_1_);
+      outtree_->Branch("pi_px_2", &pi_px_2_);
+      outtree_->Branch("pi_py_2", &pi_py_2_);
+      outtree_->Branch("pi_pz_2", &pi_pz_2_);
+      outtree_->Branch("pi_E_2", &pi_E_2_);
+      outtree_->Branch("pi2_px_2", &pi2_px_2_);
+      outtree_->Branch("pi2_py_2", &pi2_py_2_);
+      outtree_->Branch("pi2_pz_2", &pi2_pz_2_);
+      outtree_->Branch("pi2_E_2", &pi2_E_2_);
+      outtree_->Branch("pi3_px_2", &pi3_px_2_);
+      outtree_->Branch("pi3_py_2", &pi3_py_2_);
+      outtree_->Branch("pi3_pz_2", &pi3_pz_2_);
+      outtree_->Branch("pi3_E_2", &pi3_E_2_);
+
+      outtree_->Branch("pi0_px_1", &pi0_px_1_);
+      outtree_->Branch("pi0_py_1", &pi0_py_1_);
+      outtree_->Branch("pi0_pz_1", &pi0_pz_1_);
+      outtree_->Branch("pi0_E_1", &pi0_E_1_);
+      outtree_->Branch("pi0_px_2", &pi0_px_2_);
+      outtree_->Branch("pi0_py_2", &pi0_py_2_);
+      outtree_->Branch("pi0_pz_2", &pi0_pz_2_);
+      outtree_->Branch("pi0_E_2", &pi0_E_2_);
+      outtree_->Branch("ip_x_1", &ip_x_1_);
+      outtree_->Branch("ip_y_1", &ip_y_1_);
+      outtree_->Branch("ip_z_1", &ip_z_1_);
+      outtree_->Branch("ip_x_2", &ip_x_2_);
+      outtree_->Branch("ip_y_2", &ip_y_2_);
+      outtree_->Branch("ip_z_2", &ip_z_2_);
+      outtree_->Branch("sv_x_1", &sv_x_1_);
+      outtree_->Branch("sv_y_1", &sv_y_1_);
+      outtree_->Branch("sv_z_1", &sv_z_1_);
+      outtree_->Branch("sv_x_2", &sv_x_2_);
+      outtree_->Branch("sv_y_2", &sv_y_2_);
+      outtree_->Branch("sv_z_2", &sv_z_2_);
+      outtree_->Branch("ipcov00_1", &ipcov00_1_);
+      outtree_->Branch("ipcov01_1", &ipcov01_1_);
+      outtree_->Branch("ipcov02_1", &ipcov02_1_);
+      outtree_->Branch("ipcov10_1", &ipcov10_1_);
+      outtree_->Branch("ipcov11_1", &ipcov11_1_);
+      outtree_->Branch("ipcov12_1", &ipcov12_1_);
+      outtree_->Branch("ipcov20_1", &ipcov20_1_);
+      outtree_->Branch("ipcov21_1", &ipcov21_1_);
+      outtree_->Branch("ipcov22_1", &ipcov22_1_);
+      outtree_->Branch("ipcov00_2", &ipcov00_2_);
+      outtree_->Branch("ipcov01_2", &ipcov01_2_);
+      outtree_->Branch("ipcov02_2", &ipcov02_2_);
+      outtree_->Branch("ipcov10_2", &ipcov10_2_);
+      outtree_->Branch("ipcov11_2", &ipcov11_2_);
+      outtree_->Branch("ipcov12_2", &ipcov12_2_);
+      outtree_->Branch("ipcov20_2", &ipcov20_2_);
+      outtree_->Branch("ipcov21_2", &ipcov21_2_);
+      outtree_->Branch("ipcov22_2", &ipcov22_2_);
+
+      outtree_->Branch("svcov00_1", &svcov00_1_);
+      outtree_->Branch("svcov01_1", &svcov01_1_);
+      outtree_->Branch("svcov02_1", &svcov02_1_);
+      outtree_->Branch("svcov10_1", &svcov10_1_);
+      outtree_->Branch("svcov11_1", &svcov11_1_);
+      outtree_->Branch("svcov12_1", &svcov12_1_);
+      outtree_->Branch("svcov20_1", &svcov20_1_);
+      outtree_->Branch("svcov21_1", &svcov21_1_);
+      outtree_->Branch("svcov22_1", &svcov22_1_);
+      outtree_->Branch("svcov00_2", &svcov00_2_);
+      outtree_->Branch("svcov01_2", &svcov01_2_);
+      outtree_->Branch("svcov02_2", &svcov02_2_);
+      outtree_->Branch("svcov10_2", &svcov10_2_);
+      outtree_->Branch("svcov11_2", &svcov11_2_);
+      outtree_->Branch("svcov12_2", &svcov12_2_);
+      outtree_->Branch("svcov20_2", &svcov20_2_);
+      outtree_->Branch("svcov21_2", &svcov21_2_);
+      outtree_->Branch("svcov22_2", &svcov22_2_);
     }
     if(make_sync_ntuple_) {
       lOFile = new TFile(sync_output_name_.c_str(), "RECREATE");
@@ -1201,6 +1412,7 @@ namespace ic {
 
      if(channel_==channel::et) synctree_->Branch("trigweight_1", &et_trg_);
      else synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+     if(channel_==channel::em) synctree_->Branch("trigweightEMu", &trigweight_1_);
 
       synctree_->Branch("trigweight_2", &et_trg_cross_);
       synctree_->Branch("trigweight", &et_trg_or_);
@@ -1208,6 +1420,7 @@ namespace ic {
       if(channel_==channel::et) synctree_->Branch("idisoweight_2", &mvadm_idiso_et_);
       else synctree_->Branch("idisoweight_2", &idisoweight_2_, "idisoweight_2/F");
       synctree_->Branch("embweight", &wt_embedding_yield_);
+      synctree_->Branch("mcweight", &mcweight_);
       synctree_->Branch("trkeffweight", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_1", &trackingweight_1_, "trackingweight_1/F");
       synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
@@ -1443,6 +1656,8 @@ namespace ic {
       synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       synctree_->Branch("trg_doubletau",    &trg_doubletau_);
       synctree_->Branch("trg_muonelectron",    &trg_muonelectron_);
+      synctree_->Branch("trg_ehigh_mulow",    &trg_ehigh_mulow_);
+      synctree_->Branch("trg_muhigh_elow",    &trg_muhigh_elow_);
       synctree_->Branch("trg_singletau_1",    &trg_singletau_1_);
       synctree_->Branch("trg_singletau_2",    &trg_singletau_2_);
       synctree_->Branch("trg_mutaucross", &trg_mutaucross_);
@@ -1483,6 +1698,31 @@ namespace ic {
       mvatree_->Branch("gen_nu_phi_2", &gen_nu_phi_2_);
       mvatree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
       mvatree_->Branch("gen_nu_eta_2", &gen_nu_eta_2_);
+<<<<<<< FF_MSSM
+=======
+
+      mvatree_->Branch("gen_vis_p_1",   &gen_vis_p_1_);
+      mvatree_->Branch("gen_vis_p_2",   &gen_vis_p_2_);
+      mvatree_->Branch("gen_vis_E_1",   &gen_vis_E_1_);
+      mvatree_->Branch("gen_vis_E_2",   &gen_vis_E_2_);
+      mvatree_->Branch("gen_vis_phi_1", &gen_vis_phi_1_);
+      mvatree_->Branch("gen_vis_phi_2", &gen_vis_phi_2_);
+      mvatree_->Branch("gen_vis_eta_1", &gen_vis_eta_1_);
+      mvatree_->Branch("gen_vis_eta_2", &gen_vis_eta_2_);
+
+      mvatree_->Branch("gen_neutral_p_1",   &gen_neutral_p_1_);
+      mvatree_->Branch("gen_neutral_p_2",   &gen_neutral_p_2_);
+      mvatree_->Branch("gen_neutral_E_1",   &gen_neutral_E_1_);
+      mvatree_->Branch("gen_neutral_E_2",   &gen_neutral_E_2_);
+      mvatree_->Branch("gen_neutral_phi_1", &gen_neutral_phi_1_);
+      mvatree_->Branch("gen_neutral_phi_2", &gen_neutral_phi_2_);
+      mvatree_->Branch("gen_neutral_eta_1", &gen_neutral_eta_1_);
+      mvatree_->Branch("gen_neutral_eta_2", &gen_neutral_eta_2_);
+
+      mvatree_->Branch("gen_match_1", &gen_match_1_);
+      mvatree_->Branch("gen_match_2", &gen_match_2_);
+
+>>>>>>> master
       mvatree_->Branch("pt_2",              &pt_2_.var_double);
       mvatree_->Branch("pt_1",              &pt_1_.var_double);
       mvatree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
@@ -1492,6 +1732,18 @@ namespace ic {
       mvatree_->Branch("wt_cp_mm", &wt_cp_mm_);
       mvatree_->Branch("mva_dm_1", &tau_mva_decay_mode_1_);
       mvatree_->Branch("mva_dm_2", &tau_mva_decay_mode_2_);
+      mvatree_->Branch("t_dm0raw_1", &t_dm0raw_1_);
+      mvatree_->Branch("t_dm1raw_1", &t_dm1raw_1_);
+      mvatree_->Branch("t_dm2raw_1", &t_dm2raw_1_);
+      mvatree_->Branch("t_dm10raw_1", &t_dm10raw_1_);
+      mvatree_->Branch("t_dm11raw_1", &t_dm11raw_1_);
+      mvatree_->Branch("t_dmotherraw_1", &t_dmotherraw_1_);
+      mvatree_->Branch("t_dm0raw_2", &t_dm0raw_2_);
+      mvatree_->Branch("t_dm1raw_2", &t_dm1raw_2_);
+      mvatree_->Branch("t_dm2raw_2", &t_dm2raw_2_);
+      mvatree_->Branch("t_dm10raw_2", &t_dm10raw_2_);
+      mvatree_->Branch("t_dm11raw_2", &t_dm11raw_2_);
+      mvatree_->Branch("t_dmotherraw_2", &t_dmotherraw_2_);
       mvatree_->Branch("tau_decay_mode_2",    &tau_decay_mode_2_);
       mvatree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
       mvatree_->Branch("trg_singleelectron",    &trg_singleelectron_);
@@ -1557,6 +1809,19 @@ namespace ic {
       mvatree_->Branch("pi3_py_2", &pi3_py_2_);
       mvatree_->Branch("pi3_pz_2", &pi3_pz_2_);
       mvatree_->Branch("pi3_E_2", &pi3_E_2_);
+<<<<<<< FF_MSSM
+=======
+
+      mvatree_->Branch("tau_px_1", &tau_px_1_);
+      mvatree_->Branch("tau_py_1", &tau_py_1_);
+      mvatree_->Branch("tau_pz_1", &tau_pz_1_);
+      mvatree_->Branch("tau_E_1",  &tau_E_1_);
+      mvatree_->Branch("tau_px_2", &tau_px_2_);
+      mvatree_->Branch("tau_py_2", &tau_py_2_);
+      mvatree_->Branch("tau_pz_2", &tau_pz_2_);
+      mvatree_->Branch("tau_E_2",  &tau_E_2_);
+
+>>>>>>> master
       mvatree_->Branch("pi0_px_1", &pi0_px_1_);
       mvatree_->Branch("pi0_py_1", &pi0_py_1_);
       mvatree_->Branch("pi0_pz_1", &pi0_pz_1_);
@@ -1597,6 +1862,28 @@ namespace ic {
       mvatree_->Branch("gam4_py_2", &gam4_py_2_);
       mvatree_->Branch("gam4_pz_2", &gam4_pz_2_);
       mvatree_->Branch("gam4_E_2", &gam4_E_2_);
+      mvatree_->Branch("gam_px_1", &gam_px_1_);
+      mvatree_->Branch("gam_py_1", &gam_py_1_);
+      mvatree_->Branch("gam_pz_1", &gam_pz_1_);
+      mvatree_->Branch("n_gammas_1", &n_gammas_1_);
+      mvatree_->Branch("gam_px_2", &gam_px_2_);
+      mvatree_->Branch("gam_py_2", &gam_py_2_);
+      mvatree_->Branch("gam_pz_2", &gam_pz_2_);
+      mvatree_->Branch("n_gammas_2", &n_gammas_2_);
+      mvatree_->Branch("isogam_px_1", &isogam_px_1_);
+      mvatree_->Branch("isogam_py_1", &isogam_py_1_);
+      mvatree_->Branch("isogam_pz_1", &isogam_pz_1_);
+      mvatree_->Branch("n_isogammas_1", &n_isogammas_1_);
+      mvatree_->Branch("isogam_px_2", &isogam_px_2_);
+      mvatree_->Branch("isogam_py_2", &isogam_py_2_);
+      mvatree_->Branch("isogam_pz_2", &isogam_pz_2_);
+      mvatree_->Branch("n_isogammas_2", &n_isogammas_2_);
+      mvatree_->Branch("cl_px_1", &cl_px_1_);
+      mvatree_->Branch("cl_py_1", &cl_py_1_);
+      mvatree_->Branch("cl_pz_1", &cl_pz_1_);
+      mvatree_->Branch("cl_px_2", &cl_px_2_);
+      mvatree_->Branch("cl_py_2", &cl_py_2_);
+      mvatree_->Branch("cl_pz_2", &cl_pz_2_);
       mvatree_->Branch("metx", &metx_);
       mvatree_->Branch("mety", &mety_);
       mvatree_->Branch("ip_x_1", &ip_x_1_);
@@ -1647,6 +1934,56 @@ namespace ic {
       mvatree_->Branch("svcov20_2", &svcov20_2_);
       mvatree_->Branch("svcov21_2", &svcov21_2_);
       mvatree_->Branch("svcov22_2", &svcov22_2_);
+
+      mvatree_->Branch("met",               &met_.var_double);
+      mvatree_->Branch("n_jets",            &n_jets_);
+      mvatree_->Branch("mjj",               &mjj_.var_double);
+      mvatree_->Branch("jpt_1",             &jpt_1_.var_double);
+      mvatree_->Branch("m_vis",             &m_vis_.var_double);
+      mvatree_->Branch("pt_vis",            &pt_vis_.var_double);
+      mvatree_->Branch("pt_tt",             &pt_tt_.var_double);
+      mvatree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
+      mvatree_->Branch("wt",                &wt_.var_double);
+      mvatree_->Branch("os",                &os_);
+
+      mvatree_->Branch("event",             &event_);
+      mvatree_->Branch("run",               &run_);
+      mvatree_->Branch("lumi",               &lumi_);
+
+      mvatree_->Branch("sc1_px_1", &sc1_px_1_);
+      mvatree_->Branch("sc1_py_1", &sc1_py_1_);
+      mvatree_->Branch("sc1_pz_1", &sc1_pz_1_);
+      mvatree_->Branch("sc1_E_1", &sc1_E_1_);
+      mvatree_->Branch("sc1_r9_1", &sc1_r9_1_);
+      mvatree_->Branch("sc1_ietaieta_1", &sc1_ietaieta_1_);
+      mvatree_->Branch("sc1_px_2", &sc1_px_2_);
+      mvatree_->Branch("sc1_py_2", &sc1_py_2_);
+      mvatree_->Branch("sc1_pz_2", &sc1_pz_2_);
+      mvatree_->Branch("sc1_E_2", &sc1_E_2_);
+      mvatree_->Branch("sc1_r9_2", &sc1_r9_2_);
+      mvatree_->Branch("sc1_ietaieta_2", &sc1_ietaieta_2_);
+
+      mvatree_->Branch("sc1_r9_5x5_1", &sc1_r9_5x5_1_);
+      mvatree_->Branch("sc1_ietaieta_5x5_1", &sc1_ietaieta_5x5_1_);
+      mvatree_->Branch("sc1_Nclusters_1", &sc1_Nclusters_1_);
+      mvatree_->Branch("sc1_seed_E_1", &sc1_seed_E_1_);
+      mvatree_->Branch("sc1_cl1_E_1", &sc1_cl1_E_1_);
+      mvatree_->Branch("sc1_cl2_E_1", &sc1_cl2_E_1_);
+      mvatree_->Branch("sc1_etawidth_1", &sc1_etawidth_1_);
+      mvatree_->Branch("sc1_phiwidth_1", &sc1_phiwidth_1_);
+
+      mvatree_->Branch("sc1_r9_5x5_2", &sc1_r9_5x5_2_);
+      mvatree_->Branch("sc1_ietaieta_5x5_2", &sc1_ietaieta_5x5_2_);
+      mvatree_->Branch("sc1_Nclusters_2", &sc1_Nclusters_2_);
+      mvatree_->Branch("sc1_seed_E_2", &sc1_seed_E_2_);
+      mvatree_->Branch("sc1_cl1_E_2", &sc1_cl1_E_2_);
+      mvatree_->Branch("sc1_cl2_E_2", &sc1_cl2_E_2_);
+      mvatree_->Branch("sc1_etawidth_2", &sc1_etawidth_2_);
+      mvatree_->Branch("sc1_phiwidth_2", &sc1_phiwidth_2_);
+
+      mvatree_->Branch("npv", &n_vtx_, "n_vtx/I");
+      mvatree_->Branch("rho",               &rho_, "rho/F");
+
     }
     return 0;
   }
@@ -1659,6 +1996,8 @@ namespace ic {
     if (event->Exists("trg_doubletau_mssm"))      trg_doubletau_mssm_      = event->Get<bool>("trg_doubletau_mssm");
     if (event->Exists("trg_vbfdoubletau"))   trg_vbfdoubletau_   = event->Get<bool>("trg_vbfdoubletau");
     if (event->Exists("trg_muonelectron"))   trg_muonelectron_   = event->Get<bool>("trg_muonelectron");
+    if (event->Exists("trg_ehigh_mulow"))   trg_ehigh_mulow_   = event->Get<bool>("trg_ehigh_mulow");
+    if (event->Exists("trg_muhigh_elow"))   trg_muhigh_elow_   = event->Get<bool>("trg_muhigh_elow");
     if (event->Exists("trg_singletau_1"))    trg_singletau_1_      = event->Get<bool>("trg_singletau_1");
     if (event->Exists("trg_singletau_2"))    trg_singletau_2_      = event->Get<bool>("trg_singletau_2");
     if (event->Exists("trg_mutaucross"))     trg_mutaucross_ = event->Get<bool>("trg_mutaucross");
@@ -1674,7 +2013,11 @@ namespace ic {
       trg_singletau_2_      = true; 
       trg_mutaucross_ = true;
       trg_etaucross_ = true;
+      trg_ehigh_mulow_ = true;
+      trg_muhigh_elow_ = true;
     } 
+
+    met_shift_ = event->Exists("MET_shift_UnclusteredEnUp") ? fabs(1.-event->Get<double>("MET_shift_UnclusteredEnUp")) : -1; 
 
     w_frac_score_ = event->Exists("w_frac_score") ? event->Get<double>("w_frac_score") : -1.; 
     qcd_frac_score_ = event->Exists("qcd_frac_score") ? event->Get<double>("qcd_frac_score") : -1.;
@@ -2411,9 +2754,22 @@ namespace ic {
     if(event->Exists("genjeteta_1")) genjeteta_1_ = event->Get<double>("genjeteta_1");
     if(event->Exists("genjeteta_2")) genjeteta_2_ = event->Get<double>("genjeteta_2");
     if(event->Exists("gen_sjdphi")) gen_sjdphi_ = event->Get<double>("gen_sjdphi");
+    if(event->Exists("gen_mjj")) gen_mjj_ = event->Get<double>("gen_mjj");
+    if(event->Exists("gen_jdeta")) gen_jdeta_ = event->Get<double>("gen_jdeta");
     if(event->Exists("tauFlag1")) tauFlag_1_ = event->Get<int>("tauFlag1");
     if(event->Exists("tauFlag2")) tauFlag_2_ = event->Get<int>("tauFlag2");
-   
+ 
+ 
+    wt_vbf_pt_ = (event->Exists("wt_vbf_pt")) ? event->Get<double>("wt_vbf_pt") : 1.0;
+    wt_vbf_njets_ = (event->Exists("wt_vbf_njets")) ? event->Get<double>("wt_vbf_njets") : 1.0;
+    wt_vbf_pt_njets_ = (event->Exists("wt_vbf_pt_njets")) ? event->Get<double>("wt_vbf_pt_njets") : 1.0;
+    wt_vbf_deta_ = (event->Exists("wt_vbf_deta")) ? event->Get<double>("wt_vbf_deta") : 1.0;
+    wt_vbf_dphi_ = (event->Exists("wt_vbf_dphi")) ? event->Get<double>("wt_vbf_dphi") : 1.0;
+    wt_vbf_nlo_scale_up_ = (event->Exists("wt_vbf_nlo_scale_up")) ? event->Get<double>("wt_vbf_nlo_scale_up") : 1.0;
+    wt_vbf_nlo_scale_down_ = (event->Exists("wt_vbf_nlo_scale_down")) ? event->Get<double>("wt_vbf_nlo_scale_down") : 1.0;
+    wt_ggh_dphi_ = (event->Exists("wt_ggh_dphi")) ? event->Get<double>("wt_ggh_dphi") : 1.0;
+
+ 
     wt_tau_fake_up_ = 1.0;
     wt_tau_fake_down_ = 1.0;
     wt_tquark_up_ = 1.0;
@@ -2423,6 +2779,7 @@ namespace ic {
     wt_zpt_down_ = 1.0;
     wt_zpt_embed_ic_ = 1.0;
     wt_em_qcd_ = 1.0;
+    wt_em_qcd_alt_ = 1.0;
     wt_efake_rate_up_ = 1.0;
     wt_efake_rate_down_ = 1.0;
     wt_mfake_rate_up_ = 1.0;
@@ -2440,6 +2797,7 @@ namespace ic {
     if (event->Exists("wt_mfake_rate_up"))  wt_mfake_rate_up_   = event->Get<double>("wt_mfake_rate_up");
     if (event->Exists("wt_mfake_rate_down")) wt_mfake_rate_down_ = event->Get<double>("wt_mfake_rate_down");
     if (event->Exists("wt_em_qcd"))         wt_em_qcd_ = event->Get<double>("wt_em_qcd");
+    if (event->Exists("wt_em_qcd_alt"))         wt_em_qcd_alt_ = event->Get<double>("wt_em_qcd_alt");
     if (event->Exists("wt_em_qcd_extrapup"))      wt_em_qcd_extrapup_ = event->Get<double>("wt_em_qcd_extrapup");
     if (event->Exists("wt_em_qcd_extrapdown"))    wt_em_qcd_extrapdown_ = event->Get<double>("wt_em_qcd_extrapdown");
 
@@ -2471,6 +2829,7 @@ namespace ic {
     if (event->Exists("wt_emb_sel_kit")) wt_emb_sel_kit_ = event->Get<double>("wt_emb_sel_kit"); else wt_emb_sel_kit_ = 1.0;
     if (event->Exists("wt_emb_sel_trg_kit")) wt_emb_sel_trg_kit_ = event->Get<double>("wt_emb_sel_trg_kit"); else wt_emb_sel_trg_kit_ = 1.0;
     if (event->Exists("wt_embedding_yield")) wt_embedding_yield_ = event->Get<double>("wt_embedding_yield"); else wt_embedding_yield_ = 0.0;
+    if (eventInfo->weight_defined("wt_embedding")) mcweight_ = eventInfo->weight("wt_embedding"); else mcweight_ = 0.0;
     if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
     et_trg_= (event->Exists("et_trg_single")) ? event->Get<double>("et_trg_single") : 0;
     et_trg_cross_= (event->Exists("et_trg_cross")) ? event->Get<double>("et_trg_cross") : 0;
@@ -2667,6 +3026,20 @@ namespace ic {
      mt_sv_ = -9999;
    }
 
+   std::pair<Candidate, Candidate> svfit_ditau = std::make_pair(Candidate(), Candidate());   
+  
+   svfit_pt_1_=-9999.; 
+   svfit_pt_2_=-9999.;
+   svfit_eta_1_=-9999.;
+   svfit_eta_2_=-9999.; 
+   if (event->Exists("svfitTaus")) {
+    svfit_ditau = event->Get<std::pair<Candidate, Candidate>>("svfitTaus");
+    svfit_pt_1_=svfit_ditau.first.pt();
+    svfit_eta_1_=svfit_ditau.first.eta();
+    svfit_pt_2_=svfit_ditau.second.pt();
+    svfit_eta_2_=svfit_ditau.second.eta();
+   }
+
     if (event->Exists("svfitHiggs")) {
       Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
       pt_h_ = higgs.pt();
@@ -2764,7 +3137,15 @@ namespace ic {
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
 
+    t_px_1_=lep1->vector().Px();
+    t_py_1_=lep1->vector().Py();
+    t_pz_1_=lep1->vector().Pz();
+    t_m_1_ =lep1->vector().M();
 
+    t_px_2_=lep2->vector().Px();
+    t_py_2_=lep2->vector().Py();
+    t_pz_2_=lep2->vector().Pz();
+    t_m_2_ =lep2->vector().M();
 
     if(make_sync_ntuple_){
       event->Exists("genpX") ? gen_px_ = event->Get<double>("genpX") : 0.;
@@ -2784,12 +3165,49 @@ namespace ic {
     gen_nu_eta_1_=-9999.;
     gen_nu_eta_2_=-9999.;
 
+    gen_vis_p_1_=-9999.;
+    gen_vis_p_2_=-9999.;
+    gen_vis_E_1_=-9999.;
+    gen_vis_E_2_=-9999.;
+    gen_vis_phi_1_=-9999.;
+    gen_vis_phi_2_=-9999.;
+    gen_vis_eta_1_=-9999.;
+    gen_vis_eta_2_=-9999.;
+
+    gen_neutral_p_1_=-9999.;
+    gen_neutral_p_2_=-9999.;
+    gen_neutral_E_1_=-9999.;
+    gen_neutral_E_2_=-9999.;
+    gen_neutral_phi_1_=-9999.;
+    gen_neutral_phi_2_=-9999.;
+    gen_neutral_eta_1_=-9999.;
+    gen_neutral_eta_2_=-9999.;
+
     event->Exists("gen_nu_p_1")   ? gen_nu_p_1_   = event->Get<double>("gen_nu_p_1")   : -9999.;  
     event->Exists("gen_nu_p_2")   ? gen_nu_p_2_   = event->Get<double>("gen_nu_p_2")   : -9999.; 
     event->Exists("gen_nu_phi_1") ? gen_nu_phi_1_ = event->Get<double>("gen_nu_phi_1") : -9999.; 
     event->Exists("gen_nu_phi_2") ? gen_nu_phi_2_ = event->Get<double>("gen_nu_phi_2") : -9999.; 
     event->Exists("gen_nu_eta_1") ? gen_nu_eta_1_ = event->Get<double>("gen_nu_eta_1") : -9999.; 
     event->Exists("gen_nu_eta_2") ? gen_nu_eta_2_ = event->Get<double>("gen_nu_eta_2") : -9999.; 
+
+    event->Exists("gen_vis_p_1")   ? gen_vis_p_1_   = event->Get<double>("gen_vis_p_1")   : -9999.;
+    event->Exists("gen_vis_p_2")   ? gen_vis_p_2_   = event->Get<double>("gen_vis_p_2")   : -9999.;
+    event->Exists("gen_vis_E_1")   ? gen_vis_E_1_   = event->Get<double>("gen_vis_E_1")   : -9999.;
+    event->Exists("gen_vis_E_2")   ? gen_vis_E_2_   = event->Get<double>("gen_vis_E_2")   : -9999.;
+    event->Exists("gen_vis_phi_1") ? gen_vis_phi_1_ = event->Get<double>("gen_vis_phi_1") : -9999.;
+    event->Exists("gen_vis_phi_2") ? gen_vis_phi_2_ = event->Get<double>("gen_vis_phi_2") : -9999.;
+    event->Exists("gen_vis_eta_1") ? gen_vis_eta_1_ = event->Get<double>("gen_vis_eta_1") : -9999.;
+    event->Exists("gen_vis_eta_2") ? gen_vis_eta_2_ = event->Get<double>("gen_vis_eta_2") : -9999.;
+
+
+    event->Exists("gen_neutral_p_1")   ? gen_neutral_p_1_   = event->Get<double>("gen_neutral_p_1")   : -9999.;
+    event->Exists("gen_neutral_p_2")   ? gen_neutral_p_2_   = event->Get<double>("gen_neutral_p_2")   : -9999.;
+    event->Exists("gen_neutral_E_1")   ? gen_neutral_E_1_   = event->Get<double>("gen_neutral_E_1")   : -9999.;
+    event->Exists("gen_neutral_E_2")   ? gen_neutral_E_2_   = event->Get<double>("gen_neutral_E_2")   : -9999.;
+    event->Exists("gen_neutral_phi_1") ? gen_neutral_phi_1_ = event->Get<double>("gen_neutral_phi_1") : -9999.;
+    event->Exists("gen_neutral_phi_2") ? gen_neutral_phi_2_ = event->Get<double>("gen_neutral_phi_2") : -9999.;
+    event->Exists("gen_neutral_eta_1") ? gen_neutral_eta_1_ = event->Get<double>("gen_neutral_eta_1") : -9999.;
+    event->Exists("gen_neutral_eta_2") ? gen_neutral_eta_2_ = event->Get<double>("gen_neutral_eta_2") : -9999.;
 
     uncorrmet_ = met_;
     if (event->Exists("met_norecoil")) uncorrmet_ = event->Get<double>("met_norecoil");
@@ -3016,6 +3434,40 @@ namespace ic {
     n_loose_bjets_ = loose_bjets.size();
     n_btag_ = btag.size();
     n_loose_btag_ = loose_btag.size();
+
+    jet_px_1_=-9999.;
+    jet_py_1_=-9999.;
+    jet_pz_1_=-9999.;
+    jet_m_1_ =-9999.;
+    jet_px_2_=-9999.;
+    jet_py_2_=-9999.;
+    jet_pz_2_=-9999.;
+    jet_m_2_ =-9999.;
+    jet_px_3_=-9999.;
+    jet_py_3_=-9999.;
+    jet_pz_3_=-9999.;
+    jet_m_3_ =-9999.;
+
+    if(n_jets_>0) {
+      jet_px_1_=jets[0]->vector().Px();
+      jet_py_1_=jets[0]->vector().Py();
+      jet_pz_1_=jets[0]->vector().Pz();
+      jet_m_1_ =jets[0]->vector().M();
+    }
+
+    if(n_jets_>1) {
+      jet_px_2_=jets[1]->vector().Px();
+      jet_py_2_=jets[1]->vector().Py();
+      jet_pz_2_=jets[1]->vector().Pz();
+      jet_m_2_ =jets[1]->vector().M();
+    }
+
+    if(n_jets_>2) {
+      jet_px_3_=jets[2]->vector().Px();
+      jet_py_3_=jets[2]->vector().Py();
+      jet_pz_3_=jets[2]->vector().Pz();
+      jet_m_3_ =jets[2]->vector().M();
+    }
 
     std::vector<Candidate *> leading_lepton;
     std::vector<Candidate *> subleading_lepton;
@@ -3338,8 +3790,16 @@ namespace ic {
     aco_angle_3_=-9999.;
     aco_angle_4_=-9999.;
     aco_angle_5_=-9999.;
+    aco_angle_5_scalepi0_down_=-9999.;
+    aco_angle_5_scalepi0_up_=-9999.;
+    aco_angle_5_smearpi0dir_up_=-9999.;
+    aco_angle_5_smearpi0dir_down_=-9999.;
+    aco_angle_5_smearIP_up_=-9999.;
+    aco_angle_5_smearIP_down_=-9999.;
     aco_angle_6_=-9999.;
     aco_angle_7_=-9999.;
+    pv_angle_=-9999.;
+    pv_angle_new_=-9999.;
     pv_angle_=-9999.;
     sv_x_2_=0.;
     sv_y_2_=-0.;
@@ -3348,12 +3808,21 @@ namespace ic {
     sv_dphi_2_=0.;
     sv_deta_2_=0.;
     hasSV_2_=false;
- 
+
     y_1_1_=-9999.;
     y_1_2_=-9999.;
     y_2_2_=-9999.;
     y_3_2_=-9999.;
     y_4_2_=-9999.;
+
+    tau_px_1_=0.;
+    tau_py_1_=0.;
+    tau_pz_1_=0.;
+    tau_E_1_=0.;
+    tau_px_2_=0.;
+    tau_py_2_=0.;
+    tau_pz_2_=0.;
+    tau_E_2_=0.;
 
     pi_px_1_=0.;
     pi_py_1_=0.;
@@ -3420,6 +3889,63 @@ namespace ic {
     gam4_py_2_=0.;
     gam4_pz_2_=0.;
     gam4_E_2_=0.;
+
+
+    gam_px_1_ = {};
+    gam_py_1_ = {};
+    gam_pz_1_ = {};
+    gam_px_2_ = {};
+    gam_py_2_ = {};
+    gam_pz_2_ = {};
+    n_gammas_1_=0;
+    n_gammas_2_=0;
+
+    isogam_px_1_ = {};
+    isogam_py_1_ = {};
+    isogam_pz_1_ = {};
+    isogam_px_2_ = {};
+    isogam_py_2_ = {};
+    isogam_pz_2_ = {};
+    n_isogammas_1_=0;
+    n_isogammas_2_=0;
+
+    cl_px_1_ = {};
+    cl_py_1_ = {};
+    cl_pz_1_ = {};
+    cl_px_2_ = {};
+    cl_py_2_ = {};
+    cl_pz_2_ = {};
+
+    sc1_px_1_=0.;
+    sc1_py_1_=0.;
+    sc1_pz_1_=0.;
+    sc1_E_1_=0.;
+    sc1_r9_1_=-9999;
+    sc1_ietaieta_1_=-9999;
+    sc1_px_2_=0.;
+    sc1_py_2_=0.;
+    sc1_pz_2_=0.;
+    sc1_E_2_=0.;
+    sc1_r9_2_=-9999;
+    sc1_ietaieta_2_=-9999;
+
+    sc1_r9_5x5_1_=-9999;
+    sc1_ietaieta_5x5_1_=-9999;
+    sc1_Nclusters_1_=-9999;
+    sc1_seed_E_1_=-9999;
+    sc1_cl1_E_1_=-9999;
+    sc1_cl2_E_1_=-9999;
+    sc1_etawidth_1_=-9999;
+    sc1_phiwidth_1_=-9999;
+    sc1_r9_5x5_2_=-9999;
+    sc1_ietaieta_5x5_2_=-9999;
+    sc1_Nclusters_2_=-9999;
+    sc1_seed_E_2_=-9999;
+    sc1_cl1_E_2_=-9999;
+    sc1_cl2_E_2_=-9999;
+    sc1_etawidth_2_=-9999;
+    sc1_phiwidth_2_=-9999;
+    
     metx_= mets->vector().Px();
     mety_= mets->vector().Py();
     ip_x_1_=0.;
@@ -3482,11 +4008,58 @@ namespace ic {
     if(event->Exists("gen_ip_1")) ipgen1 = event->Get<TVector3>("gen_ip_1");
     if(event->Exists("gen_ip_2")) ipgen2 = event->Get<TVector3>("gen_ip_2");
 
+    TVector3 svgen1(0.,0.,0.);
+    TVector3 svgen2(0.,0.,0.);
+
+    if(event->Exists("gen_sv_1")) svgen1 = event->Get<TVector3>("gen_sv_1");
+    if(event->Exists("gen_sv_2")) svgen2 = event->Get<TVector3>("gen_sv_2");
+
+    std::vector<SuperCluster *> superclusters;
+    if (event->ExistsInTree("superClusters"))
+      superclusters = event->GetPtrVec<SuperCluster>("superClusters");
+
+    std::vector<ic::PFCandidate*> pfcands = {};
+
     a1_flag_ = false;
     if (channel_ == channel::tt && event->ExistsInTree("pfCandidates")) {
 
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+
+      //find matched stand alone photons
+      std::vector<Photon *> photons;
+      if (event->ExistsInTree("photons"))
+        photons = event->GetPtrVec<Photon>("photons");
+      std::vector<Electron*> electrons = event->GetPtrVec<Electron>("electrons");
+
+      std::vector<std::pair<Photon *, Candidate *>> photon_matches = MatchByDR(photons, leading_lepton, 0.1, false, true);
+      std::vector<std::pair<Electron *, Candidate *>> electron_matches = MatchByDR(electrons, leading_lepton, 0.1, false, true);
+      std::vector<std::pair<SuperCluster *, Candidate *>> sc_matches = MatchByDR(superclusters, leading_lepton, 0.1, false, true);
+      photon_pt_=-9999;
+      photon_ietaieta_=-9999;
+      photon_r9_=-9999;
+      electron_pt_=-9999;
+      electron_ietaieta_=-9999;
+      electron_r9_=-9999;
+      sc_pt_=-9999;
+      sc_ietaieta_=-9999;
+      sc_r9_=-9999;
+      if(photon_matches.size()>0) {
+        photon_pt_=photon_matches[0].first->pt();
+        photon_r9_=photon_matches[0].first->r9();
+        photon_ietaieta_=photon_matches[0].first->sigma_IetaIeta();
+        //std::cout << photon_pt_ << "    " << photon_ietaieta_ << std::endl;
+      }
+      if(electron_matches.size()>0) {
+        electron_pt_=electron_matches[0].first->pt();
+        electron_r9_=electron_matches[0].first->r9();
+        electron_ietaieta_=electron_matches[0].first->sigma_IetaIeta();
+      }
+      if(sc_matches.size()>0) {
+        sc_pt_=sc_matches[0].first->pt();
+        sc_r9_=sc_matches[0].first->r9();
+        sc_ietaieta_=sc_matches[0].first->sigmaIetaIeta();
+      }
 
       std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
       //std::vector<ic::Vertex*> & refit_vertex_vec = event->GetPtrVec<ic::Vertex>("refittedVertices");
@@ -3507,7 +4080,21 @@ namespace ic {
       tau_mva_decay_mode_1_ = tau1->HasTauID("MVADM2017v1") ? tau1->GetTauID("MVADM2017v1") : 0.0;
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
-      std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+      t_dm0raw_1_ = tau1->HasTauID("MVADM2017v1DM0raw") ? tau1->GetTauID("MVADM2017v1DM0raw") : 0.0;
+      t_dm1raw_1_ = tau1->HasTauID("MVADM2017v1DM1raw") ? tau1->GetTauID("MVADM2017v1DM1raw") : 0.0;
+      t_dm2raw_1_ = tau1->HasTauID("MVADM2017v1DM2raw") ? tau1->GetTauID("MVADM2017v1DM2raw") : 0.0;
+      t_dm10raw_1_ = tau1->HasTauID("MVADM2017v1DM10raw") ? tau1->GetTauID("MVADM2017v1DM10raw") : 0.0;
+      t_dm11raw_1_ = tau1->HasTauID("MVADM2017v1DM11raw") ? tau1->GetTauID("MVADM2017v1DM11raw") : 0.0;
+      t_dmotherraw_1_ = tau1->HasTauID("MVADM2016v1DMotherraw") ? tau1->GetTauID("MVADM2016v1DMotherraw") : 0.0;
+
+      t_dm0raw_2_ = tau2->HasTauID("MVADM2017v1DM0raw") ? tau2->GetTauID("MVADM2017v1DM0raw") : 0.0;
+      t_dm1raw_2_ = tau2->HasTauID("MVADM2017v1DM1raw") ? tau2->GetTauID("MVADM2017v1DM1raw") : 0.0;
+      t_dm2raw_2_ = tau2->HasTauID("MVADM2017v1DM2raw") ? tau2->GetTauID("MVADM2017v1DM2raw") : 0.0;
+      t_dm10raw_2_ = tau2->HasTauID("MVADM2017v1DM10raw") ? tau2->GetTauID("MVADM2017v1DM10raw") : 0.0;
+      t_dm11raw_2_ = tau2->HasTauID("MVADM2017v1DM11raw") ? tau2->GetTauID("MVADM2017v1DM11raw") : 0.0;
+      t_dmotherraw_2_ = tau2->HasTauID("MVADM2016v1DMotherraw") ? tau2->GetTauID("MVADM2016v1DMotherraw") : 0.0;
+
+      pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(tau1, pfcands);
       ic::Candidate *pi_tau1 = rho1.first;
       ic::Candidate *pi0_tau1 = rho1.second;
@@ -3563,6 +4150,8 @@ namespace ic {
           svcov20_1_ = sv_cov(2,0);
           svcov21_1_ = sv_cov(2,1);
           svcov22_1_ = sv_cov(2,2);
+          
+
         }
        
       }
@@ -3605,7 +4194,7 @@ namespace ic {
           svcov22_2_ = sv_cov(2,2);
         }
       }
-      if(gammas1.size()>0 && tau_decay_mode_1_<2){
+      if(gammas1.size()>0 && tau_decay_mode_1_<=2){
         pi0_px_1_=pi0_tau1->vector().Px();
         pi0_py_1_=pi0_tau1->vector().Py();
         pi0_pz_1_=pi0_tau1->vector().Pz();
@@ -3627,7 +4216,7 @@ namespace ic {
         if(gammas1.size()>3) gam4_pz_1_= gammas1[3]->vector().Pz();
         if(gammas1.size()>3) gam4_E_1_= gammas1[3]->vector().E();
       }
-      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+      if(gammas2.size()>0 && tau_decay_mode_2_<=2) {
         pi0_px_2_=pi0_tau2->vector().Px();
         pi0_py_2_=pi0_tau2->vector().Py();
         pi0_pz_2_=pi0_tau2->vector().Pz();
@@ -3768,6 +4357,12 @@ namespace ic {
       TVector3 ip1 = ip_corrected_1.Unit();
       TVector3 ip2 = ip_corrected_2.Unit();
 
+      TVector3 ip1_up = (ip_corrected_1 + 0.25*(ip_corrected_1-ipandsig_1.first)).Unit();
+      TVector3 ip1_down = (ip_corrected_1 - 0.25*(ip_corrected_1-ipandsig_1.first)).Unit();
+
+      TVector3 ip2_up = (ip_corrected_2 + 0.25*(ip_corrected_2-ipandsig_2.first)).Unit();
+      TVector3 ip2_down = (ip_corrected_2 - 0.25*(ip_corrected_2-ipandsig_2.first)).Unit();
+
       std::vector<ic::PFCandidate*> charged_cands_1 = GetTauHads(tau1, pfcands,0);
       std::vector<ic::PFCandidate*> charged_cands_2 = GetTauHads(tau2, pfcands,0);
       q_tot_1_=0., q_tot_2_=0.;
@@ -3777,7 +4372,7 @@ namespace ic {
 
       auto primary_vtx = refit_vertex;
 
-      if(tau_decay_mode_1_==0&&tau_decay_mode_2_==0) {
+      if(tau_mva_decay_mode_1_==0&&tau_mva_decay_mode_2_==0) {
 
         TLorentzVector pvtosv1(
                 tau1->svx() - primary_vtx->vx(),
@@ -3812,29 +4407,42 @@ namespace ic {
 
       }
 
-      if((tau_decay_mode_1_==1&&tau_decay_mode_2_==0) || (tau_decay_mode_1_==0&&tau_decay_mode_2_==1)) {
-               
+      if((tau_decay_mode_1_==1&&(tau_mva_decay_mode_1_==1||tau_mva_decay_mode_1_==2)&&tau_mva_decay_mode_2_==0) || (tau_mva_decay_mode_1_==0&&(tau_mva_decay_mode_2_==1||tau_mva_decay_mode_2_==2)&&tau_decay_mode_2_==1)) {
+ 
         ic::Candidate *pi;
         ic::Candidate *pi0;
         ic::Tau const *tau;
         ic::Tau const *tau_1;
 
         TVector3 ip;
+        TVector3 ip_up;
+        TVector3 ip_down;
         TVector3 ip_alt;
-        if(tau_decay_mode_1_==1&&tau_decay_mode_2_==0) {
+        double gen_neutral_eta=-9999., gen_neutral_phi=-9999., gen_neutral_p=-9999.;
+        if(tau_decay_mode_1_==1&&(tau_mva_decay_mode_1_==1||tau_mva_decay_mode_1_==2)&&tau_mva_decay_mode_2_==0) {
           pi = pi_tau1;
           pi0 = pi0_tau1;
           tau = tau2;
           tau_1 = tau1;
           ip = ip2;
+          ip_up = ip2_up;
+          ip_down = ip2_down;
           ip_alt = ip1;
+          event->Exists("gen_neutral_eta_1") ? gen_neutral_eta = event->Get<double>("gen_neutral_eta_1") : -9999.;
+          event->Exists("gen_neutral_phi_1") ? gen_neutral_phi = event->Get<double>("gen_neutral_phi_1") : -9999.;
+          event->Exists("gen_neutral_p_1") ? gen_neutral_p = event->Get<double>("gen_neutral_p_1") : -9999.;
         } else {
           pi = pi_tau2;
           pi0 = pi0_tau2;
           tau = tau1;
           tau_1 = tau2;
           ip = ip1;
+          ip_up = ip1_up;
+          ip_down = ip1_down;
           ip_alt = ip2;
+          event->Exists("gen_neutral_eta_2") ? gen_neutral_eta = event->Get<double>("gen_neutral_eta_2") : -9999.;
+          event->Exists("gen_neutral_phi_2") ? gen_neutral_phi = event->Get<double>("gen_neutral_phi_2") : -9999.;
+          event->Exists("gen_neutral_p_2") ? gen_neutral_p = event->Get<double>("gen_neutral_p_2") : -9999.;
         }
         double cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         y_1_1_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
@@ -3869,6 +4477,89 @@ namespace ic {
           else                    aco_angle_5_ = aco_angle_5_-M_PI;
         }
 
+ 
+        double dphi_pi0=0., deta_pi0=0.;
+
+        if(gen_neutral_phi>-100&&gen_neutral_eta==gen_neutral_eta) {
+          dphi_pi0 = pi0->phi() - gen_neutral_phi;
+          while (dphi_pi0 >= M_PI) dphi_pi0 -= 2*M_PI;
+          while (dphi_pi0 < -M_PI) dphi_pi0 += 2*M_PI;
+          dphi_pi0*=0.2;
+        }
+
+        if(gen_neutral_eta>-100&&gen_neutral_eta==gen_neutral_eta) {
+          deta_pi0 = pi0->eta() - gen_neutral_eta;
+          deta_pi0*=0.2;
+        }      
+
+        //std::cout << "-------" << std::endl;
+        //std::cout << pi0->phi() << "  " << gen_neutral_phi << "  " << pi0->eta() << "  " << gen_neutral_eta << "  " << dphi_pi0 << "  " << deta_pi0 << std::endl;
+
+        TLorentzVector lvec1_new_up, lvec1_new_down;
+
+        double new_phi_pi0_up = pi0->phi()-dphi_pi0;
+        double new_eta_pi0_up = pi0->eta()-deta_pi0;
+        double new_pt_pi0_up = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_up),2));
+        while (new_phi_pi0_up >= M_PI) new_phi_pi0_up -= 2*M_PI;
+        while (new_phi_pi0_up < -M_PI) new_phi_pi0_up += 2*M_PI;
+        lvec1_new_up.SetPtEtaPhiE(new_pt_pi0_up,new_eta_pi0_up,new_phi_pi0_up,pi0->energy());
+
+        double new_phi_pi0_down = pi0->phi()+dphi_pi0;
+        double new_eta_pi0_down = pi0->eta()+deta_pi0;
+        double new_pt_pi0_down = pi0->vector().P()*sqrt(1.-pow(tanh(new_eta_pi0_down),2));
+        while (new_phi_pi0_down >= M_PI) new_phi_pi0_down -= 2*M_PI;
+        while (new_phi_pi0_down < -M_PI) new_phi_pi0_down += 2*M_PI;
+        lvec1_new_down.SetPtEtaPhiE(new_pt_pi0_down,new_eta_pi0_down,new_phi_pi0_down,pi0->energy());
+ 
+        //std::cout << new_phi_pi0_up << "  " << new_phi_pi0_down << "  " << new_eta_pi0_up << "  " << new_eta_pi0_down << std::endl; 
+
+        aco_angle_5_smearpi0dir_up_ = IPAcoAngle(lvec1_new_up, lvec2, lvec3, lvec4,false);
+        aco_angle_5_smearpi0dir_down_ = IPAcoAngle(lvec1_new_down, lvec2, lvec3, lvec4,false);
+        if (cp_sign_<0) {
+          if (aco_angle_5_smearpi0dir_up_<M_PI)  aco_angle_5_smearpi0dir_up_ = aco_angle_5_smearpi0dir_up_+M_PI;
+          else                    aco_angle_5_smearpi0dir_up_ = aco_angle_5_smearpi0dir_up_-M_PI;
+        }
+
+        if (cp_sign_<0) {
+          if (aco_angle_5_smearpi0dir_down_<M_PI)  aco_angle_5_smearpi0dir_down_ = aco_angle_5_smearpi0dir_down_+M_PI;
+          else                    aco_angle_5_smearpi0dir_down_ = aco_angle_5_smearpi0dir_down_-M_PI;
+        }
+
+        TLorentzVector lvec2_up = TLorentzVector(ip_up, 0.);
+        TLorentzVector lvec2_down = TLorentzVector(ip_down, 0.);
+
+        aco_angle_5_smearIP_up_ = IPAcoAngle(lvec1, lvec2_up, lvec3, lvec4,false);
+        aco_angle_5_smearIP_down_ = IPAcoAngle(lvec1, lvec2_down, lvec3, lvec4,false);
+
+        if (cp_sign_<0) {
+          if (aco_angle_5_smearIP_up_<M_PI)  aco_angle_5_smearIP_up_ = aco_angle_5_smearIP_up_+M_PI;
+          else                    aco_angle_5_smearIP_up_ = aco_angle_5_smearIP_up_-M_PI;
+
+          if (aco_angle_5_smearIP_down_<M_PI)  aco_angle_5_smearIP_down_ = aco_angle_5_smearIP_down_+M_PI;
+          else                    aco_angle_5_smearIP_down_ = aco_angle_5_smearIP_down_-M_PI;
+        }
+
+
+        double scale_error = 0.02;
+        double cp_sign_up = (pi->energy() - pi0->energy()*(1.+scale_error)) / (pi->energy() + pi0->energy()*(1.+scale_error));
+        double cp_sign_down = (pi->energy() - pi0->energy()*(1.-scale_error)) / (pi->energy() + pi0->energy()*(1.-scale_error));
+        TLorentzVector lvec1_up;
+        TLorentzVector lvec1_down;
+        lvec1_up.SetXYZM(pi0->vector().Px()*(1.+scale_error),pi0->vector().Py()*(1.+scale_error),pi0->vector().Pz()*(1.+scale_error),pi0->M()); 
+        lvec1_down.SetXYZM(pi0->vector().Px()*(1.-scale_error),pi0->vector().Py()*(1.-scale_error),pi0->vector().Pz()*(1.-scale_error),pi0->M()); 
+        aco_angle_5_scalepi0_up_ = IPAcoAngle(lvec1_up, lvec2, lvec3, lvec4,false);
+        aco_angle_5_scalepi0_down_ = IPAcoAngle(lvec1_down, lvec2, lvec3, lvec4,false);
+
+        if (cp_sign_up<0) {
+          if (aco_angle_5_scalepi0_up_<M_PI)  aco_angle_5_scalepi0_up_ = aco_angle_5_scalepi0_up_+M_PI;
+          else                    aco_angle_5_scalepi0_up_ = aco_angle_5_scalepi0_up_-M_PI;
+        }
+
+        if (cp_sign_down<0) {
+          if (aco_angle_5_scalepi0_down_<M_PI)  aco_angle_5_scalepi0_down_ = aco_angle_5_scalepi0_down_+M_PI;
+          else                    aco_angle_5_scalepi0_down_ = aco_angle_5_scalepi0_down_-M_PI;
+        }
+
         if(event_ % 2) {
           aco_angle_rand_ = aco_angle_5_;
           aco_sign_rand_ = aco_sign_;
@@ -3892,7 +4583,18 @@ namespace ic {
 
       }
 
-      if(tau_decay_mode_1_==1&&tau_decay_mode_2_==1){
+      if(tau_decay_mode_1_==1&&(tau_mva_decay_mode_1_==1||tau_mva_decay_mode_1_==2)&&tau_decay_mode_2_==1&&(tau_mva_decay_mode_2_==1||tau_mva_decay_mode_2_==2)){
+
+        double gen_neutral_eta=-9999., gen_neutral_phi=-9999.;
+        double gen_neutral_eta_2=-9999., gen_neutral_phi_2=-9999.;
+        double gen_neutral_p=-9999., gen_neutral_p_2=-9999.;
+        event->Exists("gen_neutral_eta_1") ? gen_neutral_eta = event->Get<double>("gen_neutral_eta_1") : -9999.;
+        event->Exists("gen_neutral_phi_1") ? gen_neutral_phi = event->Get<double>("gen_neutral_phi_1") : -9999.;
+        event->Exists("gen_neutral_eta_2") ? gen_neutral_eta_2 = event->Get<double>("gen_neutral_eta_2") : -9999.;
+        event->Exists("gen_neutral_phi_2") ? gen_neutral_phi_2 = event->Get<double>("gen_neutral_phi_2") : -9999.;
+        event->Exists("gen_neutral_p_1") ? gen_neutral_p = event->Get<double>("gen_neutral_p_1") : -9999.;
+        event->Exists("gen_neutral_p_2") ? gen_neutral_p_2 = event->Get<double>("gen_neutral_p_2") : -9999.;
+
         lvec1 = ConvertToLorentz(pi0_tau1->vector());
         lvec2 = ConvertToLorentz(pi0_tau2->vector());
         lvec3 = ConvertToLorentz(pi_tau1->vector());
@@ -3950,20 +4652,26 @@ namespace ic {
         alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect()); 
       }
 
-      else if((tau_decay_mode_1_==0&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==0)){
+      else if((tau_mva_decay_mode_1_==0&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_mva_decay_mode_2_==0)){
 
         TVector3 ip;
 
         ic::Tau const *tau_1;
+        ic::Tau const *tau_2;
         std::vector<ic::PFCandidate*> a1_daughters;
+        Candidate tau_undecay_2;
         if(tau_decay_mode_1_>=10) {
           a1_daughters  = GetA1(tau1, pfcands).first;
           tau_1 = tau2;
+          tau_2 = tau1;
           ip = ip2;
+          tau_undecay_2 = svfit_ditau.first;
         } else {
           a1_daughters  = GetA1(tau2, pfcands).first;
           tau_1 = tau1;
+          tau_2 = tau2;
           ip = ip1;
+          tau_undecay_2 = svfit_ditau.second;
         }
 
         TLorentzVector pvtosv1(
@@ -3977,7 +4685,7 @@ namespace ic {
 
         lvec1 = TLorentzVector(ip, 0.);
 
-        if (a1_daughters.size()>2){
+        if (a1_daughters.size()==3){
 
             a1_flag_ = true;
             if(a1_daughters.size()==3) a1_flag_2_ = true;
@@ -4008,6 +4716,43 @@ namespace ic {
 
             TLorentzVector lvec5 = ConvertToLorentz(a1_daughters[2]->vector());
 
+            std::vector<TLorentzVector> pis_a1 = {
+                  ConvertToLorentz(a1_daughters[0]->vector()),
+                  ConvertToLorentz(a1_daughters[1]->vector()),
+                  ConvertToLorentz(a1_daughters[2]->vector())
+            };
+
+            TLorentzVector IP_vect_1(-9999.,-9999.,-9999.,0.);
+ 
+            std::vector<TLorentzVector> pis = {lvec3};
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, IP_vect_1, 10, pis, lvec1, 0);
+         
+
+            if(tau_2->hasSV() && fabs(a1_daughters[0]->charge())==1 && fabs(a1_daughters[1]->charge())==1 && fabs(a1_daughters[2]->charge())==1){
+              TVector3 tau_dir_2(
+                tau_2->secondary_vertex().X() - primary_vtx->vx(),
+                tau_2->secondary_vertex().Y() - primary_vtx->vy(),
+                tau_2->secondary_vertex().Z() - primary_vtx->vz());
+
+                double new_pt = tau_undecay_2.vector().P()*sin(std::atan(std::exp(-tau_dir_2.Eta()))*2);
+                ROOT::Math::PtEtaPhiEVector tau_new_vec_2(new_pt, tau_dir_2.Eta(), tau_dir_2.Phi(), tau_undecay_2.energy());
+                ROOT::Math::PtEtaPhiEVector tau_new_vec_rot_2 = RotateToGJMax(tau_2->vector(), tau_new_vec_2); 
+
+                TLorentzVector tau_new_lvec_2 = ConvertToLorentz(tau_new_vec_2);           
+                TLorentzVector tau_new_lvec_rot_2 = ConvertToLorentz(tau_new_vec_rot_2);           
+                PFCandidate *tau_new_2 = new PFCandidate();
+                tau_new_2->set_charge(tau_2->charge());
+                tau_new_2->set_vector(tau_new_vec_2);
+                PFCandidate *tau_new_rot_2 = new PFCandidate();
+                tau_new_rot_2->set_charge(tau_2->charge());
+                tau_new_rot_2->set_vector(tau_new_vec_rot_2);
+                std::vector<PFCandidate*> pi0s = {};
+                TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
+                TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
+
+                pv_angle_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+
+            }
           }
 
           alpha1_1_ = AlphaAngle(lvec3.Vect(), ip);
@@ -4016,25 +4761,35 @@ namespace ic {
       }
 
 
-      else if((tau_decay_mode_1_==1&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==1)){
+      else if((tau_decay_mode_1_==1&&(tau_mva_decay_mode_1_==1||tau_mva_decay_mode_1_==2)&&tau_decay_mode_2_>=10) || (tau_decay_mode_1_>=10&&tau_decay_mode_2_==1&&(tau_mva_decay_mode_2_==1||tau_mva_decay_mode_2_==2))){
       
         ic::Candidate *pi;
         ic::Candidate *pi0;
+        //ic::Tau const *tau_1;
+        ic::Tau const *tau_2;
+        Candidate tau_undecay_2;
+        Candidate tau_undecay_1;
 
         std::vector<ic::PFCandidate*> a1_daughters;
         std::pair<ic::Candidate*, ic::Candidate*> rho_daughters;
         if(tau_decay_mode_1_>9){
+          //tau_1 = tau2;
+          tau_2 = tau1;
           a1_daughters  = GetA1(tau1, pfcands).first;
           rho_daughters = GetRho(tau2, pfcands);
           pi0 = pi0_tau2;
           pi = pi_tau2;
-        }
-        if(tau_decay_mode_2_>9){
+          tau_undecay_2 = svfit_ditau.first;
+          tau_undecay_1 = svfit_ditau.second;
+        } else {
+          //tau_1 = tau1;
+          tau_2 = tau2;
           a1_daughters  = GetA1(tau2, pfcands).first;
           rho_daughters = GetRho(tau1, pfcands);
           pi0 = pi0_tau1;
           pi = pi_tau1;
-
+          tau_undecay_2 = svfit_ditau.second;
+          tau_undecay_1 = svfit_ditau.first;
         }
         double  cp_sign_1_=0;
         double  cp_sign_2_=0;
@@ -4090,6 +4845,50 @@ namespace ic {
             cp_sign_2_ = y_1_1_*y_2_2_;
             cp_sign_3_ = y_1_1_*y_3_2_;
             cp_sign_4_ = y_1_1_*y_4_2_;
+
+            std::vector<TLorentzVector> pis_a1 = {
+                  ConvertToLorentz(a1_daughters[0]->vector()),
+                  ConvertToLorentz(a1_daughters[1]->vector()),
+                  ConvertToLorentz(a1_daughters[2]->vector())
+            };
+
+            TLorentzVector IP_vect_1(-9999.,-9999.,-9999.,0.);           
+
+            std::vector<TLorentzVector> pis = {lvec3};
+            pv_angle_new_ = ic::getIPPV_angle(pis_a1, IP_vect_1, 10, pis, lvec1, 1);
+
+            if(tau_2->hasSV() && fabs(a1_daughters[0]->charge())==1 && fabs(a1_daughters[1]->charge())==1 && fabs(a1_daughters[2]->charge())==1){
+              TVector3 tau_dir_2(
+                tau_2->secondary_vertex().X() - primary_vtx->vx(),
+                tau_2->secondary_vertex().Y() - primary_vtx->vy(),
+                tau_2->secondary_vertex().Z() - primary_vtx->vz());
+
+                double new_pt = tau_undecay_2.vector().P()*sin(std::atan(std::exp(-tau_dir_2.Eta()))*2);
+                ROOT::Math::PtEtaPhiEVector tau_new_vec_2(new_pt, tau_dir_2.Eta(), tau_dir_2.Phi(), tau_undecay_2.energy());
+                ROOT::Math::PtEtaPhiEVector tau_new_vec_rot_2 = RotateToGJMax(tau_2->vector(), tau_new_vec_2);
+
+                TLorentzVector tau_new_lvec_2 = ConvertToLorentz(tau_new_vec_2);
+                TLorentzVector tau_new_lvec_rot_2 = ConvertToLorentz(tau_new_vec_rot_2);
+                PFCandidate *tau_new_2 = new PFCandidate();
+                tau_new_2->set_charge(tau_2->charge());
+                tau_new_2->set_vector(tau_new_vec_2);
+                PFCandidate *tau_new_rot_2 = new PFCandidate();
+                tau_new_rot_2->set_charge(tau_2->charge());
+                tau_new_rot_2->set_vector(tau_new_vec_rot_2);
+                std::vector<PFCandidate*> pi0s = {};
+                TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
+                TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
+
+                pv_angle_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+
+
+                if (y_1_1_<0) {
+                  if (pv_angle_<M_PI) pv_angle_ += M_PI;
+                  else                   pv_angle_ -= M_PI;
+                }
+
+            }
+
         }   
 
         if (cp_sign_1_<0) {
@@ -4134,12 +4933,35 @@ namespace ic {
           Tau const *tau_neg;
           Tau const *tau_pos;
 
+          double gen_sv_phi_1 = -9999.;
+          double gen_sv_phi_2 = -9999.;
+          double gen_sv_eta_1 = -9999.;
+          double gen_sv_eta_2 = -9999.;
+
+
           if(tau1->charge()<tau2->charge()) {
             tau_neg = tau1;
             tau_pos = tau2;
+            if(event->Exists("gen_sv_1")) {
+              gen_sv_phi_1 = svgen1.Phi(); 
+              gen_sv_eta_1 = svgen1.Eta(); 
+            }
+            if(event->Exists("gen_sv_2")) {
+              gen_sv_phi_2 = svgen2.Phi();
+              gen_sv_eta_2 = svgen2.Eta();
+            }
+
           } else {
             tau_neg = tau2;
             tau_pos = tau1;
+            if(event->Exists("gen_sv_2")) {
+              gen_sv_phi_1 = svgen2.Phi();
+              gen_sv_eta_1 = svgen2.Eta();
+            }
+            if(event->Exists("gen_sv_1")) {
+              gen_sv_phi_2 = svgen1.Phi();
+              gen_sv_eta_2 = svgen1.Eta();
+            }
           }
 
           std::vector<ic::PFCandidate*> a1_daughters_neg = GetA1(tau_neg, pfcands).first;
@@ -4155,6 +4977,69 @@ namespace ic {
                 tau_pos->secondary_vertex().Y() - primary_vtx->vy(),
                 tau_pos->secondary_vertex().Z() - primary_vtx->vz()
           ); 
+
+          TVector3 svminuspv_1_smear_up = svminuspv_1, svminuspv_2_smear_up = svminuspv_2;
+          TVector3 svminuspv_1_smear_down = svminuspv_1, svminuspv_2_smear_down = svminuspv_2;
+
+        double dphi_1=0.;
+        double deta_1=0.;
+        double dphi_2=0.;
+        double deta_2=0.;
+
+        if(gen_sv_phi_1>-100&&gen_sv_eta_1==gen_sv_eta_1) {
+          dphi_1 = svminuspv_1.Phi() - gen_sv_phi_1;
+          while (dphi_1 >= M_PI) dphi_1 -= 2*M_PI;
+          while (dphi_1 < -M_PI) dphi_1 += 2*M_PI;
+          dphi_1*=0.2;
+        }
+        if(gen_sv_eta_1>-100&&gen_sv_eta_1==gen_sv_eta_1) {
+          deta_1 = svminuspv_1.Eta() - gen_sv_eta_1;
+          deta_1*=0.2;
+        }
+
+        if(gen_sv_phi_2>-100&&gen_sv_eta_2==gen_sv_eta_2) {
+          dphi_2 = svminuspv_2.Phi() - gen_sv_phi_2;
+          while (dphi_2 >= M_PI) dphi_2 -= 2*M_PI;
+          while (dphi_2 < -M_PI) dphi_2 += 2*M_PI;
+          dphi_2*=0.2;
+        }
+        if(gen_sv_eta_2>-100&&gen_sv_eta_2==gen_sv_eta_2) {
+          deta_2 = svminuspv_2.Eta() - gen_sv_eta_2;
+          deta_2*=0.2;
+        }
+
+ 
+        double new_phi_1_up = svminuspv_1.Phi()-dphi_1;
+        double new_eta_1_up = svminuspv_1.Eta()-deta_1;
+        double new_phi_2_up = svminuspv_2.Phi()-dphi_2;
+        double new_eta_2_up = svminuspv_2.Eta()-deta_2;
+
+        double new_phi_1_down = svminuspv_1.Phi()+dphi_1;
+        double new_eta_1_down = svminuspv_1.Eta()+deta_1;
+        double new_phi_2_down = svminuspv_2.Phi()+dphi_2;
+        double new_eta_2_down = svminuspv_2.Eta()+deta_2;
+
+
+        while (new_phi_1_up>= M_PI) new_phi_1_up -= 2*M_PI;
+        while (new_phi_1_up < -M_PI) new_phi_1_up += 2*M_PI;
+        while (new_phi_2_up>= M_PI) new_phi_2_up -= 2*M_PI;
+        while (new_phi_2_up < -M_PI) new_phi_2_up += 2*M_PI;
+
+        while (new_phi_1_down>= M_PI) new_phi_1_down -= 2*M_PI;
+        while (new_phi_1_down < -M_PI) new_phi_1_down += 2*M_PI;
+        while (new_phi_2_down>= M_PI) new_phi_2_down -= 2*M_PI;
+        while (new_phi_2_down < -M_PI) new_phi_2_down += 2*M_PI;
+
+
+        svminuspv_1_smear_up.SetTheta(std::atan(std::exp(-new_eta_1_up))*2);
+        svminuspv_1_smear_up.SetPhi(new_phi_1_up);
+        svminuspv_2_smear_up.SetTheta(std::atan(std::exp(-new_eta_2_up))*2);
+        svminuspv_2_smear_up.SetPhi(new_phi_2_up);
+
+        svminuspv_1_smear_down.SetTheta(std::atan(std::exp(-new_eta_1_down))*2);
+        svminuspv_1_smear_down.SetPhi(new_phi_1_down);
+        svminuspv_2_smear_down.SetTheta(std::atan(std::exp(-new_eta_2_down))*2);
+        svminuspv_2_smear_down.SetPhi(new_phi_2_down);
 
           std::vector<TLorentzVector> pis_1 = { 
                 ConvertToLorentz(a1_daughters_neg[0]->vector()),
@@ -4181,7 +5066,20 @@ namespace ic {
           };
 
           pv_angle_=PolarimetricA1A1(svminuspv_1, svminuspv_2, ConvertToLorentz(a1_daughters_neg[0]->vector()+a1_daughters_neg[1]->vector()+a1_daughters_neg[2]->vector()), ConvertToLorentz(a1_daughters_pos[0]->vector()+a1_daughters_pos[1]->vector()+a1_daughters_pos[2]->vector()), pis_1, pis_2, charges_1, charges_2);
-        } else pv_angle_=-9999;
+          if(is_data_) {
+            pv_angle_smearsv_up_ = pv_angle_;
+            pv_angle_smearsv_down_ = pv_angle_;
+          } else {
+            pv_angle_smearsv_up_=PolarimetricA1A1(svminuspv_1_smear_up, svminuspv_2_smear_up, ConvertToLorentz(a1_daughters_neg[0]->vector()+a1_daughters_neg[1]->vector()+a1_daughters_neg[2]->vector()), ConvertToLorentz(a1_daughters_pos[0]->vector()+a1_daughters_pos[1]->vector()+a1_daughters_pos[2]->vector()), pis_1, pis_2, charges_1, charges_2);
+            pv_angle_smearsv_down_=PolarimetricA1A1(svminuspv_1_smear_down, svminuspv_2_smear_down, ConvertToLorentz(a1_daughters_neg[0]->vector()+a1_daughters_neg[1]->vector()+a1_daughters_neg[2]->vector()), ConvertToLorentz(a1_daughters_pos[0]->vector()+a1_daughters_pos[1]->vector()+a1_daughters_pos[2]->vector()), pis_1, pis_2, charges_1, charges_2);
+          }
+
+          pv_angle_new_ = ic::getPV_angle_pola(pis_1, pis_2, svminuspv_1, svminuspv_2, metx_, mety_);
+        } else {
+          pv_angle_=-9999;
+          pv_angle_smearsv_up_=-9999;
+          pv_angle_smearsv_down_=-9999;
+        }
 
         if(a1_daughters_1.size()>2 && a1_daughters_2.size()>2) {
           a1_flag_ = true;
@@ -4313,8 +5211,14 @@ namespace ic {
 
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
+      t_dm0raw_2_ = tau2->HasTauID("MVADM2017v1DM0raw") ? tau2->GetTauID("MVADM2017v1DM0raw") : 0.0;
+      t_dm1raw_2_ = tau2->HasTauID("MVADM2017v1DM1raw") ? tau2->GetTauID("MVADM2017v1DM1raw") : 0.0;
+      t_dm2raw_2_ = tau2->HasTauID("MVADM2017v1DM2raw") ? tau2->GetTauID("MVADM2017v1DM2raw") : 0.0;
+      t_dm10raw_2_ = tau2->HasTauID("MVADM2017v1DM10raw") ? tau2->GetTauID("MVADM2017v1DM10raw") : 0.0;
+      t_dm11raw_2_ = tau2->HasTauID("MVADM2017v1DM11raw") ? tau2->GetTauID("MVADM2017v1DM11raw") : 0.0;
+      t_dmotherraw_2_ = tau2->HasTauID("MVADM2016v1DMotherraw") ? tau2->GetTauID("MVADM2016v1DMotherraw") : 0.0;
 
-      std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+      pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;
       ic::Candidate *pi0_tau2 = rho.second;
@@ -4367,7 +5271,7 @@ namespace ic {
         }
       }
 
-      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+      if(gammas2.size()>0 && tau_decay_mode_2_<=2) {
         pi0_px_2_=pi0_tau2->vector().Px();
         pi0_py_2_=pi0_tau2->vector().Py();
         pi0_pz_2_=pi0_tau2->vector().Pz();
@@ -4438,6 +5342,8 @@ namespace ic {
                          fabs(lep2->eta())
         );
 
+        ip_phi_raw_2_ = ipandsig_2.first.Phi();
+        ip_eta_raw_2_ = ipandsig_2.first.Eta();
 
         // Correct IP covariance matrix
         cov_corrected_1 = ipCorrector.correctIpCov(
@@ -4484,6 +5390,13 @@ namespace ic {
       ip_x_2_ = ip_corrected_2.X();
       ip_y_2_ = ip_corrected_2.Y();
       ip_z_2_ = ip_corrected_2.Z();
+
+      ip_dphi_2_ = ip_corrected_2.DeltaPhi(ConvertToTVector3(tau2->vector()));
+      ip_deta_2_ = ip_corrected_1.Eta() - tau2->eta();
+
+      ip_phi_2_ = ip_corrected_2.Phi();
+      ip_eta_2_ = ip_corrected_2.Eta();
+      ip_L_2_ = ip_corrected_2.Mag();
 
       ipcov00_1_ = cov_corrected_1(0,0);
       ipcov01_1_ = cov_corrected_1(0,1);
@@ -4544,6 +5457,9 @@ namespace ic {
         alpha1_2_ = AlphaAngle(lvec4.Vect(), ip2);
       }
 
+      rho_dphi_2_=-9999;
+      rho_deta_2_=-9999;
+
       if(tau_decay_mode_2_==1) {
                
         ic::Candidate *pi;
@@ -4554,6 +5470,16 @@ namespace ic {
 
         lvec2 = ConvertToLorentz(pi0->vector()); //pi zero from rho
         lvec4 = ConvertToLorentz(pi->vector()); //pi charge from rho
+
+        rho_dphi_2_ = ConvertToTVector3(pi0->vector()).DeltaPhi(ConvertToTVector3(pi->vector()));
+        rho_deta_2_ = pi0->eta() - pi->eta();
+        pi0_phi_2_ = pi0->phi();
+        pi0_eta_2_ = pi0->eta();
+        pi0_E_2_ = pi0->energy();
+
+        pi_phi_2_ = pi->phi();
+        pi_eta_2_ = pi->eta();
+        pi_E_2_ = pi->energy();
 
         double cp_sign_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
         y_1_1_ = YRho(std::vector<Candidate*>({pi, pi0}),TVector3());
@@ -4579,6 +5505,7 @@ namespace ic {
           if (aco_angle_6_<M_PI)  aco_angle_6_ = aco_angle_6_+M_PI;
           else                    aco_angle_6_ = aco_angle_6_-M_PI;
         }
+
 
         if(event_ % 2) {
           aco_angle_rand_ = aco_angle_5_;
@@ -4619,6 +5546,9 @@ namespace ic {
               sv_mag_2_=svminuspv_2.Mag();
               sv_dphi_2_=svminuspv_2.DeltaPhi (ConvertToTVector3(tau2->vector()));
               sv_deta_2_=svminuspv_2.Eta()-tau2->eta();
+              sv_phi_2_=svminuspv_2.Phi();
+              sv_eta_2_=svminuspv_2.Eta();
+              sv_L_2_=svminuspv_2.Mag();
               hasSV_2_=true;
             }
 
@@ -4646,6 +5576,32 @@ namespace ic {
               }
             }
 
+
+            if(tau2->hasSV() && fabs(a1_daughters[0]->charge())==1 && fabs(a1_daughters[1]->charge())==1 && fabs(a1_daughters[2]->charge())==1){
+              TVector3 tau_dir_2(
+                tau2->secondary_vertex().X() - primary_vtx->vx(),
+                tau2->secondary_vertex().Y() - primary_vtx->vy(),
+                tau2->secondary_vertex().Z() - primary_vtx->vz());
+
+                double new_pt = svfit_ditau.second.vector().P()*sin(std::atan(std::exp(-tau_dir_2.Eta()))*2);
+                ROOT::Math::PtEtaPhiEVector tau_new_vec_2(new_pt, tau_dir_2.Eta(), tau_dir_2.Phi(), svfit_ditau.second.energy());
+                ROOT::Math::PtEtaPhiEVector tau_new_vec_rot_2 = RotateToGJMax(tau2->vector(), tau_new_vec_2);
+
+                TLorentzVector tau_new_lvec_2 = ConvertToLorentz(tau_new_vec_2);
+                TLorentzVector tau_new_lvec_rot_2 = ConvertToLorentz(tau_new_vec_rot_2);
+                PFCandidate *tau_new_2 = new PFCandidate();
+                tau_new_2->set_charge(tau2->charge());
+                tau_new_2->set_vector(tau_new_vec_2);
+                PFCandidate *tau_new_rot_2 = new PFCandidate();
+                tau_new_rot_2->set_charge(tau2->charge());
+                tau_new_rot_2->set_vector(tau_new_vec_rot_2);
+                std::vector<PFCandidate*> pi0s = {};
+                TLorentzVector tau_new_pv_lvec_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_2, false);
+                TLorentzVector tau_new_pv_lvec_rot_2 = PolarimetricVector(a1_daughters, pi0s, tau_new_rot_2, false);
+
+                pv_angle_ = IPAcoAngle(lvec1, tau_new_pv_lvec_rot_2, lvec3, tau_new_lvec_rot_2,false);
+                }
+
           }
           alpha1_1_ = AlphaAngle(lvec3.Vect(), ip1);
           alpha2_2_ = AlphaAngleRho(lvec4.Vect(), lvec2.Vect());
@@ -4666,6 +5622,12 @@ namespace ic {
       gen_ipx_2_ = ipgen2.X();
       gen_ipy_2_ = ipgen2.Y();
       gen_ipz_2_ = ipgen2.Z();
+
+      gen_ip_phi_2_ = ipgen2.Phi();
+      gen_ip_eta_2_ = ipgen2.Eta();
+      
+      gen_sv_phi_2_ = svgen2.Phi();
+      gen_sv_eta_2_ = svgen2.Eta();
 
       // primary vertex
       pvx_ = primary_vtx->vx();
@@ -4695,7 +5657,14 @@ namespace ic {
 
       tau_mva_decay_mode_2_ = tau2->HasTauID("MVADM2017v1") ? tau2->GetTauID("MVADM2017v1") : 0.0;
 
-      std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
+      t_dm0raw_2_ = tau2->HasTauID("MVADM2017v1DM0raw") ? tau2->GetTauID("MVADM2017v1DM0raw") : 0.0;
+      t_dm1raw_2_ = tau2->HasTauID("MVADM2017v1DM1raw") ? tau2->GetTauID("MVADM2017v1DM1raw") : 0.0;
+      t_dm2raw_2_ = tau2->HasTauID("MVADM2017v1DM2raw") ? tau2->GetTauID("MVADM2017v1DM2raw") : 0.0;
+      t_dm10raw_2_ = tau2->HasTauID("MVADM2017v1DM10raw") ? tau2->GetTauID("MVADM2017v1DM10raw") : 0.0;
+      t_dm11raw_2_ = tau2->HasTauID("MVADM2017v1DM11raw") ? tau2->GetTauID("MVADM2017v1DM11raw") : 0.0;
+      t_dmotherraw_2_ = tau2->HasTauID("MVADM2016v1DMotherraw") ? tau2->GetTauID("MVADM2016v1DMotherraw") : 0.0;
+
+      pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
       std::pair<ic::Candidate*, ic::Candidate*> rho = GetRho(tau2, pfcands);
       ic::Candidate *pi_tau2 = rho.first;
       ic::Candidate *pi0_tau2 = rho.second;
@@ -4749,7 +5718,7 @@ namespace ic {
         }
       }
 
-      if(gammas2.size()>0 && tau_decay_mode_2_<2) {
+      if(gammas2.size()>0 && tau_decay_mode_2_<=2) {
         pi0_px_2_=pi0_tau2->vector().Px();
         pi0_py_2_=pi0_tau2->vector().Py();
         pi0_pz_2_=pi0_tau2->vector().Pz();
@@ -5010,6 +5979,7 @@ namespace ic {
       ipy_2_ = ip_corrected_2.Y();
       ipz_2_ = ip_corrected_2.Z();
 
+
       // gen IP
       gen_ipx_1_ = ipgen1.X();
       gen_ipy_1_ = ipgen1.Y();
@@ -5018,12 +5988,110 @@ namespace ic {
       gen_ipy_2_ = ipgen2.Y();
       gen_ipz_2_ = ipgen2.Z();
 
+
       // primary vertex
       pvx_ = primary_vtx->vx();
       pvy_ = primary_vtx->vy();
       pvz_ = primary_vtx->vz();
 
     }
+
+    std::vector<std::pair<SuperCluster *, Candidate *>> sc_leading_matches = MatchByDR(superclusters, leading_lepton, 0.1, false, true);
+    std::vector<std::pair<SuperCluster *, Candidate *>> sc_subleading_matches = MatchByDR(superclusters, subleading_lepton, 0.1, false, true);
+
+    if(channel_ == channel::tt || channel_ == channel::mt || channel_ == channel::et) {
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_gammas_2 = GetTauGammasFlat(tau2, pfcands);
+      n_gammas_2_ = std::get<0>(flat_gammas_2);
+      gam_px_2_ = std::get<1>(flat_gammas_2);
+      gam_py_2_ = std::get<2>(flat_gammas_2);
+      gam_pz_2_ = std::get<3>(flat_gammas_2);
+
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_isogammas_2 = GetTauIsoGammasFlat(tau2, pfcands);
+      n_isogammas_2_ = std::get<0>(flat_isogammas_2);
+      isogam_px_2_ = std::get<1>(flat_isogammas_2);
+      isogam_py_2_ = std::get<2>(flat_isogammas_2);
+      isogam_pz_2_ = std::get<3>(flat_isogammas_2);
+    }
+    if(channel_ == channel::tt) {
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_gammas_1 = GetTauGammasFlat(tau1, pfcands);
+      n_gammas_1_ = std::get<0>(flat_gammas_1);
+      gam_px_1_ = std::get<1>(flat_gammas_1);
+      gam_py_1_ = std::get<2>(flat_gammas_1);
+      gam_pz_1_ = std::get<3>(flat_gammas_1);
+
+      std::tuple<unsigned, std::vector<double>, std::vector<double>, std::vector<double>> flat_isogammas_1 = GetTauIsoGammasFlat(tau1, pfcands);
+      n_isogammas_1_ = std::get<0>(flat_isogammas_1);
+      isogam_px_1_ = std::get<1>(flat_isogammas_1);
+      isogam_py_1_ = std::get<2>(flat_isogammas_1);
+      isogam_pz_1_ = std::get<3>(flat_isogammas_1);
+    }
+
+    if(sc_subleading_matches.size()>0) {
+      sc1_px_2_= sc_subleading_matches[0].first->vector().Px();
+      sc1_py_2_= sc_subleading_matches[0].first->vector().Py();
+      sc1_pz_2_= sc_subleading_matches[0].first->vector().Pz();
+      sc1_E_2_= sc_subleading_matches[0].first->vector().E();
+      sc1_r9_2_= sc_subleading_matches[0].first->r9();
+      sc1_ietaieta_2_= sc_subleading_matches[0].first->sigmaIetaIeta();
+
+      sc1_r9_5x5_2_ = sc_subleading_matches[0].first->r9_full5x5();
+      sc1_ietaieta_5x5_2_= sc_subleading_matches[0].first->sigmaIetaIeta_full5x5();
+      sc1_Nclusters_2_ = sc_subleading_matches[0].first->Nclusters();
+      sc1_etawidth_2_ = sc_subleading_matches[0].first->etaWidth();
+      sc1_phiwidth_2_ = sc_subleading_matches[0].first->phiWidth();
+
+      ic::Candidate seed = sc_subleading_matches[0].first->seed_cluster();
+      std::vector<ic::Candidate> clusters = sc_subleading_matches[0].first->clusters();
+
+      sc1_seed_E_2_ = seed.energy();
+      if(clusters.size()>0) sc1_cl1_E_2_ = clusters[0].energy();
+      if(clusters.size()>1) sc1_cl2_E_2_ = clusters[1].energy();
+
+      for (auto c : clusters) {
+        cl_px_2_.push_back(c.vector().Px());
+        cl_py_2_.push_back(c.vector().Py());
+        cl_pz_2_.push_back(c.vector().Pz());
+      }
+
+    }
+
+    if(sc_leading_matches.size()>0 && channel_ == channel::tt) {
+      sc1_px_1_= sc_leading_matches[0].first->vector().Px();
+      sc1_py_1_= sc_leading_matches[0].first->vector().Py();
+      sc1_pz_1_= sc_leading_matches[0].first->vector().Pz();
+      sc1_E_1_= sc_leading_matches[0].first->vector().E();
+      sc1_r9_1_= sc_leading_matches[0].first->r9();
+      sc1_ietaieta_1_= sc_leading_matches[0].first->sigmaIetaIeta();
+
+      sc1_r9_5x5_1_ = sc_leading_matches[0].first->r9_full5x5();
+      sc1_ietaieta_5x5_1_= sc_leading_matches[0].first->sigmaIetaIeta_full5x5();
+      sc1_Nclusters_1_ = sc_leading_matches[0].first->Nclusters();
+      sc1_etawidth_1_ = sc_leading_matches[0].first->etaWidth();
+      sc1_phiwidth_1_ = sc_leading_matches[0].first->phiWidth();
+  
+      ic::Candidate seed = sc_leading_matches[0].first->seed_cluster();
+      std::vector<ic::Candidate> clusters = sc_leading_matches[0].first->clusters();
+  
+      sc1_seed_E_1_ = seed.energy();
+      if(clusters.size()>0) sc1_cl1_E_1_ = clusters[0].energy();
+      if(clusters.size()>1) sc1_cl2_E_1_ = clusters[1].energy();
+
+      for (auto c : clusters) {
+        cl_px_1_.push_back(c.vector().Px());
+        cl_py_1_.push_back(c.vector().Py());
+        cl_pz_1_.push_back(c.vector().Pz());
+      }
+    }
+
+    tau_px_1_= lep1->vector().Px();
+    tau_py_1_= lep1->vector().Py();
+    tau_pz_1_= lep1->vector().Pz();
+    tau_E_1_= lep1->vector().E();
+
+    tau_px_2_= lep2->vector().Px();
+    tau_py_2_= lep2->vector().Py();
+    tau_pz_2_= lep2->vector().Pz();
+    tau_E_2_= lep2->vector().E();
       
     // signal background event classification
     IC_BDT_max_score_ = event->Exists("IC_BDT_max_score") ? event->Get<float>("IC_BDT_max_score") : -999.0;

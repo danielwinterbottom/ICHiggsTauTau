@@ -3178,7 +3178,8 @@ def HTTPlot(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
-
+    c1.Close()
+    
 def CompareSysts(hists=[],
              plot_name="plot",
              label=""):
@@ -3599,10 +3600,15 @@ def CompareHists(hists=[],
     pads[0].RedrawAxis()
     
     c1.SaveAs(plot_name+'.pdf')
+<<<<<<< FF_MSSM
     #c1.SaveAs(plot_name+'.png')
 
     for o in objects:
       o.IsA().Destructor(o)
+=======
+    c1.SaveAs(plot_name+'.png')
+    c1.Close()
+>>>>>>> master
     
 def HTTPlotSignal(nodename, 
             infile=None, 
@@ -3807,6 +3813,7 @@ def HTTPlotSignal(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+    c1.Close()
     
 def TagAndProbePlot(graphs=[],
              legend_titles=[],
@@ -3991,6 +3998,7 @@ def TagAndProbePlot(graphs=[],
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')    
+    c1.Close()
     
 def HTTPlotUnrolled(nodename, 
             infile=None, 
@@ -4510,6 +4518,7 @@ def HTTPlotUnrolled(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+    c1.Close()
     
 def SoverBPlot(nodename='',
              infile=None,
@@ -4640,5 +4649,6 @@ def SoverBPlot(nodename='',
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+    c1.Close()
     
 

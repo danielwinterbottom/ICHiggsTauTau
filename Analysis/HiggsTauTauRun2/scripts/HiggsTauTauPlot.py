@@ -3715,7 +3715,11 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
           if options.ml_ff: f1_total_node.AddNode(ana.SummedFactory('data_2', data, plot_unmodified, full_selection_2))
           f2_total_node = SummedNode('total_bkg')
           f2_total_node.AddNode(GetSubtractNode(ana,'_1',plot,plot_unmodified,wt_1+sub_wt,'('+sel+')*(gen_match_1<6)',ff_cat_1,ff_cat_1_data,8,1.0,get_os,True))
+<<<<<<< FF_MSSM
           if options.ml_ff: f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,'('+sel+')*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
+=======
+          f2_total_node.AddNode(GetSubtractNode(ana,'_2',plot,plot_unmodified,wt_2+sub_wt,'('+sel+')*(gen_match_2<6)',ff_cat_2,ff_cat_2_data,8,1.0,get_os,True))
+>>>>>>> master
           ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, f1_total_node, f2_total_node))
 
 
