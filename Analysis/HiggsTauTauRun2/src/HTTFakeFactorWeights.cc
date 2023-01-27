@@ -55,8 +55,6 @@ namespace ic {
 
       systs_dm_ = {"","_qcd_syst_up","_qcd_syst_down","_wjets_syst_up","_wjets_syst_down","_qcd_met_up","_qcd_met_down","_qcd_stat_unc1_njet0_dm0_up","_qcd_stat_unc2_njet0_dm0_up","_qcd_stat_unc1_njet0_dm0_down","_qcd_stat_unc2_njet0_dm0_down","_qcd_stat_unc1_njet1_dm0_up","_qcd_stat_unc2_njet1_dm0_up","_qcd_stat_unc1_njet1_dm0_down","_qcd_stat_unc2_njet1_dm0_down","_qcd_stat_unc1_njet2_dm0_up","_qcd_stat_unc2_njet2_dm0_up","_qcd_stat_unc1_njet2_dm0_down","_qcd_stat_unc2_njet2_dm0_down","_qcd_stat_unc1_njet0_dm1_up","_qcd_stat_unc2_njet0_dm1_up","_qcd_stat_unc1_njet0_dm1_down","_qcd_stat_unc2_njet0_dm1_down","_qcd_stat_unc1_njet1_dm1_up","_qcd_stat_unc2_njet1_dm1_up","_qcd_stat_unc1_njet1_dm1_down","_qcd_stat_unc2_njet1_dm1_down","_qcd_stat_unc1_njet2_dm1_up","_qcd_stat_unc2_njet2_dm1_up","_qcd_stat_unc1_njet2_dm1_down","_qcd_stat_unc2_njet2_dm1_down","_qcd_stat_unc1_njet0_dm10_up","_qcd_stat_unc2_njet0_dm10_up","_qcd_stat_unc1_njet0_dm10_down","_qcd_stat_unc2_njet0_dm10_down","_qcd_stat_unc1_njet1_dm10_up","_qcd_stat_unc2_njet1_dm10_up","_qcd_stat_unc1_njet1_dm10_down","_qcd_stat_unc2_njet1_dm10_down","_qcd_stat_unc1_njet2_dm10_up","_qcd_stat_unc2_njet2_dm10_up","_qcd_stat_unc1_njet2_dm10_down","_qcd_stat_unc2_njet2_dm10_down","_qcd_stat_unc1_njet0_dm11_up","_qcd_stat_unc2_njet0_dm11_up","_qcd_stat_unc1_njet0_dm11_down","_qcd_stat_unc2_njet0_dm11_down","_qcd_stat_unc1_njet1_dm11_up","_qcd_stat_unc2_njet1_dm11_up","_qcd_stat_unc1_njet1_dm11_down","_qcd_stat_unc2_njet1_dm11_down","_qcd_stat_unc1_njet2_dm11_up","_qcd_stat_unc2_njet2_dm11_up","_qcd_stat_unc1_njet2_dm11_down","_qcd_stat_unc2_njet2_dm11_down","_ttbar_syst_up","_ttbar_syst_down"};
 
-      systs_us_ = {"","_qcd_stat_njets0_up","_qcd_stat_njets0_down","_qcd_stat_njets1_up","_qcd_stat_njets1_down","_qcd_stat_njets2_up","_qcd_stat_njets2_down","_qcd_syst_closure_njets0_up","_qcd_syst_closure_njets0_down","_qcd_syst_closure_njets1_up","_qcd_syst_closure_njets1_down","_qcd_syst_closure_njets2_up","_qcd_syst_closure_njets2_down","_qcd_syst_osss_up","_qcd_syst_osss_down", "_puppi_met_up", "_puppi_met_down"};
-
       for(auto s : systs_mvadm_) {
         fns_["ff_tt_medium_mvadmbins"+s] = std::shared_ptr<RooFunctor>(
               ff_ws_->function(("ff_tt_medium_mvadmbins"+s).c_str())->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,pt_2,os,met_var_qcd")));
@@ -77,19 +75,24 @@ namespace ic {
               ff_ws_dm_->function(("ff_tt_medium_dmbins"+s).c_str())->functor(ff_ws_dm_->argSet("pt,dm,njets,os,met_var_qcd,dR"))); 
       }
 
-      // load us groups fake factors
+      // load MSSM fake factors
 
-      std::string us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2016.root";
-      if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2017.root";
-      if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_tt_lite_2018.root";
-      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+us_file_).c_str());
+      systs_mssm_ = {"","_qcd_syst_up", "_qcd_syst_down","_wjets_syst_up", "_wjets_syst_down", "_ttbar_syst_up", "_ttbar_syst_down",
+                     "_qcd_stat_dR_unc1_up", "_qcd_stat_dR_unc1_down", "_qcd_stat_dR_unc2_up", "_qcd_stat_dR_unc2_down", "_qcd_stat_pt_unc1_up", "_qcd_stat_pt_unc1_down", "_qcd_stat_pt_unc2_up", "_qcd_stat_pt_unc2_down","_qcd_stat_njet0_jet_pt_low_unc1_up","_qcd_stat_njet0_jet_pt_low_unc1_down","_qcd_stat_njet0_jet_pt_low_unc2_up","_qcd_stat_njet0_jet_pt_low_unc2_down","_qcd_stat_njet0_jet_pt_low_unc3_up","_qcd_stat_njet0_jet_pt_low_unc3_down","_qcd_stat_njet0_jet_pt_high_unc1_up","_qcd_stat_njet0_jet_pt_high_unc1_down","_qcd_stat_njet0_jet_pt_high_unc2_up","_qcd_stat_njet0_jet_pt_high_unc2_down","_qcd_stat_njet0_jet_pt_high_unc3_up","_qcd_stat_njet0_jet_pt_high_unc3_down","_qcd_stat_njet1_jet_pt_low_unc1_up","_qcd_stat_njet1_jet_pt_low_unc1_down","_qcd_stat_njet1_jet_pt_low_unc2_up","_qcd_stat_njet1_jet_pt_low_unc2_down","_qcd_stat_njet1_jet_pt_low_unc3_up","_qcd_stat_njet1_jet_pt_low_unc3_down","_qcd_stat_njet1_jet_pt_high_unc1_up","_qcd_stat_njet1_jet_pt_high_unc1_down","_qcd_stat_njet1_jet_pt_high_unc2_up","_qcd_stat_njet1_jet_pt_high_unc2_down","_qcd_stat_njet1_jet_pt_high_unc3_up","_qcd_stat_njet1_jet_pt_high_unc3_down","_qcd_stat_njet0_jet_pt_med_unc1_up","_qcd_stat_njet0_jet_pt_med_unc1_down","_qcd_stat_njet0_jet_pt_med_unc2_up","_qcd_stat_njet0_jet_pt_med_unc2_down","_qcd_stat_njet0_jet_pt_med_unc3_up","_qcd_stat_njet0_jet_pt_med_unc3_down","_qcd_stat_njet1_jet_pt_med_unc1_up","_qcd_stat_njet1_jet_pt_med_unc1_down","_qcd_stat_njet1_jet_pt_med_unc2_up","_qcd_stat_njet1_jet_pt_med_unc2_down","_qcd_stat_njet1_jet_pt_med_unc3_up","_qcd_stat_njet1_jet_pt_med_unc3_down",
+      "_syst_alt_func_up","_syst_alt_func_down","_qcd_syst_pt_2_closure_up","_qcd_syst_pt_2_closure_down","_qcd_syst_met_closure_up","_qcd_syst_met_closure_down","_qcd_syst_dr_closure_up","_qcd_syst_dr_closure_down"
+};
 
-      ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
-      f_us.Close();
-      ff_ws_us_->Print();
-      for(auto s : systs_us_) {
-        fns_["ff_tt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_tt_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,pt_2,os,mvis,puppi_met")));
+      std::string mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2016_v3.root";
+      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2016_v3.root";
+      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2017_v3.root";
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2018_v3.root";
+      TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
+
+      ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f_mssm.Close();
+      for(auto s : systs_mssm_) {
+        fns_["ff_total"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_mssm_->function(("ff_total"+s).c_str())->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,dR,os,pt_2,met")));
       }
 
 
@@ -160,22 +163,6 @@ namespace ic {
       fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_mt_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
 
-      // load us groups fake factors
-      
-      std::string us_file_ = "input/fake_factors/fakefactors_us_ws_mt_lite_2016.root";
-      if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_mt_lite_2017.root";
-      if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_mt_lite_2018.root";
-      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+us_file_).c_str());
-
-      ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
-      f_us.Close();
-      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_low_up","_qcd_syst_closure_low_down","_wjets_syst_closure_low_up","_wjets_syst_closure_low_down","_ttbar_syst_closure_low_up","_ttbar_syst_closure_low_down","_qcd_syst_closure_high_up","_qcd_syst_closure_high_down","_wjets_syst_closure_high_up","_wjets_syst_closure_high_down","_ttbar_syst_closure_high_up","_ttbar_syst_closure_high_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down", "_puppi_met_up", "_puppi_met_down"};
-
-      for(auto s : systs_us_) {
-        fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_mt_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,m_pt,pfmt,met,puppi_met")));
-      }
-
 
       // load MVA scroes reader for fractions
       reader_ = new TMVA::Reader();
@@ -192,6 +179,37 @@ namespace ic {
       if(strategy_ == strategy::legacy16) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2016_mt.xml";
       if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2017_mt.xml";
       reader_->BookMVA( "BDT method", xml_file );
+
+      // load MSSM fake factors
+
+      systs_mssm_ = {"","_qcd_stat_njet0_jet_pt_low_unc1_up","_qcd_stat_njet0_jet_pt_low_unc1_down","_qcd_stat_njet0_jet_pt_low_unc2_up","_qcd_stat_njet0_jet_pt_low_unc2_down","_qcd_stat_njet0_jet_pt_low_unc3_up","_qcd_stat_njet0_jet_pt_low_unc3_down","_qcd_stat_njet0_jet_pt_med_unc1_up","_qcd_stat_njet0_jet_pt_med_unc1_down","_qcd_stat_njet0_jet_pt_med_unc2_up","_qcd_stat_njet0_jet_pt_med_unc2_down","_qcd_stat_njet0_jet_pt_med_unc3_up","_qcd_stat_njet0_jet_pt_med_unc3_down","_qcd_stat_njet0_jet_pt_high_unc1_up","_qcd_stat_njet0_jet_pt_high_unc1_down","_qcd_stat_njet0_jet_pt_high_unc2_up","_qcd_stat_njet0_jet_pt_high_unc2_down","_qcd_stat_njet0_jet_pt_high_unc3_up","_qcd_stat_njet0_jet_pt_high_unc3_down","_qcd_stat_njet1_jet_pt_low_unc1_up","_qcd_stat_njet1_jet_pt_low_unc1_down","_qcd_stat_njet1_jet_pt_low_unc2_up","_qcd_stat_njet1_jet_pt_low_unc2_down","_qcd_stat_njet1_jet_pt_low_unc3_up","_qcd_stat_njet1_jet_pt_low_unc3_down","_qcd_stat_njet1_jet_pt_med_unc1_up","_qcd_stat_njet1_jet_pt_med_unc1_down","_qcd_stat_njet1_jet_pt_med_unc2_up","_qcd_stat_njet1_jet_pt_med_unc2_down","_qcd_stat_njet1_jet_pt_med_unc3_up","_qcd_stat_njet1_jet_pt_med_unc3_down","_qcd_stat_njet1_jet_pt_high_unc1_up","_qcd_stat_njet1_jet_pt_high_unc1_down","_qcd_stat_njet1_jet_pt_high_unc2_up","_qcd_stat_njet1_jet_pt_high_unc2_down","_qcd_stat_njet1_jet_pt_high_unc3_up","_qcd_stat_njet1_jet_pt_high_unc3_down","_qcd_syst_up","_qcd_syst_down","_qcd_stat_ss_njets0_unc1_up","_qcd_stat_ss_njets0_unc1_down","_qcd_stat_ss_njets1_unc1_up","_qcd_stat_ss_njets1_unc1_down","_qcd_stat_os_unc1_up","_qcd_stat_os_unc1_down","_qcd_stat_ss_njets0_unc2_up","_qcd_stat_ss_njets0_unc2_down","_qcd_stat_ss_njets1_unc2_up","_qcd_stat_ss_njets1_unc2_down","_qcd_stat_os_unc2_up","_qcd_stat_os_unc2_down","_wjets_stat_njet0_jet_pt_low_unc1_up","_wjets_stat_njet0_jet_pt_low_unc1_down","_wjets_stat_njet0_jet_pt_low_unc2_up","_wjets_stat_njet0_jet_pt_low_unc2_down","_wjets_stat_njet0_jet_pt_low_unc3_up","_wjets_stat_njet0_jet_pt_low_unc3_down","_wjets_stat_njet0_jet_pt_low_unc4_up","_wjets_stat_njet0_jet_pt_low_unc4_down","_wjets_stat_njet0_jet_pt_med_unc1_up","_wjets_stat_njet0_jet_pt_med_unc1_down","_wjets_stat_njet0_jet_pt_med_unc2_up","_wjets_stat_njet0_jet_pt_med_unc2_down","_wjets_stat_njet0_jet_pt_med_unc3_up","_wjets_stat_njet0_jet_pt_med_unc3_down","_wjets_stat_njet0_jet_pt_med_unc4_up","_wjets_stat_njet0_jet_pt_med_unc4_down","_wjets_stat_njet0_jet_pt_high_unc1_up","_wjets_stat_njet0_jet_pt_high_unc1_down","_wjets_stat_njet0_jet_pt_high_unc2_up","_wjets_stat_njet0_jet_pt_high_unc2_down","_wjets_stat_njet0_jet_pt_high_unc3_up","_wjets_stat_njet0_jet_pt_high_unc3_down","_wjets_stat_njet0_jet_pt_high_unc4_up","_wjets_stat_njet0_jet_pt_high_unc4_down","_wjets_stat_njet1_jet_pt_low_unc1_up","_wjets_stat_njet1_jet_pt_low_unc1_down","_wjets_stat_njet1_jet_pt_low_unc2_up","_wjets_stat_njet1_jet_pt_low_unc2_down","_wjets_stat_njet1_jet_pt_low_unc3_up","_wjets_stat_njet1_jet_pt_low_unc3_down","_wjets_stat_njet1_jet_pt_low_unc4_up","_wjets_stat_njet1_jet_pt_low_unc4_down","_wjets_stat_njet1_jet_pt_med_unc1_up","_wjets_stat_njet1_jet_pt_med_unc1_down","_wjets_stat_njet1_jet_pt_med_unc2_up","_wjets_stat_njet1_jet_pt_med_unc2_down","_wjets_stat_njet1_jet_pt_med_unc3_up","_wjets_stat_njet1_jet_pt_med_unc3_down","_wjets_stat_njet1_jet_pt_med_unc4_up","_wjets_stat_njet1_jet_pt_med_unc4_down","_wjets_stat_njet1_jet_pt_high_unc1_up","_wjets_stat_njet1_jet_pt_high_unc1_down","_wjets_stat_njet1_jet_pt_high_unc2_up","_wjets_stat_njet1_jet_pt_high_unc2_down","_wjets_stat_njet1_jet_pt_high_unc3_up","_wjets_stat_njet1_jet_pt_high_unc3_down","_wjets_stat_njet1_jet_pt_high_unc4_up","_wjets_stat_njet1_jet_pt_high_unc4_down","_wjets_syst_up","_wjets_syst_down","_wjets_stat_met_njets0_unc1_up","_wjets_stat_met_njets0_unc1_down","_wjets_stat_met_njets1_unc1_up","_wjets_stat_met_njets1_unc1_down","_wjets_stat_l_pt_njets0_unc1_up","_wjets_stat_l_pt_njets0_unc1_down","_wjets_stat_l_pt_njets1_unc1_up","_wjets_stat_l_pt_njets1_unc1_down","_wjets_stat_extrap_unc1_up","_wjets_stat_extrap_unc1_down","_wjets_stat_met_njets0_unc2_up","_wjets_stat_met_njets0_unc2_down","_wjets_stat_met_njets1_unc2_up","_wjets_stat_met_njets1_unc2_down","_wjets_stat_l_pt_njets0_unc2_up","_wjets_stat_l_pt_njets0_unc2_down","_wjets_stat_l_pt_njets1_unc2_up","_wjets_stat_l_pt_njets1_unc2_down","_wjets_stat_extrap_unc2_up","_wjets_stat_extrap_unc2_down","_ttbar_stat_jet_pt_low_unc1_up","_ttbar_stat_jet_pt_low_unc1_down","_ttbar_stat_jet_pt_low_unc2_up","_ttbar_stat_jet_pt_low_unc2_down","_ttbar_stat_jet_pt_low_unc3_up","_ttbar_stat_jet_pt_low_unc3_down","_ttbar_stat_jet_pt_med_unc1_up","_ttbar_stat_jet_pt_med_unc1_down","_ttbar_stat_jet_pt_med_unc2_up","_ttbar_stat_jet_pt_med_unc2_down","_ttbar_stat_jet_pt_med_unc3_up","_ttbar_stat_jet_pt_med_unc3_down","_ttbar_stat_jet_pt_high_unc1_up","_ttbar_stat_jet_pt_high_unc1_down","_ttbar_stat_jet_pt_high_unc2_up","_ttbar_stat_jet_pt_high_unc2_down","_ttbar_stat_jet_pt_high_unc3_up","_ttbar_stat_jet_pt_high_unc3_down","_ttbar_syst_up","_ttbar_syst_down","_ttbar_stat_l_pt_unc1_up","_ttbar_stat_l_pt_unc1_down","_ttbar_stat_l_pt_unc2_up","_ttbar_stat_l_pt_unc2_down","_ttbar_stat_met_unc1_up","_ttbar_stat_met_unc1_down","_ttbar_stat_met_unc2_up","_ttbar_stat_met_unc2_down","_wjets_frac_up","_wjets_frac_down","_ttbar_frac_up","_ttbar_frac_down","_low_pt_up","_low_pt_down","_qcd_stat_l_pt_unc1_up","_qcd_stat_l_pt_unc1_down","_qcd_stat_l_pt_unc2_up","_qcd_stat_l_pt_unc2_down","_qcd_stat_iso_unc1_up","_qcd_stat_iso_unc1_down","_qcd_stat_iso_unc2_up","_qcd_stat_iso_unc2_down","_qcd_syst_iso_up","_qcd_syst_iso_down","_wjets_syst_extrap_up","_wjets_syst_extrap_down",
+      "_syst_alt_func_up","_syst_alt_func_down","_qcd_syst_met_closure_up","_qcd_syst_met_closure_down","_ttbar_syst_met_closure_up","_ttbar_syst_met_closure_down","_ttbar_syst_l_pt_closure_up","_ttbar_syst_l_pt_closure_down","_wjets_syst_met_closure_up","_wjets_syst_met_closure_down","_wjets_syst_l_pt_closure_up","_wjets_syst_l_pt_closure_down","_wjets_syst_bkg_up","_wjets_syst_bkg_down","_qcd_syst_bkg_up","_qcd_syst_bkg_down"
+};
+
+      std::string mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v6.root";
+      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2016_v6.root";
+      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2017_v6.root";
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018_v6.root";
+      TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
+
+      ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f_mssm.Close();
+      for(auto s : systs_mssm_) {
+        fns_["ff_total"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_mssm_->function(("ff_total"+s).c_str())->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso,mt_tot")));
+      }
+      fns_["ff_qcd"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("ff_lt_qcd")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["ff_wjets"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("ff_lt_wjets")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["ff_ttbar"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("ff_lt_ttbar")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["wjets_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_wjets_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["qcd_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_qcd_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["ttbar_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_ttbar_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot"))); 
       return 0;
     }
 
@@ -263,22 +281,6 @@ namespace ic {
       fns_["ff_lt_medium_mvadmbins_ttbar"] = std::shared_ptr<RooFunctor>(
             ff_ws_->function("ff_et_medium_mvadmbins_ttbar")->functor(ff_ws_->argSet("pt,mvadm,ipsig,njets,met_var_w")));
 
-      // load us groups fake factors
-
-      std::string us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2016.root";
-      if(strategy_==strategy::cpdecays17) us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2017.root";
-      if(strategy_==strategy::cpdecays18) us_file_ = "input/fake_factors/fakefactors_us_ws_et_lite_2018.root";
-      TFile f_us((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+us_file_).c_str());
-
-      ff_ws_us_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
-      f_us.Close();
-      systs_us_ = {"","_qcd_syst_osss_up","_qcd_syst_osss_down","_wjets_syst_mt_unc1_up","_wjets_syst_mt_unc1_down","_wjets_syst_mt_unc2_up","_wjets_syst_mt_unc2_down","_qcd_syst_closure_low_up","_qcd_syst_closure_low_down","_wjets_syst_closure_low_up","_wjets_syst_closure_low_down","_ttbar_syst_closure_low_up","_ttbar_syst_closure_low_down","_qcd_syst_closure_high_up","_qcd_syst_closure_high_down","_wjets_syst_closure_high_up","_wjets_syst_closure_high_down","_ttbar_syst_closure_high_up","_ttbar_syst_closure_high_down","_qcd_stat_njets0_unc1_up","_qcd_stat_njets0_unc1_down","_qcd_stat_njets0_unc2_up","_qcd_stat_njets0_unc2_down","_qcd_stat_njets1_unc1_up","_qcd_stat_njets1_unc1_down","_qcd_stat_njets1_unc2_up","_qcd_stat_njets1_unc2_down","_qcd_stat_njets2_unc1_up","_qcd_stat_njets2_unc1_down","_qcd_stat_njets2_unc2_up","_qcd_stat_njets2_unc2_down","_wjets_stat_njets0_unc1_up","_wjets_stat_njets0_unc1_down","_wjets_stat_njets0_unc2_up","_wjets_stat_njets0_unc2_down","_wjets_stat_njets1_unc1_up","_wjets_stat_njets1_unc1_down","_wjets_stat_njets1_unc2_up","_wjets_stat_njets1_unc2_down","_wjets_stat_njets2_unc1_up","_wjets_stat_njets2_unc1_down","_wjets_stat_njets2_unc2_up","_wjets_stat_njets2_unc2_down","_ttbar_stat_unc1_up","_ttbar_stat_unc1_down","_ttbar_stat_unc2_up","_ttbar_stat_unc2_down", "_puppi_met_up", "_puppi_met_down"};
-
-
-      for(auto s : systs_us_) {   
-        fns_["ff_lt_medium_us"+s] = std::shared_ptr<RooFunctor>(
-              ff_ws_us_->function(("ff_et_medium_us"+s).c_str())->functor(ff_ws_us_->argSet("pt,njets,os,mt,e_pt,pfmt,met,puppi_met")));
-      }
 
       // load MVA scroes reader for fractions
       reader_ = new TMVA::Reader();
@@ -296,7 +298,38 @@ namespace ic {
       if(strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpsummer17 ) xml_file=baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/fake_factors/fractions_2017_et.xml";
       reader_->BookMVA( "BDT method", xml_file );
 
+      // load MSSM fake factors
+
+      systs_mssm_ = {"","_qcd_stat_njet0_jet_pt_low_unc1_up","_qcd_stat_njet0_jet_pt_low_unc1_down","_qcd_stat_njet0_jet_pt_low_unc2_up","_qcd_stat_njet0_jet_pt_low_unc2_down","_qcd_stat_njet0_jet_pt_low_unc3_up","_qcd_stat_njet0_jet_pt_low_unc3_down","_qcd_stat_njet0_jet_pt_med_unc1_up","_qcd_stat_njet0_jet_pt_med_unc1_down","_qcd_stat_njet0_jet_pt_med_unc2_up","_qcd_stat_njet0_jet_pt_med_unc2_down","_qcd_stat_njet0_jet_pt_med_unc3_up","_qcd_stat_njet0_jet_pt_med_unc3_down","_qcd_stat_njet0_jet_pt_high_unc1_up","_qcd_stat_njet0_jet_pt_high_unc1_down","_qcd_stat_njet0_jet_pt_high_unc2_up","_qcd_stat_njet0_jet_pt_high_unc2_down","_qcd_stat_njet0_jet_pt_high_unc3_up","_qcd_stat_njet0_jet_pt_high_unc3_down","_qcd_stat_njet1_jet_pt_low_unc1_up","_qcd_stat_njet1_jet_pt_low_unc1_down","_qcd_stat_njet1_jet_pt_low_unc2_up","_qcd_stat_njet1_jet_pt_low_unc2_down","_qcd_stat_njet1_jet_pt_low_unc3_up","_qcd_stat_njet1_jet_pt_low_unc3_down","_qcd_stat_njet1_jet_pt_med_unc1_up","_qcd_stat_njet1_jet_pt_med_unc1_down","_qcd_stat_njet1_jet_pt_med_unc2_up","_qcd_stat_njet1_jet_pt_med_unc2_down","_qcd_stat_njet1_jet_pt_med_unc3_up","_qcd_stat_njet1_jet_pt_med_unc3_down","_qcd_stat_njet1_jet_pt_high_unc1_up","_qcd_stat_njet1_jet_pt_high_unc1_down","_qcd_stat_njet1_jet_pt_high_unc2_up","_qcd_stat_njet1_jet_pt_high_unc2_down","_qcd_stat_njet1_jet_pt_high_unc3_up","_qcd_stat_njet1_jet_pt_high_unc3_down","_qcd_syst_up","_qcd_syst_down","_qcd_stat_ss_njets0_unc1_up","_qcd_stat_ss_njets0_unc1_down","_qcd_stat_ss_njets1_unc1_up","_qcd_stat_ss_njets1_unc1_down","_qcd_stat_os_unc1_up","_qcd_stat_os_unc1_down","_qcd_stat_ss_njets0_unc2_up","_qcd_stat_ss_njets0_unc2_down","_qcd_stat_ss_njets1_unc2_up","_qcd_stat_ss_njets1_unc2_down","_qcd_stat_os_unc2_up","_qcd_stat_os_unc2_down","_wjets_stat_njet0_jet_pt_low_unc1_up","_wjets_stat_njet0_jet_pt_low_unc1_down","_wjets_stat_njet0_jet_pt_low_unc2_up","_wjets_stat_njet0_jet_pt_low_unc2_down","_wjets_stat_njet0_jet_pt_low_unc3_up","_wjets_stat_njet0_jet_pt_low_unc3_down","_wjets_stat_njet0_jet_pt_low_unc4_up","_wjets_stat_njet0_jet_pt_low_unc4_down","_wjets_stat_njet0_jet_pt_med_unc1_up","_wjets_stat_njet0_jet_pt_med_unc1_down","_wjets_stat_njet0_jet_pt_med_unc2_up","_wjets_stat_njet0_jet_pt_med_unc2_down","_wjets_stat_njet0_jet_pt_med_unc3_up","_wjets_stat_njet0_jet_pt_med_unc3_down","_wjets_stat_njet0_jet_pt_med_unc4_up","_wjets_stat_njet0_jet_pt_med_unc4_down","_wjets_stat_njet0_jet_pt_high_unc1_up","_wjets_stat_njet0_jet_pt_high_unc1_down","_wjets_stat_njet0_jet_pt_high_unc2_up","_wjets_stat_njet0_jet_pt_high_unc2_down","_wjets_stat_njet0_jet_pt_high_unc3_up","_wjets_stat_njet0_jet_pt_high_unc3_down","_wjets_stat_njet0_jet_pt_high_unc4_up","_wjets_stat_njet0_jet_pt_high_unc4_down","_wjets_stat_njet1_jet_pt_low_unc1_up","_wjets_stat_njet1_jet_pt_low_unc1_down","_wjets_stat_njet1_jet_pt_low_unc2_up","_wjets_stat_njet1_jet_pt_low_unc2_down","_wjets_stat_njet1_jet_pt_low_unc3_up","_wjets_stat_njet1_jet_pt_low_unc3_down","_wjets_stat_njet1_jet_pt_low_unc4_up","_wjets_stat_njet1_jet_pt_low_unc4_down","_wjets_stat_njet1_jet_pt_med_unc1_up","_wjets_stat_njet1_jet_pt_med_unc1_down","_wjets_stat_njet1_jet_pt_med_unc2_up","_wjets_stat_njet1_jet_pt_med_unc2_down","_wjets_stat_njet1_jet_pt_med_unc3_up","_wjets_stat_njet1_jet_pt_med_unc3_down","_wjets_stat_njet1_jet_pt_med_unc4_up","_wjets_stat_njet1_jet_pt_med_unc4_down","_wjets_stat_njet1_jet_pt_high_unc1_up","_wjets_stat_njet1_jet_pt_high_unc1_down","_wjets_stat_njet1_jet_pt_high_unc2_up","_wjets_stat_njet1_jet_pt_high_unc2_down","_wjets_stat_njet1_jet_pt_high_unc3_up","_wjets_stat_njet1_jet_pt_high_unc3_down","_wjets_stat_njet1_jet_pt_high_unc4_up","_wjets_stat_njet1_jet_pt_high_unc4_down","_wjets_syst_up","_wjets_syst_down","_wjets_stat_met_njets0_unc1_up","_wjets_stat_met_njets0_unc1_down","_wjets_stat_met_njets1_unc1_up","_wjets_stat_met_njets1_unc1_down","_wjets_stat_l_pt_njets0_unc1_up","_wjets_stat_l_pt_njets0_unc1_down","_wjets_stat_l_pt_njets1_unc1_up","_wjets_stat_l_pt_njets1_unc1_down","_wjets_stat_extrap_unc1_up","_wjets_stat_extrap_unc1_down","_wjets_stat_met_njets0_unc2_up","_wjets_stat_met_njets0_unc2_down","_wjets_stat_met_njets1_unc2_up","_wjets_stat_met_njets1_unc2_down","_wjets_stat_l_pt_njets0_unc2_up","_wjets_stat_l_pt_njets0_unc2_down","_wjets_stat_l_pt_njets1_unc2_up","_wjets_stat_l_pt_njets1_unc2_down","_wjets_stat_extrap_unc2_up","_wjets_stat_extrap_unc2_down","_ttbar_stat_jet_pt_low_unc1_up","_ttbar_stat_jet_pt_low_unc1_down","_ttbar_stat_jet_pt_low_unc2_up","_ttbar_stat_jet_pt_low_unc2_down","_ttbar_stat_jet_pt_low_unc3_up","_ttbar_stat_jet_pt_low_unc3_down","_ttbar_stat_jet_pt_med_unc1_up","_ttbar_stat_jet_pt_med_unc1_down","_ttbar_stat_jet_pt_med_unc2_up","_ttbar_stat_jet_pt_med_unc2_down","_ttbar_stat_jet_pt_med_unc3_up","_ttbar_stat_jet_pt_med_unc3_down","_ttbar_stat_jet_pt_high_unc1_up","_ttbar_stat_jet_pt_high_unc1_down","_ttbar_stat_jet_pt_high_unc2_up","_ttbar_stat_jet_pt_high_unc2_down","_ttbar_stat_jet_pt_high_unc3_up","_ttbar_stat_jet_pt_high_unc3_down","_ttbar_syst_up","_ttbar_syst_down","_ttbar_stat_l_pt_unc1_up","_ttbar_stat_l_pt_unc1_down","_ttbar_stat_l_pt_unc2_up","_ttbar_stat_l_pt_unc2_down","_ttbar_stat_met_unc1_up","_ttbar_stat_met_unc1_down","_ttbar_stat_met_unc2_up","_ttbar_stat_met_unc2_down","_wjets_frac_up","_wjets_frac_down","_ttbar_frac_up","_ttbar_frac_down","_low_pt_up","_low_pt_down","_qcd_stat_l_pt_unc1_up","_qcd_stat_l_pt_unc1_down","_qcd_stat_l_pt_unc2_up","_qcd_stat_l_pt_unc2_down","_qcd_stat_iso_unc1_up","_qcd_stat_iso_unc1_down","_qcd_stat_iso_unc2_up","_qcd_stat_iso_unc2_down","_qcd_syst_iso_up","_qcd_syst_iso_down", "_wjets_syst_extrap_up","_wjets_syst_extrap_down",
+      "_syst_alt_func_up","_syst_alt_func_down","_qcd_syst_met_closure_up","_qcd_syst_met_closure_down","_ttbar_syst_met_closure_up","_ttbar_syst_met_closure_down","_ttbar_syst_l_pt_closure_up","_ttbar_syst_l_pt_closure_down","_wjets_syst_met_closure_up","_wjets_syst_met_closure_down","_wjets_syst_l_pt_closure_up","_wjets_syst_l_pt_closure_down","_wjets_syst_bkg_up","_wjets_syst_bkg_down","_qcd_syst_bkg_up","_qcd_syst_bkg_down"
+};
+
+      std::string mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v6.root";
+      if(strategy_==strategy::legacy16) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2016_v6.root";
+      if(strategy_==strategy::cpdecays17) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2017_v6.root";
+      if(strategy_==strategy::cpdecays18) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v6.root";
+      TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
+
+      ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
+      f_mssm.Close();
+      for(auto s : systs_mssm_) {
+        fns_["ff_total"+s] = std::shared_ptr<RooFunctor>(
+              ff_ws_mssm_->function(("ff_total"+s).c_str())->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso,mt_tot")));
+      }
+      fns_["ff_qcd"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("ff_lt_qcd")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["ff_wjets"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("ff_lt_wjets")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["ff_ttbar"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("ff_lt_ttbar")->functor(ff_ws_mssm_->argSet("pt,jetpt,njets,nbjets,os,l_pt,met_var_qcd,met_var_w,mt,iso")));
+      fns_["wjets_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_wjets_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["qcd_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_qcd_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot")));
+      fns_["ttbar_frac_mssm"] = std::shared_ptr<RooFunctor>(
+            ff_ws_mssm_->function("lt_fracs_ttbar_nom")->functor(ff_ws_mssm_->argSet("nbjets,os,mt,mt_tot"))); 
       return 0;
+
     }
     
     std::string channel = Channel2String(channel_);
@@ -451,6 +484,7 @@ namespace ic {
     Met * met = event->GetPtr<Met>(met_label_);
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> bjets = jets;
+    std::vector<PFJet*> deepbjets = jets;
     ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
     
@@ -489,17 +523,68 @@ namespace ic {
         ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
       } 
     }
-    
+   
+    ic::erase_if(deepbjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    n_prebjets_ = (double)deepbjets.size();
+
+    double deepjet_wp;
+    if (era_ == era::data_2017) {
+      deepjet_wp = 0.3033;
+    }
+    if (era_ == era::data_2018) {
+      deepjet_wp = 0.2770;
+    }
+    if (era_ == era::data_2016) {
+      deepjet_wp = 0.3093;
+    }
+
+    std::string deepjet_label_1 = "pfDeepFlavourJetTags:probb";
+    std::string deepjet_label_2 = "pfDeepFlavourJetTags:probbb";
+    std::string deepjet_label_3 = "pfDeepFlavourJetTags:problepb";
+
+    auto filterDeepJetBTag = [deepjet_label_1, deepjet_label_2, deepjet_label_3, deepjet_wp] (PFJet* s1) -> bool {
+      return s1->GetBDiscriminator(deepjet_label_1) + s1->GetBDiscriminator(deepjet_label_2) + s1->GetBDiscriminator(deepjet_label_3) > deepjet_wp;
+    };
+
+    if (event->Exists("retag_result")) {
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
+      ic::erase_if(deepbjets, !boost::bind(IsReBTagged, _1, retag_result));
+    } else{
+      ic::erase_if_not(deepbjets, filterDeepJetBTag);
+    }
+
+    n_deepbjets_ = (double)deepbjets.size();
+
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
+
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
+    std::vector<Candidate *> leading_lepton;
+    std::vector<Candidate *> subleading_lepton;
+    leading_lepton.push_back(ditau->GetCandidate("lepton1"));
+    subleading_lepton.push_back(ditau->GetCandidate("lepton2"));
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> mu_matches = MatchByDR(uncleaned_jets, leading_lepton, 0.5, true, true);
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches = MatchByDR(uncleaned_jets, subleading_lepton, 0.5, true, true);
+    if(mu_matches.size() > 0) {
+        jet_pt_1_ = (mu_matches.at(0)).first->pt();
+    } else {
+      jet_pt_1_ = -9999;
+    }
+    if(tau_matches.size() > 0) {
+        jet_pt_2_ = (tau_matches.at(0)).first->pt();
+    } else {
+      jet_pt_2_ = -9999;
+    }
+ 
     
     // Get all inputs needed by FF 
     pt_1_ = lep1->pt();  
     pt_2_ = lep2->pt();
     m_vis_ = ditau->M();
     mt_1_ = MT(lep1, met);
+    mt_tot_ = sqrt(pow(MT(lep1, met),2) + pow(MT(lep2, met),2) + pow(MT(lep1, lep2),2));
 
     double met_var_qcd = met->pt()*cos(ROOT::Math::VectorUtil::DeltaPhi(met->vector(),lep2->vector()))/pt_2_;
     double met_var_qcd_tt = met->pt()*cos(ROOT::Math::VectorUtil::DeltaPhi(met->vector(),lep1->vector()))/pt_1_;
@@ -806,17 +891,26 @@ namespace ic {
           ff_nom = fns_["ff_lt_medium_dmbins"]->eval(args_dm.data());
           event->Add("wt_ff_dmbins_1",  ff_nom);
 
+          auto args_mssm = std::vector<double>{pt_2_, jet_pt_2_, n_prebjets_, n_deepbjets_, os, pt_1_, met_var_qcd, met_var_w, mt_1_, iso_1_,mt_tot_};
+          ff_nom = fns_["ff_total"]->eval(args_mssm.data());
+          event->Add("wt_ff_mssm_1",  ff_nom);
 
-          // us groups FFs
-          std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
-          Met *pfmet = pfMet_vec.at(0);
-          double pfmt_1 = MT(lep1, pfmet);
-          double pfmet_ = pfmet->vector().pt();
-          if(pfmet_!=pfmet_) pfmet_ = 0.;
-          auto args_us = std::vector<double>{pt_2_,n_jets_,os,mt_1_,pt_1_,pfmt_1,pfmet_,met_};
-          double ff_us_nom = fns_["ff_lt_medium_us"]->eval(args_us.data());
-          if (ff_us_nom != ff_us_nom) ff_us_nom = 0.; 
-          event->Add("wt_ff_us_1",  ff_us_nom);
+
+          ff_nom = fns_["ff_qcd"]->eval(args_mssm.data());
+          event->Add("wt_ff_mssm_qcd_1",  ff_nom);
+          ff_nom = fns_["ff_wjets"]->eval(args_mssm.data());
+          event->Add("wt_ff_mssm_wjets_1",  ff_nom);
+          ff_nom = fns_["ff_ttbar"]->eval(args_mssm.data());
+          event->Add("wt_ff_mssm_ttbar_1",  ff_nom);
+
+          auto args_mssm_frac = std::vector<double>{n_deepbjets_, os, mt_1_, mt_tot_};
+          double ff_frac_wjets = fns_["wjets_frac_mssm"]->eval(args_mssm_frac.data());
+          event->Add("ff_frac_mssm_wjets",  ff_frac_wjets);
+          double ff_frac_qcd = fns_["qcd_frac_mssm"]->eval(args_mssm_frac.data());
+          event->Add("ff_frac_mssm_qcd",  ff_frac_qcd);
+          double ff_frac_ttbar = fns_["ttbar_frac_mssm"]->eval(args_mssm_frac.data());
+          event->Add("ff_frac_mssm_ttbar",  ff_frac_ttbar);
+
 
           if(do_systematics_) {
             for(auto s : systs_mvadm_){
@@ -832,14 +926,12 @@ namespace ic {
               event->Add(syst_name+"_1", ff_syst);
             }
 
-            // us groups FFs
-            for(auto s : systs_us_){
+            for(auto s : systs_mssm_){
               if (s == "") continue;
-              double ff_us_syst = fns_["ff_lt_medium_us"+s]->eval(args_us.data());
-              if(ff_us_syst!=ff_us_syst) ff_us_syst = 0.;
-              std::string syst_name = "wt_ff_us"+s;
-              event->Add(syst_name+"_1",  ff_us_syst);
-            } 
+              double ff_syst = fns_["ff_total"+s]->eval(args_mssm.data());
+              std::string syst_name = "wt_ff_mssm"+s;
+              event->Add(syst_name+"_1", ff_syst);
+            }
 
           }
 
@@ -907,13 +999,10 @@ namespace ic {
           ff_nom_2 = fns_["ff_tt_medium_dmbins"]->eval(args_dm_2.data());
           event->Add("wt_ff_dmbins_2",  ff_nom_2);
 
-         auto args_us = std::vector<double>{pt_1_,n_jets_,pt_2_,os,m_vis_,met_};
-         auto args_us_2 = std::vector<double>{pt_2_,n_jets_,pt_1_,os,m_vis_,met_};
-
-         ff_nom = fns_["ff_tt_medium_us"]->eval(args_us.data());
-         event->Add("wt_ff_us_1",  ff_nom);
-         ff_nom_2 = fns_["ff_tt_medium_us"]->eval(args_us_2.data());
-         event->Add("wt_ff_us_2",  ff_nom_2);
+         auto args_mssm = std::vector<double>{pt_1_, jet_pt_1_, n_prebjets_, n_deepbjets_, dR, os, pt_2_, met_};
+         ff_nom = fns_["ff_total"]->eval(args_mssm.data());
+         event->Add("wt_ff_mssm_1",  ff_nom);
+    
 
 
           if(do_systematics_){
@@ -937,16 +1026,14 @@ namespace ic {
               event->Add(syst_name+"_2", ff_syst_2);
             }
 
-            for(auto s : systs_us_){
+
+            for(auto s : systs_mssm_){
               if (s == "") continue;
-              double ff_syst = fns_["ff_tt_medium_us"+s]->eval(args_us.data());
-              std::string syst_name = "wt_ff_us"+s;
+              double ff_syst = fns_["ff_total"+s]->eval(args_mssm.data());
+              std::string syst_name = "wt_ff_mssm"+s;
               event->Add(syst_name+"_1", ff_syst);
 
-              double ff_syst_2 = fns_["ff_tt_medium_us"+s]->eval(args_us_2.data());
-              event->Add(syst_name+"_2", ff_syst_2);
             }
-
 
           }
           return 0;

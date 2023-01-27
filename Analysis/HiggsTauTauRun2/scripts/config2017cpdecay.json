@@ -16,7 +16,8 @@
     "output_postfix":"",
     "sample": "VBF_HToTauTau_M-125"
   },
-  "sequence": {  
+  "sequence": { 
+    "usePFMET" : false, 
     "do_gen_analysis" : false,
     "era"           : "data_2017",
     "mc"            : "mc2017",
@@ -69,7 +70,7 @@
     // "event_check_file":"checkfile.dat",
     "pu_id_training": 4,
     "bjet_regr_correction" : false,
-    "new_svfit_mode" : 0,
+    "new_svfit_mode" : 1,
     "kinfit_mode"   : 0,
     "mva_met_mode"  : 0,
     "do_met_filters" : 0,

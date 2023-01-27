@@ -4,7 +4,7 @@ from CRABClient.UserUtilities import getUsernameFromCRIC
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='May21_MC_102X_2017'
+config.General.workArea='Jan11_MC_102X_2017'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2017.py'
 config.JobType.pluginName = 'Analysis'

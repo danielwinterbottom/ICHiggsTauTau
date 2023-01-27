@@ -60,7 +60,18 @@ while read i; do
   echo "  },"
 done < $input_xs
 
-echo "  \"SingleElectron\": {"
+while read i; do
+    sample_name=$(echo $i | cut -d" " -f1)
+    if [[ "$sample_name" == "SUSY"* ]]; then
+      evt=$(echo $i | cut -d" " -f2)
+      echo "  \""$sample_name"\": {"
+      echo "    \"xs\": 1.0,"
+      echo "    \"evt\": "$evt
+      echo "  },"
+    fi
+done < $input_evt
+
+echo "  \"EGamma\": {"
 echo "    \"lumi\": "$lumi
 echo "  },"
 echo "  \"SingleMuon\": {"

@@ -1,0 +1,412 @@
+import ROOT
+import UserCode.ICHiggsTauTau.plotting as plotting
+import numpy as np
+import argparse
+import os
+
+def ScaleUncertHist(hists):
+  hout = hists[0].Clone()
+  for i in range(1,hout.GetNbinsX()+1):
+    x=[]
+    for h in hists: x.append(h.GetBinContent(i))
+
+    umax = max(x)
+    umin = min(x)
+    c = (umax+umin)/2
+    u = (umax-umin)/2
+    hout.SetBinContent(i,c)
+    hout.SetBinError(i,u)
+  return hout
+
+def PDFUncertHist(h0,hists):
+  hout = h0.Clone()
+  for i in range(1,hout.GetNbinsX()+1):
+    x=[]
+    for h in hists: x.append(h.GetBinContent(i))
+    m = np.mean(x)
+    u = np.sqrt(np.mean((x-m)**2)) # uncertainty is RMS
+    hout.SetBinError(i,u)
+
+  uncert = 0.
+  x=[]
+  for h in hists: x.append(h.Integral(2,-1))
+  m = np.mean(x)
+  uncert1 = np.sqrt(np.mean((x-m)**2))/h0.Integral(2,-1) # uncertainty is RMS
+  x=[]
+  for h in hists: x.append(h.Integral(1,1))
+  m = np.mean(x)
+  uncert0 = np.sqrt(np.mean((x-m)**2))/h0.Integral(1,1) # uncertainty is RMS
+
+  return (hout, uncert0, uncert1)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--mass', '-m', help= 'Mass point to compute uncertainties for', default='125')
+parser.add_argument('--year', '-y', help= 'Year to compute uncertainties for', default='2018')
+args = parser.parse_args()
+mass = args.mass
+year = args.year
+
+if year == '2016': extra=''
+else: extra='_eta2p5'
+
+f1=ROOT.TFile('/vols/cms/dw515/Offline/output/MSSM/bbh_uncerts_%(year)s/bbh_m%(mass)s_tt_2018.root' % vars())
+t1 = f1.Get('gen_ntuple')
+
+f2=ROOT.TFile('/vols/cms/dw515/Offline/output/MSSM/bbh_uncerts_%(year)s/bbh_m%(mass)s_up_tt_2018.root' % vars())
+t2 = f2.Get('gen_ntuple')
+f3=ROOT.TFile('/vols/cms/dw515/Offline/output/MSSM/bbh_uncerts_%(year)s/bbh_m%(mass)s_down_tt_2018.root' % vars())
+t3 = f3.Get('gen_ntuple')
+
+f4=ROOT.TFile('/vols/cms/dw515/Offline/output/MSSM/bbh_uncerts_%(year)s/bbh_mg_m%(mass)s_tt_2018.root' % vars())
+t4 = f4.Get('gen_ntuple')
+
+
+h0 = ROOT.TH1D('h0','',4,0,4)
+h1 = ROOT.TH1D('h1','',4,0,4)
+h2 = ROOT.TH1D('h2','',4,0,4)
+h3 = ROOT.TH1D('h3','',4,0,4)
+h4 = ROOT.TH1D('h4','',4,0,4)
+h5 = ROOT.TH1D('h5','',4,0,4)
+h6 = ROOT.TH1D('h6','',4,0,4)
+
+h0_up = ROOT.TH1D('h0_up','',4,0,4)
+h0_down = ROOT.TH1D('h0_down','',4,0,4)
+hmg = ROOT.TH1D('hmg','',4,0,4)
+
+h10 = ROOT.TH1D('h10','',4,0,4)
+h11 = ROOT.TH1D('h11','',4,0,4)
+h12 = ROOT.TH1D('h12','',4,0,4)
+h13 = ROOT.TH1D('h13','',4,0,4)
+h14 = ROOT.TH1D('h14','',4,0,4)
+h15 = ROOT.TH1D('h15','',4,0,4)
+h16 = ROOT.TH1D('h16','',4,0,4)
+h17 = ROOT.TH1D('h17','',4,0,4)
+h18 = ROOT.TH1D('h18','',4,0,4)
+h19 = ROOT.TH1D('h19','',4,0,4)
+h20 = ROOT.TH1D('h20','',4,0,4)
+h21 = ROOT.TH1D('h21','',4,0,4)
+h22 = ROOT.TH1D('h22','',4,0,4)
+h23 = ROOT.TH1D('h23','',4,0,4)
+h24 = ROOT.TH1D('h24','',4,0,4)
+h25 = ROOT.TH1D('h25','',4,0,4)
+h26 = ROOT.TH1D('h26','',4,0,4)
+h27 = ROOT.TH1D('h27','',4,0,4)
+h28 = ROOT.TH1D('h28','',4,0,4)
+h29 = ROOT.TH1D('h29','',4,0,4)
+h30 = ROOT.TH1D('h30','',4,0,4)
+h31 = ROOT.TH1D('h31','',4,0,4)
+h32 = ROOT.TH1D('h32','',4,0,4)
+h33 = ROOT.TH1D('h33','',4,0,4)
+h34 = ROOT.TH1D('h34','',4,0,4)
+h35 = ROOT.TH1D('h35','',4,0,4)
+h36 = ROOT.TH1D('h36','',4,0,4)
+h37 = ROOT.TH1D('h37','',4,0,4)
+h38 = ROOT.TH1D('h38','',4,0,4)
+h39 = ROOT.TH1D('h39','',4,0,4)
+h40 = ROOT.TH1D('h40','',4,0,4)
+
+t1.Draw("n_bjets%(extra)s>>h0(4,0,4)" % vars(),"wt",'goff')
+h0 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h1(4,0,4)" % vars(),"wt*wt_mur2_muf2",'goff')
+h1 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h2(4,0,4)" % vars(),"wt*wt_mur1_muf2",'goff')
+h2 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h3(4,0,4)" % vars(),"wt*wt_mur2_muf1",'goff')
+h3 = t1.GetHistogram()
+
+t1.Draw("n_bjets%(extra)s>>h4(4,0,4)" % vars(),"wt*wt_mur0p5_muf0p5",'goff')
+h4 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h5(4,0,4)" % vars(),"wt*wt_mur1_muf0p5",'goff')
+h5 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h6(4,0,4)" % vars(),"wt*wt_mur0p5_muf1",'goff')
+h6 = t1.GetHistogram()
+
+t1.Draw("n_bjets%(extra)s>>h10(4,0,4)" % vars(),"wt*wt_pdf_0",'goff')
+h10 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h11(4,0,4)" % vars(),"wt*wt_pdf_1",'goff')
+h11 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h12(4,0,4)" % vars(),"wt*wt_pdf_2",'goff')
+h12 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h13(4,0,4)" % vars(),"wt*wt_pdf_3",'goff')
+h13 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h14(4,0,4)" % vars(),"wt*wt_pdf_4",'goff')
+h14 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h15(4,0,4)" % vars(),"wt*wt_pdf_5",'goff')
+h15 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h16(4,0,4)" % vars(),"wt*wt_pdf_6",'goff')
+h16 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h17(4,0,4)" % vars(),"wt*wt_pdf_7",'goff')
+h17 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h18(4,0,4)" % vars(),"wt*wt_pdf_8",'goff')
+h18 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h19(4,0,4)" % vars(),"wt*wt_pdf_9",'goff')
+h19 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h20(4,0,4)" % vars(),"wt*wt_pdf_10",'goff')
+h20 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h21(4,0,4)" % vars(),"wt*wt_pdf_11",'goff')
+h21 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h22(4,0,4)" % vars(),"wt*wt_pdf_12",'goff')
+h22 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h23(4,0,4)" % vars(),"wt*wt_pdf_13",'goff')
+h23 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h24(4,0,4)" % vars(),"wt*wt_pdf_14",'goff')
+h24 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h25(4,0,4)" % vars(),"wt*wt_pdf_15",'goff')
+h25 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h26(4,0,4)" % vars(),"wt*wt_pdf_16",'goff')
+h26 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h27(4,0,4)" % vars(),"wt*wt_pdf_17",'goff')
+h27 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h28(4,0,4)" % vars(),"wt*wt_pdf_18",'goff')
+h28 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h29(4,0,4)" % vars(),"wt*wt_pdf_19",'goff')
+h29 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h30(4,0,4)" % vars(),"wt*wt_pdf_20",'goff')
+h30 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h31(4,0,4)" % vars(),"wt*wt_pdf_21",'goff')
+h31 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h32(4,0,4)" % vars(),"wt*wt_pdf_22",'goff')
+h32 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h33(4,0,4)" % vars(),"wt*wt_pdf_23",'goff')
+h33 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h34(4,0,4)" % vars(),"wt*wt_pdf_24",'goff')
+h34 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h35(4,0,4)" % vars(),"wt*wt_pdf_25",'goff')
+h35 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h36(4,0,4)" % vars(),"wt*wt_pdf_26",'goff')
+h36 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h37(4,0,4)" % vars(),"wt*wt_pdf_27",'goff')
+h37 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h38(4,0,4)" % vars(),"wt*wt_pdf_28",'goff')
+h38 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h39(4,0,4)" % vars(),"wt*wt_pdf_29",'goff')
+h39 = t1.GetHistogram()
+t1.Draw("n_bjets%(extra)s>>h40(4,0,4)" % vars(),"wt*wt_pdf_30",'goff')
+h40 = t1.GetHistogram()
+
+hists_pdf=[h10,h11,h12,h13,h14,h15,h16,h17,h18,h19,h20,h21,h22,h23,h24,h25,h26,h27,h28,h29,h30,h31,h32,h33,h34,h35,h36,h37,h38,h39,h40]
+
+for h in hists_pdf: h.Scale(1./h.Integral(-1,-1))
+
+h0.Scale(1./h0.Integral(-1,-1))
+
+titles = ['nominal',
+  '(#mu_{R},#mu_{F})=(2,2)',
+  '(#mu_{R},#mu_{F})=(1,2)',
+  '(#mu_{R},#mu_{F})=(2,1)',
+  '(#mu_{R},#mu_{F})=(0.5,0.5)',
+  '(#mu_{R},#mu_{F})=(1,0.5)',
+  '(#mu_{R},#mu_{F})=(0.5,1)',
+]
+
+ninc = h0.Integral(-1,-1) 
+n0 = h0.Integral(1,1) 
+n1 = h0.Integral(2,-1) 
+
+hists = [h0,h1,h2,h3,h4,h5,h6]
+
+maxinc = ninc
+max0 = n0
+max1 = n1
+
+mininc = ninc
+min0 = n0
+min1 = n1
+
+for h in hists:
+  h.Scale(1./h.Integral(-1,-1))
+  ninc_ = h.Integral(-1,-1) 
+  n0_ = h.Integral(1,1)     
+  n1_ = h.Integral(2,-1)
+
+  if ninc_>maxinc: maxinc=ninc_
+  if n0_>max0:     max0=n0_
+  if n1_>max1:     max1=n1_
+
+  if ninc_<mininc: mininc=ninc_
+  if n0_<min0:     min0=n0_
+  if n1_<min1:     min1=n1_
+
+
+scale_uncert1_up = max1-n1
+scale_uncert1_down = min1-n1 
+
+scale_uncert0_up = -scale_uncert1_up
+scale_uncert0_down = -scale_uncert1_down
+
+scale_uncert1_up/=n1
+scale_uncert1_down/=n1
+
+scale_uncert0_up/=n0
+scale_uncert0_down/=n0
+
+scale_uncert_hist = ScaleUncertHist(hists)
+
+#plotting.CompareHists([h0],
+#         ['nominal'],
+#         "bbH %(mass)s GeV" % vars(),
+#         True,
+#         False,
+#         False,
+#         "0.9,1.1",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_QCDscale_uncerts_m%(mass)s_%(year)s' % vars(),
+#         uncert_hist=scale_uncert_hist,
+#         uncert_title='(#mu_{R},#mu_{F}) uncertainty')
+
+#pdf uncerts
+(pdf_uncert_hist,pdf_uncert0, pdf_uncert1) = PDFUncertHist(h0,hists)
+
+#plotting.CompareHists([h0],
+#         ['nominal'],
+#         "bbH %(mass)s GeV" % vars(),
+#         True,
+#         False,
+#         False,
+#         "0.9,1.1",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_PDF_uncerts_m%(mass)s_%(year)s' % vars(),
+#         uncert_hist=pdf_uncert_hist,
+#         uncert_title='PDF uncertainty')
+
+# hdamp uncerts
+
+t2.Draw("n_bjets%(extra)s>>h0_up(4,0,4)" % vars(),"wt",'goff')
+h0_up = t2.GetHistogram()
+
+t3.Draw("n_bjets%(extra)s>>h0_down(4,0,4)" % vars(),"wt",'goff')
+h0_down = t3.GetHistogram()
+
+t4.Draw("n_bjets%(extra)s>>hmg(4,0,4)" % vars(),"wt",'goff')
+hmg = t4.GetHistogram()
+
+h0.Scale(1./h0.Integral(-1,-1))
+h0_up.Scale(1./h0_up.Integral(-1,-1))
+h0_down.Scale(1./h0_down.Integral(-1,-1))
+hmg.Scale(1./hmg.Integral(-1,-1))
+
+error_mg = ROOT.Double()
+error_ph = ROOT.Double()
+
+mg = hmg.IntegralAndError(2,-1,error_mg)
+ph = h0.IntegralAndError(2,-1,error_ph)
+
+comp = mg/ph
+comp_error = comp*np.sqrt((error_mg/mg)**2 + (error_ph/ph)**2)
+
+#print "MG vs PH nbtag>0 difference = %.3f +/- %.3f" % (comp, comp_error)
+#os.system('echo "%s : (%.3f, %.3f)" >> temp.out' % (mass, comp-1, comp_error))
+
+
+
+ps_uncert0 = (max(h0.Integral(1,1), h0_up.Integral(1,1), h0_down.Integral(1,1)) - min(h0.Integral(1,1), h0_up.Integral(1,1), h0_down.Integral(1,1)))/2
+ps_uncert1 = (max(h0.Integral(2,-1), h0_up.Integral(2,-1), h0_down.Integral(2,-1)) - min(h0.Integral(2,-1), h0_up.Integral(2,-1), h0_down.Integral(2,-1)))/2
+ps_uncert1_up = (max(h0.Integral(2,-1), h0_up.Integral(2,-1), h0_down.Integral(2,-1)) - h0.Integral(2,-1))
+ps_uncert1_down = (min(h0.Integral(2,-1), h0_up.Integral(2,-1), h0_down.Integral(2,-1)) - h0.Integral(2,-1))
+
+ps_uncert0_up = -(ps_uncert1_up)/h0.Integral(1,1)
+ps_uncert0_down = -(ps_uncert1_down)/h0.Integral(1,1)
+
+ps_uncert1_up/=h0.Integral(2,-1)
+ps_uncert1_down/=h0.Integral(2,-1)
+
+hdamp_uncert_hist = ScaleUncertHist([h0, h0_up, h0_down])
+
+#plotting.CompareHists([h0],
+#         ['nominal'],
+#         "bbH %(mass)s GeV" % vars(), 
+#         True,
+#         False,
+#         False,
+#         "0.95,1.05",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_hdamp_uncerts_m%(mass)s_%(year)s' % vars(),
+#         uncert_hist=hdamp_uncert_hist,
+#         uncert_title='hdamp uncertainty')
+#
+#plotting.CompareHists([h0,hmg],
+#         ['Powheg','Madgraph_aMC@NLO'],
+#         "bbH %(mass)s GeV" % vars(),
+#         True,
+#         False,
+#         False,
+#         "0.9,1.1",
+#         False,
+#         10000,
+#         0,
+#         False,
+#         10000,
+#         0,
+#         'N_{bjets}',
+#         'a.u.',
+#         0,
+#         False,
+#         'bbh_uncerts/bbH_mg_vs_ph_m%(mass)s_%(year)s' % vars())
+
+#print 'Uncertainties for %(year)s M=%(mass)s:' % vars()
+
+#print 'hdamp uncerts (0, >0) = ((+) %.3f (-) %.4f , (+) %.3f (-) %.3f)' % (1.+ps_uncert0_up, 1.+ps_uncert0_down, 1.+ps_uncert1_up, 1.+ps_uncert1_down)
+#print 'QCD-scale uncerts (0, >0) = ((+) %.3f (-) %.3f , (+) %.3f (-) %.3f)' % (1.+scale_uncert0_up, 1.+scale_uncert0_down, 1.+scale_uncert1_up, 1.+scale_uncert1_down)
+#print 'QCD-scale + hdamp uncerts (0, >0) = ((+) %.3f (-) %.3f , (+) %.3f (-) %.3f)' % (1.+scale_uncert0_up+ps_uncert0_up, 1.+scale_uncert0_down+ps_uncert0_down, 1.+scale_uncert1_up+ps_uncert1_up, 1.+scale_uncert1_down+ps_uncert1_down)
+#print 'PDF uncerts (0, >0) = (%.3f, %.3f)' % (1.-pdf_uncert0, 1+pdf_uncert1)
+
+nobtag_scale_up = 1.+scale_uncert0_up+ps_uncert0_up
+nobtag_scale_down = 1.+scale_uncert0_down+ps_uncert0_down
+btag_scale_up = 1.+scale_uncert1_up+ps_uncert1_up
+btag_scale_down = 1.+scale_uncert1_down+ps_uncert1_down
+
+nobtag_pdf_up=1.-pdf_uncert0
+btag_pdf_up=1.+pdf_uncert1
+
+out_scale=  '   ({\\"em\\",\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_scale_down).3f, %(nobtag_scale_up).3f)\n' % vars()
+out_scale+= '   ({\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_scale_down).3f, %(btag_scale_up).3f)' % vars()
+
+out_pdf=  '   ({\\"em\\",\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_pdf_up).3f)\n' % vars()
+out_pdf+= '   ({\\"et\\",\\"mt\\",\\"tt\\"}, {\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_pdf_up).3f)' % vars()
+
+nobtag_vs_up = hmg.Integral(1,1)/h0.Integral(1,1)
+btag_vs_up = hmg.Integral(2,-1)/h0.Integral(2,-1)
+
+out_vs=  '   ({\\"%(year)s\\"}, nobtag_catagories, {\\"%(mass)s\\"}, %(nobtag_vs_up).3f)\n' % vars()
+out_vs+= '   ({\\"%(year)s\\"},   btag_catagories, {\\"%(mass)s\\"}, %(btag_vs_up).3f)' % vars()
+
+print '(%(mass)i, %(nobtag_pdf_up).3f, %(btag_pdf_up).3f, (%(nobtag_scale_down).3f, %(nobtag_scale_up).3f), (%(btag_scale_down).3f, %(btag_scale_up).3f)),' % vars()
+
+os.system('echo "%(out_scale)s" >> bbh_scale.txt' % vars())
+os.system('echo "%(out_pdf)s" >> bbh_pdf.txt' % vars())
+#os.system('echo "%s %.3f" >> uncerts_scale.txt' % (mass, abs(scale_uncert1_up+ps_uncert1_up - (scale_uncert1_down+ps_uncert1_down))/2))
+#os.system('echo "%s %.3f" >> uncerts_pdf.txt' % (mass, btag_pdf_up-1.))
+
+#os.system('echo "%(out_vs)s" >> bbh_mg_vs_ph.txt' % vars())
+#os.system('echo "%(out_vs)s"' % vars())
+
+
+
+#os.system('echo "%s : %.3f" >> temp.out' % (mass, (abs(btag_scale_up-1.)+abs(btag_scale_down-1.))/2 ))

@@ -384,6 +384,10 @@ sample_list = [
     'SUSYGluGluToHToTauTau_M-800_powheg',
     'SUSYGluGluToHToTauTau_M-80_powheg',
     'SUSYGluGluToHToTauTau_M-900_powheg',
+<<<<<<< FF_MSSM
+    'SUSYGluGluToHToTauTau_M-95_powheg',
+    'VBFHToTauTau_M-95',
+=======
     'WHiggs0MfWH05ph0',
     'WHiggs0PH',
     'WHiggs0PM',
@@ -396,6 +400,7 @@ sample_list = [
     'ZHiggs0MfZH05ph0',
     'ZHiggs0PM',
     'ZHiggs0M',
+>>>>>>> master
     ]
 
 sample_list = list(set(sample_list))
@@ -407,7 +412,11 @@ print out
 #print sample_list
 
 #channel = ['em','et','mt','tt','zee','zmm','wmnu','tpzee','tpzmm','tpmt','tpem']
+<<<<<<< FF_MSSM
+channel = ['et','em','mt','tt','zmm','tpzmm','tpzee']
+=======
 channel = ['et','em','mt','tt','zmm']
+>>>>>>> master
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()

@@ -212,7 +212,7 @@ void ICTauProducer<reco::PFTau>::constructSpecific(
      //reco::PFTau const& src = taus_handle->at(i);
     ic::Tau& dest = taus_->at(i);
     reco::PFTauRef const& ref = taus_handle->refAt(i).castTo<reco::PFTauRef>();
-    if(taus_handle->at(i).decayMode()==1) std::cout << "N pi0s = " << taus_handle->at(i).signalPiZeroCandidates().size() << std::endl;
+    //if(taus_handle->at(i).decayMode()==1) std::cout << "N pi0s = " << taus_handle->at(i).signalPiZeroCandidates().size() << std::endl;
     for (unsigned j = 0; j < tau_ids_.size(); ++j) {
       dest.SetTauID(tau_ids_[j].first, (*(id_handles[j]))[ref]);
       observed_id_[tau_ids_[j].first] = CityHash64(tau_ids_[j].first);

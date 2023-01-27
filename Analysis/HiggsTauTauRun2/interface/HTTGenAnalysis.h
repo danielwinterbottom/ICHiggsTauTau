@@ -41,10 +41,15 @@ class HTTGenAnalysis : public ModuleBase {
   CLASS_MEMBER(HTTGenAnalysis, bool, do_theory_uncert)
   CLASS_MEMBER(HTTGenAnalysis, TH2F*,bbtag_eff)
   CLASS_MEMBER(HTTGenAnalysis, std::string, mssm_mass  )
+<<<<<<< FF_MSSM
+  CLASS_MEMBER(HTTGenAnalysis, ic::era, era) 
+ 
+=======
   CLASS_MEMBER(HTTGenAnalysis, bool, make_mva_ntuple)
   CLASS_MEMBER(HTTGenAnalysis, std::string, mva_output_name)
   CLASS_MEMBER(HTTGenAnalysis, ic::era, era)
   
+>>>>>>> master
   TTree *outtree_;
   TRandom3  *rand;
   TTree *mvatree_;
@@ -75,18 +80,26 @@ class HTTGenAnalysis : public ModuleBase {
   double mt_2_;
   double pzeta_;
   double n_bjets_;
+<<<<<<< FF_MSSM
+=======
 
+>>>>>>> master
   double n_bjets_eta2p5_;
   double n_bjets_noscale_;
   double n_bjets_eta2p5_noscale_;
   double n_bjets_pt25_;
+<<<<<<< FF_MSSM
+  int n_bpartons_;
+=======
 
+>>>>>>> master
   unsigned n_jets_nofilter_;
   unsigned n_jets_;
   unsigned n_jetsingap_;
   double jpt_1_;  
   double jpt_2_;  
   double jpt_3_;
+  double bpt_1_;  
   double jeta_1_; 
   double jeta_2_; 
   double jphi_1_;
@@ -102,10 +115,12 @@ class HTTGenAnalysis : public ModuleBase {
   double jdeta_;
   double m_vis_;
   double pt_tt_;
+  double mt_tot_;
   double wtzpt_;
   double mass_;
   double wt_;
   double gen_wt_;
+  bool hasTaus_;
   double wt_z_pol_;
   double wt_cp_sm_;
   double wt_cp_ps_;
@@ -113,6 +128,8 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_cp_sm_alt_;
   double wt_cp_ps_alt_;
   double wt_cp_mm_alt_;
+  double wt_vlq_sm_;
+  double wt_vlq_full_;
   double WTm_, WTp_;
   double wt_cp_prod_sm_;
   double wt_cp_prod_ps_;
@@ -143,6 +160,7 @@ class HTTGenAnalysis : public ModuleBase {
   double parton_pt_3_;
   double parton_mjj_;
   double parton_HpT_;
+  double parton_Zmass_;
   float D0_;
   float DCP_;
   float D0star_;
@@ -188,6 +206,18 @@ class HTTGenAnalysis : public ModuleBase {
   double scale7_;
   double scale8_;
   double scale9_;
+<<<<<<< FF_MSSM
+
+  double scale_vlq_1_;
+  double scale_vlq_2_;
+  double scale_vlq_3_;
+  double scale_vlq_4_;
+  double scale_vlq_5_;
+  double scale_vlq_6_;
+  double scale_vlq_7_;
+  double scale_vlq_8_;
+=======
+>>>>>>> master
  
   double pdfweight_0_;
   double pdfweight_1_;
@@ -230,7 +260,11 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_A_b_;
   double wt_H_tb_;
   double wt_H_t_;
+<<<<<<< FF_MSSM
+  double wt_H_b_; 
+=======
   double wt_H_b_;
+>>>>>>> master
 
   double wt_h_tb_msbar_;
   double wt_h_t_msbar_;
@@ -245,7 +279,11 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_hfact_nom_;
   double wt_hfact_up_;
   double wt_hfact_down_;
+<<<<<<< FF_MSSM
+
+=======
  
+>>>>>>> master
   std::shared_ptr<RooWorkspace> mssm_w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
   
@@ -374,6 +412,10 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ps_fsr_up_;
   double wt_ps_fsr_down_;
 
+<<<<<<< FF_MSSM
+  double tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
+  int gen_tau_dm_1_;
+=======
   double pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_;
   double pi2_px_1_, pi2_py_1_, pi2_pz_1_, pi2_E_1_, pi2_px_2_, pi2_py_2_, pi2_pz_2_, pi2_E_2_;
   double pi3_px_1_, pi3_py_1_, pi3_pz_1_, pi3_E_1_, pi3_px_2_, pi3_py_2_, pi3_pz_2_, pi3_E_2_;
@@ -407,6 +449,7 @@ class HTTGenAnalysis : public ModuleBase {
   double rho_dphi_1_;
   double rho_deta_2_;
   double rho_dphi_2_;
+>>>>>>> master
  
   const BTagCalibration *calib;
   BTagCalibrationReader* reader_incl;
@@ -418,11 +461,14 @@ class HTTGenAnalysis : public ModuleBase {
   TGraph *ggh_ph_2jet_;
   TGraph *ggh_ph_3jet_;
   double wt_nnlops_;
+<<<<<<< FF_MSSM
+=======
 
   unsigned quarks_initial_;
   unsigned quarks_final_;
   unsigned gluons_initial_;
   unsigned gluons_final_;
+>>>>>>> master
  
  public:
   HTTGenAnalysis(std::string const& name);

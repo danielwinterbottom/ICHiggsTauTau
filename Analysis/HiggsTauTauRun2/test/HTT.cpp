@@ -120,17 +120,15 @@ int main(int argc, char* argv[]) {
   std::string output_name = js["sequence"]["output_name"].asString();
   bool is_data = js["sequence"]["is_data"].asBool();
   bool is_embedded = js["sequence"]["is_embedded"].asBool();
+  bool do_singletau = js["sequence"]["do_singletau"].asBool();
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     std::string channel_str = js["job"]["channels"][i].asString();
 
     if(is_data &&  ( (channel_str.find("em") != channel_str.npos &&
                     output_name.find("MuonEG")==output_name.npos &&
                     channel_str.find("tpem") == channel_str.npos)||
-                (channel_str.find("mt") != channel_str.npos &&
-                 output_name.find("SingleMuon") == output_name.npos ) ||
-                (channel_str.find("et") != channel_str.npos &&
-                 !(output_name.find("SingleEle") != output_name.npos || 
-                  output_name.find("EGamma") != output_name.npos )) ||
+                (channel_str.find("mt") != channel_str.npos && !(output_name.find("SingleMuon") != output_name.npos || (output_name.find("Tau") != output_name.npos && do_singletau))) ||
+                (channel_str.find("et") != channel_str.npos && !(output_name.find("SingleEle") != output_name.npos || output_name.find("EGamma") != output_name.npos  || (output_name.find("Tau") != output_name.npos && do_singletau))) ||
                 (channel_str.find("tt") != channel_str.npos &&
                  output_name.find("Tau") == output_name.npos) ||
                 (channel_str.find("zmm") != channel_str.npos &&
@@ -158,6 +156,8 @@ int main(int argc, char* argv[]) {
                  output_name.find("EmbeddingElTau") == output_name.npos ) ||
                 (channel_str.find("tt") != channel_str.npos &&
                  output_name.find("EmbeddingTauTau") == output_name.npos) ||
+                (channel_str.find("zmm") != channel_str.npos &&
+                 output_name.find("EmbeddingMuMu") == output_name.npos ) ||
                 (channel_str.find("tpzmm") != channel_str.npos &&
                  output_name.find("EmbeddingMuMu") == output_name.npos ) ||
                 (channel_str.find("tpzee") != channel_str.npos &&
@@ -198,6 +198,9 @@ int main(int argc, char* argv[]) {
       if(channel_str.find("et") == channel_str.npos && vars[j].find("scale_efake")!=std::string::npos) continue;
       if(channel_str.find("mt") == channel_str.npos && vars[j].find("scale_mufake")!=std::string::npos) continue;     
       if((channel_str.find("mt") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_mu_")!=std::string::npos) continue;     
+      if((channel_str.find("mt") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("res_mu_")!=std::string::npos) continue;     
+      if((channel_str.find("et") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("res_e_")!=std::string::npos) continue;     
+      if((channel_str.find("et") == channel_str.npos && channel_str.find("mt") == channel_str.npos && channel_str.find("tt") == channel_str.npos) && vars[j].find("res_t_")!=std::string::npos) continue;     
       if(channel_str.find("em") == channel_str.npos && (vars[j].find("scale_t_lo")!=std::string::npos || vars[j].find("scale_t_hi")!=std::string::npos)) continue;
       if(channel_str.find("em") != channel_str.npos && (vars[j].find("scale_t_0pi")!=std::string::npos || vars[j].find("scale_t_1pi")!=std::string::npos || vars[j].find("scale_t_3prong")!=std::string::npos || vars[j].find("scale_t_3prong1pi0")!=std::string::npos )) continue;
 

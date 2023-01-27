@@ -26,10 +26,10 @@ mkdir -p -v $1/TSCALE3PRONG1PI0_DOWN
 #mkdir -p -v $1/TSCALE_DOWN_1.5
 #mkdir -p -v $1/TSCALE_UP_2.5
 #mkdir -p -v $1/TSCALE_DOWN_2.5
-# mkdir -p -v $1/BTAG_UP
-# mkdir -p -v $1/BTAG_DOWN
-# mkdir -p -v $1/BFAKE_UP
-# mkdir -p -v $1/BFAKE_DOWN
+mkdir -p -v $1/BTAG_UP
+mkdir -p -v $1/BTAG_DOWN
+mkdir -p -v $1/BFAKE_UP
+mkdir -p -v $1/BFAKE_DOWN
 # mkdir -p -v $1/HF_UP
 # mkdir -p -v $1/HF_DOWN
 # mkdir -p -v $1/HFSTATS1_UP
@@ -107,8 +107,8 @@ mkdir -p -v $1/JESHF_YEAR_DOWN
 mkdir -p -v $1/JESHF_YEAR_UP
 mkdir -p -v $1/JESRELSAMP_YEAR_DOWN
 mkdir -p -v $1/JESRELSAMP_YEAR_UP
-# mkdir -p -v $1/METCL_UP
-# mkdir -p -v $1/METCL_DOWN
+mkdir -p -v $1/METCL_UP
+mkdir -p -v $1/METCL_DOWN
 # mkdir -p -v $1/JESFULL_UP
 # mkdir -p -v $1/JESFULL_DOWN
 # mkdir -p -v $1/JESCENT_UP
@@ -155,4 +155,10 @@ mkdir -p -v $1/JESRELSAMP_YEAR_UP
 # mkdir -p -v $1/JESEE2_UNCORR_UP
 # mkdir -p -v $1/JESEE2_CORR_DOWN
 # mkdir -p -v $1/JESEE2_CORR_UP
+mkdir -p -v $1/TRES_UP
+mkdir -p -v $1/TRES_DOWN
+mkdir -p -v $1/ERES_UP
+mkdir -p -v $1/ERES_DOWN
+mkdir -p -v $1/MURES_UP
+mkdir -p -v $1/MURES_DOWN
 

@@ -84,9 +84,9 @@ if options.condor: JOBWRAPPER = "./scripts/generate_condor_job.sh"
 
 jetuncert_string=''
 if options.jetmetuncerts:
-  jetuncert_string='\\"do_jetmet_uncerts\\": true'
+  jetuncert_string='\\"do_jetmet_uncerts\\":true'
 else:
-  jetuncert_string='\\"do_jetmet_uncerts\\": false'
+  jetuncert_string='\\"do_jetmet_uncerts\\":false'
 
 def getParaJobSubmit(N):
     if not options.submit: return 'true'
@@ -248,7 +248,11 @@ if options.proc_sm or options.proc_all:
        'ZHiggs0PHToTauTau',
        'ZHiggs0PHf05ph0ToTauTau',
        'ZHiggs0PMToTauTau',
+<<<<<<< FF_MSSM
+       'VBFHToTauTau_M125_withDipoleRecoil'
+=======
        #'VBFHToTauTau_M125_withDipoleRecoil'
+>>>>>>> master
     ]
 
 

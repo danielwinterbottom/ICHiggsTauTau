@@ -191,6 +191,7 @@ namespace ic {
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
       outtree_->Branch("wt"       , &wt_       );
+      outtree_->Branch("hasTaus"       , &hasTaus_       );
       outtree_->Branch("gen_wt"       , &gen_wt_       );
       outtree_->Branch("wt_nnlops"       , &wt_nnlops_       );
       outtree_->Branch("wt_z_pol", &wt_z_pol_);
@@ -221,6 +222,9 @@ namespace ic {
       outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
       outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
 
+      outtree_->Branch("wt_vlq_sm",&wt_vlq_sm_);
+      outtree_->Branch("wt_vlq_full",&wt_vlq_full_);
+
       outtree_->Branch("Ediff_1"       , &Ediff_1_);
       outtree_->Branch("Ediff_2"       , &Ediff_2_);
 
@@ -229,8 +233,19 @@ namespace ic {
       outtree_->Branch("tauFlag_1", &tauFlag_1_);
       outtree_->Branch("tauFlag_2", &tauFlag_2_);
 
+<<<<<<< FF_MSSM
+      outtree_->Branch("wt_vlq_mur1_muf0p5",    &scale_vlq_1_); //1034
+      outtree_->Branch("wt_vlq_mur1_muf2",    &scale_vlq_2_); //1019
+      outtree_->Branch("wt_vlq_mur2_muf1",    &scale_vlq_3_);
+      outtree_->Branch("wt_vlq_mur0p5_muf1",    &scale_vlq_4_);
+      outtree_->Branch("wt_vlq_mur2_muf2",    &scale_vlq_5_);
+      outtree_->Branch("wt_vlq_mur0p5_muf2",    &scale_vlq_6_);
+      outtree_->Branch("wt_vlq_mur2_muf0p5",    &scale_vlq_7_);
+      outtree_->Branch("wt_vlq_mur0p5_muf0p5",    &scale_vlq_8_);
+=======
       outtree_->Branch("dm_1", &tauFlag_1_);
       outtree_->Branch("dm_2", &tauFlag_2_);
+>>>>>>> master
 
       if(do_theory_uncert_){
         outtree_->Branch("wt_mur1_muf1",    &scale1_);
@@ -318,6 +333,7 @@ namespace ic {
       outtree_->Branch("met"         , &met_         );
       outtree_->Branch("m_vis"       , &m_vis_       );
       outtree_->Branch("pt_tt"       , &pt_tt_       );
+      outtree_->Branch("mt_tot"       , &mt_tot_       );
       outtree_->Branch("mass"       , &mass_       );
       outtree_->Branch("wtzpt"       , &wtzpt_       );
       outtree_->Branch("mt_1"        , &mt_1_        );
@@ -328,12 +344,17 @@ namespace ic {
       outtree_->Branch("n_bjets_eta2p5"     , &n_bjets_eta2p5_     );
       outtree_->Branch("n_bjets_noscale"     , &n_bjets_noscale_);
       outtree_->Branch("n_bjets_eta2p5_noscale"     , &n_bjets_eta2p5_noscale_);
+<<<<<<< FF_MSSM
+      outtree_->Branch("n_bpartons"     , &n_bpartons_     );
+=======
+>>>>>>> master
       outtree_->Branch("n_jets"      , &n_jets_      );
       outtree_->Branch("n_jets_nofilter"      , &n_jets_nofilter_);
       outtree_->Branch("n_jetsingap" , &n_jetsingap_ );
       outtree_->Branch("jpt_1"       , &jpt_1_       );
       outtree_->Branch("jpt_2"       , &jpt_2_       );
       outtree_->Branch("jpt_3"       , &jpt_3_       );
+      outtree_->Branch("bpt_1"       , &bpt_1_       );
       outtree_->Branch("jeta_1"      , &jeta_1_      );
       outtree_->Branch("jeta_2"      , &jeta_2_      );
       outtree_->Branch("jphi_1"      , &jphi_1_      );
@@ -359,6 +380,7 @@ namespace ic {
       outtree_->Branch("parton_pt_3"     , &parton_pt_3_);
       outtree_->Branch("parton_mjj",    &parton_mjj_);
       outtree_->Branch("parton_HpT", &parton_HpT_);
+      outtree_->Branch("parton_Zmass", &parton_Zmass_);
       outtree_->Branch("D0"     , &D0_);
       outtree_->Branch("D0star"     , &D0star_);
       outtree_->Branch("DCP"     , &DCP_);
@@ -508,6 +530,175 @@ namespace ic {
     /* ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down"); */
     /* ps_3jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_up"); */
     /* ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down"); */  
+<<<<<<< FF_MSSM
+
+    std::string csv_file_path = "";
+
+    if (era_==era::data_2016)       csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
+	    else if (era_==era::data_2017)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
+	    else if (era_==era::data_2018)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
+
+	    //calib  = new const BTagCalibration("deepjet",csv_file_path);
+
+
+	    //reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
+	    //reader_comb->load(*calib,BTagEntry::FLAV_B,"comb"); 
+
+
+
+            std::string file = "input/ggh_weights/NNLOPS_reweight.root";
+            ggh_weights_ = new TFile(file.c_str());
+            ggh_weights_->cd();
+        
+            ggh_ph_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_0jet");
+            ggh_ph_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_1jet");
+            ggh_ph_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_2jet");
+            ggh_ph_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_3jet");
+        
+            ggh_weights_->Close();
+	    return 0;
+	  }
+
+	  int HTTGenAnalysis::Execute(TreeEvent *event) {
+	    
+	    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+	    event_ = (unsigned long long) eventInfo->event();
+	    wt_ = 1;
+	    rand->SetSeed(event_);
+	    rand_ = rand->Uniform();   
+	    hasTaus_=false; 
+	    wt_ = eventInfo->total_weight();
+    
+            if (eventInfo->weight_defined("gen_weight")) gen_wt_ = eventInfo->weight("gen_weight");
+
+	    //std::cout << "================event " << event_ << "===================" << std::endl;
+
+	    wt_cp_sm_=0.0; 
+	    wt_cp_ps_=0.0; 
+	    wt_cp_mm_=0.0; 
+
+	    // test tauspinner weights
+	    if(event->ExistsInTree("tauspinner")){
+	      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+
+	      if (tauspinner->weight_defined("wt_z_pol")) wt_z_pol_ = tauspinner->weight("wt_z_pol"); else wt_z_pol_=1.0;
+
+	      if (tauspinner->weight_defined("wt_cp_0")){
+		wt_cp_sm_ = tauspinner->weight("wt_cp_0");
+		wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
+		wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+
+		//wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
+		//wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
+		//wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
+		//WTm_ = tauspinner->weight("WTm");
+		//WTp_ = tauspinner->weight("WTp");
+	      }
+
+	    }
+
+
+	    wt_cp_prod_sm_=0.0;
+	    wt_cp_prod_ps_=0.0;
+	    wt_cp_prod_mm_=0.0;
+
+	    if (eventInfo->weight_defined("sm_weight_nlo")){
+	      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
+	      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
+	      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
+	    }
+
+
+	    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
+	    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
+	    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
+	    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
+
+           scale_vlq_1_ = eventInfo->weight_defined("1034") ? eventInfo->weight("1034") : 1.0; // 1 0.5
+           scale_vlq_2_ = eventInfo->weight_defined("1019") ? eventInfo->weight("1019") : 1.0; // 1 2
+           scale_vlq_3_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0; // 2 1
+           scale_vlq_4_ = eventInfo->weight_defined("1014") ? eventInfo->weight("1014") : 1.0; // 0.5 1
+           scale_vlq_5_ = eventInfo->weight_defined("1024") ? eventInfo->weight("1024") : 1.0; // 2 2
+           scale_vlq_6_ = eventInfo->weight_defined("1029") ? eventInfo->weight("1029") : 1.0; // 0.5 2
+           scale_vlq_7_ = eventInfo->weight_defined("1039") ? eventInfo->weight("1039") : 1.0; // 2 0.5
+           scale_vlq_8_ = eventInfo->weight_defined("1044") ? eventInfo->weight("1044") : 1.0; // 0.5 0.5
+
+           wt_vlq_sm_ = eventInfo->weight_defined("sm") ? eventInfo->weight("sm") : 1.0;
+           wt_vlq_full_ = eventInfo->weight_defined("full") ? eventInfo->weight("full") : 1.0;
+
+	    if(do_theory_uncert_){
+	      // note some of these labels may be generator dependent so need to make sure you check before using them
+	      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+	      if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+	      if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+	      if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+	      if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+	      if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+	      if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+	      if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+	      if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
+
+
+        if(eventInfo->weight_defined("5000")) pdfweight_0_ = eventInfo->weight("5000"); else if(eventInfo->weight_defined("10000")) pdfweight_0_ = eventInfo->weight("10000"); else pdfweight_0_=1.0;
+        if(eventInfo->weight_defined("5001")) pdfweight_1_ = eventInfo->weight("5001"); else if(eventInfo->weight_defined("10001")) pdfweight_1_ = eventInfo->weight("10001"); else pdfweight_1_=1.0;
+        if(eventInfo->weight_defined("5002")) pdfweight_2_ = eventInfo->weight("5002"); else if(eventInfo->weight_defined("10002")) pdfweight_2_ = eventInfo->weight("10002"); else pdfweight_2_=1.0;
+        if(eventInfo->weight_defined("5003")) pdfweight_3_ = eventInfo->weight("5003"); else if(eventInfo->weight_defined("10003")) pdfweight_3_ = eventInfo->weight("10003"); else pdfweight_3_=1.0;
+        if(eventInfo->weight_defined("5004")) pdfweight_4_ = eventInfo->weight("5004"); else if(eventInfo->weight_defined("10004")) pdfweight_4_ = eventInfo->weight("10004"); else pdfweight_4_=1.0;
+        if(eventInfo->weight_defined("5005")) pdfweight_5_ = eventInfo->weight("5005"); else if(eventInfo->weight_defined("10005")) pdfweight_5_ = eventInfo->weight("10005"); else pdfweight_5_=1.0;
+        if(eventInfo->weight_defined("5006")) pdfweight_6_ = eventInfo->weight("5006"); else if(eventInfo->weight_defined("10006")) pdfweight_6_ = eventInfo->weight("10006"); else pdfweight_6_=1.0;
+        if(eventInfo->weight_defined("5007")) pdfweight_7_ = eventInfo->weight("5007"); else if(eventInfo->weight_defined("10007")) pdfweight_7_ = eventInfo->weight("10007"); else pdfweight_7_=1.0;
+        if(eventInfo->weight_defined("5008")) pdfweight_8_ = eventInfo->weight("5008"); else if(eventInfo->weight_defined("10008")) pdfweight_8_ = eventInfo->weight("10008"); else pdfweight_8_=1.0;
+        if(eventInfo->weight_defined("5009")) pdfweight_9_ = eventInfo->weight("5009"); else if(eventInfo->weight_defined("10009")) pdfweight_9_ = eventInfo->weight("10009"); else pdfweight_9_=1.0;
+        if(eventInfo->weight_defined("5010")) pdfweight_10_ = eventInfo->weight("5010"); else if(eventInfo->weight_defined("10010")) pdfweight_10_ = eventInfo->weight("10010"); else pdfweight_10_=1.0;
+        if(eventInfo->weight_defined("5011")) pdfweight_11_ = eventInfo->weight("5011"); else if(eventInfo->weight_defined("10011")) pdfweight_11_ = eventInfo->weight("10011"); else pdfweight_11_=1.0;
+        if(eventInfo->weight_defined("5012")) pdfweight_12_ = eventInfo->weight("5012"); else if(eventInfo->weight_defined("10012")) pdfweight_12_ = eventInfo->weight("10012"); else pdfweight_12_=1.0;
+        if(eventInfo->weight_defined("5013")) pdfweight_13_ = eventInfo->weight("5013"); else if(eventInfo->weight_defined("10013")) pdfweight_13_ = eventInfo->weight("10013"); else pdfweight_13_=1.0;
+        if(eventInfo->weight_defined("5014")) pdfweight_14_ = eventInfo->weight("5014"); else if(eventInfo->weight_defined("10014")) pdfweight_14_ = eventInfo->weight("10014"); else pdfweight_14_=1.0;
+        if(eventInfo->weight_defined("5015")) pdfweight_15_ = eventInfo->weight("5015"); else if(eventInfo->weight_defined("10015")) pdfweight_15_ = eventInfo->weight("10015"); else pdfweight_15_=1.0;
+        if(eventInfo->weight_defined("5016")) pdfweight_16_ = eventInfo->weight("5016"); else if(eventInfo->weight_defined("10016")) pdfweight_16_ = eventInfo->weight("10016"); else pdfweight_16_=1.0;
+        if(eventInfo->weight_defined("5017")) pdfweight_17_ = eventInfo->weight("5017"); else if(eventInfo->weight_defined("10017")) pdfweight_17_ = eventInfo->weight("10017"); else pdfweight_17_=1.0;
+        if(eventInfo->weight_defined("5018")) pdfweight_18_ = eventInfo->weight("5018"); else if(eventInfo->weight_defined("10018")) pdfweight_18_ = eventInfo->weight("10018"); else pdfweight_18_=1.0;
+        if(eventInfo->weight_defined("5019")) pdfweight_19_ = eventInfo->weight("5019"); else if(eventInfo->weight_defined("10019")) pdfweight_19_ = eventInfo->weight("10019"); else pdfweight_19_=1.0;
+        if(eventInfo->weight_defined("5020")) pdfweight_20_ = eventInfo->weight("5020"); else if(eventInfo->weight_defined("10020")) pdfweight_20_ = eventInfo->weight("10020"); else pdfweight_20_=1.0;
+        if(eventInfo->weight_defined("5021")) pdfweight_21_ = eventInfo->weight("5021"); else if(eventInfo->weight_defined("10021")) pdfweight_21_ = eventInfo->weight("10021"); else pdfweight_21_=1.0;
+        if(eventInfo->weight_defined("5022")) pdfweight_22_ = eventInfo->weight("5022"); else if(eventInfo->weight_defined("10022")) pdfweight_22_ = eventInfo->weight("10022"); else pdfweight_22_=1.0;
+        if(eventInfo->weight_defined("5023")) pdfweight_23_ = eventInfo->weight("5023"); else if(eventInfo->weight_defined("10023")) pdfweight_23_ = eventInfo->weight("10023"); else pdfweight_23_=1.0;
+        if(eventInfo->weight_defined("5024")) pdfweight_24_ = eventInfo->weight("5024"); else if(eventInfo->weight_defined("10024")) pdfweight_24_ = eventInfo->weight("10024"); else pdfweight_24_=1.0;
+        if(eventInfo->weight_defined("5025")) pdfweight_25_ = eventInfo->weight("5025"); else if(eventInfo->weight_defined("10025")) pdfweight_25_ = eventInfo->weight("10025"); else pdfweight_25_=1.0;
+        if(eventInfo->weight_defined("5026")) pdfweight_26_ = eventInfo->weight("5026"); else if(eventInfo->weight_defined("10026")) pdfweight_26_ = eventInfo->weight("10026"); else pdfweight_26_=1.0;
+        if(eventInfo->weight_defined("5027")) pdfweight_27_ = eventInfo->weight("5027"); else if(eventInfo->weight_defined("10027")) pdfweight_27_ = eventInfo->weight("10027"); else pdfweight_27_=1.0;
+        if(eventInfo->weight_defined("5028")) pdfweight_28_ = eventInfo->weight("5028"); else if(eventInfo->weight_defined("10028")) pdfweight_28_ = eventInfo->weight("10028"); else pdfweight_28_=1.0;
+        if(eventInfo->weight_defined("5029")) pdfweight_29_ = eventInfo->weight("5029"); else if(eventInfo->weight_defined("10029")) pdfweight_29_ = eventInfo->weight("10029"); else pdfweight_29_=1.0;
+        if(eventInfo->weight_defined("5030")) pdfweight_30_ = eventInfo->weight("5030"); else if(eventInfo->weight_defined("10030")) pdfweight_30_ = eventInfo->weight("10030"); else pdfweight_30_=1.0;
+
+      if(eventInfo->weight_defined("h_tb")) wt_h_tb_ = eventInfo->weight("h_tb"); else wt_h_tb_=1.0;
+      if(eventInfo->weight_defined("h_t"))  wt_h_t_ = eventInfo->weight("h_t"); else wt_h_t_=1.0;
+      if(eventInfo->weight_defined("h_b"))  wt_h_b_ = eventInfo->weight("h_b"); else wt_h_b_=1.0;
+      if(eventInfo->weight_defined("A_tb")) wt_A_tb_ = eventInfo->weight("A_tb"); else wt_A_tb_=1.0;
+      if(eventInfo->weight_defined("A_t"))  wt_A_t_ = eventInfo->weight("A_t"); else wt_A_t_=1.0;
+      if(eventInfo->weight_defined("A_b"))  wt_A_b_ = eventInfo->weight("A_b"); else wt_A_b_=1.0;
+      if(eventInfo->weight_defined("H_tb")) wt_H_tb_ = eventInfo->weight("H_tb"); else wt_H_tb_=1.0;
+      if(eventInfo->weight_defined("H_t"))  wt_H_t_ = eventInfo->weight("H_t"); else wt_H_t_=1.0;
+      if(eventInfo->weight_defined("H_b"))  wt_H_b_ = eventInfo->weight("H_b"); else wt_H_b_=1.0;
+
+      if(eventInfo->weight_defined("h_tb_msbar")) wt_h_tb_msbar_ = eventInfo->weight("h_tb_msbar"); else wt_h_tb_msbar_=1.0;
+      if(eventInfo->weight_defined("h_t_msbar"))  wt_h_t_msbar_ = eventInfo->weight("h_t_msbar"); else wt_h_t_msbar_=1.0;
+      if(eventInfo->weight_defined("h_b_msbar"))  wt_h_b_msbar_ = eventInfo->weight("h_b_msbar"); else wt_h_b_msbar_=1.0;
+      if(eventInfo->weight_defined("A_tb_msbar")) wt_A_tb_msbar_ = eventInfo->weight("A_tb_msbar"); else wt_A_tb_msbar_=1.0;
+      if(eventInfo->weight_defined("A_t_msbar"))  wt_A_t_msbar_ = eventInfo->weight("A_t_msbar"); else wt_A_t_msbar_=1.0;
+      if(eventInfo->weight_defined("A_b_msbar"))  wt_A_b_msbar_ = eventInfo->weight("A_b_msbar"); else wt_A_b_msbar_=1.0;
+      if(eventInfo->weight_defined("H_tb_msbar")) wt_H_tb_msbar_ = eventInfo->weight("H_tb_msbar"); else wt_H_tb_msbar_=1.0;
+      if(eventInfo->weight_defined("H_t_msbar"))  wt_H_t_msbar_ = eventInfo->weight("H_t_msbar"); else wt_H_t_msbar_=1.0;
+      if(eventInfo->weight_defined("H_b_msbar"))  wt_H_b_msbar_ = eventInfo->weight("H_b_msbar"); else wt_H_b_msbar_=1.0;
+
+
+      if(eventInfo->weight_defined("lhe_nominal")) wt_lhe_nominal_ = eventInfo->weight("lhe_nominal"); else wt_lhe_nominal_=1.0;
+
+      if(eventInfo->weight_defined("hfact_nominal")) wt_hfact_nom_ = eventInfo->weight("hfact_nominal"); else wt_hfact_nom_=1.0;
+      if(eventInfo->weight_defined("hfact_up")) wt_hfact_up_ = eventInfo->weight("hfact_up"); else wt_hfact_up_=1.0;
+      if(eventInfo->weight_defined("hfact_down")) wt_hfact_down_ = eventInfo->weight("hfact_down"); else wt_hfact_down_=1.0;
+
+=======
 
     std::string csv_file_path = "";
 
@@ -669,6 +860,7 @@ namespace ic {
       if(eventInfo->weight_defined("hfact_up")) wt_hfact_up_ = eventInfo->weight("hfact_up"); else wt_hfact_up_=1.0;
       if(eventInfo->weight_defined("hfact_down")) wt_hfact_down_ = eventInfo->weight("hfact_down"); else wt_hfact_down_=1.0;
 
+>>>>>>> master
 
       // 1005 = up
       // 1009 = down 
@@ -720,16 +912,21 @@ namespace ic {
     partons_=0;
     parton_mjj_=-9999;
     parton_HpT_=-9999;
+<<<<<<< FF_MSSM
+    parton_Zmass_=-9999;
+=======
 
     quarks_initial_=0;
     quarks_final_=0;
     gluons_initial_=0;
     gluons_final_=0;
 
+>>>>>>> master
     //double higgs_eta = 0;
     std::vector<double> parton_pt_vec = {};
     bool lhe_exists = event->ExistsInTree("lheParticles");
     std::vector<GenParticle*> outparts;
+    ROOT::Math::PtEtaPhiEVector gen_boson_lhe;
     if(lhe_exists){
       std::vector<GenParticle*> const& lhe_parts = event->GetPtrVec<GenParticle>("lheParticles");
       parton_pt_=-9999;
@@ -749,8 +946,12 @@ namespace ic {
              lead_b_eta=lhe_parts[i]->eta();
            }
            if(id==25) parton_HpT_ = lhe_parts[i]->pt();
+<<<<<<< FF_MSSM
+           if(id==11 ||id==13 || id==15) gen_boson_lhe+=lhe_parts[i]->vector();
+=======
            if (id >= 1 && id <=6) quarks_final_++; 
            if (id==21) gluons_final_++; 
+>>>>>>> master
            if ((id >= 1 && id <=6) || id == 21){ 
              outparts.push_back(lhe_parts[i]);
              partons_++;
@@ -799,6 +1000,8 @@ namespace ic {
     if(npNLO_>=2) wt_stitch_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
     else wt_stitch_=1.;
     
+    ROOT::Math::PtEtaPhiEVector gen_boson;
+
     for(unsigned i=0; i<gen_particles.size(); ++i){
       if((gen_particles[i]->statusFlags()[FromHardProcessBeforeFSR] || gen_particles[i]->statusFlags()[IsLastCopy]) && gen_particles[i]->pdgid() == 25) {
           HiggsPt_ = gen_particles[i]->pt();
@@ -810,12 +1013,12 @@ namespace ic {
       
       ic::GenParticle part = *gen_particles[i];
       ic::GenParticle higgs_product;
-      
       unsigned genID = std::fabs(part.pdgid());
       bool status_flag_t = part.statusFlags().at(0);
       bool status_flag_tlc = part.statusFlags().at(13);
       bool status_hard_process = part.statusFlags().at(7);
       
+      if ( (genID >= 11 && genID <= 16 && part.statusFlags()[FromHardProcess] && abs(part.status())==1) || part.statusFlags()[IsDirectHardProcessTauDecayProduct]) gen_boson+=part.vector();
       if (!lhe_exists && status_hard_process &&(genID == 1 || genID == 2 || genID == 3 || genID == 4 || genID == 5 || genID == 6 || genID == 21) && gen_particles[part.mothers().at(0)]->pdgid() != 2212 ) partons_++;
 
       //if(genID==25 || genID==36 || genID==35 ) std::cout << genID << std::endl;
@@ -824,7 +1027,11 @@ namespace ic {
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
+<<<<<<< FF_MSSM
+      if((genID==23||genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
+=======
       if((genID==25||genID==35||genID==36) && gen_particles[i]->statusFlags()[IsLastCopy]){
+>>>>>>> master
         pT = gen_particles[i]->vector().Pt();
         pT_A_ = pT;
       }
@@ -868,6 +1075,7 @@ namespace ic {
         }
       }
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
+      hasTaus_=true;
       gen_taus.push_back(part);
       std::vector<ic::GenParticle> family;
       unsigned outputID = 15;
@@ -891,6 +1099,9 @@ namespace ic {
         higgs_products.push_back(had_tau);
       }
     }
+
+    mass_=gen_boson.M();
+    parton_Zmass_=gen_boson_lhe.M();
 
     std::sort(higgs_products.begin(),higgs_products.end(),PtComparator());
     std::sort(gen_taus.begin(),gen_taus.end(),PtComparator());
@@ -998,6 +1209,51 @@ namespace ic {
     ic::erase_if(gen_tau_jets_ptr, !boost::bind(MinPtMaxEta, _1, 15.0, 999.));
     std::sort(gen_tau_jets_ptr.begin(), gen_tau_jets_ptr.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
+<<<<<<< FF_MSSM
+
+    tau_pt_1_tt_=-9999; 
+    tau_pt_1_mt_=-9999; 
+    tau_pt_1_et_=-9999; 
+    tau_pt_1_sf_=-9999; 
+    gen_tau_pt_1_=-9999;
+    gen_tau_dm_1_=-1;
+    gen_tau_eta_1_=-9999;
+    // match gen tau jets to taus passing selections for et, mt, and tt channels
+    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
+      std::vector<GenJet *> lead_gen_tau = {gen_tau_jets_ptr[0]};
+      std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
+      ic::erase_if(taus,!boost::bind(MinPtMaxEta, _1, 20.0, 2.3));         
+      std::vector<Tau *> taus_tt;
+      std::vector<Tau *> taus_mt;
+      std::vector<Tau *> taus_et;
+      std::vector<Tau *> taus_sf;
+
+      gen_tau_pt_1_ = lead_gen_tau[0]->pt();
+      gen_tau_eta_1_ = lead_gen_tau[0]->eta();
+      gen_tau_dm_1_ = lead_gen_tau[0]->flavour();
+
+      for(auto t : taus) {
+        if(t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) {
+        taus_tt.push_back(t);
+        if(t->GetTauID("byTightDeepTau2017v2p1VSe") > 0.5 )  taus_et.push_back(t);
+        if(t->GetTauID("byTightDeepTau2017v2p1VSmu") > 0.5 ) taus_mt.push_back(t);
+        if(t->GetTauID("byTightDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSe") > 0.5 ) taus_sf.push_back(t);
+        }
+      }
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> mt_matches =  MatchByDR(lead_gen_tau,taus_mt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> et_matches =  MatchByDR(lead_gen_tau,taus_et,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> sf_matches =  MatchByDR(lead_gen_tau,taus_sf,0.5,true,true); 
+ 
+      if(tt_matches.size()>0) tau_pt_1_tt_=tt_matches[0].second->pt();
+      if(mt_matches.size()>0) tau_pt_1_mt_=mt_matches[0].second->pt();
+      if(et_matches.size()>0) tau_pt_1_et_=et_matches[0].second->pt();
+      if(sf_matches.size()>0) tau_pt_1_sf_=sf_matches[0].second->pt();
+ 
+    }
+
+=======
+>>>>>>> master
     cp_sign_1_ = 999;
     cp_sign_2_ = 999;
     cp_sign_3_ = 999;
@@ -1012,6 +1268,10 @@ namespace ic {
     Pfrac_1_=-9999.; 
     Pfrac_2_=-9999.;
 
+    pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
+    mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
+
+
     if(passed_){
       pt_1_  = lep1.vector().Pt();
       pt_2_  = lep2.vector().Pt();
@@ -1021,12 +1281,14 @@ namespace ic {
       phi_2_ = lep2.vector().Phi();
       met_   = met.vector().Pt();
       pt_tt_ = (met.vector()+lep1.vector()+lep2.vector()).Pt();
-      mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
+      //mass_ = (met.vector()+lep1.vector()+lep2.vector()).M();
       //wtzpt_ = z_pt_weights_sm_.GetBinContent(z_pt_weights_sm_.FindBin(mass_,pt_tt_));
       m_vis_ = (lep1.vector()+lep2.vector()).M();
-      if(!(channel_str_ == "zmm")){
+      if(!(channel_str_ == "zmm") && !(channel_str_ == "zee")){
         mt_1_ = MT(&lep1, &met);
         mt_2_ = MT(&lep2, &met);
+        double mt_lep = MT(&lep1, &lep1);
+        mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
       }
 
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
@@ -1041,8 +1303,7 @@ namespace ic {
       phi_1_ = -9999;
       phi_2_ = -9999;
       met_   = -9999;
-      pt_tt_ = -9999;
-      mass_= -9999;
+      //mass_= -9999;
       m_vis_ = -9999;
       mt_1_ = -9999;
       mt_2_ = -9999;
@@ -1051,12 +1312,20 @@ namespace ic {
     
     std::vector<ic::GenJet*> filtered_jets;
     std::vector<ic::GenJet*> bjets;
+<<<<<<< FF_MSSM
+   
+    n_bpartons_=0;
+ 
+=======
     
+>>>>>>> master
     std::vector<GenParticle *> sel_bquarks;
     for (unsigned i=0; i < gen_particles.size(); ++i){
       std::vector<bool> status_flags = gen_particles[i]->statusFlags();
       unsigned id = abs(gen_particles[i]->pdgid());  
-      if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>0){
+      //if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>0){
+      if(id == 5 && status_flags[FromHardProcess] && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>0) n_bpartons_++;
+      if(id == 5 && status_flags[IsLastCopy] && gen_particles[i]->vector().Pt()>5){
         sel_bquarks.push_back(gen_particles[i]);
       }
     }
@@ -1092,6 +1361,11 @@ namespace ic {
     n_bjets_pt25_ = bjets_25.size();
     n_bjets_eta2p5_noscale_ = bjets.size();
     n_bjets_noscale_ = bjets_eta2p4.size();
+<<<<<<< FF_MSSM
+    bpt_1_=-9999.;
+    if(n_bjets_noscale_>0) bpt_1_ = bjets_eta2p4[0]->pt();
+=======
+>>>>>>> master
 
     if(bbtag_eff_ != nullptr) {
       for(unsigned i=0; i<bjets.size(); ++i){
@@ -2317,6 +2591,8 @@ namespace ic {
       //cp_channel_=1;
     }
 
+    std::vector<ic::Vertex*> gen_vertices;
+    if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");  
     if (pi_daughters.size()==2 && prho_daughters.size()==2){
         cp_channel_=1;
 
@@ -2348,6 +2624,14 @@ namespace ic {
         cp_channel_=2;
         cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
 
+<<<<<<< FF_MSSM
+        //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        //for (unsigned i = 0; i < vertex_vec.size(); i++) {
+        //  reco_pvx_ = vertex_vec[0]->vx();
+        //  reco_pvy_ = vertex_vec[0]->vy();
+        //  reco_pvz_ = vertex_vec[0]->vz();
+        //}
+=======
         pi_px_1_ = pi_daughters[0]->vector().Px();
         pi_py_1_ = pi_daughters[0]->vector().Py();
         pi_pz_1_ = pi_daughters[0]->vector().Pz();
@@ -2363,6 +2647,7 @@ namespace ic {
         pi0_E_2_ =  rho_daughters[0].second->vector().E();
 
 
+>>>>>>> master
         for (unsigned i = 0; i < gen_vertices.size(); i++) {
           gen_pvx_ = gen_vertices[0]->vx();
           gen_pvy_ = gen_vertices[0]->vy();
@@ -2385,6 +2670,15 @@ namespace ic {
         cp_channel_=12;
         cp_sign_1_ = YRho(std::vector<GenParticle*>({rho_daughters[0].first, rho_daughters[0].second}),TVector3());
 
+<<<<<<< FF_MSSM
+        //std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices"); // reco
+        //for (unsigned i = 0; i < vertex_vec.size(); i++) {
+        //  reco_pvx_ = vertex_vec[0]->vx();
+        //  reco_pvy_ = vertex_vec[0]->vy();
+        //  reco_pvz_ = vertex_vec[0]->vz();
+        //}
+=======
+>>>>>>> master
         for (unsigned i = 0; i < gen_vertices.size(); i++) {
           gen_pvx_ = gen_vertices[0]->vx();
           gen_pvy_ = gen_vertices[0]->vy();

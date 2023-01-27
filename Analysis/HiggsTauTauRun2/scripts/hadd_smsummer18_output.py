@@ -95,6 +95,7 @@ sample_list = [
     'ZZTo2L2Q',
     'ZZTo4L',
     'ZZTo4L-ext',
+    'VVTo2L2Nu',
     'EmbeddingElElB',
     'EmbeddingElElC',
     'EmbeddingElElD',
@@ -137,7 +138,7 @@ sample_list = [
     'JJH0MToTauTauPlusTwoJets_Filtered',
     'JJH0MToTauTauPlusZeroJets',
     'JJH0MToTauTauPlusZeroJets_Filtered',
-    'JJH0Mf05ph0ToTauTauPlusOneJets',
+    'JJH0Mf05ph0ToTauTauPlusOneJets.dat',
     'JJH0Mf05ph0ToTauTauPlusOneJets_Filtered',
     'JJH0Mf05ph0ToTauTauPlusTwoJets',
     'JJH0Mf05ph0ToTauTauPlusTwoJets_Filtered',
@@ -174,7 +175,7 @@ sample_list = [
     'WHiggs0Mf05ph0ToTauTau',
     'WHiggs0PHToTauTau',
     'WHiggs0PHf05ph0ToTauTau',
-    'WHiggs0PMToTauTau',
+    'WHiggs0PMToTauTau.dat',
     'WminusHToTauTauUncorrelatedDecay',
     'WminusHToTauTauUncorrelatedDecay_Filtered',
     'WplusHToTauTauUncorrelatedDecay',
@@ -359,6 +360,11 @@ sample_list = [
     'SUSYGluGluToHToTauTau_M-800_powheg',
     'SUSYGluGluToHToTauTau_M-80_powheg',
     'SUSYGluGluToHToTauTau_M-900_powheg',
+<<<<<<< FF_MSSM
+    'SUSYGluGluToHToTauTau_M-95_powheg',
+    'VBFHToTauTau_M-95',
+=======
+>>>>>>> master
 	]
 
 
@@ -369,7 +375,11 @@ for s in sorted(sample_list): out+='    - %s\n' %s
 
 print out
 
+<<<<<<< FF_MSSM
+channel = ['tt','mt','et','em','zmm','zee','tpzee','tpzmm']
+=======
 channel = ['tt','mt','et','em','zmm']
+>>>>>>> master
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 

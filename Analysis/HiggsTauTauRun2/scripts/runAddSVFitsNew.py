@@ -63,6 +63,8 @@ def main(args):
         'JESHF_YEAR_DOWN','JESHF_YEAR_UP',
         'JESRELSAMP_YEAR_DOWN','JESRELSAMP_YEAR_UP',
         'JER_UP','JER_DOWN',
+        'BTAG_UP','BTAG_DOWN','BFAKE_UP','BFAKE_DOWN',
+        'TRES_UP', 'TRES_DOWN', 'ERES_UP', 'ERES_DOWN', 'MURES_UP', 'MURES_DOWN'
     ]
 
     qsub_command = (
@@ -75,7 +77,11 @@ def main(args):
     for key, samples in sample_list.iteritems():
         for sample in samples:
             #if sample not in [
+<<<<<<< FF_MSSM
+            # 'TTTo2L2Nu',
+=======
             # '', # add samples here if you only want to run specific ones
+>>>>>>> master
             #]: continue
 
             print sample

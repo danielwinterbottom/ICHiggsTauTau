@@ -93,6 +93,9 @@ def main(args):
             #        args.intree, args.channel, args.year,
             #))
 
+        print 'svfit files:'
+        print svfit_files
+
         # If there are multiple files then proceed with looping over all
         if len(svfit_files) > 0:
             df = pd.DataFrame()

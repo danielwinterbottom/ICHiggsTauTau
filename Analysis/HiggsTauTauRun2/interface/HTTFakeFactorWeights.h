@@ -57,15 +57,17 @@ class HTTFakeFactorWeights : public ModuleBase {
   TH2D *ff_fracs_wjets_highmt_;
 
   std::shared_ptr<RooWorkspace> ff_ws_;
-  std::shared_ptr<RooWorkspace> ff_ws_us_;
   std::shared_ptr<RooWorkspace> ff_ws_dm_;
+  std::shared_ptr<RooWorkspace> ff_ws_mssm_;
 
   std::vector<std::string> systs_dm_;
   std::vector<std::string> systs_mvadm_;
-  std::vector<std::string> systs_us_;
+  std::vector<std::string> systs_mssm_;
 
   TMVA::Reader *reader_;
   float met_, pt_1_, pt_2_, mva_dm_2_, mt_1_, m_vis_, pt_tt_, mjj_, n_jets_;
+  float n_prebjets_, n_deepbjets_, jet_pt_1_, jet_pt_2_, mt_2_, mt_lep_, mt_tot_;
+ 
 };
 
 }

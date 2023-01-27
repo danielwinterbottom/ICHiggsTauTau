@@ -5,7 +5,7 @@ from multiprocessing import Process
 config = config()
 
 config.General.transferOutputs = True
-config.General.workArea='May21_MC_102X_2018'
+config.General.workArea='Sep18_MC_102X_2018'
 
 config.JobType.psetName = 'higgstautau_cfg_102X_Aug19_2018.py'
 config.JobType.pluginName = 'Analysis'

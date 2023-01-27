@@ -36,6 +36,7 @@
 #include "HiggsTauTauRun2/interface/HTTFilter.h"
 #include "HiggsTauTauRun2/interface/EffectiveEvents.h"
 #include "HiggsTauTauRun2/interface/BTagWeightLegacyRun2.h"
+#include "HiggsTauTauRun2/interface/BTagWeightRun2.h"
 #include "HiggsTauTauRun2/interface/HTTGenMatchSelector.h"
 #include "HiggsTauTauRun2/interface/HTTFakeFactorWeights.h"
 #include "HiggsTauTauRun2/interface/HTTGenAnalysis.h"
@@ -55,6 +56,7 @@
 #include "Modules/interface/OneCollCompositeProducer.h"
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/EnergyShifter.h"
+#include "Modules/interface/EnergyResShifter.h"
 #include "Modules/interface/PileupWeight.h"
 #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/GenericModule.h"
@@ -236,6 +238,11 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  fakeE_tau_shift_1pi_endcap = 1.0;
  fakeMu_tau_shift_0pi = 1.0;
  fakeMu_tau_shift_1pi = 1.0;
+
+ muon_res_shift = 0.;
+ elec_res_shift = 0.;
+ tau_res_shift = 0.;
+
  if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
    fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
@@ -252,6 +259,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      tau_shift_3prong0pi0 = json["baseline"]["embedtau_3prong0pi0_es_shift"].asDouble();
      tau_shift_3prong1pi0 = json["baseline"]["embedtau_3prong1pi0_es_shift"].asDouble();
    }
+   muon_res_shift = json["baseline"]["muon_res_shift"].asDouble();
+   elec_res_shift = json["baseline"]["elec_res_shift"].asDouble();
+   tau_res_shift = json["baseline"]["tau_res_shift"].asDouble();
  }
  if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
@@ -339,13 +349,14 @@ void HTTSequence::BuildSequence(){
   {
   };   
   if(strcmp((js["event_check_file"].asString()).c_str(),"")!=0){
-    std::ifstream file;
-    file.open((js["event_check_file"].asString()).c_str());
+    std::ifstream file((js["event_check_file"].asString()).c_str());
     if (!file.is_open()) {
       std::cerr << "Warning: File " << js["event_check_file"].asString() << " cannot be opened." << std::endl;
     } 
     int nums;
-    while(file >> nums){
+    std::string line;
+    while(std::getline(file, line)){
+      nums = std::atoi(line.c_str());
       to_check.push_back(nums);
       std::cout << nums << std::endl;
     }
@@ -399,10 +410,42 @@ void HTTSequence::BuildSequence(){
 
 if(!is_data && js["do_gen_analysis"].asBool()){
 
+  // do pu weights for MC samples
+
+  TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
+  TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
+  //if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
+  //  BuildModule( PileupWeight("PileupWeight")
+  //      .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
+  //}
+
+  // do stitching for dy samples:
+  HTTStitching httStitching = HTTStitching("HTTStitching")
+      .set_era(era_type)
+      .set_fs(fs.get());
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+    httStitching.set_do_dy_soup(true);
+    if(era_type == era::data_2016) {
+      httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
+      httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
+    }
+    if(era_type == era::data_2017) {
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields(48590164+49031214,42205667+33563494,88795+9871382,1147725+5740168,4317756);
+    }
+    if(era_type == era::data_2018) {
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields(99536185, 66994632, 19918141, 5554767, 2812482);
+    }
+  }
+  BuildModule(httStitching);
+
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
   mass_str.erase(mass_str.find("_"),mass_str.length()-mass_str.find("_"));
-  
+ 
+  TH2D deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+ 
   BuildModule(HTTGenAnalysis("HTTGenAnalysis")
     .set_fs(fs.get())
     .set_channel_str(channel_str)
@@ -417,8 +460,13 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     .set_max_tau_eta(1000)
     .set_do_theory_uncert(true)
     .set_mssm_mass(mass_str)
+<<<<<<< FF_MSSM
+    .set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
+    .set_era(era_type)
+=======
     .set_make_mva_ntuple(js["make_mva_ntuple"].asBool())
     .set_mva_output_name(js["output_folder"].asString()+"/MVAFILE_"+output_name)
+>>>>>>> master
   );
   return;  
 }
@@ -494,12 +542,15 @@ httPairSelector.set_gen_taus_label("genParticles");
 BuildModule(httPairSelector);
  
 if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_in_mc"].asBool())){
+
+  bool tau_dataset = output_name.find("Tau") != output_name.npos && is_data; 
   BuildModule(HTTTriggerFilter("HTTTriggerFilter")
       .set_channel(channel)
       .set_mc(mc_type)
       .set_era(era_type)
       .set_strategy(strategy_type)
       .set_is_data(is_data)
+      .set_tau_dataset(tau_dataset)
       .set_is_embedded(is_embedded)
       .set_do_singletau(js["do_singletau"].asBool())
       .set_do_filter(false)
@@ -529,7 +580,7 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
       .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
 }
 
-if(do_met_filters && is_data){
+if(do_met_filters && (is_data || is_embedded)){
   BuildModule(GenericModule("MetFilters")
     .set_function([=](ic::TreeEvent *event){
        EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -549,7 +600,7 @@ if(do_met_filters){
         "Flag_HBHENoiseFilter","Flag_HBHENoiseIsoFilter","Flag_EcalDeadCellTriggerPrimitiveFilter",
         "Flag_goodVertices","badMuonFilter", "Flag_globalSuperTightHalo2016Filter"
       };
-      if (era_type == era::data_2016 || era_type == era::data_2017) {
+      if (era_type == era::data_2016) {
         met_filters.pop_back();
         met_filters.push_back("Flag_globalTightHalo2016Filter");
       }
@@ -629,6 +680,8 @@ if(!is_data) {
     .set_write_plots(false)
     .set_ditau_label("ditau")
     .set_channel(channel)
+    .set_era(era_type)
+    .set_is_embedded(is_embedded)
     .set_ngenjets((do_ngenjets||true) && !is_data && !is_embedded));
 }
 
@@ -647,6 +700,12 @@ if(era_type == era::data_2018) {
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
 }
 
+TH2F embed_pt_weights_ic;
+
+if(era_type == era::data_2016) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2016");
+if(era_type == era::data_2017) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2017");
+if(era_type == era::data_2018) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
+
 HTTWeights httWeights = HTTWeights("HTTWeights")   
  .set_channel(channel)
  .set_era(era_type)
@@ -658,7 +717,8 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_jets_label(jets_label)
  .set_do_quarkmass_higgspt(output_name.find("JJH")!=output_name.npos)
  .set_do_ps_weights(output_name.find("JJH")!=output_name.npos)
- .set_do_nnlops_weights(output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos);
+ .set_embed_pt_weights_ic_hist(new TH2F(embed_pt_weights_ic))
+ .set_do_nnlops_weights(output_name.find("JJH")!=output_name.npos||output_name.find("GluGluHToTauTauUncorrelatedDecay") != output_name.npos||(output_name.find("GluGlu") != output_name.npos && output_name.find("125") != output_name.npos && output_name.find("SUSY") == output_name.npos));
 httWeights.set_strategy(strategy_type);
 httWeights.set_scalefactor_file_ggh(scalefactor_file_ggh);
 httWeights.set_scalefactor_file(scalefactor_file);
@@ -681,7 +741,8 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
 }
 if(output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos){
   httWeights.set_do_mssm_higgspt(true); 
-  httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v2_mssm_mode.root");
+  if(era_type == era::data_2016) httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_2016_v2.root");
+  else httWeights.set_mssm_higgspt_file("input/mssm_higgspt/higgs_pt_v2.root");
   std::string mass_str = output_name;
   mass_str.erase(0, mass_str.find("_M-")+3);
   mass_str.erase(mass_str.find("_"),mass_str.length()-output_name.find("_"));
@@ -699,30 +760,30 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     httStitching.set_do_w_soup(true);
     if(era_type == era::data_2016) {
      httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6); 
-     httStitching.SetWInputYields(57402435+29514020, 45283121, 30064264+30374504, 39501912+19798117, 18751462+2073275+9116657);
+     httStitching.SetWInputYields(29514020+57402435, 45283121, 30064264+30374504, 39356879+19798117, 18751462+2073275+9116657);
     } 
     if(era_type == era::data_2017) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(77558539,54013116,6558503,19669693,10325586);
+      httStitching.SetWInputYields(33043732+44579681,54070624,6511577,19644624,10874617);
     }
     if(era_type == era::data_2018) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(70548058, 51017448, 23174717, 14351015, 10062198); 
+      httStitching.SetWInputYields(63389404, 31521085, 16766140, 13815650, 9874750); 
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
     httStitching.set_do_dy_soup(true);
     if(era_type == era::data_2016) {
       httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8); 
-      httStitching.SetDYInputYields(49748967+96531428, 63730337, 19879279, 5857441, 4197868);
+      httStitching.SetDYInputYields(49748967+90972768, 63730337, 19879279, 5857441, 4197868);
     } 
     if(era_type == era::data_2017) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(97502567,75523396,10016760,6887893,4317756);
+      httStitching.SetDYInputYields(48590164+49031214,42205667+33563494,88795+9871382,1147725+5740168,4317756);
     } 
     if(era_type == era::data_2018) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(100035605, 68536356, 20259039, 5626027, 2812482);
+      httStitching.SetDYInputYields(99536185, 66994632, 19918141, 5554767, 2812482);
     }
   }
   BuildModule(httStitching);   
@@ -745,8 +806,11 @@ if(js["baseline"]["do_ff_weights"].asBool() && (addit_output_folder=="" || addit
 }   
 
 std::vector<std::string> jet_met_uncerts = {""};
-if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="") { // only loop for nominal case
+if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="" && !is_embedded) { // only loop for nominal case
   jet_met_uncerts = {"","scale_met_lo","scale_met_hi","res_met_lo","res_met_hi","scale_j_relbal_lo","scale_j_relbal_hi","scale_j_abs_lo","scale_j_abs_hi","scale_j_abs_year_lo","scale_j_abs_year_hi","scale_j_flav_lo","scale_j_flav_hi","scale_j_bbec1_lo","scale_j_bbec1_hi","scale_j_bbec1_year_lo","scale_j_bbec1_year_hi","scale_j_ec2_lo","scale_j_ec2_hi","scale_j_ec2_year_lo","scale_j_ec2_year_hi","scale_j_hf_lo","scale_j_hf_hi","scale_j_hf_year_lo","scale_j_hf_year_hi","scale_j_relsamp_year_lo","scale_j_relsamp_year_hi","res_j_lo","res_j_hi","met_uncl_lo","met_uncl_hi"};
+}
+if(js["do_jetmet_uncerts"].asBool() && addit_output_folder=="" && is_embedded) { // only loop for nominal case
+  jet_met_uncerts = {"","scale_embed_met_hi","scale_embed_met_lo"};
 }
 
 for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
@@ -758,6 +822,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   int metscale_mode_ = metscale_mode;
   int metres_mode_ = metres_mode;
   int metuncl_mode_ = 0;
+  int embed_metscale_mode_ = 0;
 
   std::string svfit_folder_ = svfit_folder; 
   std::string add_dir = ""; 
@@ -769,7 +834,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     if(uncert.find("res_met")!=std::string::npos) metres_mode_ = unmod_js["sequences"][uncert]["baseline"]["metres_mode"].asUInt();
     if(uncert.find("scale_met")!=std::string::npos) metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["metscale_mode"].asUInt();
     if(uncert.find("met_uncl")!=std::string::npos) metuncl_mode_ = unmod_js["sequences"][uncert]["baseline"]["metuncl_mode"].asUInt();
-
+    if(uncert.find("scale_embed_met")!=std::string::npos) embed_metscale_mode_ = unmod_js["sequences"][uncert]["baseline"]["embed_metscale_mode"].asUInt();
 
     std::string add_dir = unmod_js["sequences"][uncert]["baseline"]["addit_output_folder"].asString(); 
  
@@ -796,9 +861,13 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   std::string shift_met_label = met_label+"_uncert_"+uncert; 
   BuildModule(CopyCollection<PFJet>("CopyJetsForUncert_"+uncert,jets_label,shift_jets_label,true));
 
+  std::string ext = "";
+  if(is_embedded && embed_metscale_mode_==1) ext = "_down";
+  if(is_embedded && embed_metscale_mode_==2) ext = "_up";
+
   BuildModule(GenericModule("CopyMetForUncert_"+uncert)
     .set_function([=](ic::TreeEvent *event){
-       Met* met = event->GetPtr<Met>(met_label);
+       Met* met = event->GetPtr<Met>(met_label+ext);
        Met *met_copy = new Met(*met);
        event->Add(shift_met_label,met_copy);
        return 0;
@@ -832,15 +901,15 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     std::string jes_input_file  = "";
     std::string jes_input_set  = "";
     if (era_type == era::data_2016) {
-      jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
+      jes_input_file = "input/jec/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
       jes_input_set  = "Total";
     }
     if (era_type == era::data_2017) {
-      jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_file = "input/jec/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
     if (era_type == era::data_2018) {
-      jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_file = "input/jec/RegroupedV2_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
     
@@ -859,6 +928,20 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      );
    
   }
+
+  bool hem_fix=false; // disable this "fix" for HEM issue (this is really only used to check impact of HEM problem rather than actually fix it)
+  if (hem_fix && !is_data && !is_embedded && era_type == era::data_2018) {
+    BuildModule(JetEnergyUncertainty<PFJet>("HEMFix")
+      .set_input_label(shift_jets_label)
+      .set_met_label(shift_met_label)
+      .set_jes_shift_mode(0)
+      .set_uncert_file("")
+      .set_uncert_set("")
+      .set_EENoiseFix(false)
+      .set_HEMFix(true)
+      .set_shift_met(!do_recoil)
+     );
+  } 
   
   if(js["do_btag_eff"].asBool()){
      BuildModule(BTagCheck("BTagCheck")
@@ -879,7 +962,12 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
     TH2F bbtag_eff_alt;
     TH2F cbtag_eff_alt;
     TH2F othbtag_eff_alt;
-  
+ 
+
+    TH2D deepjet_bbtag_eff;
+    TH2D deepjet_cbtag_eff;
+    TH2D deepjet_othbtag_eff;
+ 
     if (era_type == era::data_2016){
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016.root","/","btag_eff_c");
@@ -888,6 +976,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_b");
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/deepCSV_efficiencies_leg2016_loose.root","/","btag_eff_oth");
+
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2016_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     } else if (era_type == era::data_2017) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017.root","/","btag_eff_c");
@@ -896,6 +988,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_b");
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2017_loose.root","/","btag_eff_oth");
+
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2017_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     } else if (era_type == era::data_2018) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018.root","/","btag_eff_c");
@@ -904,6 +1000,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_b");
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepCSV_2018_loose.root","/","btag_eff_oth");
+
+      deepjet_bbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_b");
+      deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
+      deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     }
 
     BTagWeightLegacyRun2 BTagWeight = BTagWeightLegacyRun2("BTagWeightLegacyRun2")
@@ -917,6 +1017,21 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_bbtag_eff_alt(new TH2F(bbtag_eff_alt))
      .set_cbtag_eff_alt(new TH2F(cbtag_eff_alt))
      .set_othbtag_eff_alt(new TH2F(othbtag_eff_alt));
+
+    // for MSSM we use deepjet and use promote demote method
+    BuildModule(BTagWeightRun2("DeepJetBTagWeightRun2")
+      .set_channel(channel)
+      .set_era(era_type)
+      .set_strategy(strategy_type)
+      .set_jet_label(shift_jets_label)
+      .set_bbtag_eff((TH2F*)(new TH2D(deepjet_bbtag_eff)))
+      .set_cbtag_eff((TH2F*)(new TH2D(deepjet_cbtag_eff)))
+      .set_othbtag_eff((TH2F*)(new TH2D(deepjet_othbtag_eff)))
+      .set_do_reshape(do_reshape)
+      .set_use_deep_jet(true)
+      .set_use_deep_csv(false)
+      .set_btag_mode(btag_mode)
+      .set_bfake_mode(bfake_mode));
 
     if(era_type == era::data_2016 && (output_name.find("TTTo2L2Nu") != output_name.npos || output_name.find("TTToHadronic") != output_name.npos || output_name.find("TTToSemiLeptonic") != output_name.npos)) {
       BTagWeight.set_do_cp5_2016(true);
@@ -969,6 +1084,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
      .set_njets_mode(njets_mode)
      .set_do_recoil(do_recoil)
      );
+
   }
   
   int mode = new_svfit_mode==1 && (jes_mode_ > 0 || jer_mode_ > 0) && do_recoil ? 0 : new_svfit_mode;
@@ -1556,6 +1672,24 @@ void HTTSequence::BuildETPairs() {
         .set_moriond_corrections(moriond_tau_scale));
   }
 
+  if (!is_data){
+    if(elec_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Electron>("HTTElectronGenMatchSelector")
+      .set_input_vec_label(js["electrons"].asString())
+      .set_output_vec_label("genmatched_elecs")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauE));
+
+      BuildModule(EnergyResShifter<Electron>("ElecEnergyResShifter")
+      .set_input_label("genmatched_elecs")
+      .set_input_label_gen("genmatched_elecs_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_elecs")
+      .set_shift(elec_res_shift));
+    }
+  }
+
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
@@ -1589,9 +1723,27 @@ void HTTSequence::BuildMTPairs() {
        .set_barrel(muon_shift_barrel)
        );
   }
-   
+
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
        js["muons"].asString(), "sel_muons"));
+
+  if (!is_data){
+    if(muon_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Muon>("HTTMuonGenMatchSelector")
+      .set_input_vec_label("sel_muons")
+      .set_output_vec_label("genmatched_muons")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauMu));
+
+      BuildModule(EnergyResShifter<Muon>("MuonEnergyResShifter")
+      .set_input_label("genmatched_muons")
+      .set_input_label_gen("genmatched_muons_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_muons")
+      .set_shift(muon_res_shift));
+    }
+  }
 
   std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
 
@@ -1641,6 +1793,24 @@ void HTTSequence::BuildEMPairs() {
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
 
+  if (!is_data){
+    if(muon_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Muon>("HTTMuonGenMatchSelector")
+      .set_input_vec_label("sel_muons")
+      .set_output_vec_label("genmatched_muons")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauMu));
+
+      BuildModule(EnergyResShifter<Muon>("MuonEnergyResShifter")
+      .set_input_label("genmatched_muons")
+      .set_input_label_gen("genmatched_muons_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_muons")
+      .set_shift(muon_res_shift));
+    }
+  }
+
   std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
@@ -1683,6 +1853,24 @@ void HTTSequence::BuildEMPairs() {
         .set_moriond_corrections(moriond_tau_scale));
   }
 
+  if (!is_data){
+    if(elec_res_shift!=0.) {
+
+     BuildModule(HTTGenMatchSelector<Electron>("HTTElectronGenMatchSelector")
+      .set_input_vec_label("sel_electrons")
+      .set_output_vec_label("genmatched_elecs")
+      .set_add_gen(true)
+      .set_gen_match(mcorigin::tauE));
+
+      BuildModule(EnergyResShifter<Electron>("ElecEnergyResShifter")
+      .set_input_label("genmatched_elecs")
+      .set_input_label_gen("genmatched_elecs_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_elecs")
+      .set_shift(elec_res_shift));
+    }
+  }
+
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
@@ -1711,6 +1899,7 @@ void HTTSequence::BuildEMPairs() {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildZEEPairs() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
+
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
@@ -1765,6 +1954,43 @@ void HTTSequence::BuildZEEPairs() {
                 fabs(e->dz_vertex())    < elec_dz ;
 
       }));
+
+  BuildModule(CopyCollection<Electron>("CopyToFSRElectrons",
+      js["electrons"].asString(), "fsr_electrons"));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronIDFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 10.        &&
+                fabs(e->eta())          < 2.4        &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+
+      }));
+
+  BuildModule(CopyCollection<Muon>("CopyToFSRMuons",
+      js["muons"].asString(), "fsr_muons"));
+
+  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
+
+  BuildModule(SimpleFilter<Muon>("FSRMuonFilter")
+      .set_input_label("fsr_muons").set_min(0)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 5.        &&
+                fabs(m->eta())          < 2.4   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
+      }));
+
+
 
      
   BuildModule(CompositeProducer<Electron, Electron>("ZEEPairProducer")
@@ -1835,7 +2061,8 @@ void HTTSequence::BuildZMMPairs() {
                 MuonID(m);
 
       }));
-  
+ 
+ 
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       "sel_muons", "sel_lead_muons"));
   
@@ -1847,6 +2074,42 @@ void HTTSequence::BuildZMMPairs() {
                 fabs(m->dxy_vertex())   < muon_dxy   &&
                 fabs(m->dz_vertex())    < muon_dz   &&
                 MuonID(m);
+      }));
+
+  BuildModule(CopyCollection<Electron>("CopyToFSRElectrons",
+      js["electrons"].asString(), "fsr_electrons"));
+  
+  std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronIDFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 10.        &&
+                fabs(e->eta())          < 2.4        &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+
+      }));
+
+  BuildModule(CopyCollection<Muon>("CopyToFSRMuons",
+      js["muons"].asString(), "fsr_muons"));
+
+
+  BuildModule(SimpleFilter<Muon>("FSRMuonFilter")
+      .set_input_label("fsr_muons").set_min(0)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > 5.        &&
+                fabs(m->eta())          < 2.4   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
       }));
   
   BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
@@ -1902,6 +2165,27 @@ void HTTSequence::BuildTPZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
+
+  std::function<bool(Electron const*)> ElecID = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
+
+  BuildModule(CopyCollection<Electron>("CopyToFSRElectrons",
+      js["electrons"].asString(), "fsr_electrons"));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronIDFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return ElecID(e);
+      }));
+
+  BuildModule(SimpleFilter<Electron>("FSRElectronFilter")
+      .set_input_label("fsr_electrons").set_min(0)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > 10.        &&
+                fabs(e->eta())          < 2.5        &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz ;
+
+      }));
 }
 
 
@@ -1929,6 +2213,7 @@ void HTTSequence::BuildTauSelection(){
     BuildModule(HTTGenMatchSelector<Tau>("HTTGenMatchSelector")
       .set_input_vec_label(js["taus"].asString())
       .set_output_vec_label("genmatched_taus")
+      .set_add_gen(true)
       .set_gen_match(mcorigin::tauHad));
 
     BuildModule(CopyCollection<Tau>("CopyTauHadTo1Prong0Pi",
@@ -1994,6 +2279,17 @@ void HTTSequence::BuildTauSelection(){
     .set_shift_label("scales_taues_3prong1pi0")
     .set_shift(tau_shift_3prong1pi0)
     .set_shift_func(tau_shift_func_3prong1pi0));
+  }
+  // energy resolutions shifting
+  if (!is_data){
+    if(tau_res_shift!=0.) {
+      BuildModule(EnergyResShifter<Tau>("TauEnergyResShifter")
+      .set_input_label("genmatched_taus")
+      .set_input_label_gen("genmatched_taus_gen")
+      .set_save_shifts(true)
+      .set_shift_label("res_taus")
+      .set_shift(tau_res_shift));
+    }
  }
  if (!is_data){
    BuildModule(HTTGenMatchSelector<Tau>("FakeEGenMatchSelector")
@@ -2199,7 +2495,7 @@ void HTTSequence::BuildTauSelection(){
         ic::erase_if(vec,!boost::bind(PF03EAElecIsolation, _1, eventInfo->jet_rho(), 0.3)); //lepton_rho
         return 0;
    }));
-  
+ 
    HTTFilter<Electron> extraElecFilter = HTTFilter<Electron>("ExtraElecFilter")
        .set_input_label("extra_elecs")
        .set_veto_name("extra_elec_veto")

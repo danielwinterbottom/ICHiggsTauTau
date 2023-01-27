@@ -6,6 +6,10 @@
 #include "TauSpinner/tau_reweight_lib.h"
 
 int main(/*int argc, char* argv[]*/) {
+<<<<<<< FF_MSSM
+
+=======
+>>>>>>> master
   
   // Initalise here (open input file, create output, initalise tauspinner etc...)
 

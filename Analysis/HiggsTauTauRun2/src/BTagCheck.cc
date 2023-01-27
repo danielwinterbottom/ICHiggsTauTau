@@ -48,7 +48,7 @@ namespace ic {
     }
     if (fs_ && !do_legacy_){
       double pt_range[20] = {20,30,40,50,60,70,80,100,120,160,210,260,320,400,500,600,700,800,900,1000};
-      double eta_range[5] = {0.,0.9,1.2,2.1,2.4};
+      double eta_range[5] = {0.,0.9,1.2,2.1,2.5};
       hists_ = new Dynamic2DHistoSet(fs_->mkdir("BTagCheck"));
       hists_->Create("NBtag_bflav",19,pt_range,4,eta_range);
       hists_->Create("NTot_bflav",19,pt_range,4,eta_range);
@@ -235,7 +235,9 @@ namespace ic {
 
     wt = eventInfo->total_weight();
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
-    ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    double eta_cut = 2.4;
+    if(era_ == era::data_2017 || era_ == era::data_2018) eta_cut = 2.5;
+    ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     std::vector<GenJet*> gen_jets;
     if(!do_legacy_){
       gen_jets = event->GetPtrVec<GenJet>("genJets");
