@@ -13,10 +13,7 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 
-<<<<<<< FF_MSSM
-=======
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/test/pola_module.hpp"
->>>>>>> master
 
 double CPWeight(double x, double sm, double ps, double mm ){
         x*=M_PI/180; //convert to radians
@@ -1097,7 +1094,6 @@ namespace ic {
       outtree_->Branch("fake_met_dphi_1",             &fake_met_dphi_1_);
       outtree_->Branch("fake_met_dphi_2",             &fake_met_dphi_2_);
       outtree_->Branch("newmet",             &newmet_);
-<<<<<<< FF_MSSM
       outtree_->Branch("fake_met",             &fake_met_);
       outtree_->Branch("gen_met",             &gen_met_);
 
@@ -1115,9 +1111,7 @@ namespace ic {
       outtree_->Branch("fake_tau_metx", &fake_tau_metx_);
       outtree_->Branch("fake_tau_mety", &fake_tau_mety_);
 
-=======
       outtree_->Branch("met_shift",             &met_shift_);
->>>>>>> master
       outtree_->Branch("qcd_frac_score",             &qcd_frac_score_);
       outtree_->Branch("w_frac_score",             &w_frac_score_);
 
@@ -1698,8 +1692,6 @@ namespace ic {
       mvatree_->Branch("gen_nu_phi_2", &gen_nu_phi_2_);
       mvatree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
       mvatree_->Branch("gen_nu_eta_2", &gen_nu_eta_2_);
-<<<<<<< FF_MSSM
-=======
 
       mvatree_->Branch("gen_vis_p_1",   &gen_vis_p_1_);
       mvatree_->Branch("gen_vis_p_2",   &gen_vis_p_2_);
@@ -1722,7 +1714,6 @@ namespace ic {
       mvatree_->Branch("gen_match_1", &gen_match_1_);
       mvatree_->Branch("gen_match_2", &gen_match_2_);
 
->>>>>>> master
       mvatree_->Branch("pt_2",              &pt_2_.var_double);
       mvatree_->Branch("pt_1",              &pt_1_.var_double);
       mvatree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
@@ -1809,8 +1800,6 @@ namespace ic {
       mvatree_->Branch("pi3_py_2", &pi3_py_2_);
       mvatree_->Branch("pi3_pz_2", &pi3_pz_2_);
       mvatree_->Branch("pi3_E_2", &pi3_E_2_);
-<<<<<<< FF_MSSM
-=======
 
       mvatree_->Branch("tau_px_1", &tau_px_1_);
       mvatree_->Branch("tau_py_1", &tau_py_1_);
@@ -1821,7 +1810,6 @@ namespace ic {
       mvatree_->Branch("tau_pz_2", &tau_pz_2_);
       mvatree_->Branch("tau_E_2",  &tau_E_2_);
 
->>>>>>> master
       mvatree_->Branch("pi0_px_1", &pi0_px_1_);
       mvatree_->Branch("pi0_py_1", &pi0_py_1_);
       mvatree_->Branch("pi0_pz_1", &pi0_pz_1_);

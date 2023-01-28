@@ -177,7 +177,6 @@ class HTTCategories : public ModuleBase {
   double fake_met_dphi_1_;
   double fake_met_dphi_2_;
   double newmet_;
-<<<<<<< FF_MSSM
   double fake_met_;
   double gen_met_;
 
@@ -193,9 +192,7 @@ class HTTCategories : public ModuleBase {
   double gen_metx_;
   double gen_mety_;
 
-=======
   double met_shift_;
->>>>>>> master
   double qcd_frac_score_, w_frac_score_;
   double w_frac_, qcd_frac_, ttbar_frac_;
 
@@ -1228,7 +1225,6 @@ class HTTCategories : public ModuleBase {
   double gen_nu_eta_1_;
   double gen_nu_eta_2_;
 
-<<<<<<< FF_MSSM
   double pf_met_;
 
   double generatorWeight_;
@@ -1239,7 +1235,6 @@ class HTTCategories : public ModuleBase {
   double mt_triggerweight_ic_;
   double tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_;
   double tauIDScaleFactorWeight_highpt_deeptauid_2_;
-=======
   double gen_vis_p_1_;
   double gen_vis_p_2_;
   double gen_vis_E_1_;
@@ -1296,7 +1291,6 @@ class HTTCategories : public ModuleBase {
   double svfit_pt_2_;
   double svfit_eta_1_;
   double svfit_eta_2_;
->>>>>>> master
 
  public:
   HTTCategories(std::string const& name);

@@ -120,7 +120,6 @@ sample_list = [
     'EmbeddingTauTauC',
     'EmbeddingTauTauD',
     'EmbeddingTauTauA',
-
     'GluGluHToTauTauUncorrelatedDecay',
     'GluGluHToTauTauUncorrelatedDecay_Filtered',
     'GluGluHToTauTau_M-125',
@@ -360,11 +359,8 @@ sample_list = [
     'SUSYGluGluToHToTauTau_M-800_powheg',
     'SUSYGluGluToHToTauTau_M-80_powheg',
     'SUSYGluGluToHToTauTau_M-900_powheg',
-<<<<<<< FF_MSSM
     'SUSYGluGluToHToTauTau_M-95_powheg',
     'VBFHToTauTau_M-95',
-=======
->>>>>>> master
 	]
 
 
@@ -375,11 +371,7 @@ for s in sorted(sample_list): out+='    - %s\n' %s
 
 print out
 
-<<<<<<< FF_MSSM
 channel = ['tt','mt','et','em','zmm','zee','tpzee','tpzmm']
-=======
-channel = ['tt','mt','et','em','zmm']
->>>>>>> master
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
 

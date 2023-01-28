@@ -77,11 +77,8 @@ def main(args):
     for key, samples in sample_list.iteritems():
         for sample in samples:
             #if sample not in [
-<<<<<<< FF_MSSM
             # 'TTTo2L2Nu',
-=======
             # '', # add samples here if you only want to run specific ones
->>>>>>> master
             #]: continue
 
             print sample
