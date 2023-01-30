@@ -151,6 +151,7 @@ int AnalysisBase::RunAnalysis() {
     if (!file_ptr) {
       std::cerr << ">> Error: Unable to open file \"" << input_files_[file]
                 << "\"\n";
+      std::exit(0);
       if (retry_on_fail_ && retry_attempts_ > 0) {
         for (unsigned att = 0; att < retry_attempts_; ++att) {
           std::cout << ">> Retry attempt " << att + 1 << "/" << retry_attempts_
