@@ -1005,6 +1005,9 @@ namespace ic {
       }
     }
 
+    std::vector<ic::Vertex*> gen_vertices;
+    if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
+
     std::vector<GenJet> gen_tau_jets = BuildTauJets(gen_particles, false,true);
     std::vector<GenJet *> gen_tau_jets_ptr;
     for (auto & x : gen_tau_jets) gen_tau_jets_ptr.push_back(&x);
@@ -1813,8 +1816,6 @@ namespace ic {
     tauFlag_1_=-1, tauFlag_2_=-1;
 
 
-    std::vector<ic::Vertex*> gen_vertices;
-    if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");
     if(gen_vertices.size()>0 && tau_neutrinos.size()==2) {
 
       if (rho_daughters.size()>=1) {
@@ -2382,8 +2383,6 @@ namespace ic {
       //cp_channel_=1;
     }
 
-    std::vector<ic::Vertex*> gen_vertices;
-    if(event->ExistsInTree("genVertices")) gen_vertices = event->GetPtrVec<ic::Vertex>("genVertices");  
     if (pi_daughters.size()==2 && prho_daughters.size()==2){
         cp_channel_=1;
 
