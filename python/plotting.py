@@ -3600,15 +3600,11 @@ def CompareHists(hists=[],
     pads[0].RedrawAxis()
     
     c1.SaveAs(plot_name+'.pdf')
-<<<<<<< FF_MSSM
     #c1.SaveAs(plot_name+'.png')
 
     for o in objects:
       o.IsA().Destructor(o)
-=======
-    c1.SaveAs(plot_name+'.png')
     c1.Close()
->>>>>>> master
     
 def HTTPlotSignal(nodename, 
             infile=None, 
