@@ -514,150 +514,149 @@ namespace ic {
     /* ps_2jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_2jet_down"); */
     /* ps_3jet_up_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_up"); */
     /* ps_3jet_down_ = GetFromTFile<TH1D>("input/ggh_weights/MG_ps_uncerts.root","/","ps_3jet_down"); */  
-<<<<<<< FF_MSSM
 
     std::string csv_file_path = "";
 
     if (era_==era::data_2016)       csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
-	    else if (era_==era::data_2017)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
-	    else if (era_==era::data_2018)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
-
-	    //calib  = new const BTagCalibration("deepjet",csv_file_path);
-
-
-	    //reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
-	    //reader_comb->load(*calib,BTagEntry::FLAV_B,"comb"); 
-
-
-
-            std::string file = "input/ggh_weights/NNLOPS_reweight.root";
-            ggh_weights_ = new TFile(file.c_str());
-            ggh_weights_->cd();
-        
-            ggh_ph_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_0jet");
-            ggh_ph_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_1jet");
-            ggh_ph_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_2jet");
-            ggh_ph_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_3jet");
-        
-            ggh_weights_->Close();
-	    return 0;
-	  }
-
-	  int HTTGenAnalysis::Execute(TreeEvent *event) {
-	    
-	    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-	    event_ = (unsigned long long) eventInfo->event();
-	    wt_ = 1;
-	    rand->SetSeed(event_);
-	    rand_ = rand->Uniform();   
-	    hasTaus_=false; 
-	    wt_ = eventInfo->total_weight();
+    else if (era_==era::data_2017)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
+    else if (era_==era::data_2018)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
     
-            if (eventInfo->weight_defined("gen_weight")) gen_wt_ = eventInfo->weight("gen_weight");
+    //calib  = new const BTagCalibration("deepjet",csv_file_path);
+    
+    
+    //reader_comb = new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central",{"up","down"});
+    //reader_comb->load(*calib,BTagEntry::FLAV_B,"comb"); 
+    
+    
+    
+    std::string file = "input/ggh_weights/NNLOPS_reweight.root";
+    ggh_weights_ = new TFile(file.c_str());
+    ggh_weights_->cd();
+    
+    ggh_ph_0jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_0jet");
+    ggh_ph_1jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_1jet");
+    ggh_ph_2jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_2jet");
+    ggh_ph_3jet_ = (TGraph*)gDirectory->Get("gr_NNLOPSratio_pt_powheg_3jet");
+    
+    ggh_weights_->Close();
+    return 0;
+  }
 
-	    //std::cout << "================event " << event_ << "===================" << std::endl;
+  int HTTGenAnalysis::Execute(TreeEvent *event) {
+    
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    event_ = (unsigned long long) eventInfo->event();
+    wt_ = 1;
+    rand->SetSeed(event_);
+    rand_ = rand->Uniform();   
+    hasTaus_=false; 
+    wt_ = eventInfo->total_weight();
+  
+    if (eventInfo->weight_defined("gen_weight")) gen_wt_ = eventInfo->weight("gen_weight");
+  
+    //std::cout << "================event " << event_ << "===================" << std::endl;
+  
+    wt_cp_sm_=0.0; 
+    wt_cp_ps_=0.0; 
+    wt_cp_mm_=0.0; 
+  
+    // test tauspinner weights
+    if(event->ExistsInTree("tauspinner")){
+      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
+  
+      if (tauspinner->weight_defined("wt_z_pol")) wt_z_pol_ = tauspinner->weight("wt_z_pol"); else wt_z_pol_=1.0;
+  
+      if (tauspinner->weight_defined("wt_cp_0")){
+        wt_cp_sm_ = tauspinner->weight("wt_cp_0");
+        wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
+        wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
+  
+        //wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
+        //wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
+        //wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
+        //WTm_ = tauspinner->weight("WTm");
+        //WTp_ = tauspinner->weight("WTp");
+      }
+  
+    }
+  
+  
+    wt_cp_prod_sm_=0.0;
+    wt_cp_prod_ps_=0.0;
+    wt_cp_prod_mm_=0.0;
+  
+    if (eventInfo->weight_defined("sm_weight_nlo")){
+      if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
+      if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
+      if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
+    } else {
+      if(eventInfo->weight_defined("sm_weight")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight");
+      if(eventInfo->weight_defined("ps_weight")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight");
+      if(eventInfo->weight_defined("mm_weight")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight");
+   }
+  
+  
+    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
+    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
+    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
+    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
+  
+   scale_vlq_1_ = eventInfo->weight_defined("1034") ? eventInfo->weight("1034") : 1.0; // 1 0.5
+   scale_vlq_2_ = eventInfo->weight_defined("1019") ? eventInfo->weight("1019") : 1.0; // 1 2
+   scale_vlq_3_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0; // 2 1
+   scale_vlq_4_ = eventInfo->weight_defined("1014") ? eventInfo->weight("1014") : 1.0; // 0.5 1
+   scale_vlq_5_ = eventInfo->weight_defined("1024") ? eventInfo->weight("1024") : 1.0; // 2 2
+   scale_vlq_6_ = eventInfo->weight_defined("1029") ? eventInfo->weight("1029") : 1.0; // 0.5 2
+   scale_vlq_7_ = eventInfo->weight_defined("1039") ? eventInfo->weight("1039") : 1.0; // 2 0.5
+   scale_vlq_8_ = eventInfo->weight_defined("1044") ? eventInfo->weight("1044") : 1.0; // 0.5 0.5
+  
+   wt_vlq_sm_ = eventInfo->weight_defined("sm") ? eventInfo->weight("sm") : 1.0;
+   wt_vlq_full_ = eventInfo->weight_defined("full") ? eventInfo->weight("full") : 1.0;
+  
+   if(do_theory_uncert_){
+      // note some of these labels may be generator dependent so need to make sure you check before using them
+      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+      if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+      if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+      if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+      if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+      if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+      if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+      if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+      if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
 
-	    wt_cp_sm_=0.0; 
-	    wt_cp_ps_=0.0; 
-	    wt_cp_mm_=0.0; 
 
-	    // test tauspinner weights
-	    if(event->ExistsInTree("tauspinner")){
-	      EventInfo const* tauspinner = event->GetPtr<EventInfo>("tauspinner");
-
-	      if (tauspinner->weight_defined("wt_z_pol")) wt_z_pol_ = tauspinner->weight("wt_z_pol"); else wt_z_pol_=1.0;
-
-	      if (tauspinner->weight_defined("wt_cp_0")){
-		wt_cp_sm_ = tauspinner->weight("wt_cp_0");
-		wt_cp_ps_ = tauspinner->weight("wt_cp_0p5"); 
-		wt_cp_mm_ = tauspinner->weight("wt_cp_0p25");
-
-		//wt_cp_sm_alt_ = tauspinner->weight("wt_cp_0_alt");
-		//wt_cp_ps_alt_ = tauspinner->weight("wt_cp_0p5_alt");
-		//wt_cp_mm_alt_ = tauspinner->weight("wt_cp_0p25_alt");
-		//WTm_ = tauspinner->weight("WTm");
-		//WTp_ = tauspinner->weight("WTp");
-	      }
-
-	    }
-
-
-	    wt_cp_prod_sm_=0.0;
-	    wt_cp_prod_ps_=0.0;
-	    wt_cp_prod_mm_=0.0;
-
-            if (eventInfo->weight_defined("sm_weight_nlo")){
-              if(eventInfo->weight_defined("sm_weight_nlo")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight_nlo");
-              if(eventInfo->weight_defined("ps_weight_nlo")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight_nlo");
-              if(eventInfo->weight_defined("mm_weight_nlo")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight_nlo");
-            } else {
-              if(eventInfo->weight_defined("sm_weight")) wt_cp_prod_sm_ = eventInfo->weight("sm_weight");
-              if(eventInfo->weight_defined("ps_weight")) wt_cp_prod_ps_ = eventInfo->weight("ps_weight");
-              if(eventInfo->weight_defined("mm_weight")) wt_cp_prod_mm_ = eventInfo->weight("mm_weight");
-           }
-
-
-	    wt_ps_isr_up_   = eventInfo->weight_defined("genweight6") ? eventInfo->weight("genweight6") : 1.0;
-	    wt_ps_isr_down_ = eventInfo->weight_defined("genweight8") ? eventInfo->weight("genweight8") : 1.0;
-	    wt_ps_fsr_up_   = eventInfo->weight_defined("genweight7") ? eventInfo->weight("genweight7") : 1.0;
-	    wt_ps_fsr_down_ = eventInfo->weight_defined("genweight9") ? eventInfo->weight("genweight9") : 1.0;
-
-           scale_vlq_1_ = eventInfo->weight_defined("1034") ? eventInfo->weight("1034") : 1.0; // 1 0.5
-           scale_vlq_2_ = eventInfo->weight_defined("1019") ? eventInfo->weight("1019") : 1.0; // 1 2
-           scale_vlq_3_ = eventInfo->weight_defined("1009") ? eventInfo->weight("1009") : 1.0; // 2 1
-           scale_vlq_4_ = eventInfo->weight_defined("1014") ? eventInfo->weight("1014") : 1.0; // 0.5 1
-           scale_vlq_5_ = eventInfo->weight_defined("1024") ? eventInfo->weight("1024") : 1.0; // 2 2
-           scale_vlq_6_ = eventInfo->weight_defined("1029") ? eventInfo->weight("1029") : 1.0; // 0.5 2
-           scale_vlq_7_ = eventInfo->weight_defined("1039") ? eventInfo->weight("1039") : 1.0; // 2 0.5
-           scale_vlq_8_ = eventInfo->weight_defined("1044") ? eventInfo->weight("1044") : 1.0; // 0.5 0.5
-
-           wt_vlq_sm_ = eventInfo->weight_defined("sm") ? eventInfo->weight("sm") : 1.0;
-           wt_vlq_full_ = eventInfo->weight_defined("full") ? eventInfo->weight("full") : 1.0;
-
-	    if(do_theory_uncert_){
-	      // note some of these labels may be generator dependent so need to make sure you check before using them
-	      if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
-	      if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
-	      if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
-	      if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
-	      if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
-	      if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
-	      if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
-	      if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
-	      if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0; 
-
-
-        if(eventInfo->weight_defined("5000")) pdfweight_0_ = eventInfo->weight("5000"); else if(eventInfo->weight_defined("10000")) pdfweight_0_ = eventInfo->weight("10000"); else pdfweight_0_=1.0;
-        if(eventInfo->weight_defined("5001")) pdfweight_1_ = eventInfo->weight("5001"); else if(eventInfo->weight_defined("10001")) pdfweight_1_ = eventInfo->weight("10001"); else pdfweight_1_=1.0;
-        if(eventInfo->weight_defined("5002")) pdfweight_2_ = eventInfo->weight("5002"); else if(eventInfo->weight_defined("10002")) pdfweight_2_ = eventInfo->weight("10002"); else pdfweight_2_=1.0;
-        if(eventInfo->weight_defined("5003")) pdfweight_3_ = eventInfo->weight("5003"); else if(eventInfo->weight_defined("10003")) pdfweight_3_ = eventInfo->weight("10003"); else pdfweight_3_=1.0;
-        if(eventInfo->weight_defined("5004")) pdfweight_4_ = eventInfo->weight("5004"); else if(eventInfo->weight_defined("10004")) pdfweight_4_ = eventInfo->weight("10004"); else pdfweight_4_=1.0;
-        if(eventInfo->weight_defined("5005")) pdfweight_5_ = eventInfo->weight("5005"); else if(eventInfo->weight_defined("10005")) pdfweight_5_ = eventInfo->weight("10005"); else pdfweight_5_=1.0;
-        if(eventInfo->weight_defined("5006")) pdfweight_6_ = eventInfo->weight("5006"); else if(eventInfo->weight_defined("10006")) pdfweight_6_ = eventInfo->weight("10006"); else pdfweight_6_=1.0;
-        if(eventInfo->weight_defined("5007")) pdfweight_7_ = eventInfo->weight("5007"); else if(eventInfo->weight_defined("10007")) pdfweight_7_ = eventInfo->weight("10007"); else pdfweight_7_=1.0;
-        if(eventInfo->weight_defined("5008")) pdfweight_8_ = eventInfo->weight("5008"); else if(eventInfo->weight_defined("10008")) pdfweight_8_ = eventInfo->weight("10008"); else pdfweight_8_=1.0;
-        if(eventInfo->weight_defined("5009")) pdfweight_9_ = eventInfo->weight("5009"); else if(eventInfo->weight_defined("10009")) pdfweight_9_ = eventInfo->weight("10009"); else pdfweight_9_=1.0;
-        if(eventInfo->weight_defined("5010")) pdfweight_10_ = eventInfo->weight("5010"); else if(eventInfo->weight_defined("10010")) pdfweight_10_ = eventInfo->weight("10010"); else pdfweight_10_=1.0;
-        if(eventInfo->weight_defined("5011")) pdfweight_11_ = eventInfo->weight("5011"); else if(eventInfo->weight_defined("10011")) pdfweight_11_ = eventInfo->weight("10011"); else pdfweight_11_=1.0;
-        if(eventInfo->weight_defined("5012")) pdfweight_12_ = eventInfo->weight("5012"); else if(eventInfo->weight_defined("10012")) pdfweight_12_ = eventInfo->weight("10012"); else pdfweight_12_=1.0;
-        if(eventInfo->weight_defined("5013")) pdfweight_13_ = eventInfo->weight("5013"); else if(eventInfo->weight_defined("10013")) pdfweight_13_ = eventInfo->weight("10013"); else pdfweight_13_=1.0;
-        if(eventInfo->weight_defined("5014")) pdfweight_14_ = eventInfo->weight("5014"); else if(eventInfo->weight_defined("10014")) pdfweight_14_ = eventInfo->weight("10014"); else pdfweight_14_=1.0;
-        if(eventInfo->weight_defined("5015")) pdfweight_15_ = eventInfo->weight("5015"); else if(eventInfo->weight_defined("10015")) pdfweight_15_ = eventInfo->weight("10015"); else pdfweight_15_=1.0;
-        if(eventInfo->weight_defined("5016")) pdfweight_16_ = eventInfo->weight("5016"); else if(eventInfo->weight_defined("10016")) pdfweight_16_ = eventInfo->weight("10016"); else pdfweight_16_=1.0;
-        if(eventInfo->weight_defined("5017")) pdfweight_17_ = eventInfo->weight("5017"); else if(eventInfo->weight_defined("10017")) pdfweight_17_ = eventInfo->weight("10017"); else pdfweight_17_=1.0;
-        if(eventInfo->weight_defined("5018")) pdfweight_18_ = eventInfo->weight("5018"); else if(eventInfo->weight_defined("10018")) pdfweight_18_ = eventInfo->weight("10018"); else pdfweight_18_=1.0;
-        if(eventInfo->weight_defined("5019")) pdfweight_19_ = eventInfo->weight("5019"); else if(eventInfo->weight_defined("10019")) pdfweight_19_ = eventInfo->weight("10019"); else pdfweight_19_=1.0;
-        if(eventInfo->weight_defined("5020")) pdfweight_20_ = eventInfo->weight("5020"); else if(eventInfo->weight_defined("10020")) pdfweight_20_ = eventInfo->weight("10020"); else pdfweight_20_=1.0;
-        if(eventInfo->weight_defined("5021")) pdfweight_21_ = eventInfo->weight("5021"); else if(eventInfo->weight_defined("10021")) pdfweight_21_ = eventInfo->weight("10021"); else pdfweight_21_=1.0;
-        if(eventInfo->weight_defined("5022")) pdfweight_22_ = eventInfo->weight("5022"); else if(eventInfo->weight_defined("10022")) pdfweight_22_ = eventInfo->weight("10022"); else pdfweight_22_=1.0;
-        if(eventInfo->weight_defined("5023")) pdfweight_23_ = eventInfo->weight("5023"); else if(eventInfo->weight_defined("10023")) pdfweight_23_ = eventInfo->weight("10023"); else pdfweight_23_=1.0;
-        if(eventInfo->weight_defined("5024")) pdfweight_24_ = eventInfo->weight("5024"); else if(eventInfo->weight_defined("10024")) pdfweight_24_ = eventInfo->weight("10024"); else pdfweight_24_=1.0;
-        if(eventInfo->weight_defined("5025")) pdfweight_25_ = eventInfo->weight("5025"); else if(eventInfo->weight_defined("10025")) pdfweight_25_ = eventInfo->weight("10025"); else pdfweight_25_=1.0;
-        if(eventInfo->weight_defined("5026")) pdfweight_26_ = eventInfo->weight("5026"); else if(eventInfo->weight_defined("10026")) pdfweight_26_ = eventInfo->weight("10026"); else pdfweight_26_=1.0;
-        if(eventInfo->weight_defined("5027")) pdfweight_27_ = eventInfo->weight("5027"); else if(eventInfo->weight_defined("10027")) pdfweight_27_ = eventInfo->weight("10027"); else pdfweight_27_=1.0;
-        if(eventInfo->weight_defined("5028")) pdfweight_28_ = eventInfo->weight("5028"); else if(eventInfo->weight_defined("10028")) pdfweight_28_ = eventInfo->weight("10028"); else pdfweight_28_=1.0;
-        if(eventInfo->weight_defined("5029")) pdfweight_29_ = eventInfo->weight("5029"); else if(eventInfo->weight_defined("10029")) pdfweight_29_ = eventInfo->weight("10029"); else pdfweight_29_=1.0;
-        if(eventInfo->weight_defined("5030")) pdfweight_30_ = eventInfo->weight("5030"); else if(eventInfo->weight_defined("10030")) pdfweight_30_ = eventInfo->weight("10030"); else pdfweight_30_=1.0;
+      if(eventInfo->weight_defined("5000")) pdfweight_0_ = eventInfo->weight("5000"); else if(eventInfo->weight_defined("10000")) pdfweight_0_ = eventInfo->weight("10000"); else pdfweight_0_=1.0;
+      if(eventInfo->weight_defined("5001")) pdfweight_1_ = eventInfo->weight("5001"); else if(eventInfo->weight_defined("10001")) pdfweight_1_ = eventInfo->weight("10001"); else pdfweight_1_=1.0;
+      if(eventInfo->weight_defined("5002")) pdfweight_2_ = eventInfo->weight("5002"); else if(eventInfo->weight_defined("10002")) pdfweight_2_ = eventInfo->weight("10002"); else pdfweight_2_=1.0;
+      if(eventInfo->weight_defined("5003")) pdfweight_3_ = eventInfo->weight("5003"); else if(eventInfo->weight_defined("10003")) pdfweight_3_ = eventInfo->weight("10003"); else pdfweight_3_=1.0;
+      if(eventInfo->weight_defined("5004")) pdfweight_4_ = eventInfo->weight("5004"); else if(eventInfo->weight_defined("10004")) pdfweight_4_ = eventInfo->weight("10004"); else pdfweight_4_=1.0;
+      if(eventInfo->weight_defined("5005")) pdfweight_5_ = eventInfo->weight("5005"); else if(eventInfo->weight_defined("10005")) pdfweight_5_ = eventInfo->weight("10005"); else pdfweight_5_=1.0;
+      if(eventInfo->weight_defined("5006")) pdfweight_6_ = eventInfo->weight("5006"); else if(eventInfo->weight_defined("10006")) pdfweight_6_ = eventInfo->weight("10006"); else pdfweight_6_=1.0;
+      if(eventInfo->weight_defined("5007")) pdfweight_7_ = eventInfo->weight("5007"); else if(eventInfo->weight_defined("10007")) pdfweight_7_ = eventInfo->weight("10007"); else pdfweight_7_=1.0;
+      if(eventInfo->weight_defined("5008")) pdfweight_8_ = eventInfo->weight("5008"); else if(eventInfo->weight_defined("10008")) pdfweight_8_ = eventInfo->weight("10008"); else pdfweight_8_=1.0;
+      if(eventInfo->weight_defined("5009")) pdfweight_9_ = eventInfo->weight("5009"); else if(eventInfo->weight_defined("10009")) pdfweight_9_ = eventInfo->weight("10009"); else pdfweight_9_=1.0;
+      if(eventInfo->weight_defined("5010")) pdfweight_10_ = eventInfo->weight("5010"); else if(eventInfo->weight_defined("10010")) pdfweight_10_ = eventInfo->weight("10010"); else pdfweight_10_=1.0;
+      if(eventInfo->weight_defined("5011")) pdfweight_11_ = eventInfo->weight("5011"); else if(eventInfo->weight_defined("10011")) pdfweight_11_ = eventInfo->weight("10011"); else pdfweight_11_=1.0;
+      if(eventInfo->weight_defined("5012")) pdfweight_12_ = eventInfo->weight("5012"); else if(eventInfo->weight_defined("10012")) pdfweight_12_ = eventInfo->weight("10012"); else pdfweight_12_=1.0;
+      if(eventInfo->weight_defined("5013")) pdfweight_13_ = eventInfo->weight("5013"); else if(eventInfo->weight_defined("10013")) pdfweight_13_ = eventInfo->weight("10013"); else pdfweight_13_=1.0;
+      if(eventInfo->weight_defined("5014")) pdfweight_14_ = eventInfo->weight("5014"); else if(eventInfo->weight_defined("10014")) pdfweight_14_ = eventInfo->weight("10014"); else pdfweight_14_=1.0;
+      if(eventInfo->weight_defined("5015")) pdfweight_15_ = eventInfo->weight("5015"); else if(eventInfo->weight_defined("10015")) pdfweight_15_ = eventInfo->weight("10015"); else pdfweight_15_=1.0;
+      if(eventInfo->weight_defined("5016")) pdfweight_16_ = eventInfo->weight("5016"); else if(eventInfo->weight_defined("10016")) pdfweight_16_ = eventInfo->weight("10016"); else pdfweight_16_=1.0;
+      if(eventInfo->weight_defined("5017")) pdfweight_17_ = eventInfo->weight("5017"); else if(eventInfo->weight_defined("10017")) pdfweight_17_ = eventInfo->weight("10017"); else pdfweight_17_=1.0;
+      if(eventInfo->weight_defined("5018")) pdfweight_18_ = eventInfo->weight("5018"); else if(eventInfo->weight_defined("10018")) pdfweight_18_ = eventInfo->weight("10018"); else pdfweight_18_=1.0;
+      if(eventInfo->weight_defined("5019")) pdfweight_19_ = eventInfo->weight("5019"); else if(eventInfo->weight_defined("10019")) pdfweight_19_ = eventInfo->weight("10019"); else pdfweight_19_=1.0;
+      if(eventInfo->weight_defined("5020")) pdfweight_20_ = eventInfo->weight("5020"); else if(eventInfo->weight_defined("10020")) pdfweight_20_ = eventInfo->weight("10020"); else pdfweight_20_=1.0;
+      if(eventInfo->weight_defined("5021")) pdfweight_21_ = eventInfo->weight("5021"); else if(eventInfo->weight_defined("10021")) pdfweight_21_ = eventInfo->weight("10021"); else pdfweight_21_=1.0;
+      if(eventInfo->weight_defined("5022")) pdfweight_22_ = eventInfo->weight("5022"); else if(eventInfo->weight_defined("10022")) pdfweight_22_ = eventInfo->weight("10022"); else pdfweight_22_=1.0;
+      if(eventInfo->weight_defined("5023")) pdfweight_23_ = eventInfo->weight("5023"); else if(eventInfo->weight_defined("10023")) pdfweight_23_ = eventInfo->weight("10023"); else pdfweight_23_=1.0;
+      if(eventInfo->weight_defined("5024")) pdfweight_24_ = eventInfo->weight("5024"); else if(eventInfo->weight_defined("10024")) pdfweight_24_ = eventInfo->weight("10024"); else pdfweight_24_=1.0;
+      if(eventInfo->weight_defined("5025")) pdfweight_25_ = eventInfo->weight("5025"); else if(eventInfo->weight_defined("10025")) pdfweight_25_ = eventInfo->weight("10025"); else pdfweight_25_=1.0;
+      if(eventInfo->weight_defined("5026")) pdfweight_26_ = eventInfo->weight("5026"); else if(eventInfo->weight_defined("10026")) pdfweight_26_ = eventInfo->weight("10026"); else pdfweight_26_=1.0;
+      if(eventInfo->weight_defined("5027")) pdfweight_27_ = eventInfo->weight("5027"); else if(eventInfo->weight_defined("10027")) pdfweight_27_ = eventInfo->weight("10027"); else pdfweight_27_=1.0;
+      if(eventInfo->weight_defined("5028")) pdfweight_28_ = eventInfo->weight("5028"); else if(eventInfo->weight_defined("10028")) pdfweight_28_ = eventInfo->weight("10028"); else pdfweight_28_=1.0;
+      if(eventInfo->weight_defined("5029")) pdfweight_29_ = eventInfo->weight("5029"); else if(eventInfo->weight_defined("10029")) pdfweight_29_ = eventInfo->weight("10029"); else pdfweight_29_=1.0;
+      if(eventInfo->weight_defined("5030")) pdfweight_30_ = eventInfo->weight("5030"); else if(eventInfo->weight_defined("10030")) pdfweight_30_ = eventInfo->weight("10030"); else pdfweight_30_=1.0;
 
       if(eventInfo->weight_defined("h_tb")) wt_h_tb_ = eventInfo->weight("h_tb"); else wt_h_tb_=1.0;
       if(eventInfo->weight_defined("h_t"))  wt_h_t_ = eventInfo->weight("h_t"); else wt_h_t_=1.0;
