@@ -247,16 +247,6 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_H_t_;
   double wt_H_b_; 
 
-  double wt_h_tb_msbar_;
-  double wt_h_t_msbar_;
-  double wt_h_b_msbar_;
-  double wt_A_tb_msbar_;
-  double wt_A_t_msbar_;
-  double wt_A_b_msbar_;
-  double wt_H_tb_msbar_;
-  double wt_H_t_msbar_;
-  double wt_H_b_msbar_;
-
   double wt_hfact_nom_;
   double wt_hfact_up_;
   double wt_hfact_down_;
