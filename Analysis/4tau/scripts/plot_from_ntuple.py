@@ -4,20 +4,22 @@ import json
 from array import array
 import UserCode.ICHiggsTauTau.plotting as plotting
 from collections import OrderedDict
+import seaborn as sns
 
 ### Input options ###
 
 #input_folder  = "/vols/cms/gu18/Offline/output/4tau/2018_gen"
-input_folder  = "/vols/cms/gu18/Offline/output/4tau/2018_1307_sigmass"
+#input_folder  = "/vols/cms/gu18/Offline/output/4tau/2018_1307_sigmass"
+input_folder  = "/vols/cms/ks1021/offline/4tau/trees/0601/2018/"
 params_file   = "scripts/params_UL_2018.json"
 ntuple_name   = "ntuple"
-#var_input     = "mvis_phi[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360,370,380,390,400]"
-var_input     = "mvis_A[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300]"
+var_input     = "mvis_phi[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350]"
+#var_input     = "mvis_A[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]"
 #var_input     = "pt_4[0,2,4,6,8,10,13,14,16,18,20,22,24,26,28,30,34,38,42,46,50,55,60,65,70,80,90,100,120]"
-x_label       = "m_{vis}^{#phi}"
-x_label       = "m_{vis}^{A}"
+x_label       = "m_{vis}^{#phi} (GeV)"
+#x_label       = "m_{vis}^{A} (GeV)"
 #x_label       = "gen-p_{T}^{#tau_{3}}"
-y_label       = "1/N dN/d{}".format(x_label)
+y_label       = "1/N dN/dm_{vis}^{#phi}"
 z_label       = "Events"
 sel           = "({}>0)".format(var_input.split("[")[0])
 do_ratio      = False
@@ -54,17 +56,35 @@ under_legend_3=""
 
 files = OrderedDict()
 
-files["H(100)A(60)#rightarrow 4#tau"] = ["phi100A60To4Tau_ettt_2018.root","phi100A60To4Tau_mttt_2018.root","phi100A60To4Tau_tttt_2018.root","phi100A60To4Tau_eett_2018.root","phi100A60To4Tau_mmtt_2018.root"]
-files["H(200)A(60)#rightarrow 4#tau"] = ["phi200A60To4Tau_ettt_2018.root","phi200A60To4Tau_mttt_2018.root","phi200A60To4Tau_tttt_2018.root","phi200A60To4Tau_eett_2018.root","phi200A60To4Tau_mmtt_2018.root"]
-files["H(300)A(60)#rightarrow 4#tau"] = ["phi300A60To4Tau_ettt_2018.root","phi300A60To4Tau_mttt_2018.root","phi300A60To4Tau_tttt_2018.root","phi300A60To4Tau_eett_2018.root","phi300A60To4Tau_mmtt_2018.root"]
+files["H(100)A(60)#rightarrow 4#tau"] = ["ZstarTophi100A60To4Tau_ettt_2018.root","ZstarTophi100A60To4Tau_mttt_2018.root","ZstarTophi100A60To4Tau_tttt_2018.root","ZstarTophi100A60To4Tau_eett_2018.root","ZstarTophi100A60To4Tau_mmtt_2018.root"]
+#files["H(125)A(60)#rightarrow 4#tau"] = ["ZstarTophi125A60To4Tau_ettt_2018.root","ZstarTophi125A60To4Tau_mttt_2018.root","ZstarTophi125A60To4Tau_tttt_2018.root","ZstarTophi125A60To4Tau_eett_2018.root","ZstarTophi125A60To4Tau_mmtt_2018.root"]
+#files["H(160)A(60)#rightarrow 4#tau"] = ["ZstarTophi160A60To4Tau_ettt_2018.root","ZstarTophi160A60To4Tau_mttt_2018.root","ZstarTophi160A60To4Tau_tttt_2018.root","ZstarTophi160A60To4Tau_eett_2018.root","ZstarTophi160A60To4Tau_mmtt_2018.root"]
+files["H(200)A(60)#rightarrow 4#tau"] = ["ZstarTophi200A60To4Tau_ettt_2018.root","ZstarTophi200A60To4Tau_mttt_2018.root","ZstarTophi200A60To4Tau_tttt_2018.root","ZstarTophi200A60To4Tau_eett_2018.root","ZstarTophi200A60To4Tau_mmtt_2018.root"]
+files["H(300)A(60)#rightarrow 4#tau"] = ["ZstarTophi300A60To4Tau_ettt_2018.root","ZstarTophi300A60To4Tau_mttt_2018.root","ZstarTophi300A60To4Tau_tttt_2018.root","ZstarTophi300A60To4Tau_eett_2018.root","ZstarTophi300A60To4Tau_mmtt_2018.root"]
 
-files["H(100)A(100)#rightarrow 4#tau"] = ["phi100A100To4Tau_ettt_2018.root","phi100A100To4Tau_mttt_2018.root","phi100A100To4Tau_tttt_2018.root","phi100A100To4Tau_eett_2018.root","phi100A100To4Tau_mmtt_2018.root"]
-files["H(200)A(100)#rightarrow 4#tau"] = ["phi200A100To4Tau_ettt_2018.root","phi200A100To4Tau_mttt_2018.root","phi200A100To4Tau_tttt_2018.root","phi200A100To4Tau_eett_2018.root","phi200A100To4Tau_mmtt_2018.root"]
-files["H(300)A(100)#rightarrow 4#tau"] = ["phi300A100To4Tau_ettt_2018.root","phi300A100To4Tau_mttt_2018.root","phi300A100To4Tau_tttt_2018.root","phi300A100To4Tau_eett_2018.root","phi300A100To4Tau_mmtt_2018.root"]
+#files["H(100)A(80)#rightarrow 4#tau"] = ["ZstarTophi100A80To4Tau_ettt_2018.root","ZstarTophi100A80To4Tau_mttt_2018.root","ZstarTophi100A80To4Tau_tttt_2018.root","ZstarTophi100A80To4Tau_eett_2018.root","ZstarTophi100A80To4Tau_mmtt_2018.root"]
+#files["H(125)A(80)#rightarrow 4#tau"] = ["ZstarTophi125A80To4Tau_ettt_2018.root","ZstarTophi125A80To4Tau_mttt_2018.root","ZstarTophi125A80To4Tau_tttt_2018.root","ZstarTophi125A80To4Tau_eett_2018.root","ZstarTophi125A80To4Tau_mmtt_2018.root"]
+#files["H(160)A(80)#rightarrow 4#tau"] = ["ZstarTophi160A80To4Tau_ettt_2018.root","ZstarTophi160A80To4Tau_mttt_2018.root","ZstarTophi160A80To4Tau_tttt_2018.root","ZstarTophi160A80To4Tau_eett_2018.root","ZstarTophi160A80To4Tau_mmtt_2018.root"]
+#files["H(200)A(80)#rightarrow 4#tau"] = ["ZstarTophi200A80To4Tau_ettt_2018.root","ZstarTophi200A80To4Tau_mttt_2018.root","ZstarTophi200A80To4Tau_tttt_2018.root","ZstarTophi200A80To4Tau_eett_2018.root","ZstarTophi200A80To4Tau_mmtt_2018.root"]
+#files["H(300)A(80)#rightarrow 4#tau"] = ["ZstarTophi300A80To4Tau_ettt_2018.root","ZstarTophi300A80To4Tau_mttt_2018.root","ZstarTophi300A80To4Tau_tttt_2018.root","ZstarTophi300A80To4Tau_eett_2018.root","ZstarTophi300A80To4Tau_mmtt_2018.root"]
 
-files["H(100)A(150)#rightarrow 4#tau"] = ["phi100A150To4Tau_ettt_2018.root","phi100A150To4Tau_mttt_2018.root","phi100A150To4Tau_tttt_2018.root","phi100A150To4Tau_eett_2018.root","phi100A150To4Tau_mmtt_2018.root"]
-files["H(200)A(150)#rightarrow 4#tau"] = ["phi200A150To4Tau_ettt_2018.root","phi200A150To4Tau_mttt_2018.root","phi200A150To4Tau_tttt_2018.root","phi200A150To4Tau_eett_2018.root","phi200A150To4Tau_mmtt_2018.root"]
-files["H(300)A(150)#rightarrow 4#tau"] = ["phi300A150To4Tau_ettt_2018.root","phi300A150To4Tau_mttt_2018.root","phi300A150To4Tau_tttt_2018.root","phi300A150To4Tau_eett_2018.root","phi300A150To4Tau_mmtt_2018.root"]
+files["H(100)A(100)#rightarrow 4#tau"] = ["ZstarTophi100A100To4Tau_ettt_2018.root","ZstarTophi100A100To4Tau_mttt_2018.root","ZstarTophi100A100To4Tau_tttt_2018.root","ZstarTophi100A100To4Tau_eett_2018.root","ZstarTophi100A100To4Tau_mmtt_2018.root"]
+#files["H(125)A(100)#rightarrow 4#tau"] = ["ZstarTophi125A100To4Tau_ettt_2018.root","ZstarTophi125A100To4Tau_mttt_2018.root","ZstarTophi125A100To4Tau_tttt_2018.root","ZstarTophi125A100To4Tau_eett_2018.root","ZstarTophi125A100To4Tau_mmtt_2018.root"]
+#files["H(160)A(100)#rightarrow 4#tau"] = ["ZstarTophi160A100To4Tau_ettt_2018.root","ZstarTophi160A100To4Tau_mttt_2018.root","ZstarTophi160A100To4Tau_tttt_2018.root","ZstarTophi160A100To4Tau_eett_2018.root","ZstarTophi160A100To4Tau_mmtt_2018.root"]
+files["H(200)A(100)#rightarrow 4#tau"] = ["ZstarTophi200A100To4Tau_ettt_2018.root","ZstarTophi200A100To4Tau_mttt_2018.root","ZstarTophi200A100To4Tau_tttt_2018.root","ZstarTophi200A100To4Tau_eett_2018.root","ZstarTophi200A100To4Tau_mmtt_2018.root"]
+files["H(300)A(100)#rightarrow 4#tau"] = ["ZstarTophi300A100To4Tau_ettt_2018.root","ZstarTophi300A100To4Tau_mttt_2018.root","ZstarTophi300A100To4Tau_tttt_2018.root","ZstarTophi300A100To4Tau_eett_2018.root","ZstarTophi300A100To4Tau_mmtt_2018.root"]
+
+#files["H(100)A(125)#rightarrow 4#tau"] = ["ZstarTophi100A125To4Tau_ettt_2018.root","ZstarTophi100A125To4Tau_mttt_2018.root","ZstarTophi100A125To4Tau_tttt_2018.root","ZstarTophi100A125To4Tau_eett_2018.root","ZstarTophi100A125To4Tau_mmtt_2018.root"]
+#files["H(125)A(125)#rightarrow 4#tau"] = ["ZstarTophi125A125To4Tau_ettt_2018.root","ZstarTophi125A125To4Tau_mttt_2018.root","ZstarTophi125A125To4Tau_tttt_2018.root","ZstarTophi125A125To4Tau_eett_2018.root","ZstarTophi125A125To4Tau_mmtt_2018.root"]
+#files["H(160)A(125)#rightarrow 4#tau"] = ["ZstarTophi160A125To4Tau_ettt_2018.root","ZstarTophi160A125To4Tau_mttt_2018.root","ZstarTophi160A125To4Tau_tttt_2018.root","ZstarTophi160A125To4Tau_eett_2018.root","ZstarTophi160A125To4Tau_mmtt_2018.root"]
+#files["H(200)A(125)#rightarrow 4#tau"] = ["ZstarTophi200A125To4Tau_ettt_2018.root","ZstarTophi200A125To4Tau_mttt_2018.root","ZstarTophi200A125To4Tau_tttt_2018.root","ZstarTophi200A125To4Tau_eett_2018.root","ZstarTophi200A125To4Tau_mmtt_2018.root"]
+#files["H(300)A(125)#rightarrow 4#tau"] = ["ZstarTophi300A125To4Tau_ettt_2018.root","ZstarTophi300A125To4Tau_mttt_2018.root","ZstarTophi300A125To4Tau_tttt_2018.root","ZstarTophi300A125To4Tau_eett_2018.root","ZstarTophi300A125To4Tau_mmtt_2018.root"]
+
+files["H(100)A(160)#rightarrow 4#tau"] = ["ZstarTophi100A160To4Tau_ettt_2018.root","ZstarTophi100A160To4Tau_mttt_2018.root","ZstarTophi100A160To4Tau_tttt_2018.root","ZstarTophi100A160To4Tau_eett_2018.root","ZstarTophi100A160To4Tau_mmtt_2018.root"]
+#files["H(125)A(160)#rightarrow 4#tau"] = ["ZstarTophi125A160To4Tau_ettt_2018.root","ZstarTophi125A160To4Tau_mttt_2018.root","ZstarTophi125A160To4Tau_tttt_2018.root","ZstarTophi125A160To4Tau_eett_2018.root","ZstarTophi125A160To4Tau_mmtt_2018.root"]
+#files["H(160)A(160)#rightarrow 4#tau"] = ["ZstarTophi160A160To4Tau_ettt_2018.root","ZstarTophi160A160To4Tau_mttt_2018.root","ZstarTophi160A160To4Tau_tttt_2018.root","ZstarTophi160A160To4Tau_eett_2018.root","ZstarTophi160A160To4Tau_mmtt_2018.root"]
+files["H(200)A(160)#rightarrow 4#tau"] = ["ZstarTophi200A160To4Tau_ettt_2018.root","ZstarTophi200A160To4Tau_mttt_2018.root","ZstarTophi200A160To4Tau_tttt_2018.root","ZstarTophi200A160To4Tau_eett_2018.root","ZstarTophi200A160To4Tau_mmtt_2018.root"]
+files["H(300)A(160)#rightarrow 4#tau"] = ["ZstarTophi300A160To4Tau_ettt_2018.root","ZstarTophi300A160To4Tau_mttt_2018.root","ZstarTophi300A160To4Tau_tttt_2018.root","ZstarTophi300A160To4Tau_eett_2018.root","ZstarTophi300A160To4Tau_mmtt_2018.root"]
 
 ### Get histograms from ROOT files ###
 
@@ -140,7 +160,7 @@ maximum += total_range
 
 ### Plot histograms ###
 
-colours = [2,3,4,5,6,7,8,9,11]
+colours = sns.color_palette(n_colors=len(files))
 
 c = ROOT.TCanvas('c','c',700,700)
 #c.SetRightMargin(0.18)
@@ -172,15 +192,15 @@ for key, val in files.iteritems():
     h_dict[key].Draw(draw_type)
     do_options = False
   if ":" not in var_input:
-    h_dict[key].SetLineColor(colours[i])
-    h_dict[key].SetMarkerColor(colours[i])
+    h_dict[key].SetLineColor(ROOT.TColor.GetColor(colours[i][0],colours[i][1],colours[i][2]))
+    h_dict[key].SetMarkerColor(ROOT.TColor.GetColor(colours[i][0],colours[i][1],colours[i][2]))
     h_dict[key].SetLineWidth(2)
     h_dict[key].SetMarkerSize(0)
-    h_dict[key].SetFillColorAlpha(colours[i],0.3)
+    h_dict[key].SetFillColorAlpha(ROOT.TColor.GetColor(colours[i][0],colours[i][1],colours[i][2]),0.3)
     if draw_type_2 != None:
       hist_2[key].SetMarkerSize(0)
       hist_2[key].SetLineWidth(2)
-      hist_2[key].SetLineColor(colours[i])
+      hist_2[key].SetLineColor(ROOT.TColor.GetColor(colours[i][0],colours[i][1],colours[i][2]))
       hist_2[key].Draw(draw_type_2+" same")
     if not do_options: h_dict[key].Draw(draw_type+" same")
   else: 
@@ -214,7 +234,7 @@ if vert_line != None:
   line.SetLineColor(1)
   line.Draw()
  
-plotting.DrawTitle(c, '59.7 fb^{-1} (13 TeV)' % vars(), 3, scale=0.6)
+#plotting.DrawTitle(c, '59.7 fb^{-1} (13 TeV)' % vars(), 3, scale=0.6)
 #plotting.DrawTitle(c, 'e#tau_{h}#tau_{h}#tau_{h}' % vars(), 1, scale=0.6)
 #plotting.DrawTitle(c, '#mu#tau_{h}' % vars(), 1, scale=0.6)
 
@@ -230,4 +250,3 @@ latex.DrawLatex(0.62,0.55,under_legend_3)
 
 c.Print(output_name)
 
-os.system("display "+output_name)

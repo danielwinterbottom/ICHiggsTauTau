@@ -116,7 +116,7 @@ parser.add_argument("--charges_non_zero", dest="charges_non_zero", action='store
     help="If option is set then will run for events where the charges do not sum to 0.")
 parser.add_argument("--plot_signals", dest="plot_signals", type=str,
 			help="Comma separated list of what signals to plot")
-parser.add_argument("--vsjets", default="vvvloose", type=str,
+parser.add_argument("--vsjets", default="loose", type=str,
       help="vs jets deep tau working point")
 parser.add_argument("--vsjets_fail", default=None, type=str,
       help="vs jets deep tau working point for fail FF")
@@ -197,8 +197,8 @@ VsJets_wp_fail = options.vsjets_fail
 VsJets_wp = options.vsjets
 VsMu_wp = options.vsmu
 VsEle_wp = options.vsele
-#lepton_iso = "0.15"
-lepton_iso = "0.35"
+lepton_iso = "0.15"
+if options.channel == "mmmm": lepton_iso = "0.35"
 
 t_sel = ""
 if VsJets_wp != "None":
@@ -451,7 +451,8 @@ if options.year == "2018":
       ewkz_samples = ['EWKZ2Jets_ZToLL']
       qqzz_samples = ['ZZTo4L']
       hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+#      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu']
       #signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
       signal_samples = sig_samples
       signal_samples = ReformatSignals(signal_samples,True)
@@ -478,7 +479,8 @@ if options.year == "2017":
     ewkz_samples = ['EWKZ2Jets_ZToLL']
     qqzz_samples = ['ZZTo4L']
     hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+#    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu']
     signal_samples = sig_samples
     signal_samples = ReformatSignals(signal_samples,True)
 
@@ -492,7 +494,8 @@ if options.year == "2016_postVFP":
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
   qqzz_samples = ['ZZTo4L']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+#  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
   signal_samples = ReformatSignals(signal_samples,True)
@@ -506,7 +509,8 @@ if options.year == "2016_preVFP":
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
   qqzz_samples = ['ZZTo4L']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+#  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu']
   wgam_samples = ['WGToLNuG']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
@@ -769,13 +773,16 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
     nodes = ana.nodes[nodename].SubNodes()
     bkg_total = ufloat(0.000000001,0.000000001)
     sig_total = ufloat(0.000000001,0.000000001)
+    flat_sig = [val[1] for val in signal_samples]
     for node in nodes:
         if node.shape.rate.n == 0: per_err = 0
         else: per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err 
         if True in [node.name.find(add_name) != -1 and add_name is not '' for add_name in add_names]: continue
-        if node.name not in data_strings and not node.name.endswith("up") and not node.name.endswith("down"): 
+        if node.name not in data_strings and not node.name.endswith("up") and not node.name.endswith("down") and not node.name in flat_sig: 
           bkg_total += node.shape.rate      
+        if node.name not in data_strings and not node.name.endswith("up") and not node.name.endswith("down") and node.name in flat_sig:
+          sig_total += node.shape.rate
     if bkg_total.n == 0: per_err = 0        
     else: per_err = bkg_total.s/bkg_total.n
     print 'Total bkg'.ljust(10) , ("%.2f" % bkg_total.n).ljust(10), '+/-'.ljust(5), ("%.2f" % bkg_total.s).ljust(7), "(%.4f)" % per_err
@@ -838,15 +845,18 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'TT' not in samples_to_skip:    
           GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels) 
       if 'VV' not in samples_to_skip:
-          GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
+          if options.channel == "mmmm":
+            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels)
+          else:
+            GenerateVV(ana, add_name, vv_samples+ggzz_samples+qqzz_samples, plot, wt, sel, cat, vv_sels)
       if 'VVV' not in samples_to_skip:
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels) 
       if 'W' not in samples_to_skip:
           GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
-      if 'qqZZ' not in samples_to_skip:
+      if 'qqZZ' not in samples_to_skip and options.channel == "mmmm":
           GenerateQQZZ(ana, add_name, qqzz_samples, plot, wt, sel, cat)         
       if 'HZZ' not in samples_to_skip and options.channel == "mmmm": 
-          GenerateHZZ(ana, add_name, hzz_samples, plot, wt, sel, cat)
+          GenerateHZZ(ana, add_name, hzz_samples, plot, "("+wt+"/wt_ggZZ_k_factor)", sel, cat)
       if 'ggZZ' not in samples_to_skip and options.channel == "mmmm": 
           GenerateGGZZ(ana, add_name, ggzz_samples, plot, wt, sel, cat)          
       if 'signal' not in samples_to_skip and not options.no_signal:

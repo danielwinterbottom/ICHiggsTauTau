@@ -1130,19 +1130,19 @@ namespace ic {
             if (fourtau->GetCandidate("lepton"+std::to_string(i))->charge() == -fourtau->GetCandidate("lepton"+std::to_string(j))->charge()) {
               if (std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector())) < min_dR_) {
                 min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()));
-                p_min_dphi_1_ = i;
-                p_min_dphi_2_ = j;
+                p_min_dR_1_ = i;
+                p_min_dR_2_ = j;
               }
             } 
           }
         }
       }
       CompositeCandidate *pair_min_dR = new CompositeCandidate();
-      pair_min_dR->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_)));
-      pair_min_dR->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_)));
+      pair_min_dR->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_1_)));
+      pair_min_dR->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_2_)));
       mvis_min_sum_dR_1_ = pair_min_dR->M();
       pt_min_sum_dR_1_ = pair_min_dR->pt();
-      dR_min_sum_dR_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_))->vector(),fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_))->vector()));
+      dR_min_sum_dR_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_1_))->vector(),fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_2_))->vector()));
     }
 
     mvis_phi_ = 0.0;

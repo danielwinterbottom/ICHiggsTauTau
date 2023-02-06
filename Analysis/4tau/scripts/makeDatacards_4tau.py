@@ -171,7 +171,7 @@ categories = {
 
 add_options = {              
                "ttt" : [
-                        ["signal","--plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
                         ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
                         ["ff_1","--no_signal --ff_from=1 --no_sig_sel --under_legend='FF_{1}'"],
                         ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{2}'"],
@@ -274,8 +274,9 @@ for channel in channels:
         if var_string[-1] == "4" and channel == "ttt": continue
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
-        if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.4\\\""
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 --add_stat_to_syst --do_ff_systs \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
+        if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.8\\\""
+#        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 --add_stat_to_syst --do_ff_systs \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
         SubmitBatchJob(job_file,time=180,memory=24,cores=1)

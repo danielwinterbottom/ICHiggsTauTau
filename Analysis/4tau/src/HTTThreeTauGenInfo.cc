@@ -89,15 +89,16 @@ namespace ic {
         j1 = j1 + 1;
       }
       int j2 = 1;
-      Z_decays_pdgid = {};
       if(status_flags_start[IsLastCopy] && particles[i]->pdgid() == 23 && j2<3) {
         Z_decays_pdgid.push_back(abs(particles[particles[i]->daughters()[0]]->pdgid()));
         j2 = j2 + 1;
       }
     }
-    event->Add("diZ_pt",diZ->pt());
-    event->Add("diZ_mass",diZ->M());
-    event->Add("diZ_same_decay",Z_decays_pdgid[0] == Z_decays_pdgid[1]);
+    if (Z_decays_pdgid.size() == 2) {
+      event->Add("diZ_pt",diZ->pt());
+      event->Add("diZ_mass",diZ->M());
+      event->Add("diZ_same_decay",Z_decays_pdgid[0] == Z_decays_pdgid[1]);
+    }
 
     gen_met=neutrinos.Pt();
 

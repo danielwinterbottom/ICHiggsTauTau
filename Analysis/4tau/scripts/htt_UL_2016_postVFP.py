@@ -371,20 +371,20 @@ if options.proc_bkg or options.proc_all:
 
       job_num=0
       for FLATJSONPATCH in flatjsons: 
-        nperjob = 20
-        if 'TT' in sa or 'VVTo2L2Nu' in sa: nperjob = 10
+        nperjob = 100
+        #if 'TT' in sa or 'VVTo2L2Nu' in sa: nperjob = 10
   
         if 'DY' not in sa and 'EWKZ' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
           FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
-        if n_scales*n_channels>=24: nperjob = 10
-        if n_scales*n_channels>=48: nperjob=5
-        if 'TT' in sa or 'VVTo2L2Nu' in sa:
-          nperjob = 10 
-          if n_scales*n_channels>24: nperjob = 5
-          if n_scales*n_channels>48: nperjob = 2
+        #if n_scales*n_channels>=24: nperjob = 10
+        #if n_scales*n_channels>=48: nperjob=5
+        #if 'TT' in sa or 'VVTo2L2Nu' in sa:
+        #  nperjob = 10 
+        #  if n_scales*n_channels>24: nperjob = 5
+        #  if n_scales*n_channels>48: nperjob = 2
         if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
 
         #nperjob = int(math.ceil(float(nperjob)/max(1.,float(n_scales)*float(n_channels)/10.)))
@@ -453,10 +453,10 @@ if options.proc_sig:
             #print '%(SIG_FILELIST)s_%(sa)s.dat' %vars(), os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars())
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
                 nfiles = sum(1 for line in open('%(SIG_FILELIST)s_%(sa)s.dat' % vars()))
-                nperjob = 5
+                nperjob = 50
                 n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
-                if n_scales*n_channels>=24: nperjob = 2
-                if n_scales*n_channels>=48: nperjob=1
+                #if n_scales*n_channels>=24: nperjob = 2
+                #if n_scales*n_channels>=48: nperjob=1
 
                 if options.jetmetuncerts and 'default' in FLATJSONPATCH: nperjob = int(math.ceil(float(nperjob)/2))
 

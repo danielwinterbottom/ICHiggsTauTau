@@ -594,7 +594,7 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_do_mtaucross_trg(!is_data)
  .set_do_singlem_trg(!is_data)  
  .set_do_emucross_trg(!is_data)
- .set_do_ggZZ_k_fact(output_name.find("GluGluToContinToZZ") != output_name.npos || output_name.find("GluGlu_HToZZTo4L_M125") != output_name.npos)
+ .set_do_ggZZ_k_fact(output_name.find("GluGluToContinToZZ") != output_name.npos)
  .set_do_qqZZ_k_fact(output_name.find("ZZTo4L") != output_name.npos);
 
 BuildModule(httWeights);
@@ -775,19 +775,36 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if (jes_mode_ > 0 && !is_data ){
     std::string jes_input_file  = "";
     std::string jes_input_set  = "";
-    if ((era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP)) {
+    if (era_type == era::data_2016) {
       jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
       jes_input_set  = "Total";
     }
-    if ((era_type == era::data_2017 || era_type == era::data_2017UL)) {
+    if (era_type == era::data_2017) {
       jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
-    if ((era_type == era::data_2018 || era_type == era::data_2018UL)) {
+    if (era_type == era::data_2018) {
       jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
-    
+    if (era_type == era::data_2016UL_preVFP) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL16APV_V7_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2016UL_postVFP) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL16_V7_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2017UL) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL17_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2018UL) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+
+ 
     if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
    
     std::string jes_input_set_ = jes_input_set;

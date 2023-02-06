@@ -95,17 +95,17 @@ def SetAxisTitles(plot, channel):
     lep3_label = '#tau_{1}'
     lep4_label = '#tau_{2}'
   elif channel == 'mmmm':
-    chan_label = '#mu#mu#tau#tau'
+    chan_label = '#mu#mu#mu#mu'
     lep1_label = '#mu_{1}'
     lep2_label = '#mu_{2}'
     lep3_label = '#mu_{3}'
     lep4_label = '#mu_{4}'
 
   bin_width=''
-  #if not isVarBins:
-  #    binning = plot.split('(')[1].split(')')[0].split(',')
-  #    binning = map(float,binning)
-  #    bin_width = str(round((binning[2]-binning[1])/binning[0],1))
+  if not isVarBins:
+      binning = plot.split('(')[1].split(')')[0].split(',')
+      binning = map(float,binning)
+      bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
   titles = {}
   titles['iso_1'] = ['iso_{'+lep1_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep1_label+'}']
@@ -120,6 +120,7 @@ def SetAxisTitles(plot, channel):
   titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
   titles['m_vis'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
+  titles['mvis_1234'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
   titles['mvis_min_dphi_1'] = ['m_{vis}^{high} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{vis}^{high} (1/GeV)']
   titles['mvis_min_dphi_2'] = ['m_{vis}^{low} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{vis}^{low} (1/GeV)']
   titles['mvis_min_sum_dphi_1'] = ['m_{vis}^{high} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{vis}^{high} (1/GeV)']
@@ -171,6 +172,11 @@ def SetAxisTitles(plot, channel):
   if channel == 'tt':
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events']
       titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events']
+
+  #if "(" in plot:
+  #  bin_brac = plot.split("(")[1],split(")")[0].split(",")
+  #  bin_width = (float(bin_brac[2]) - float(bin_brac[1]))/float(bin_brac[0])
+  #  if isinstance(bin_width, int): bin_width = int(bin_width)
 
   if var not in titles: 
     if not isVarBins: return [var,'Events']
@@ -2461,37 +2467,38 @@ def HTTPlot(nodename,
 
     background_schemes = {
       'mttt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ettt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'tttt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'ttt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'eett': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'mmtt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'emtt': [
-        backgroundComp("#geq 1 lepton#rightarrow#tau_{h}",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
       'mmmm': [
-        backgroundComp("Diboson",["VVR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("Other",["ZR","TTR","WR"],R.TColor.GetColor(156,20,41)),
         backgroundComp("H #rightarrow ZZ",["HZZ"],R.TColor.GetColor(250,5,5)),
-        backgroundComp("Other",["ZR","TTR","WR"],R.TColor.GetColor(156,20,41))],
+        backgroundComp("gg #rightarrow ZZ",["ggZZ"],R.TColor.GetColor(14,250,12)),
+        backgroundComp("qq #rightarrow ZZ",["qqZZ"],R.TColor.GetColor(136,65,157))],
     }
 
 

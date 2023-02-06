@@ -218,6 +218,108 @@ namespace ic {
     }
     event->Add("pfMET", pfmet);
 
+    // Scale met for the tau energy scale shift
+    Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
+    Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+    Tau const* tau3 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton3"));
+    Tau const* tau4 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton4"));
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    Met * met = event->GetPtr<Met>("pfMET");
+    std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
+     "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0","scales_efaketaues_1prong0pi0_endcap","scales_efaketaues_1prong1pi0_endcap", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
+    for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
+      if(event->Exists(tau_shifts.at(i))){
+
+        auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
+
+        if (channel_ == channel::tttt) {
+          if(es_shifts.count(tau1->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau1->id()));
+          }
+        }
+
+        if (channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::tttt) {
+          if(es_shifts.count(tau2->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau2->id()));
+          }
+        }
+
+        if (channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::mttt || channel_ == channel::mmtt || channel_ == channel::eett || channel_ == channel::emtt) {
+          if(es_shifts.count(tau3->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau3->id()));
+          }
+          if(es_shifts.count(tau4->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau4->id()));
+          }
+        }
+      }
+    }
+
+    // Scale met for the electron energy scale shift
+    if (channel_ == channel::eett || channel_ == channel::ettt || channel_ == channel::emtt) {
+      Electron const* elec1 = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
+      Electron const* elec2 = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton2"));
+      double t_scale_ = 1.0;
+      if (event->Exists("elec_scales")) {
+        std::map<std::size_t, double> const& elec_scales1 = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+        std::map<std::size_t, double>::const_iterator it1 = elec_scales1.find(elec1->id());
+        if (it1 != elec_scales1.end()) {
+          t_scale_ = it1->second;
+        } else {
+          std::cout << "Scale for chosen electron not found!" << std::endl;
+          throw;
+        }
+      }
+      double metx1 = met->vector().px();
+      double mety1 = met->vector().py();
+      double metet1 = met->vector().energy();
+      double dx1 = elec1->vector().px() * (( 1. / t_scale_) - 1.);
+      double dy1 = elec1->vector().py() * (( 1. / t_scale_) - 1.);
+      metx1 = metx1 + dx1;
+      mety1 = mety1 + dy1;
+      metet1 = sqrt(metx1*metx1 + mety1*mety1);
+      ROOT::Math::PxPyPzEVector new_met1(metx1, mety1, 0, metet1);
+      met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met1));
+
+      if (channel_ == channel::eett) {
+        if (event->Exists("elec_scales")) {
+          std::map<std::size_t, double> const& elec_scales2 = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+          std::map<std::size_t, double>::const_iterator it2 = elec_scales2.find(elec2->id());
+          if (it2 != elec_scales2.end()) {
+            t_scale_ = it2->second;
+          } else {
+            std::cout << "Scale for chosen electron not found!" << std::endl;
+            throw;
+          }
+        }
+        double metx2 = met->vector().px();
+        double mety2 = met->vector().py();
+        double metet2 = met->vector().energy();
+        double dx2 = elec2->vector().px() * (( 1. / t_scale_) - 1.);
+        double dy2 = elec2->vector().py() * (( 1. / t_scale_) - 1.);
+        metx2 = metx2 + dx2;
+        mety2 = mety2 + dy2;
+        metet2 = sqrt(metx2*metx2 + mety2*mety2);
+        ROOT::Math::PxPyPzEVector new_met2(metx2, mety2, 0, metet2);
+        met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met2));
+      }
+    }
+   
+
+    // Scale met for the jet energy scale shift
+    if(event->Exists("jes_shift")){
+      Met * met = event->GetPtr<Met>("pfMET");
+      ROOT::Math::PxPyPzEVector jes_shift = event->Get<ROOT::Math::PxPyPzEVector>("jes_shift");
+      this->CorrectMETForShift(met, jes_shift);
+    }
+
+    // Scale met for the jet energy resolution
+    if(event->Exists("jer_shift")){
+      Met * met = event->GetPtr<Met>("pfMET");
+      ROOT::Math::PxPyPzEVector jer_shift = event->Get<ROOT::Math::PxPyPzEVector>("jer_shift");
+      this->CorrectMETForShift(met, jer_shift);
+    }
+
 
     multilepton = result;
     return 0;

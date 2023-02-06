@@ -147,6 +147,47 @@ namespace ic {
     }
     event->Add("pfMET", pfmet);
 
+    // Scale met for the tau energy scale shift
+    Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
+    Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+    Tau const* tau3 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton3"));
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    Met * met = event->GetPtr<Met>("pfMET");
+    std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
+     "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0","scales_efaketaues_1prong0pi0_endcap","scales_efaketaues_1prong1pi0_endcap", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
+    for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
+      if(event->Exists(tau_shifts.at(i))){
+
+        auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
+
+        if(es_shifts.count(tau1->id()) > 0){
+           this->CorrectMETForShift(met, es_shifts.at(tau1->id()));
+        }
+
+        if(es_shifts.count(tau2->id()) > 0){
+           this->CorrectMETForShift(met, es_shifts.at(tau2->id()));
+        }
+
+        if(es_shifts.count(tau3->id()) > 0){
+           this->CorrectMETForShift(met, es_shifts.at(tau3->id()));
+        }
+      }
+    }
+
+    // Scale met for the jet energy scale shift
+    if(event->Exists("jes_shift")){
+      Met * met = event->GetPtr<Met>("pfMET");
+      ROOT::Math::PxPyPzEVector jes_shift = event->Get<ROOT::Math::PxPyPzEVector>("jes_shift");
+      this->CorrectMETForShift(met, jes_shift);
+    }
+
+    // Scale met for the jet energy resolution
+    if(event->Exists("jer_shift")){
+      Met * met = event->GetPtr<Met>("pfMET");
+      ROOT::Math::PxPyPzEVector jer_shift = event->Get<ROOT::Math::PxPyPzEVector>("jer_shift");
+      this->CorrectMETForShift(met, jer_shift);
+    }
+
 
     multilepton = result;
     return 0;
