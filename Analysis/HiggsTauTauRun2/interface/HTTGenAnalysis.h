@@ -379,16 +379,17 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ps_fsr_up_;
   double wt_ps_fsr_down_;
 
-  double tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
+  float tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
   int gen_tau_dm_1_;
-  double pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_;
-  double pi2_px_1_, pi2_py_1_, pi2_pz_1_, pi2_E_1_, pi2_px_2_, pi2_py_2_, pi2_pz_2_, pi2_E_2_;
-  double pi3_px_1_, pi3_py_1_, pi3_pz_1_, pi3_E_1_, pi3_px_2_, pi3_py_2_, pi3_pz_2_, pi3_E_2_;
-  double pi0_px_1_, pi0_py_1_, pi0_pz_1_, pi0_E_1_, pi0_px_2_, pi0_py_2_, pi0_pz_2_, pi0_E_2_;
-  double nu_px_1_, nu_py_1_, nu_pz_1_, nu_E_1_, nu_px_2_, nu_py_2_, nu_pz_2_, nu_E_2_;
-  double sv_x_1_, sv_y_1_, sv_z_1_, sv_x_2_, sv_y_2_, sv_z_2_;
-  double ip_x_1_, ip_y_1_, ip_z_1_, ip_x_2_, ip_y_2_, ip_z_2_;
-  double metx_, mety_;
+  float pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_;
+  float pi2_px_1_, pi2_py_1_, pi2_pz_1_, pi2_E_1_, pi2_px_2_, pi2_py_2_, pi2_pz_2_, pi2_E_2_;
+  float pi3_px_1_, pi3_py_1_, pi3_pz_1_, pi3_E_1_, pi3_px_2_, pi3_py_2_, pi3_pz_2_, pi3_E_2_;
+  float pi0_px_1_, pi0_py_1_, pi0_pz_1_, pi0_E_1_, pi0_px_2_, pi0_py_2_, pi0_pz_2_, pi0_E_2_;
+  float nu_px_1_, nu_py_1_, nu_pz_1_, nu_E_1_, nu_px_2_, nu_py_2_, nu_pz_2_, nu_E_2_;
+  float sv_x_1_, sv_y_1_, sv_z_1_, sv_x_2_, sv_y_2_, sv_z_2_;
+  float ip_x_1_, ip_y_1_, ip_z_1_, ip_x_2_, ip_y_2_, ip_z_2_;
+  float metx_, mety_;
+  int tau1_charge, tau2_charge;
 
   double reco_pi_px_1_, reco_pi_py_1_, reco_pi_pz_1_, reco_pi_E_1_;
   double reco_pi0_px_1_, reco_pi0_py_1_, reco_pi0_pz_1_, reco_pi0_E_1_;
@@ -427,6 +428,23 @@ class HTTGenAnalysis : public ModuleBase {
   unsigned quarks_final_;
   unsigned gluons_initial_;
   unsigned gluons_final_;
+
+  float taupos_px_;
+  float taupos_py_;
+  float taupos_pz_;
+  float taupos_E_;
+  float tauneg_px_;
+  float tauneg_py_;
+  float tauneg_pz_;
+  float tauneg_E_;
+  float taupos_polvec_x_;
+  float taupos_polvec_y_;
+  float taupos_polvec_z_;
+  float taupos_polvec_E_;
+  float tauneg_polvec_x_;
+  float tauneg_polvec_y_;
+  float tauneg_polvec_z_;
+  float tauneg_polvec_E_;
  
  public:
   HTTGenAnalysis(std::string const& name);

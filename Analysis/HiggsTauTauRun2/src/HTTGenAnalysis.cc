@@ -157,13 +157,32 @@ namespace ic {
       mvatree_->Branch("ip_x_2", &ip_x_2_);
       mvatree_->Branch("ip_y_2", &ip_y_2_);
       mvatree_->Branch("ip_z_2", &ip_z_2_);
-
+      
+      mvatree_->Branch("tau1_charge", &tau1_charge);
+      mvatree_->Branch("tau2_charge", &tau2_charge);
 
       mvatree_->Branch("dm_1", &tauFlag_1_);
       mvatree_->Branch("dm_2", &tauFlag_2_);
 
       mvatree_->Branch("metx"         , &metx_         );
       mvatree_->Branch("mety"         , &mety_         );
+
+      mvatree_->Branch("taupos_px", &taupos_px_);
+      mvatree_->Branch("taupos_py", &taupos_py_);
+      mvatree_->Branch("taupos_pz", &taupos_pz_);
+      mvatree_->Branch("taupos_E", &taupos_E_);
+      mvatree_->Branch("tauneg_px", &tauneg_px_);
+      mvatree_->Branch("tauneg_py", &tauneg_py_);
+      mvatree_->Branch("tauneg_pz", &tauneg_pz_);
+      mvatree_->Branch("tauneg_E", &tauneg_E_);
+      mvatree_->Branch("taupos_polvec_x", &taupos_polvec_x_);
+      mvatree_->Branch("taupos_polvec_y", &taupos_polvec_y_);
+      mvatree_->Branch("taupos_polvec_z", &taupos_polvec_z_);
+      mvatree_->Branch("taupos_polvec_E", &taupos_polvec_E_);
+      mvatree_->Branch("tauneg_polvec_x", &tauneg_polvec_x_);
+      mvatree_->Branch("tauneg_polvec_y", &tauneg_polvec_y_);
+      mvatree_->Branch("tauneg_polvec_z", &tauneg_polvec_z_);
+      mvatree_->Branch("tauneg_polvec_E", &tauneg_polvec_E_);
 
       mvatree_->Branch("reco_sv_x_1", &reco_sv_x_1_);
       mvatree_->Branch("reco_sv_y_1", &reco_sv_y_1_);
@@ -1088,8 +1107,8 @@ namespace ic {
       if(!(channel_str_ == "zmm") && !(channel_str_ == "zee")){
         mt_1_ = MT(&lep1, &met);
         mt_2_ = MT(&lep2, &met);
-        double mt_lep = MT(&lep1, &lep1);
-        mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
+        //double mt_lep = MT(&lep1, &lep1);
+        //mt_tot_ = sqrt(mt_lep*mt_lep + mt_1_*mt_1_ + mt_2_*mt_2_);
       }
 
       ic::CompositeCandidate *ditau = new ic::CompositeCandidate();
@@ -1812,7 +1831,7 @@ namespace ic {
     metx_   = met.vector().Px();
     mety_   = met.vector().Py();
 
-    int tau1_charge=0, tau2_charge=0;
+    tau1_charge=0, tau2_charge=0;
     tauFlag_1_=-1, tauFlag_2_=-1;
 
 
@@ -2667,14 +2686,14 @@ namespace ic {
       TVector3 n1 = l_n1.Vect().Unit();
       TVector3 n2 = l_n2.Vect().Unit();
 
-      auto k1 = h1.Cross(n1).Unit(); 
-      auto k2 = h2.Cross(n2).Unit();
-
+      auto k1 = h1.Cross(n1).Unit();   
+      auto k2 = h2.Cross(n2).Unit();  
+                                      
       aco_angle_1_ = acos(k1.Dot(k2));
       double sign = h1.Cross(h2).Dot(n1);
       if(sign>0) aco_angle_1_ = 2*M_PI-aco_angle_1_;
-
-    }
+                                      
+    }                                 
 
 
     aco_angle_smear_=-9999;
@@ -2948,6 +2967,63 @@ namespace ic {
       l_h2= PolarimetricVector(pis[1], pi0s[1], undecayed_taus[1], false);
       l_tau_1 = ConvertToLorentz(undecayed_taus[0]->vector());
       l_tau_2 = ConvertToLorentz(undecayed_taus[1]->vector());
+
+     
+      taupos_px_=-9999;
+      taupos_py_=-9999;
+      taupos_pz_=-9999;
+      taupos_E_=-9999;
+      tauneg_px_=-9999;
+      tauneg_py_=-9999;
+      tauneg_pz_=-9999;
+      tauneg_E_=-9999;
+      taupos_polvec_x_=-9999;
+      taupos_polvec_y_=-9999;
+      taupos_polvec_z_=-9999;
+      taupos_polvec_E_=-9999;
+      tauneg_polvec_x_=-9999;
+      tauneg_polvec_y_=-9999;
+      tauneg_polvec_z_=-9999;
+      tauneg_polvec_E_=-9999;
+
+      if(undecayed_taus[0]->charge()>0&&undecayed_taus[1]->charge()<0) {
+        taupos_px_=l_tau_1.X();
+        taupos_py_=l_tau_1.Y();
+        taupos_pz_=l_tau_1.Z();
+        taupos_E_=l_tau_1.T();
+        tauneg_px_=l_tau_2.X();
+        tauneg_py_=l_tau_2.Y();
+        tauneg_pz_=l_tau_2.Z();
+        tauneg_E_=l_tau_2.T();
+
+        taupos_polvec_x_=l_h1.X();
+        taupos_polvec_y_=l_h1.Y();
+        taupos_polvec_z_=l_h1.Z();
+        taupos_polvec_E_=l_h1.T();
+        tauneg_polvec_x_=l_h2.X();
+        tauneg_polvec_y_=l_h2.Y();
+        tauneg_polvec_z_=l_h2.Z();
+        tauneg_polvec_E_=l_h2.T();
+      } else if(undecayed_taus[0]->charge()<0&&undecayed_taus[1]->charge()>0) {
+        taupos_px_=l_tau_2.X();
+        taupos_py_=l_tau_2.Y();
+        taupos_pz_=l_tau_2.Z();
+        taupos_E_=l_tau_2.T();
+        tauneg_px_=l_tau_1.X();
+        tauneg_py_=l_tau_1.Y();
+        tauneg_pz_=l_tau_1.Z();
+        tauneg_E_=l_tau_1.T();
+
+        taupos_polvec_x_=l_h2.X();
+        taupos_polvec_y_=l_h2.Y();
+        taupos_polvec_z_=l_h2.Z();
+        taupos_polvec_E_=l_h2.T();
+        tauneg_polvec_x_=l_h1.X();
+        tauneg_polvec_y_=l_h1.Y();
+        tauneg_polvec_z_=l_h1.Z();
+        tauneg_polvec_E_=l_h1.T();
+      } 
+
  
       l_h1.Boost(-boost);
       l_h2.Boost(-boost);
