@@ -45,6 +45,7 @@ class HTTSequence {
   double tau_res_shift = 0.;
   double tau_shift_1prong0pi0, tau_shift_1prong1pi0, tau_shift_3prong0pi0, tau_shift_3prong1pi0;
   std::string tau_shift_func_1prong0pi0, tau_shift_func_1prong1pi0, tau_shift_func_3prong0pi0, tau_shift_func_3prong1pi0;
+  double fakeJ_tau_shift;
   bool do_qcd_scale_wts_;
   std::string alt_jes_input_set;
 
