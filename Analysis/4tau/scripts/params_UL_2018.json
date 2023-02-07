@@ -523,6 +523,10 @@
     "xs": 0.00158529,
     "evt": 845232
   },
+  "GluGluToContinToZZTo4tau": {
+    "xs": 0.00158529,
+    "evt": 493998
+  },
   "EGamma": {
     "lumi": 59830
   },

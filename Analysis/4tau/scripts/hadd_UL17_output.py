@@ -254,7 +254,7 @@ for sa in sample_list:
           rm_command+=input_file+'\n'
         rm_command+='fi'
         if remove: file.write("\n%s" % rm_command)
-        file.write('\nEnd of job')
+        file.write('\necho \"End of job\"')
       job_err = JOB.replace(".sh","_error.log")
       job_out = JOB.replace(".sh","_output.log")
-      os.system('%(JOBSUBMIT)s %(JOB)s %(job_err)s %(job_out)s' % vars())
+      #os.system('%(JOBSUBMIT)s %(JOB)s %(job_err)s %(job_out)s' % vars())
