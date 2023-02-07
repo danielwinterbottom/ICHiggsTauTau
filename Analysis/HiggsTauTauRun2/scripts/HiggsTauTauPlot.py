@@ -5335,7 +5335,6 @@ if is_2d and not options.do_unrolling:
   exit(0) # add options for is_3d as well!
 if options.plot_from_dc != "": output_name = options.plot_from_dc
 plot_file = ROOT.TFile(output_name, 'READ')
-print("REEEE", output_name,plot_file)
 
 #if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
 #    w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
@@ -5446,7 +5445,6 @@ if not options.no_plot:
         )
     elif scheme != 'signal':
       auto_blind=False
-      print("hey mate", plot_file, plot_name)
       plotting.HTTPlot(nodename, 
         plot_file, 
         options.signal_scale, 
