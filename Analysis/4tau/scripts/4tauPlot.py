@@ -165,6 +165,7 @@ parser.add_argument("--do_ff_systs", dest="do_ff_systs", action='store_true',
 parser.add_argument("--add_stat_to_syst", dest="add_stat_to_syst", action='store_true',
     help="Add custom uncertainty band to statistical uncertainty.")
 parser.add_argument("--syst_tau_id", dest="syst_tau_id", action='store_true',
+<<<<<<< HEAD
     help="Run tau id systematic uncertainty")
 parser.add_argument("--syst_etau_fakerate", dest="syst_etau_fakerate", action='store_true',
     help="Run etau fakerate systematic uncertainty")
@@ -200,8 +201,8 @@ parser.add_argument("--syst_met_scale", dest="syst_met_scale", action='store_tru
     help="Run MET energy scale systematic uncertainty")
 parser.add_argument("--syst_met_res", dest="syst_met_res", action='store_true',
     help="Run MET energy resolution systematic uncertainty")
-
-
+parser.add_argument("--rebin_with_data", dest="rebin_with_data", action='store_true',
+    help="Use data in the rebinning algorithm")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -310,7 +311,9 @@ elif options.channel == "mmmm":
 
 if options.aiso != "":
   for X in options.aiso:
+    print cats['baseline']
     cats['baseline'] = cats['baseline'].replace("deepTauVsJets_%(VsJets_wp)s_%(X)s>0.5" % vars(), "(deepTauVsJets_%(VsJets_wp)s_%(X)s<0.5 && deepTauVsJets_iso_%(X)s>0.1)" % vars() )
+    print cats['baseline']
 
 if options.aiso_and_iso != "":
   for X in options.aiso_and_iso:
@@ -692,6 +695,14 @@ def GenerateQQZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', q
     qqzz_node = GetNode(ana, "qqZZ", add_name, samples, plot, wt, sel, cat)
     ana.nodes[nodename].AddNode(qqzz_node)
 
+def GenerateMCFakeTaus(ana, ff_from, add_name='', samples=[], plot='', wt='', sel='', cat=''):
+    ff_not_from = [ind+1 for ind, ch in enumerate(options.channel) if (ch == "t" and str(ind+1) not in ff_from)]
+    not_fake_sel = ["(gen_match_"+str(i)+"!=6)" for i in ff_from]
+    fake_sel = ["(gen_match_"+str(i)+"==6)" for i in ff_not_from] 
+    mc_sel = "(("+sel+")&&("+"||".join(not_fake_sel)+")&&("+"||".join(fake_sel)+"))"
+    mc_jetfakes_node = GetNode(ana, "MC_jetFakes", add_name, samples, plot, wt, mc_sel, cat)
+    ana.nodes[nodename].AddNode(mc_jetfakes_node)
+
 def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
   vj = "deepTauVsJets_" + VsJets_wp
   if VsJets_wp_fail == None:
@@ -777,7 +788,7 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
     ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * GM{} * GM{} * GM{} * GM{} * {} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,options.ff_from[3]+wt_ext,options.ff_from[0],options.ff_from[1],options.ff_from[2],options.ff_from[3],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]],fail_sel[options.ff_from[3]])
 
   ff_data_wt = ff_wt.replace("GM1","(1)").replace("GM2","(1)").replace("GM3","(1)").replace("GM4","(1)")
-  ff_mc_wt = ff_wt.replace("GM1","(gen_match_1!=6)").replace("GM2","(gen_match_2!=6)").replace("GM3","(gen_match_3!=6)").replace("GM4","(gen_match_4!=6)")
+  ff_mc_wt = "wt*(" + ff_wt.replace("GM1","(gen_match_1!=6)").replace("GM2","(gen_match_2!=6)").replace("GM3","(gen_match_3!=6)").replace("GM4","(gen_match_4!=6)") + ")"
 
   ff_data_wt_init = copy.deepcopy(ff_wt)
   ff_mc_wt_init = copy.deepcopy(ff_wt)
@@ -805,7 +816,7 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
       ff_mc = GetNode(ana, 'jetFakes_subtract', add_name, mc_samples, plot, ff_mc_wt, sel, "("+ff_sel+")&&("+data_veto+")")
 
     ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, ff_data, ff_mc))
-
+    #ana.nodes[nodename].AddNode(ff_data)
 
 def GenerateSignal(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     for i in samples:
@@ -907,8 +918,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'signal' not in samples_to_skip and not options.no_signal:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
     elif options.method == 2:
+      mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + ggzz_samples + qqzz_samples
       if 'jetFakes' not in samples_to_skip:
-        mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples
 
         if options.do_ff_systs and not options.no_sig_sel:
           wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
@@ -934,6 +945,10 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             else: type_ext_name = "_"+type_ext
             #GenerateFakeTaus(ana, type_ext_name+wt_ext, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext,intermediate_shift=["0.01","0.02","0.05","0.1","0.2","0.4","0.6","0.8","1.0"]) 
             GenerateFakeTaus(ana, type_ext_name+wt_ext.replace("_up","Up").replace("_down","Down"), data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext)
+
+      # if use ff_from need to add the rest back with MC
+      if "MC_jetFakes" not in samples_to_skip and options.ff_from != "all":
+          GenerateMCFakeTaus(ana, options.ff_from, add_name, mc_samples, plot, wt, sel, cat)
  
       if options.channel == "tttt":
         cat = "("+cat+")&&(gen_match_1<6 && gen_match_2<6 && gen_match_3<6 && gen_match_4<6)"
@@ -1464,17 +1479,15 @@ if options.add_stat_to_syst and options.plot_from_dc == "":
   for hist in directory.GetListOfKeys():
     if ".subnodes" in hist.GetName(): continue
 
-    proc_names = ["jetFakes"]
-
+    proc_names = ["VVR","VVLF","VVJF","jetFakes"]
     if hist.GetName().endswith("Up") or hist.GetName().endswith("Down"):
       for p in proc_names:
         if p+"_" in hist.GetName():
           no_syst_name = p
-          break
-      temp_hist = h0.Clone()
-      temp_hist.Add(directory.Get(no_syst_name),-1)
-      temp_hist.Add(directory.Get(hist.GetName()))
-      hists.append(temp_hist)
+          temp_hist = h0.Clone()
+          temp_hist.Add(directory.Get(no_syst_name),-1)
+          temp_hist.Add(directory.Get(hist.GetName()))
+          hists.append(temp_hist)
 
   (uncert, up, down) = TotalUnc(h0, hists)
   outfile.cd(nodename)
@@ -1494,6 +1507,12 @@ if options.auto_rebinning:
   outfile_rebin.cd(nodename)
   total_bkghist = plot_file.Get(nodename+'/total_bkg').Clone()
   binning = FindRebinning(total_bkghist,BinThreshold=options.bin_threshold,BinUncertFraction=options.bin_uncert_fraction)
+  if options.rebin_with_data:
+    data_obs = plot_file.Get(nodename+'/data_obs').Clone()
+    data_obs = RebinHist(data_obs,binning)  
+    binning = FindRebinning(data_obs,BinThreshold=options.bin_threshold,BinUncertFraction=options.bin_uncert_fraction)
+
+
   print "New binning:", binning
   hists_done = []
   for i in  plot_file.Get(nodename).GetListOfKeys():

@@ -2469,31 +2469,38 @@ def HTTPlot(nodename,
       'mttt': [
         backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'ettt': [
         backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'tttt': [
         backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'ttt': [
         backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'eett': [
         backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'mmtt': [
         backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'emtt': [
         backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'mmmm': [
         backgroundComp("Other",["ZR","TTR","WR"],R.TColor.GetColor(156,20,41)),
         backgroundComp("H #rightarrow ZZ",["HZZ"],R.TColor.GetColor(250,5,5)),
@@ -2501,6 +2508,7 @@ def HTTPlot(nodename,
         backgroundComp("qq #rightarrow ZZ",["qqZZ"],R.TColor.GetColor(136,65,157))],
     }
 
+    
 
     if draw_data: 
       total_datahist = infile.Get(nodename+'/data_obs').Clone()
@@ -2526,13 +2534,17 @@ def HTTPlot(nodename,
     for i,t in enumerate(background_schemes[channel]):
         plots = t['plot_list']
         h = R.TH1F()
+        remove = True
         for j,k in enumerate(plots):
             if not (isinstance(infile.Get(nodename+'/'+k),R.TH1D) or isinstance(infile.Get(nodename+'/'+k),R.TH1F)): continue
+            remove = False
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 h.SetName(k)
             else:
                 h.Add(infile.Get(nodename+'/'+k).Clone())
+        if remove:
+          del background_schemes[channel][i]
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
