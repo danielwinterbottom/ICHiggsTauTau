@@ -165,7 +165,6 @@ parser.add_argument("--do_ff_systs", dest="do_ff_systs", action='store_true',
 parser.add_argument("--add_stat_to_syst", dest="add_stat_to_syst", action='store_true',
     help="Add custom uncertainty band to statistical uncertainty.")
 parser.add_argument("--syst_tau_id", dest="syst_tau_id", action='store_true',
-<<<<<<< HEAD
     help="Run tau id systematic uncertainty")
 parser.add_argument("--syst_etau_fakerate", dest="syst_etau_fakerate", action='store_true',
     help="Run etau fakerate systematic uncertainty")
