@@ -12,6 +12,7 @@ parser.add_argument('--channel',help= 'Name of input channels', default='mttt,et
 parser.add_argument('--output', help= 'Name of output folder to create', default='4tau_plots')
 parser.add_argument('--only_var', help= 'Only run for this variable', default='')
 parser.add_argument('--only_option', help= 'Only run for this option', default='')
+parser.add_argument("--no_syst",dest="no_syst", action='store_true', default=False,help="Run without systematics")
 args = parser.parse_args()
       
 # Things to loop over
@@ -245,6 +246,25 @@ add_options = {
                         ],                    
                }
 
+### Systematics ###
+common_shape_systematics = [
+ 	'--syst_tau_id', # Tau ID Efficiency
+	'--syst_doubletau_trg', # Double Tau Trigger Effieciency
+        '--syst_tau_scale_group', #Tau Energy Scale
+        '--syst_jet_res', # Jet Energy Resolution
+        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
+        '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
+        '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
+        '--syst_jet_scale_group', # Jet Energy Scale Grouped
+        '--syst_electron_scale', # Electron Energy Scale
+        '--syst_efake_scale_0pi', # l to tau h fake energy scale
+        '--syst_efake_scale_1pi', # l to tau h fake energy scale
+        '--syst_muon_scale', # Muon Energy Scale
+        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
+        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
+        ' --do_ff_systs', 
+	]
+
 # Set up output directories
 
 cmssw_base = os.getcwd()
@@ -261,7 +281,7 @@ for channel in channels:
 
 
 # Job loop
-
+add_cond = ""
 for channel in channels:
   for name, option in add_options[channel]:
     for cat in categories[channel]:
@@ -275,8 +295,12 @@ for channel in channels:
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
         if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.8\\\""
+        if not args.no_syst:
+           print("HI", args.no_syst)
+           for syst in common_shape_systematics:
+              add_cond += (syst + " ")
 #        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 --add_stat_to_syst --do_ff_systs \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(option)s --method=1 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
         SubmitBatchJob(job_file,time=180,memory=24,cores=1)
