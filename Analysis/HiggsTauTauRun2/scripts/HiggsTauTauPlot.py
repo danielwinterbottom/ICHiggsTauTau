@@ -392,6 +392,8 @@ parser.add_argument("--plot_signals", dest="plot_signals", type=str,
     help="Comma separated list of what signals to plot")
 parser.add_argument("--DY_NLO", dest="DY_NLO", type=str,
     help="Use DY NLO samples")
+parser.add_argument("--plot_from_dc", default="", type=str,
+      help="If not empty will draw plot straight from datacard")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -691,6 +693,7 @@ cats['w_shape']=''
 cats['qcd_shape']=''
 cats['w_shape_comp']=''
 cats['qcd_shape_comp']=''
+cats['Nbtag0_NjetsGt1'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
 
 # MSSM run 2 categories
 if options.channel == "tt":
@@ -4694,9 +4697,13 @@ def RenameMSSMrun2Datacards(outfile):
 
 
   # count number of directories
-  count = 0    
-  for key in directory.GetListOfKeys(): count += 1
-
+  count = 0
+  print nodename
+  print directory
+  print outfile    
+  for key in directory.GetListOfKeys(): 
+     count += 1
+     print key
 
   i = 0
   for key in directory.GetListOfKeys():
@@ -5045,15 +5052,16 @@ while len(systematics) > 0:
       add_names_dict[add_name] = samples_to_skip
       
       del systematics[systematic]
-  ana.Run()
-  ana.nodes.Output(outfile)
+  if options.plot_from_dc == "":
+     ana.Run()
+     ana.nodes.Output(outfile)
 
 
   # fix negative bns,empty histograms etc.
-  FixBins(ana,outfile)
-  for n in add_names: 
-    GetTotals(ana,n,outfile)
-  PrintSummary(nodename, ['data_obs'], add_names)
+     FixBins(ana,outfile)
+     for n in add_names: 
+       GetTotals(ana,n,outfile)
+     PrintSummary(nodename, ['data_obs'], add_names)
 
 
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
@@ -5325,8 +5333,8 @@ if options.do_unrolling==0:
 if is_2d and not options.do_unrolling:
   print "Finished Processing"
   exit(0) # add options for is_3d as well!
+if options.plot_from_dc != "": output_name = options.plot_from_dc
 plot_file = ROOT.TFile(output_name, 'READ')
-
 
 #if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
 #    w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
@@ -5358,6 +5366,10 @@ if not options.no_plot:
 
     if options.datacard != "": plot_name = options.outputfolder+'/'+vname+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+vname+'_'+options.cat+'_'+options.channel+'_'+options.year
+
+    if options.plot_from_dc != "": plot_name = options.outputfolder + '/combined'     
+
+
     if options.do_ss: plot_name += "_ss"
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
@@ -5577,8 +5589,8 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVF
   for hist in hists_to_add: hist.Write()
 
 
-if options.analysis in ['mssmrun2','vlq']:
-  RenameMSSMrun2Datacards(outfile)
+if options.analysis in ['mssmrun2','vlq'] and options.era not in ['UL_16_preVFP','UL_16_postVFP','UL_17','UL_18']:
+   RenameMSSMrun2Datacards(outfile)
 
 
 outfile.Close()
