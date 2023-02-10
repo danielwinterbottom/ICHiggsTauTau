@@ -161,7 +161,12 @@ for year in years:
                extra_mt=' %s --no_default' % s 
  
              if ',' in var_used: extra_mt += ' --do_unrolling=0'       
- 
+
+             s_name=''
+             if '--' in s and '=' in s: s_name='_'+s.split('--')[1].split('=')[0]
+             if s_name!='':
+               extra_mt+='  --extra_name=%(s_name)s' % vars() 
+               extra+='  --extra_name=%(s_name)s' % vars() 
 
              if ch == 'mt':
   
@@ -183,8 +188,8 @@ for year in years:
   
              for i in range(0,len(commands)):
                if commands[i] is '': continue
-               s_name=''
-               if '--' in s and '=' in s: s_name='_'+s.split('--')[1].split('=')[0]
+               #s_name=''
+               #if '--' in s and '=' in s: s_name='_'+s.split('--')[1].split('=')[0]
                job_file = '%(output_folder)s/jobs/%(var_name)s_%(cat)s_%(ch)s_%(year)s%(s_name)s_%(i)i.sh' % vars()
                CreateBatchJob(job_file,cmssw_base,[commands[i]])
                SubmitBatchJob(job_file,time=180,memory=24,cores=1)
