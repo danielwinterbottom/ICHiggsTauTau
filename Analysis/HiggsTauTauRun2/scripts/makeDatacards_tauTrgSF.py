@@ -48,12 +48,11 @@ def BINS(start,end,interval,offset):
 
 
 parser = OptionParser()
-parser.add_option('--channel',help= 'Name of input channels', default='mt,zmm')
+parser.add_option('--channel',help= 'Name of input channels', default='mt')
 parser.add_option("--years", dest="years", type='string', default='2016_preVFP,2016_postVFP,2017,2018',help="Year input")
 parser.add_option('--output_folder', help= 'Name of output folder to create', default='tau_SF_datacards')
 parser.add_option("--batch", dest="batch", action='store_true', default=False, help="Submit on batch.")
 parser.add_option("--systs", dest="systs", action='store_true', default=False, help="Add systematic variations.")
-parser.add_option("--tightVsE", dest="tightVsE", action='store_true', default=False, help="Use tight WP for Vs electron ID")
 (options, args) = parser.parse_args()
 
 # initialising variables
@@ -82,7 +81,7 @@ cat_schemes = {
 var_mt = [
          #['m_vis',BINS(0,300,10,1)], 
          #['pt_2', BINS(0,200,5,1)],
-         ['pt_2,m_vis', '(180,20,200),(16,40,200)'],
+         ['pt_2', '(180,20,200)'],
          ]        
 var_zmm = [
          ['m_vis',BINS(0,300,5,1)], 
@@ -105,9 +104,9 @@ for year in years:
         ' --syst_scale_j=\'CMS_scale_j_%(year)s\'' % vars(), # Jet energy scale (grouped)
         ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
         ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
-        ' --syst_qcd_bkg="CMS_QCD_BackgroundSubtraction"',
+        #' --syst_qcd_bkg="CMS_QCD_BackgroundSubtraction"',
         ' --syst_jfake_scale="CMS_scale_jfake"',
-        ' --syst_scale_j_regrouped="CMS_scale_j_*group"', # Jet energy scale (grouped)
+        #' --syst_scale_j_regrouped="CMS_scale_j_*group"', # Jet energy scale (grouped)
       ]
     common_shape_systematics = [
         ' --syst_tquark=\'CMS_htt_ttbarShape\'', # Top pT re-weighting
@@ -122,7 +121,7 @@ for year in years:
     if not os.path.isdir('%(output_folder)s/%(year)s/%(ch)s' % vars()):
       os.system("mkdir %(output_folder)s/%(year)s/%(ch)s" % vars())
 
-    method='9' # this will relax the iso for the QCD shape to make sure it is not as strongly influenced by the background modelling
+    method='12' # this will relax the iso for the QCD shape to make sure it is not as strongly influenced by the background modelling
     sf='1.'
 
     if ch=='tt': 
@@ -170,26 +169,28 @@ for year in years:
                extra+='  --extra_name=%(s_name)s' % vars() 
 
              if ch == 'mt':
- 
-               cuts='m_vis>40&&pt_1>25&&trg_singlemuon'
-               if options.tightVsE: cuts+='&&deepTauVsEle_tight_2>0.5'
+
+               cuts='m_vis>40&&m_vis<80&&pt_1>25&&trg_singlemuon&&fabs(eta_2)<2.1'
+               if '2016' in year: cuts=cuts.replace('trg_singlemuon','trg_singlemuon24') # make sure you use the un-prescaled trigger that matches the mu+tau monitoring path selections 
+               if year == '2017': cuts+='&&pt_1>28' # make sure muon is above 27 GeV trigger threshold as 24 GeV trigger was prescaled in 4/fb of datataking 
+
  
                run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<30)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt30" ' % vars()
   
-               # events failing the mT cut
-               run_cmd_2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1>30)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTGt30" ' % vars()
-  
-               run_cmd_3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<60)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt60" ' % vars()
-               # removing mT cut altogether
-               run_cmd_4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(1)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s" ' % vars()
-  
+               run_cmd_2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<60)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt60" ' % vars()
+
+               run_cmd_3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<30)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s&&(trg_tt_monitoring_1||trg_tt_monitoring_2||trg_tt_monitoring_3||trg_tt_monitoring_4||trg_tt_monitoring_5||trg_tt_monitoring_6))\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt30_passTRG" ' % vars()
+
+               run_cmd_4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<60)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s&&(trg_tt_monitoring_l1>32&&trg_tt_monitoring_1||trg_tt_monitoring_2||trg_tt_monitoring_3||trg_tt_monitoring_4||trg_tt_monitoring_5||trg_tt_monitoring_6))\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt60_passTRG" ' % vars()
+             # remove trg_tt_monitoring_l1 after 2017 is rerun!!!
   
              elif ch == 'zmm':
               run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>50&&pt_1>25&&trg_singlemuon)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra)s ' % vars()
   
              commands = [run_cmd, run_cmd_2, run_cmd_3, run_cmd_4]
              if ',' in var_used: var_name=var_used.replace(',','_vs_')
-  
+             else: var_name=var_used 
+ 
              for i in range(0,len(commands)):
                if commands[i] is '': continue
                #s_name=''
