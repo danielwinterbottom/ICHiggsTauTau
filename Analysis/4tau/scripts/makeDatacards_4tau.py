@@ -162,11 +162,11 @@ ch_dep_var = {"mttt":[
 categories = {
               "ttt" : ["inclusive"],
               "tttt": ["inclusive"],
-              "ettt": ["inclusive","nobtag"],
-              "mttt": ["inclusive","nobtag"],
+              "ettt": ["ettt_check"],
+              "mttt": ["mttt_check"],
               "emtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "eett": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
-              "mmtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
+              "mmtt": ["inclusive"],
               }
 
 
@@ -248,21 +248,21 @@ add_options = {
 
 ### Systematics ###
 common_shape_systematics = [
- 	'--syst_tau_id', # Tau ID Efficiency
-	'--syst_doubletau_trg', # Double Tau Trigger Effieciency
-        '--syst_tau_scale_group', #Tau Energy Scale
-        '--syst_jet_res', # Jet Energy Resolution
-        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
+ 	#'--syst_tau_id', # Tau ID Efficiency
+	#'--syst_doubletau_trg', # Double Tau Trigger Effieciency
+        #'--syst_tau_scale_group', #Tau Energy Scale
+        #'--syst_jet_res', # Jet Energy Resolution
+        #'--syst_met_unclustered', # MET Unclustered Energy Uncertainty
         '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
-        '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
-        '--syst_jet_scale_group', # Jet Energy Scale Grouped
-        '--syst_electron_scale', # Electron Energy Scale
-        '--syst_efake_scale_0pi', # l to tau h fake energy scale
-        '--syst_efake_scale_1pi', # l to tau h fake energy scale
-        '--syst_muon_scale', # Muon Energy Scale
-        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
-        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
-        ' --do_ff_systs', 
+        #'--syst_met_res', # MET Recoil Resolution Correction Uncertainty
+        #'--syst_jet_scale_group', # Jet Energy Scale Grouped
+        #'--syst_electron_scale', # Electron Energy Scale
+        #'--syst_efake_scale_0pi', # l to tau h fake energy scale
+        #'--syst_efake_scale_1pi', # l to tau h fake energy scale
+        #'--syst_muon_scale', # Muon Energy Scale
+        #'--syst_mufake_scale_0pi', # l to tau h fake energy scale
+        #'--syst_mufake_scale_1pi', # l to tau h fake energy scale
+        #'--do_ff_systs', 
 	]
 
 # Set up output directories
@@ -297,7 +297,7 @@ for channel in channels:
         combined_options = ""
         if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.25\\\""
         if not args.no_syst:
-           print("HI", args.no_syst)
+           print "Adding Systematics"
            for syst in common_shape_systematics:
               add_cond += (syst + " ")
         run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(option)s --method=1 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
