@@ -1,4 +1,5 @@
 import ROOT
+import sys
 import re
 import os
 import glob
@@ -346,6 +347,9 @@ cats['z_control_nobtag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets==0))'
 cats['2l2t_sig_nobtag'] = '((q_1==q_2) && (q_3==q_4) && (n_bjets==0))'
 cats['z_control_btag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets>0))'
 cats['2l2t_sig_btag'] = '((q_1==q_2) && (q_3==q_4) && (n_bjets>0))'
+
+cats['ettt_check'] = '(((q_1==-q_2) && (deepTauVsEle_loose_2>0.5)) || ((q_1==-q_3) && (deepTauVsEle_loose_3>0.5)) || ((q_1==-q_4) && (deepTauVsEle_loose_4>0.5)))'
+cats['mttt_check'] = '(((q_1==-q_2) && (deepTauVsMu_loose_2>0.5)) || ((q_1==-q_3) && (deepTauVsMu_loose_3>0.5)) || ((q_1==-q_4) && (deepTauVsMu_loose_4>0.5)))'
 
 
 # Overwrite any category selections if the --set_alias option is used
@@ -883,6 +887,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
       total_bkg.Write()
     outfile.cd()
 
+
 def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
     # produce template for observed data
     if do_data:
@@ -1072,29 +1077,28 @@ systematics = OrderedDict()
 systematics['default'] = ('','', 'wt', [], False)
 if options.syst_tau_id:
   dm_bins=["0","1","10"]
-  up_wts = []
-  down_wts = []
-  for ind, ch in enumerate(options.channel):
-    index = ind + 1
-    for i,dm in enumerate(dm_bins):
+  for i,dm in enumerate(dm_bins):
+    up_wts = []
+    down_wts = []
+    for ind, ch in enumerate(options.channel):
        if ch == "t":
          if(dm == "10"):
-           up_wts.append("((idisoweight_ratio_%(index)s_up*(tau_decay_mode_%(index)s==10 || tau_decay_mode_%(index)s==11))+(tau_decay_mode_%(index)s!=10 && tau_decay_mode_%(index)s!=11))"%vars())
-           down_wts.append("((idisoweight_ratio_%(index)s_down*(tau_decay_mode_%(index)s==10 || tau_decay_mode_%(index)s==11))+(tau_decay_mode_%(index)s!=10 && tau_decay_mode_%(index)s!=11))"%vars())
+           up_wts.append("((idisoweight_ratio_{0}_up*((tau_decay_mode_{0}==10) || (tau_decay_mode_{0}==11)))+((tau_decay_mode_{0}!=10) && (tau_decay_mode_{0}!=11)))".format(ind+1))
+           down_wts.append("((idisoweight_ratio_{0}_down*((tau_decay_mode_{0}==10) || (tau_decay_mode_{0}==11)))+((tau_decay_mode_{0}!=10) && (tau_decay_mode_{0}!=11)))".format(ind+1))
          else:
-           up_wts.append("((idisoweight_ratio_%(index)s_up*tau_decay_mode_%(index)s==%(dm)s)+(tau_decay_mode_%(index)s!=%(dm)s))"%vars())
-           down_wts.append("((idisoweight_ratio_%(index)s_down*tau_decay_mode_%(index)s==%(dm)s)+(tau_decay_mode_%(index)s!=%(dm)s))"%vars())
+           up_wts.append("((idisoweight_ratio_{0}_up*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm))
+           down_wts.append("((idisoweight_ratio_{0}_down*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm))
 
-       bin_name = "syst_tau_id_"+dm_bins[i]  
-       systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
-       systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+    bin_name = "syst_tau_id_DM"+dm 
+    systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+    systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
 if options.syst_etau_fakerate:
   eta_bins = ["0","1.5","2.3"]
-  up_wts = []
-  down_wts = []
-  for ind, ch in enumerate(options.channel):
-    for i, eta in enumerate(eta_bins):
+  for i,eta in enumerate(eta_bins):
+    up_wts = []
+    down_wts = []
+    for ind, ch in enumerate(options.channel):
       if ch == "t":
          if i != len(eta_bins):
            up_wts.append("((etau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}) && fabs(eta_{0} < {2})))+ (fabs(eta_{0} >= {2})))".format(ind+1,eta_bins[i],eta_bins[i+1]))
@@ -1103,16 +1107,16 @@ if options.syst_etau_fakerate:
            up_wts.append("((etau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))
            down_wts.append("((etau_fakerate_ratio_{0}_down*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))
 
-      bin_name = "syst_etau_fakerate_"+eta_bins[i]
-      systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
-      systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+    bin_name = "syst_etau_fakerate_"+eta
+    systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+    systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
 if options.syst_mtau_fakerate:
   eta_bins=["0","0.4","0.8","1.2","1.7","2.3"]
-  up_wts = []
-  down_wts = []
-  for ind, ch in enumerate(options.channel):
-    for i, eta in enumerate(eta_bins):
+  for i,eta in enumerate(eta_bins):
+    up_wts = []
+    down_wts = []
+    for ind, ch in enumerate(options.channel):
       if ch == "t":
          if i != len(eta_bins):
            up_wts.append("((mtau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}) && fabs(eta_{0} < {2})))+ (fabs(eta_{0} >= {2})))".format(ind+1,eta_bins[i],eta_bins[i+1]))
@@ -1121,9 +1125,9 @@ if options.syst_mtau_fakerate:
            up_wts.append("((mtau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))
            down_wts.append("((mtau_fakerate_ratio_{0}_down*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))       
 
-      bin_name = "syst_mtau_fakerate_"+eta_bins[i]
-      systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
-      systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+    bin_name = "syst_mtau_fakerate_"+eta
+    systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+    systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
 
 if options.syst_doubletau_trg:
@@ -1264,6 +1268,7 @@ if options.plot_from_dc == "":
         # Add all MC background files
         for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + qqzz_samples + hzz_samples + ggzz_samples:
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+        #print(ana.trees)
         for sample_name in signal_samples:
             ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name[0]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name[0])         
  
