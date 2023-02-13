@@ -177,20 +177,21 @@ int main(int argc, char* argv[]) {
 
 
     for (unsigned j = 0; j < vars.size(); ++j) {
+      std::cout << vars[j] << std::endl;
       // if systematic is only relevant for a different channel then return here
-      if((channel_str.find("et") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_e_")!=std::string::npos) continue;
-      if(channel_str.find("et") == channel_str.npos && vars[j].find("scale_efake")!=std::string::npos) continue;
-      if(channel_str.find("mt") == channel_str.npos && vars[j].find("scale_mufake")!=std::string::npos) continue;     
-      if((channel_str.find("mt") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_mu_")!=std::string::npos) continue;     
-      if(channel_str.find("em") == channel_str.npos && (vars[j].find("scale_t_lo")!=std::string::npos || vars[j].find("scale_t_hi")!=std::string::npos)) continue;
-      if(channel_str.find("em") != channel_str.npos && (vars[j].find("scale_t_0pi")!=std::string::npos || vars[j].find("scale_t_1pi")!=std::string::npos || vars[j].find("scale_t_3prong")!=std::string::npos || vars[j].find("scale_t_3prong1pi0")!=std::string::npos )) continue;
+      //if((channel_str.find("et") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_e_")!=std::string::npos) continue;
+      //if(channel_str.find("et") == channel_str.npos && vars[j].find("scale_efake")!=std::string::npos) continue;
+      //if(channel_str.find("mt") == channel_str.npos && vars[j].find("scale_mufake")!=std::string::npos) continue;     
+      //if((channel_str.find("mt") == channel_str.npos && channel_str.find("em") == channel_str.npos) && vars[j].find("scale_mu_")!=std::string::npos) continue;     
+      //if(channel_str.find("em") == channel_str.npos && (vars[j].find("scale_t_lo")!=std::string::npos || vars[j].find("scale_t_hi")!=std::string::npos)) continue;
+      //if(channel_str.find("em") != channel_str.npos && (vars[j].find("scale_t_0pi")!=std::string::npos || vars[j].find("scale_t_1pi")!=std::string::npos || vars[j].find("scale_t_3prong")!=std::string::npos || vars[j].find("scale_t_3prong1pi0")!=std::string::npos )) continue;
 
       std::string seq_str = channel_str+"_"+vars[j];
       Json::Value js_merged = js["sequence"];
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
 
-      // std::cout << js_merged;
+      //std::cout << js_merged;
       seqs[seq_str] = ic::HTTSequence(channel_str,std::to_string(offset),js_merged, js);
       seqs[seq_str].BuildSequence();
       ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());

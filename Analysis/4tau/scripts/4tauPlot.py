@@ -168,6 +168,8 @@ parser.add_argument("--syst_tau_id", dest="syst_tau_id", action='store_true',
     help="Run tau id systemtic uncertainty")
 parser.add_argument("--rebin_with_data", dest="rebin_with_data", action='store_true',
     help="Use data in the rebinning algorithm")
+parser.add_argument("--symmetrise_uncertainty", dest="symmetrise_uncertainty", action='store_true',
+    help="Symmetrise uncertainties in dictionary defined in code.")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -239,46 +241,55 @@ if options.channel == 'ttt':
   else:
     charge_sel = "fabs(q_1+q_2+q_3)==1"
 
+tpt = "40"
+if options.year == "2016_preVFP" or options.year == "2016_postVFP":
+  mpt = "23"
+  ept = "26"
+elif options.year == "2017":
+  mpt = "25"
+  ept = "28"
+elif options.year == "2018":
+  mpt = "25"
+  ept = "33"
+
+
 if options.channel == "tttt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_doubletau_12 || trg_doubletau_13 || trg_doubletau_14 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
+  cats['trigger'] = "((pt_1>{tpt} && pt_2>{tpt} && trg_doubletau_12) || (pt_1>{tpt} && pt_3>{tpt} && trg_doubletau_13) || (pt_1>{tpt} && pt_4>{tpt} && trg_doubletau_14) || (pt_2>{tpt} && pt_3>{tpt} && trg_doubletau_23) || (pt_2>{tpt} && pt_4>{tpt} && trg_doubletau_24) || (pt_3>{tpt} && pt_4>{tpt} && trg_doubletau_34))".format(tpt=tpt)
   cats['data_veto'] = "(1)"
 if options.channel == "ttt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3})".format(sel_1=t_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"))
-  cats['trigger'] = "(trg_doubletau_12 || trg_doubletau_13 || trg_doubletau_23)"
+  cats['trigger'] = "((pt_1>{tpt} && pt_2>{tpt} && trg_doubletau_12) || (pt_1>{tpt} && pt_3>{tpt} && trg_doubletau_13) || (pt_2>{tpt} && pt_3>{tpt} && trg_doubletau_23))".format(tpt=tpt)
   cats['data_veto'] = "(1)"
 elif options.channel == "ettt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singleelectron_1 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
+  cats['trigger'] = "((pt_1>{ept} && trg_singleelectron_1) || (pt_2>{tpt} && pt_3>{tpt} && trg_doubletau_23) || (pt_2>{tpt} && pt_4>{tpt} && trg_doubletau_24) || (pt_3>{tpt} && pt_4>{tpt} && trg_doubletau_34))".format(tpt=tpt,ept=ept)
   cats['data_veto'] = "!(isTau && (trg_singleelectron_1))"
 elif options.channel == "mttt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=t_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singlemuon_1 || trg_doubletau_23 || trg_doubletau_24 || trg_doubletau_34)"
-  cats['data_veto'] = "!(isTau && (trg_singlemuon_1))"
+  cats['trigger'] = "((pt_1>{mpt} && trg_singlemuon_1) || (pt_2>{tpt} && pt_3>{tpt} && trg_doubletau_23) || (pt_2>{tpt} && pt_4>{tpt} && trg_doubletau_24) || (pt_3>{tpt} && pt_4>{tpt} && trg_doubletau_34))".format(tpt=tpt,mpt=mpt)
+  cats['data_veto'] = "!(isTau && (pt_1>{mpt} && trg_singlemuon_1))".format(mpt=mpt)
 elif options.channel == "emtt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singleelectron_1 || trg_singlemuon_2 || trg_doubletau_34)"
-  cats['data_veto'] = "(!(isTau && (trg_singlemuon_2))) && (!(isSingleElectron && (trg_singlemuon_1 || trg_doubletau_34)))"
+  cats['trigger'] = "((pt_1>{ept} && trg_singleelectron_1) || (pt_2>{mpt} && trg_singlemuon_2) || (pt_3>{tpt} && pt_4>{tpt} && trg_doubletau_34))".format(ept=ept,mpt=mpt,tpt=tpt)
+  cats['data_veto'] = "(!(isTau && (pt_2>{mpt} && trg_singlemuon_2))) && (!(isSingleElectron && ((pt_1>{mpt} && trg_singlemuon_1) || (pt_3>{tpt} && pt_4>{tpt} && trg_doubletau_34))))".format(mpt=mpt,tpt=tpt)
 elif options.channel == "mmtt":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_doubletau_34)"
-  cats['data_veto'] = "!(isTau && (trg_singlemuon_1 || trg_singlemuon_2))"
+  cats['trigger'] = "((pt_1>{mpt} && trg_singlemuon_1) || (pt_2>{mpt} && trg_singlemuon_2) || (pt_3>{tpt} && pt_4>{tpt} && trg_doubletau_34))".format(mpt=mpt,tpt=tpt)
+  cats['data_veto'] = "!(isTau && ((pt_1>{mpt} && trg_singlemuon_1) || (pt_2>{mpt} && trg_singlemuon_2)))".format(mpt=mpt)
 elif options.channel == "eett":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=e_sel.replace("X","1"),sel_2=e_sel.replace("X","2"),sel_3=t_sel.replace("X","3"),sel_4=t_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singleelectron_1 || trg_singleelectron_2 || trg_doubletau_34)"
-  cats['data_veto'] = "!(isTau && (trg_singleelectron_1 || trg_singleelectron_2))"
+  cats['trigger'] = "((pt_1>{ept} && trg_singleelectron_1) || (pt_2>{ept} && trg_singleelectron_2) || (pt_3>{tpt} && pt_4>{tpt} && trg_doubletau_34))".format(ept=ept,tpt=tpt)
+  cats['data_veto'] = "!(isTau && ((pt_1>{ept} && trg_singleelectron_1) || (pt_2>{ept} && trg_singleelectron_2)))".format(ept=ept)
 elif options.channel == "mmmm":
   cats['baseline'] = "({sel_1} && {sel_2} && {sel_3} && {sel_4})".format(sel_1=m_sel.replace("X","1"),sel_2=m_sel.replace("X","2"),sel_3=m_sel.replace("X","3"),sel_4=m_sel.replace("X","4"))
-  cats['trigger'] = "(trg_singlemuon_1 || trg_singlemuon_2 || trg_singlemuon_3 || trg_singlemuon_4)"
-  #cats['trigger'] = "(trg_singlemuon_1)"
+  cats['trigger'] = "((pt_1>{mpt} && trg_singlemuon_1) || (pt_2>{mpt} && trg_singlemuon_2) || (pt_3>{mpt} && trg_singlemuon_3) || (pt_4>{mpt} && trg_singlemuon_4))".format(mpt=mpt)
   cats['data_veto'] = "(1)"
 
 
 if options.aiso != "":
   for X in options.aiso:
-    print cats['baseline']
     cats['baseline'] = cats['baseline'].replace("deepTauVsJets_%(VsJets_wp)s_%(X)s>0.5" % vars(), "(deepTauVsJets_%(VsJets_wp)s_%(X)s<0.5 && deepTauVsJets_iso_%(X)s>0.1)" % vars() )
-    print cats['baseline']
 
 if options.aiso_and_iso != "":
   for X in options.aiso_and_iso:
@@ -661,12 +672,21 @@ def GenerateQQZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', q
     ana.nodes[nodename].AddNode(qqzz_node)
 
 def GenerateMCFakeTaus(ana, ff_from, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    ff_not_from = [ind+1 for ind, ch in enumerate(options.channel) if (ch == "t" and str(ind+1) not in ff_from)]
-    not_fake_sel = ["(gen_match_"+str(i)+"!=6)" for i in ff_from]
-    fake_sel = ["(gen_match_"+str(i)+"==6)" for i in ff_not_from] 
-    mc_sel = "(("+sel+")&&("+"||".join(not_fake_sel)+")&&("+"||".join(fake_sel)+"))"
+    #ff_not_from = [ind+1 for ind, ch in enumerate(options.channel) if (ch == "t" and str(ind+1) not in ff_from)]
+    #not_fake_sel = ["(gen_match_"+str(i)+"!=6)" for i in ff_from]
+    #fake_sel = ["(gen_match_"+str(i)+"==6)" for i in ff_not_from] 
+    #mc_sel = "(("+sel+")&&("+"||".join(not_fake_sel)+")&&("+"||".join(fake_sel)+"))"
+    #mc_jetfakes_node = GetNode(ana, "MC_jetFakes", add_name, samples, plot, wt, mc_sel, cat)
+    #ana.nodes[nodename].AddNode(mc_jetfakes_node)
+    total_sel = []
+    for tau in ff_from:
+      ff_not_from = [ind+1 for ind, ch in enumerate(options.channel) if (ch == "t" and str(ind+1) != tau)]
+      fake_sel = ["(gen_match_"+str(i)+"==6)" for i in ff_not_from] 
+      total_sel.append("((gen_match_"+str(tau)+"!=6)&&("+"||".join(fake_sel)+"))")
+    mc_sel = "("+"||".join(total_sel)+")"
     mc_jetfakes_node = GetNode(ana, "MC_jetFakes", add_name, samples, plot, wt, mc_sel, cat)
     ana.nodes[nodename].AddNode(mc_jetfakes_node)
+
 
 def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
   vj = "deepTauVsJets_" + VsJets_wp
@@ -888,6 +908,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
 
         if options.do_ff_systs and not options.no_sig_sel:
           wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
+          #wt_exts = ["_non_closure_down","_non_closure_up"]
         elif options.do_ff_systs and options.no_sig_sel:
           wt_exts = ["_non_closure_down","_non_closure_up"]
         else:
@@ -1229,11 +1250,8 @@ def SymmetriseUncertainty(hist,hist_up,hist_down):
     hist_down.SetBinContent(i,hist.GetBinContent(i)-max_shift)
   return hist_up, hist_down
 
-if options.do_ff_systs and options.plot_from_dc == "":
-  if options.ff_from == "all":
-    symmetrise_dict = {"jetFakes":["_all_non_closure"]}
-  else:
-    symmetrise_dict = {}
+if options.symmetrise_uncertainty and options.plot_from_dc == "":
+  symmetrise_dict = {"jetFakes":["_all_non_closure"]}
   directory = outfile.Get(nodename)
   outfile.cd(nodename)
   for key in directory.GetListOfKeys():
@@ -1356,6 +1374,23 @@ if options.auto_rebinning:
         if ".subnodes" not in i.GetName():
           RebinHist(plot_file.Get(nodename+'/'+i.GetName()).Clone(),binning).Write()
           hists_done.append(i.GetName())
+
+  if options.symmetrise_uncertainty:
+    symmetrise_dict = {"jetFakes":["_all_non_closure"]}
+    directory = outfile_rebin.Get(nodename)
+    outfile_rebin.cd(nodename)
+    for key in directory.GetListOfKeys():
+      if key.GetName() in symmetrise_dict.keys():
+        for syst in symmetrise_dict[key.GetName()]:
+          hist = directory.Get(key.GetName()).Clone()
+          hist_up = directory.Get(key.GetName()+syst+"Up").Clone()
+          hist_down = directory.Get(key.GetName()+syst+"Down").Clone()
+          hist_up, hist_down = SymmetriseUncertainty(hist,hist_up,hist_down)
+          outfile_rebin.cd(nodename)
+          hist_up.Write()
+          hist_down.Write()
+
+
   outfile_rebin.Close()
   plot_file = ROOT.TFile(output_name.replace(".root","_rebinned.root"))
 else:
