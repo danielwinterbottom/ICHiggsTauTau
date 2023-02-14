@@ -1,4 +1,5 @@
 import ROOT
+import sys
 import re
 import os
 import glob
@@ -165,7 +166,41 @@ parser.add_argument("--do_ff_systs", dest="do_ff_systs", action='store_true',
 parser.add_argument("--add_stat_to_syst", dest="add_stat_to_syst", action='store_true',
     help="Add custom uncertainty band to statistical uncertainty.")
 parser.add_argument("--syst_tau_id", dest="syst_tau_id", action='store_true',
-    help="Run tau id systemtic uncertainty")
+    help="Run tau id systematic uncertainty")
+parser.add_argument("--syst_etau_fakerate", dest="syst_etau_fakerate", action='store_true',
+    help="Run etau fakerate systematic uncertainty")
+parser.add_argument("--syst_mtau_fakerate", dest="syst_mtau_fakerate", action='store_true',
+    help="Run mtau fakerate systematic uncertainty")
+parser.add_argument("--syst_doubletau_trg", dest="syst_doubletau_trg", action='store_true',
+    help="Run doubletau trigger systematic uncertainty")
+parser.add_argument("--syst_prefire", dest="syst_prefire", action='store_true',
+    help="Run prefire systematic uncertainty")
+parser.add_argument("--syst_tau_scale", dest="syst_tau_scale", action='store_true',
+    help="Run tau energy scale systematic uncertainty")
+parser.add_argument("--syst_tau_scale_group", dest="syst_tau_scale_group", action='store_true',
+    help="Run tau grouped energy scale systematic uncertainties")
+parser.add_argument("--syst_jet_scale_group", dest="syst_jet_scale_group", action='store_true',
+    help="Run jet grouped energy scale systematic uncertainties")
+parser.add_argument("--syst_electron_scale", dest="syst_electron_scale", action='store_true',
+    help="Run electron energy scale systematic uncertainty")
+parser.add_argument("--syst_efake_scale_0pi", dest="syst_efake_scale_0pi", action='store_true',
+    help="Run efake 0pi energy scale systematic uncertainty")
+parser.add_argument("--syst_efake_scale_1pi", dest="syst_efake_scale_1pi", action='store_true',
+    help="Run efake 1pi energy scale systematic uncertainty")
+parser.add_argument("--syst_muon_scale", dest="syst_muon_scale", action='store_true',
+    help="Run muon energy scale systematic uncertainty")
+parser.add_argument("--syst_mufake_scale_0pi", dest="syst_mufake_scale_0pi", action='store_true',
+    help="Run mufake 0pi energy scale systematic uncertainty")
+parser.add_argument("--syst_mufake_scale_1pi", dest="syst_mufake_scale_1pi", action='store_true',
+    help="Run mufake 1pi energy scale systematic uncertainty")
+parser.add_argument("--syst_jet_res", dest="syst_jet_res", action='store_true',
+    help="Run jet energy resolution systematic uncertainty")
+parser.add_argument("--syst_met_unclustered", dest="syst_met_unclustered", action='store_true',
+    help="Run MET unclustered systematic uncertainty")
+parser.add_argument("--syst_met_scale", dest="syst_met_scale", action='store_true',
+    help="Run MET energy scale systematic uncertainty")
+parser.add_argument("--syst_met_res", dest="syst_met_res", action='store_true',
+    help="Run MET energy resolution systematic uncertainty")
 parser.add_argument("--rebin_with_data", dest="rebin_with_data", action='store_true',
     help="Use data in the rebinning algorithm")
 parser.add_argument("--symmetrise_uncertainty", dest="symmetrise_uncertainty", action='store_true',
@@ -323,6 +358,9 @@ cats['z_control_nobtag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets==0))'
 cats['2l2t_sig_nobtag'] = '((q_1==q_2) && (q_3==q_4) && (n_bjets==0))'
 cats['z_control_btag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets>0))'
 cats['2l2t_sig_btag'] = '((q_1==q_2) && (q_3==q_4) && (n_bjets>0))'
+
+cats['ettt_check'] = '(((q_1==-q_2) && (deepTauVsEle_loose_2>0.5)) || ((q_1==-q_3) && (deepTauVsEle_loose_3>0.5)) || ((q_1==-q_4) && (deepTauVsEle_loose_4>0.5)))'
+cats['mttt_check'] = '(((q_1==-q_2) && (deepTauVsMu_loose_2>0.5)) || ((q_1==-q_3) && (deepTauVsMu_loose_3>0.5)) || ((q_1==-q_4) && (deepTauVsMu_loose_4>0.5)))'
 
 
 # Overwrite any category selections if the --set_alias option is used
@@ -869,6 +907,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
       total_bkg.Write()
     outfile.cd()
 
+
 def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=True, samples_to_skip=[], outfile='output.root'):
     # produce template for observed data
     if do_data:
@@ -945,16 +984,16 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       elif options.channel in ["eett","mmtt","emtt"]:
         cat = "("+cat+")&&(gen_match_3<6 && gen_match_4<6)"
 
-      if 'ZTT' not in samples_to_skip:
-          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
-      if 'TT' not in samples_to_skip:
-          GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
+      #if 'ZTT' not in samples_to_skip:
+      #    GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
+      #if 'TT' not in samples_to_skip:
+      #    GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
       if 'VV' not in samples_to_skip:
           GenerateVV(ana, add_name, vv_samples+ggzz_samples+qqzz_samples, plot, wt, sel, cat, vv_sels)
       if 'VVV' not in samples_to_skip:
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
-      if 'W' not in samples_to_skip:
-          GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      #if 'W' not in samples_to_skip:
+      #    GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
       if 'signal' not in samples_to_skip and not options.no_signal:
           GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
 
@@ -1058,16 +1097,144 @@ cats_unmodified = copy.deepcopy(cats)
 systematics = OrderedDict()
 systematics['default'] = ('','', 'wt', [], False)
 if options.syst_tau_id:
-  up_wts = []
-  down_wts = []
-  for ind, ch in enumerate(options.channel):
-    if ch == "t":
-      up_wts.append("idisoweight_ratio_{}_up".format(ind+1))
-      down_wts.append("idisoweight_ratio_{}_down".format(ind+1))
-    
-  systematics['syst_tau_idUp'] = ('' , '_syst_tau_idUp', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
-  systematics['syst_tau_idDown'] = ('' , '_syst_tau_idDown', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+  dm_bins=["0","1","10"]
+  for i,dm in enumerate(dm_bins):
+    up_wts = []
+    down_wts = []
+    for ind, ch in enumerate(options.channel):
+       if ch == "t":
+         if(dm == "10"):
+           up_wts.append("((idisoweight_ratio_{0}_up*((tau_decay_mode_{0}==10) || (tau_decay_mode_{0}==11)))+((tau_decay_mode_{0}!=10) && (tau_decay_mode_{0}!=11)))".format(ind+1))
+           down_wts.append("((idisoweight_ratio_{0}_down*((tau_decay_mode_{0}==10) || (tau_decay_mode_{0}==11)))+((tau_decay_mode_{0}!=10) && (tau_decay_mode_{0}!=11)))".format(ind+1))
+         else:
+           up_wts.append("((idisoweight_ratio_{0}_up*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm))
+           down_wts.append("((idisoweight_ratio_{0}_down*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm))
 
+    bin_name = "syst_tau_id_DM"+dm 
+    systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+    systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+
+if options.syst_etau_fakerate:
+  eta_bins = ["0","1.5","2.3"]
+  for i,eta in enumerate(eta_bins):
+    up_wts = []
+    down_wts = []
+    for ind, ch in enumerate(options.channel):
+      if ch == "t":
+         if i != len(eta_bins):
+           up_wts.append("((etau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}) && fabs(eta_{0} < {2})))+ (fabs(eta_{0} >= {2})))".format(ind+1,eta_bins[i],eta_bins[i+1]))
+           down_wts.append("((etau_fakerate_ratio_{0}_down*(fabs(eta_{0} >= {1}) && fabs(eta_{0} < {2})))+ (fabs(eta_{0} >= {2})))".format(ind+1,eta_bins[i],eta_bins[i+1]))
+	 else:
+           up_wts.append("((etau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))
+           down_wts.append("((etau_fakerate_ratio_{0}_down*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))
+
+    bin_name = "syst_etau_fakerate_"+eta
+    systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+    systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+
+if options.syst_mtau_fakerate:
+  eta_bins=["0","0.4","0.8","1.2","1.7","2.3"]
+  for i,eta in enumerate(eta_bins):
+    up_wts = []
+    down_wts = []
+    for ind, ch in enumerate(options.channel):
+      if ch == "t":
+         if i != len(eta_bins):
+           up_wts.append("((mtau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}) && fabs(eta_{0} < {2})))+ (fabs(eta_{0} >= {2})))".format(ind+1,eta_bins[i],eta_bins[i+1]))
+           down_wts.append("((mtau_fakerate_ratio_{0}_down*(fabs(eta_{0} >= {1}) && fabs(eta_{0} < {2})))+ (fabs(eta_{0} >= {2})))".format(ind+1,eta_bins[i],eta_bins[i+1]))
+         else:
+           up_wts.append("((mtau_fakerate_ratio_{0}_up*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))
+           down_wts.append("((mtau_fakerate_ratio_{0}_down*(fabs(eta_{0} >= {1}))) + (fabs(eta_{0} < {2})))".format(ind+1,eta_bins[i],eta_bins[i-1]))       
+
+    bin_name = "syst_mtau_fakerate_"+eta
+    systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+    systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+
+
+if options.syst_doubletau_trg:
+  if options.channel.count("t") >= 2: 
+    systematics['syst_doubletau_trg_up'] = ('', '_syst_doubletau_trgUp', 'wt*total_trg_ratio_doubletau_up', ['jetFakes'], False)
+    systematics['syst_doubletau_trg_down'] = ('', '_syst_doubletau_trgDown', 'wt*total_trg_ratio_doubletau_down', ['jetFakes'], False)
+
+if options.syst_prefire:
+    systematics['syst_prefire_up'] = ('' , '_syst_prefireUp', 'wt*wt_prefire_up/wt_prefire', ['jetFakes'], False)
+    systematics['syst_prefire_down'] = ('' , '_syst_prefireDown', 'wt*wt_prefire_down/wt_prefire', ['jetFakes'], False)
+
+# ---------------------
+if options.syst_tau_scale:
+    systematics['syst_tau_scale_up'] = ('TSCALE_UP' , '_syst_tau_scale'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_tau_scale_down'] = ('TSCALE_DOWN' , '_syst_tau_scale'+'Down', 'wt', ['jetFakes'], False)
+
+if options.syst_tau_scale_group:
+    names = ["1prong","1prong1pizero","3prong","3prong1pizero"]
+    folders = ["TSCALE0PI","TSCALE1PI","TSCALE3PRONG","TSCALE3PRONG1PI0"]
+    syst_dict = dict(zip(names, folders))
+    for name, folder in syst_dict.iteritems():
+        systematics["scale_tau_scale_{}_up".format(name)] = ("{}_UP".format(folder), "_{}Up".format(name),"wt", ["jetFakes"], False)
+        systematics["scale_tau_scale_{}_down".format(name)] = ("{}_DOWN".format(folder), "_{}Down".format(name),"wt", ["jetFakes"], False)
+
+if options.syst_jet_scale_group:
+    # need dict of syst names and folders of where the shifted trees are found
+    names = ["Absolute", "Absolute_year", "BBEC1", "BBEC1_year",
+            "EC2", "EC2_year", "FlavorQCD", "HF", "HF_year",
+            "RelativeBal", "RelativeSample_year"]
+    folders = ["JESABS", "JESABS_YEAR", "JESBBEC1", "JESBBEC1_YEAR",
+            "JESEC2", "JESEC2_YEAR", "JESFLAV", "JESHF", "JESHF_YEAR",
+            "JESRBAL", "JESRELSAMP_YEAR"]
+
+    syst_dict = dict(zip(names, folders))
+
+    replaceYear = ""
+    if (options.year == '2016_preVFP'): replaceYear = "2016preVFP"
+    elif (options.year == '2016_postVFP'): replaceYear = "2016postVFP"
+    elif (options.year == '2017'): replaceYear = "2017"
+    elif (options.year == '2018'): replaceYear = "2018"
+    else: assert ValueError("Regrouped JES only works for full RunII analyses")
+
+    for name, folder in syst_dict.iteritems():
+        if "year" in name: name=name.replace("year", replaceYear)
+        systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder), "_{}Up".format(name),"wt", ['jetFakes'], False)
+        systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder), "_{}Down".format(name),"wt", ['jetFakes'], False)
+
+
+if options.syst_electron_scale:
+    systematics['syst_electron_scale_up'] = ('ESCALE_UP' , '_syst_electron_scale'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_electron_scale_down'] = ('ESCALE_DOWN' , '_syst_electron_scale'+'Down', 'wt', ['jetFakes'], False)
+if options.syst_efake_scale_0pi:
+    systematics['syst_efake_scale_0pi_up'] = ('EFAKE0PI_UP' , '_syst_efake_scale_0pi'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_efake_scale_0pi_down'] = ('EFAKE0PI_DOWN' , '_syst_efake_scale_0pi'+'Down', 'wt', ['jetFakes'], False)
+if options.syst_efake_scale_1pi:
+    systematics['syst_efake_scale_1pi_up'] = ('EFAKE1PI_UP' , '_syst_efake_scale_1pi'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_efake_scale_1pi_down'] = ('EFAKE1PI_DOWN' , '_syst_efake_scale_1pi'+'Down', 'wt', ['jetFakes'], False)
+
+
+if options.syst_muon_scale:
+    systematics['syst_muon_scale_up'] = ('MUSCALE_UP' , '_syst_muon_scale'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_muon_scale_down'] = ('MUSCALE_DOWN' , '_syst_muon_scale'+'Down', 'wt', ['jetFakes'], False)
+if options.syst_mufake_scale_0pi:
+    systematics['syst_mufake_scale_0pi_up'] = ('MUFAKE0PI_UP' , '_syst_mufake_scale_0pi'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_mufake_scale_0pi_down'] = ('MUFAKE0PI_DOWN' , '_syst_mufake_scale_0pi'+'Down', 'wt', ['jetFakes'], False)
+if options.syst_mufake_scale_1pi:
+    systematics['syst_mufake_scale_1pi_up'] = ('MUFAKE1PI_UP' , '_syst_mufake_scale_1pi'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_mufake_scale_1pi_down'] = ('MUFAKE1PI_DOWN' , '_syst_mufake_scale_1pi'+'Down', 'wt', ['jetFakes'], False)
+
+
+if options.syst_jet_res:
+    systematics['syst_jet_res_up'] = ('JER_UP' , '_syst_jet_res'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_jet_res_down'] = ('JER_DOWN' , '_syst_jet_res'+'Down', 'wt', ['jetFakes'], False)
+
+if options.syst_met_unclustered:
+    systematics['syst_met_unclustered_up'] = ('METUNCL_UP', '_syst_met_unclustered'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_met_unclustered_down'] = ('METUNCL_DOWN', '_syst_met_unclustered'+'Down', 'wt', ['jetFakes'], False)
+if options.syst_met_scale:
+    systematics['syst_met_scale_up'] = ('MET_SCALE_UP', '_syst_met_scale'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_met_scale_down'] = ('MET_SCALE_DOWN', '_syst_met_scale'+'Down', 'wt', ['jetFakes'], False)
+if options.syst_met_res:
+    systematics['syst_met_res_up'] = ('MET_RES_UP', '_syst_met_res'+'Up', 'wt', ['jetFakes'], False)
+    systematics['syst_met_res_down'] = ('MET_RES_DOWN', '_syst_met_res'+'Down', 'wt', ['jetFakes'], False)
+
+
+    
 if options.plot_from_dc == "":
   max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
   while len(systematics) > 0:
@@ -1122,6 +1289,7 @@ if options.plot_from_dc == "":
         # Add all MC background files
         for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + qqzz_samples + hzz_samples + ggzz_samples:
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
+        #print(ana.trees)
         for sample_name in signal_samples:
             ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name[0]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name[0])         
  

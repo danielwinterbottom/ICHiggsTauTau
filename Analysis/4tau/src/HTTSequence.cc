@@ -168,12 +168,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   }
   if (channel_str == "tttt"){
    min_taus = 4;
-   tau_pt = 35;
   }
 
   if (channel_str == "ttt"){
    min_taus = 3;
-   tau_pt = 20;
   }
 
 

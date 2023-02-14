@@ -6,12 +6,14 @@
 import os
 import argparse
 import math as math
+import copy
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--channel',help= 'Name of input channels', default='mttt,ettt,tttt,eett,mmtt,emtt,ttt')
 parser.add_argument('--output', help= 'Name of output folder to create', default='4tau_plots')
 parser.add_argument('--only_var', help= 'Only run for this variable', default='')
 parser.add_argument('--only_option', help= 'Only run for this option', default='')
+parser.add_argument("--no_syst",dest="no_syst", action='store_true', default=False,help="Run without systematics")
 args = parser.parse_args()
       
 # Things to loop over
@@ -161,11 +163,11 @@ ch_dep_var = {"mttt":[
 categories = {
               "ttt" : ["inclusive"],
               "tttt": ["inclusive"],
-              "ettt": ["inclusive","nobtag"],
-              "mttt": ["inclusive","nobtag"],
+              "ettt": ["ettt_check"],
+              "mttt": ["mttt_check"],
               "emtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "eett": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
-              "mmtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
+              "mmtt": ["inclusive"],
               }
 
 
@@ -245,6 +247,25 @@ add_options = {
                         ],                    
                }
 
+### Systematics ###
+common_shape_systematics = [
+ 	      '--syst_tau_id', # Tau ID Efficiency
+	      '--syst_doubletau_trg', # Double Tau Trigger Effieciency
+        '--syst_tau_scale_group', #Tau Energy Scale
+        '--syst_jet_res', # Jet Energy Resolution
+        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
+#        '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
+#        '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
+        '--syst_jet_scale_group', # Jet Energy Scale Grouped
+        '--syst_electron_scale', # Electron Energy Scale
+#        '--syst_efake_scale_0pi', # l to tau h fake energy scale
+#        '--syst_efake_scale_1pi', # l to tau h fake energy scale
+#        '--syst_muon_scale', # Muon Energy Scale
+#        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
+#        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
+        '--do_ff_systs', 
+	]
+
 # Set up output directories
 
 cmssw_base = os.getcwd()
@@ -261,8 +282,10 @@ for channel in channels:
 
 
 # Job loop
-
 for channel in channels:
+  systs = copy.deepcopy(common_shape_systematics)
+  if "e" not in channel: systs.remove("--syst_electron_scale")
+
   for name, option in add_options[channel]:
     for cat in categories[channel]:
       variables = all_ch_variables+ch_dep_var[channel]
@@ -276,11 +299,17 @@ for channel in channels:
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
         if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.25\\\""
-#        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1012 --data_folder=/vols/cms/gu18/Offline/output/4tau/1012_ff_v2 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 --add_stat_to_syst --do_ff_systs \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301_ff_v9 --signal_folder=/vols/cms/gu18/Offline/output/4tau/2301 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 --add_stat_to_syst --do_ff_systs \\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
+        add_cond = ""
+        if not (args.no_syst or "ff" in name):
+           print "Adding Systematics"
+           for syst in systs:
+              add_cond += (syst + " ")
+        if "ff" in name:
+          add_cond += "--do_ff_systs"
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s --add_stat_to_syst\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        #SubmitBatchJob(job_file,time=180,memory=24,cores=1)
            
     
 
