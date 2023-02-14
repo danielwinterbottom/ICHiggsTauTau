@@ -1166,7 +1166,7 @@ if options.syst_tau_scale:
     systematics['syst_tau_scale_down'] = ('TSCALE_DOWN' , '_syst_tau_scale'+'Down', 'wt', ['jetFakes'], False)
 
 if options.syst_tau_scale_group:
-    names = ["1prong","1prong1pizero","3prong","3prong1pizero"]
+    names = ["syst_1prong","syst_1prong1pizero","syst_3prong","syst_3prong1pizero"]
     folders = ["TSCALE0PI","TSCALE1PI","TSCALE3PRONG","TSCALE3PRONG1PI0"]
     syst_dict = dict(zip(names, folders))
     for name, folder in syst_dict.iteritems():
@@ -1175,9 +1175,9 @@ if options.syst_tau_scale_group:
 
 if options.syst_jet_scale_group:
     # need dict of syst names and folders of where the shifted trees are found
-    names = ["Absolute", "Absolute_year", "BBEC1", "BBEC1_year",
-            "EC2", "EC2_year", "FlavorQCD", "HF", "HF_year",
-            "RelativeBal", "RelativeSample_year"]
+    names = ["syst_Absolute", "syst_Absolute_year", "syst_BBEC1", "syst_BBEC1_year",
+            "syst_EC2", "syst_EC2_year", "syst_FlavorQCD", "syst_HF", "syst_HF_year",
+            "syst_RelativeBal", "syst_RelativeSample_year"]
     folders = ["JESABS", "JESABS_YEAR", "JESBBEC1", "JESBBEC1_YEAR",
             "JESEC2", "JESEC2_YEAR", "JESFLAV", "JESHF", "JESHF_YEAR",
             "JESRBAL", "JESRELSAMP_YEAR"]
