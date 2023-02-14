@@ -201,6 +201,14 @@ parser.add_argument("--syst_met_scale", dest="syst_met_scale", action='store_tru
     help="Run MET energy scale systematic uncertainty")
 parser.add_argument("--syst_met_res", dest="syst_met_res", action='store_true',
     help="Run MET energy resolution systematic uncertainty")
+parser.add_argument("--syst_electron_id", dest="syst_electron_id", action='store_true',
+    help="Run systematic variations for electron id")
+parser.add_argument("--syst_electron_trg", dest="syst_electron_id", action='store_true',
+    help="Run systematic variations for electron trigger")
+parser.add_argument("--syst_muon_id", dest="syst_muon_id", action='store_true',
+    help="Run systematic variations for muon id")
+parser.add_argument("--syst_muon_trg", dest="syst_muon_id", action='store_true',
+    help="Run systematic variations for muon trigger")
 parser.add_argument("--rebin_with_data", dest="rebin_with_data", action='store_true',
     help="Use data in the rebinning algorithm")
 parser.add_argument("--symmetrise_uncertainty", dest="symmetrise_uncertainty", action='store_true',
@@ -710,12 +718,6 @@ def GenerateQQZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', q
     ana.nodes[nodename].AddNode(qqzz_node)
 
 def GenerateMCFakeTaus(ana, ff_from, add_name='', samples=[], plot='', wt='', sel='', cat=''):
-    #ff_not_from = [ind+1 for ind, ch in enumerate(options.channel) if (ch == "t" and str(ind+1) not in ff_from)]
-    #not_fake_sel = ["(gen_match_"+str(i)+"!=6)" for i in ff_from]
-    #fake_sel = ["(gen_match_"+str(i)+"==6)" for i in ff_not_from] 
-    #mc_sel = "(("+sel+")&&("+"||".join(not_fake_sel)+")&&("+"||".join(fake_sel)+"))"
-    #mc_jetfakes_node = GetNode(ana, "MC_jetFakes", add_name, samples, plot, wt, mc_sel, cat)
-    #ana.nodes[nodename].AddNode(mc_jetfakes_node)
     total_sel = []
     for tau in ff_from:
       ff_not_from = [ind+1 for ind, ch in enumerate(options.channel) if (ch == "t" and str(ind+1) != tau)]
@@ -1233,8 +1235,32 @@ if options.syst_met_res:
     systematics['syst_met_res_up'] = ('MET_RES_UP', '_syst_met_res'+'Up', 'wt', ['jetFakes'], False)
     systematics['syst_met_res_down'] = ('MET_RES_DOWN', '_syst_met_res'+'Down', 'wt', ['jetFakes'], False)
 
+if options.syst_electron_id:
+    if options.channel == "eett":
+      systematics['syst_electron_id_up'] = ('', '_syst_electron_id'+'Up', 'wt*((1.02)*(gen_match_1==1 || gen_match_1==3) + (!(gen_match_1==1 || gen_match_1==3)))*((1.02)*(gen_match_2==1 || gen_match_2==3) + (!(gen_match_2==1 || gen_match_2==3)))', ['jetFakes'], False)
+      systematics['syst_electron_id_down'] = ('', '_syst_electron_id'+'Down', 'wt*((1.0/1.02)*(gen_match_1==1 || gen_match_1==3) + (!(gen_match_1==1 || gen_match_1==3)))*((1.0/1.02)*(gen_match_2==1 || gen_match_2==3) + (!(gen_match_2==1 || gen_match_2==3)))', ['jetFakes'], False)
+    elif options.channel == "emtt" or options.channel == "ettt":
+      systematics['syst_electron_id_up'] = ('', '_syst_electron_id'+'Up', 'wt*((1.02)*(gen_match_1==1 || gen_match_1==3) + (!(gen_match_1==1 || gen_match_1==3)))', ['jetFakes'], False)
+      systematics['syst_electron_id_down'] = ('', '_syst_electron_id'+'Down', 'wt*((1.0/1.02)*(gen_match_1==1 || gen_match_1==3) + (!(gen_match_1==1 || gen_match_1==3)))', ['jetFakes'], False)
 
-    
+if options.syst_muon_id:
+    if options.channel == "mmtt":
+      systematics['syst_muon_id_up'] = ('', '_syst_electron_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+      systematics['syst_muon_id_down'] = ('', '_syst_electron_id'+'Up', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.0/1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+    elif options.channel == "mttt":
+      systematics['syst_muon_id_up'] = ('', '_syst_muon_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))', ['jetFakes'], False)
+      systematics['syst_muon_id_down'] = ('', '_syst_muon_id'+'Down', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))', ['jetFakes'], False)
+    elif options.channel == "emtt":
+      systematics['syst_muon_id_up'] = ('', '_syst_muon_id'+'Up', 'wt*((1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+      systematics['syst_muon_id_down'] = ('', '_syst_muon_id'+'Down', 'wt*((1.0/1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+
+#if options.syst_electron_trg:
+
+
+
+
+
+
 if options.plot_from_dc == "":
   max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
   while len(systematics) > 0:

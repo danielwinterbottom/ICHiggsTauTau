@@ -263,6 +263,8 @@ common_shape_systematics = [
 #        '--syst_muon_scale', # Muon Energy Scale
 #        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
 #        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
+        '--syst_electron_id' # Electron ID
+        '--syst_muon_id' # Muon ID
         '--do_ff_systs', 
 	]
 
@@ -284,7 +286,11 @@ for channel in channels:
 # Job loop
 for channel in channels:
   systs = copy.deepcopy(common_shape_systematics)
-  if "e" not in channel: systs.remove("--syst_electron_scale")
+  if "e" not in channel: 
+    systs.remove("--syst_electron_scale")
+    systs.remove("--syst_electron_id")
+  elif "m" not in channel:
+    systs.remove("--syst_muon_id")
 
   for name, option in add_options[channel]:
     for cat in categories[channel]:
