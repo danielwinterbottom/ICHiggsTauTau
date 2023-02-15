@@ -829,6 +829,7 @@ class HTTCategories : public ModuleBase {
 
   bool trg_singleelectron_;
   bool trg_singlemuon_;
+  bool trg_singlemuon24_;
   bool trg_muonelectron_;
   bool trg_doubletau_;
   bool trg_tt_monitoring_1_;
@@ -837,6 +838,7 @@ class HTTCategories : public ModuleBase {
   bool trg_tt_monitoring_4_;
   bool trg_tt_monitoring_5_;
   bool trg_tt_monitoring_6_;
+  float trg_tt_monitoring_l1_;
   bool trg_doubletau_mssm_;
   bool trg_vbfdoubletau_;
   bool trg_singletau_1_;

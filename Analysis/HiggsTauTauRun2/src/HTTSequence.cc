@@ -269,7 +269,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
    fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
 
-   fakeJ_tau_shift = json["baseline"]["fakeJ_tau_shift"].asDouble();
+   if(json["baseline"]["fakeJ_tau_shift"].asString()!="") fakeJ_tau_shift = json["baseline"]["fakeJ_tau_shift"].asDouble();
  }
 
 tau_shift_func_1prong0pi0 = "";
@@ -1022,11 +1022,11 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if (jes_mode_ > 0 && !is_data ){
     std::string jes_input_file  = "";
     std::string jes_input_set  = "";
-    if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
+    if (era_type == era::data_2016) {
       jes_input_file = "input/jec/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
       jes_input_set  = "Total";
     }
-    if (era_type == era::data_2017UL) {
+    if (era_type == era::data_2017) {
       jes_input_file = "input/jec/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
@@ -1043,7 +1043,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       jes_input_set  = "Total";
     }
     if (era_type == era::data_2017UL) {
-      jes_input_file = "input/jec/RegroupedV2_Summer19UL16_V7_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL17_V5_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
     if (era_type == era::data_2018UL) {

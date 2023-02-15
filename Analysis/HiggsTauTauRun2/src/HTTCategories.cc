@@ -1140,6 +1140,7 @@ namespace ic {
       outtree_->Branch("tau_decay_mode_1",    &tau_decay_mode_1_);
       outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
+      outtree_->Branch("trg_singlemuon24",    &trg_singlemuon24_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
       outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
 
@@ -1149,6 +1150,7 @@ namespace ic {
       outtree_->Branch("trg_tt_monitoring_4",    &trg_tt_monitoring_4_);
       outtree_->Branch("trg_tt_monitoring_5",    &trg_tt_monitoring_5_);
       outtree_->Branch("trg_tt_monitoring_6",    &trg_tt_monitoring_6_);
+      outtree_->Branch("trg_tt_monitoring_l1",    &trg_tt_monitoring_l1_);
 
       outtree_->Branch("trg_vbfdoubletau",    &trg_vbfdoubletau_);
       outtree_->Branch("trg_muonelectron",    &trg_muonelectron_);
@@ -1720,6 +1722,8 @@ namespace ic {
     
     if (event->Exists("trg_singleelectron")) trg_singleelectron_ = event->Get<bool>("trg_singleelectron");
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
+    if (event->Exists("trg_singlemuon24"))     trg_singlemuon24_     = event->Get<bool>("trg_singlemuon24");
+    else trg_singlemuon24_ = false;
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
 
     if (event->Exists("trg_tt_monitoring_1"))trg_tt_monitoring_1_ = event->Get<bool>("trg_tt_monitoring_1");
@@ -1728,6 +1732,7 @@ namespace ic {
     if (event->Exists("trg_tt_monitoring_4"))trg_tt_monitoring_4_ = event->Get<bool>("trg_tt_monitoring_4");
     if (event->Exists("trg_tt_monitoring_5"))trg_tt_monitoring_5_ = event->Get<bool>("trg_tt_monitoring_5");
     if (event->Exists("trg_tt_monitoring_6"))trg_tt_monitoring_6_ = event->Get<bool>("trg_tt_monitoring_6");
+    if (event->Exists("trg_tt_monitoring_l1"))trg_tt_monitoring_l1_ = event->Get<float>("trg_tt_monitoring_l1");
 
     if (event->Exists("trg_doubletau_mssm"))      trg_doubletau_mssm_      = event->Get<bool>("trg_doubletau_mssm");
     if (event->Exists("trg_vbfdoubletau"))   trg_vbfdoubletau_   = event->Get<bool>("trg_vbfdoubletau");
