@@ -478,10 +478,14 @@ int HTTWeights::Execute(TreeEvent *event) {
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_t = std::vector<double>{tau->pt(),static_cast<double>(tau->decay_mode())};
         if (do_ditau_trg_){
-          event->Add("trigeff_t_doubletau_data_"+std::to_string(pn), fns_["t_doubletau_trg_data"]->eval(args_t.data()));
-          event->Add("trigeff_t_doubletau_mc_"+std::to_string(pn), fns_["t_doubletau_trg_mc"]->eval(args_t.data()));
-          event->Add("trigeff_t_doubletau_data_"+std::to_string(pn)+"_up", fns_["t_doubletau_trg_data"]->eval(args_t.data())*fns_["t_doubletau_trg_ratio_up"]->eval(args_t.data()));
-          event->Add("trigeff_t_doubletau_data_"+std::to_string(pn)+"_down", fns_["t_doubletau_trg_data"]->eval(args_t.data())*fns_["t_doubletau_trg_ratio_down"]->eval(args_t.data()));
+          event->Add("trigeff_t_doubletau_data_"+std::to_string(pn), (tau->pt() > 40.0) ? fns_["t_doubletau_trg_data"]->eval(args_t.data()) : 0.0);
+          event->Add("trigeff_t_doubletau_mc_"+std::to_string(pn), (tau->pt() > 40.0) ? fns_["t_doubletau_trg_mc"]->eval(args_t.data()) : 0.0);
+          //std::cout << "Tau: " << fns_["t_doubletau_trg_data"]->eval(args_t.data()) << " " << fns_["t_doubletau_trg_ratio_up"]->eval(args_t.data()) << " " << fns_["t_doubletau_trg_ratio_down"]->eval(args_t.data()) << std::endl;
+          //event->Add("trigeff_t_doubletau_data_"+std::to_string(pn)+"_up", (tau->pt() > 40.0) ? fns_["t_doubletau_trg_data"]->eval(args_t.data())*fns_["t_doubletau_trg_ratio_up"]->eval(args_t.data()) : 0.0);
+          event->Add("trigeff_t_doubletau_data_"+std::to_string(pn)+"_up", (tau->pt() > 40.0) ? fns_["t_doubletau_trg_ratio_up"]->eval(args_t.data()) : 0.0);
+          //event->Add("trigeff_t_doubletau_data_"+std::to_string(pn)+"_down", (tau->pt() > 40.0) ? fns_["t_doubletau_trg_data"]->eval(args_t.data())*fns_["t_doubletau_trg_ratio_down"]->eval(args_t.data()) : 0.0);
+          event->Add("trigeff_t_doubletau_data_"+std::to_string(pn)+"_down", (tau->pt() > 40.0) ? fns_["t_doubletau_trg_ratio_down"]->eval(args_t.data()) : 0.0);
+
         }
         if (do_mtaucross_trg_){
           event->Add("trigeff_t_mutaucross_data_"+std::to_string(pn), fns_["t_mutaucross_trg_data"]->eval(args_t.data()));
@@ -498,85 +502,174 @@ int HTTWeights::Execute(TreeEvent *event) {
   }
 
   vector<std::string> vi = {"","_up","_down"};
+  vector<std::string> tds = {"e","m","t"};
   int ind = 0;
   for (std::string i : vi) {
+    for (std::string td : tds) {
+      if (ind!=0 && i=="") continue;
 
-    double total_trg = 0.;
-    double d1 = 0.; 
-    double d2 = 0.; 
-    double d3 = 0.; 
-    double d4 = 0.; 
-    double m1 = 0.; 
-    double m2 = 0.; 
-    double m3 = 0.; 
-    double m4 = 0.; 
+      double total_trg = 0.;
+      double d1 = 0.; 
+      double d2 = 0.; 
+      double d3 = 0.; 
+      double d4 = 0.; 
+      double m1 = 0.; 
+      double m2 = 0.; 
+      double m3 = 0.; 
+      double m4 = 0.; 
+  
+      if ( e_string == po[0] ) {
 
-    if ( e_string == po[0] ) {
-      d1 = event->Exists("trigeff_e_singlee_data_1") ? event->Get<double>("trigeff_e_singlee_data_1") : 1.0;
-      m1 = event->Exists("trigeff_e_singlee_mc_1") ? event->Get<double>("trigeff_e_singlee_mc_1") : 1.0;
-    } else if ( m_string == po[0] ) {
-      d1 = event->Exists("trigeff_m_singlem_data_1") ? event->Get<double>("trigeff_m_singlem_data_1") : 1.0;
-      m1 = event->Exists("trigeff_m_singlem_mc_1") ? event->Get<double>("trigeff_m_singlem_mc_1") : 1.0;
-    } else if ( t_string == po[0] ) {
-      d1 = event->Exists("trigeff_t_doubletau_data_1"+i) ? event->Get<double>("trigeff_t_doubletau_data_1"+i) : 1.0;
-      m1 = event->Exists("trigeff_t_doubletau_mc_1") ? event->Get<double>("trigeff_t_doubletau_mc_1") : 1.0;
-    }
+        if ( td=="e" && i=="_up" ) {
+          d1 = 1.02*(event->Exists("trigeff_e_singlee_data_1") ? event->Get<double>("trigeff_e_singlee_data_1") : 1.0);
+        } else if ( td=="e" && i=="_down" ) {
+          d1 = (1.0/1.02)*(event->Exists("trigeff_e_singlee_data_1") ? event->Get<double>("trigeff_e_singlee_data_1") : 1.0);
+        } else {
+          d1 = event->Exists("trigeff_e_singlee_data_1") ? event->Get<double>("trigeff_e_singlee_data_1") : 1.0;
+        }
+        m1 = event->Exists("trigeff_e_singlee_mc_1") ? event->Get<double>("trigeff_e_singlee_mc_1") : 1.0;
 
-    if ( e_string == po[1] ) {
-      d2 = event->Exists("trigeff_e_singlee_data_2") ? event->Get<double>("trigeff_e_singlee_data_2") : 1.0;
-      m2 = event->Exists("trigeff_e_singlee_mc_2") ? event->Get<double>("trigeff_e_singlee_mc_2") : 1.0;
-    } else if ( m_string == po[1] ) {
-      d2 = event->Exists("trigeff_m_singlem_data_2") ? event->Get<double>("trigeff_m_singlem_data_2") : 1.0;
-      m2 = event->Exists("trigeff_m_singlem_mc_2") ? event->Get<double>("trigeff_m_singlem_mc_2") : 1.0;
-    } else if ( t_string == po[1] ) {
-      d2 = event->Exists("trigeff_t_doubletau_data_2"+i) ? event->Get<double>("trigeff_t_doubletau_data_2"+i) : 1.0;
-      m2 = event->Exists("trigeff_t_doubletau_mc_2") ? event->Get<double>("trigeff_t_doubletau_mc_2") : 1.0;
-    }
+      } else if ( m_string == po[0] ) {
 
-    if ( e_string == po[2] ) {
-      d3 = event->Exists("trigeff_e_singlee_data_3") ? event->Get<double>("trigeff_e_singlee_data_3") : 1.0;
-      m3 = event->Exists("trigeff_e_singlee_mc_3") ? event->Get<double>("trigeff_e_singlee_mc_3") : 1.0;
-    } else if ( m_string == po[2] ) {
-      d3 = event->Exists("trigeff_m_singlem_data_3") ? event->Get<double>("trigeff_m_singlem_data_3") : 1.0;
-      m3 = event->Exists("trigeff_m_singlem_mc_3") ? event->Get<double>("trigeff_m_singlem_mc_3") : 1.0;
-    } else if ( t_string == po[2] ) {
-      d3 = event->Exists("trigeff_t_doubletau_data_3"+i) ? event->Get<double>("trigeff_t_doubletau_data_3"+i) : 1.0;
-      m3 = event->Exists("trigeff_t_doubletau_mc_3") ? event->Get<double>("trigeff_t_doubletau_mc_3") : 1.0;
-    }
+        if ( td=="m" && i=="_up" ) {
+          d1 = 1.02*(event->Exists("trigeff_m_singlem_data_1") ? event->Get<double>("trigeff_m_singlem_data_1") : 1.0);
+        } else if ( td=="m" && i=="_down" ) {
+          d1 = (1.0/1.02)*(event->Exists("trigeff_m_singlem_data_1") ? event->Get<double>("trigeff_m_singlem_data_1") : 1.0);
+        } else {
+          d1 = event->Exists("trigeff_m_singlem_data_1") ? event->Get<double>("trigeff_m_singlem_data_1") : 1.0;
+        }
+        m1 = event->Exists("trigeff_m_singlem_mc_1") ? event->Get<double>("trigeff_m_singlem_mc_1") : 1.0;
 
-    if (channel_ != channel::ttt) {
-      if ( e_string == po[3] ) {
-        d4 = event->Exists("trigeff_e_singlee_data_4") ? event->Get<double>("trigeff_e_singlee_data_4") : 1.0;
-        m4 = event->Exists("trigeff_e_singlee_mc_4") ? event->Get<double>("trigeff_e_singlee_mc_4") : 1.0;
-      } else if ( m_string == po[3] ) {
-        d4 = event->Exists("trigeff_m_singlem_data_4") ? event->Get<double>("trigeff_m_singlem_data_4") : 1.0;
-        m4 = event->Exists("trigeff_m_singlem_mc_4") ? event->Get<double>("trigeff_m_singlem_mc_4") : 1.0;
-      } else if ( t_string == po[3] ) {
-        d4 = event->Exists("trigeff_t_doubletau_data_4"+i) ? event->Get<double>("trigeff_t_doubletau_data_4"+i) : 1.0;
-        m4 = event->Exists("trigeff_t_doubletau_mc_4") ? event->Get<double>("trigeff_t_doubletau_mc_4") : 1.0;
+      } else if ( t_string == po[0] ) {
+
+        if ( td == "t" ) {
+          d1 = event->Exists("trigeff_t_doubletau_data_1"+i) ? event->Get<double>("trigeff_t_doubletau_data_1"+i) : 1.0;
+        } else {
+          d1 = event->Exists("trigeff_t_doubletau_data_1") ? event->Get<double>("trigeff_t_doubletau_data_1") : 1.0;
+        }
+        m1 = event->Exists("trigeff_t_doubletau_mc_1") ? event->Get<double>("trigeff_t_doubletau_mc_1") : 1.0;
       }
-    }
+  
+      if ( e_string == po[1] ) {
 
-    if (channel_ == channel::ttt) {
-      total_trg = (((d1*d2) + (d1*d3) + (d2*d3) - ((d1*d2)*(d1*d3)) - ((d1*d2)*(d2*d3)) - ((d1*d3)*(d2*d3)) + ((d1*d2)*(d1*d3)*(d2*d3))) / ((m1*m2) + (m1*m3) + (m2*m3) - ((m1*m2)*(m1*m3)) - ((m1*m2)*(m2*m3)) - ((m1*m3)*(m2*m3)) + ((m1*m2)*(m1*m3)*(m2*m3))));
-    } else if (channel_ == channel::tttt) {
-      total_trg = (((d1*d2) + (d1*d3) + (d1*d4) + (d2*d3) + (d2*d4) + (d3*d4) - ((d1*d2)*(d1*d3)) - ((d1*d2)*(d1*d4)) - ((d1*d2)*(d2*d3)) - ((d1*d2)*(d2*d4)) - ((d1*d2)*(d3*d4)) - ((d1*d3)*(d1*d4)) - ((d1*d3)*(d2*d3)) - ((d1*d3)*(d2*d4)) - ((d1*d3)*(d3*d4)) - ((d1*d4)*(d2*d3)) - ((d1*d4)*(d2*d4)) - ((d1*d4)*(d3*d4)) - ((d2*d3)*(d2*d4)) - ((d2*d3)*(d3*d4)) - ((d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)) + ((d1*d2)*(d1*d3)*(d2*d3)) + ((d1*d2)*(d1*d3)*(d2*d4)) + ((d1*d2)*(d1*d3)*(d3*d4)) + ((d1*d2)*(d1*d4)*(d2*d3)) + ((d1*d2)*(d1*d4)*(d2*d4)) + ((d1*d2)*(d1*d4)*(d3*d4)) + ((d1*d2)*(d2*d3)*(d2*d4)) + ((d1*d2)*(d2*d3)*(d3*d4)) + ((d1*d2)*(d2*d4)*(d3*d4)) + ((d1*d3)*(d1*d4)*(d2*d3)) + ((d1*d3)*(d1*d4)*(d2*d4)) + ((d1*d3)*(d1*d4)*(d3*d4)) + ((d1*d3)*(d2*d3)*(d2*d4)) + ((d1*d3)*(d2*d3)*(d3*d4)) + ((d1*d3)*(d2*d4)*(d3*d4)) + ((d1*d4)*(d2*d3)*(d2*d4)) + ((d1*d4)*(d2*d3)*(d3*d4)) + ((d1*d4)*(d2*d4)*(d3*d4)) + ((d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d2*d3)*(d2*d4)) - ((d1*d2)*(d1*d3)*(d2*d3)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d4)*(d2*d3)*(d2*d4)) - ((d1*d2)*(d1*d4)*(d2*d3)*(d3*d4)) - ((d1*d2)*(d1*d4)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)) - ((d1*d3)*(d1*d4)*(d2*d3)*(d3*d4)) - ((d1*d3)*(d1*d4)*(d2*d4)*(d3*d4)) - ((d1*d3)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4))) / ((m1*m2) + (m1*m3) + (m1*m4) + (m2*m3) + (m2*m4) + (m3*m4) - ((m1*m2)*(m1*m3)) - ((m1*m2)*(m1*m4)) - ((m1*m2)*(m2*m3)) - ((m1*m2)*(m2*m4)) - ((m1*m2)*(m3*m4)) - ((m1*m3)*(m1*m4)) - ((m1*m3)*(m2*m3)) - ((m1*m3)*(m2*m4)) - ((m1*m3)*(m3*m4)) - ((m1*m4)*(m2*m3)) - ((m1*m4)*(m2*m4)) - ((m1*m4)*(m3*m4)) - ((m2*m3)*(m2*m4)) - ((m2*m3)*(m3*m4)) - ((m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)) + ((m1*m2)*(m1*m3)*(m2*m3)) + ((m1*m2)*(m1*m3)*(m2*m4)) + ((m1*m2)*(m1*m3)*(m3*m4)) + ((m1*m2)*(m1*m4)*(m2*m3)) + ((m1*m2)*(m1*m4)*(m2*m4)) + ((m1*m2)*(m1*m4)*(m3*m4)) + ((m1*m2)*(m2*m3)*(m2*m4)) + ((m1*m2)*(m2*m3)*(m3*m4)) + ((m1*m2)*(m2*m4)*(m3*m4)) + ((m1*m3)*(m1*m4)*(m2*m3)) + ((m1*m3)*(m1*m4)*(m2*m4)) + ((m1*m3)*(m1*m4)*(m3*m4)) + ((m1*m3)*(m2*m3)*(m2*m4)) + ((m1*m3)*(m2*m3)*(m3*m4)) + ((m1*m3)*(m2*m4)*(m3*m4)) + ((m1*m4)*(m2*m3)*(m2*m4)) + ((m1*m4)*(m2*m3)*(m3*m4)) + ((m1*m4)*(m2*m4)*(m3*m4)) + ((m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m2*m3)*(m2*m4)) - ((m1*m2)*(m1*m3)*(m2*m3)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m4)*(m2*m3)*(m2*m4)) - ((m1*m2)*(m1*m4)*(m2*m3)*(m3*m4)) - ((m1*m2)*(m1*m4)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)) - ((m1*m3)*(m1*m4)*(m2*m3)*(m3*m4)) - ((m1*m3)*(m1*m4)*(m2*m4)*(m3*m4)) - ((m1*m3)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4))));
-    } else if (channel_ == channel::ettt || channel_ == channel::mttt) {
-      total_trg = ((d1 + (d2*d3) + (d2*d4) + (d3*d4) - (d1*(d2*d3)) - (d1*(d2*d4)) - (d1*(d3*d4)) - ((d2*d3)*(d2*d4)) - ((d2*d3)*(d3*d4)) - ((d2*d4)*(d3*d4)) + (d1*(d2*d3)*(d2*d4)) + (d1*(d2*d3)*(d3*d4)) + (d1*(d2*d4)*(d3*d4)) + ((d2*d3)*(d2*d4)*(d3*d4)) - (d1*(d2*d3)*(d2*d4)*(d3*d4))) / (m1 + (m2*m3) + (m2*m4) + (m3*m4) - (m1*(m2*m3)) - (m1*(m2*m4)) - (m1*(m3*m4)) - ((m2*m3)*(m2*m4)) - ((m2*m3)*(m3*m4)) - ((m2*m4)*(m3*m4)) + (m1*(m2*m3)*(m2*m4)) + (m1*(m2*m3)*(m3*m4)) + (m1*(m2*m4)*(m3*m4)) + ((m2*m3)*(m2*m4)*(m3*m4)) - (m1*(m2*m3)*(m2*m4)*(m3*m4))));
-    } else if (channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt) {
-      total_trg = ((d1 + d2 + (d3*d4) - (d1*d2) - (d1*(d3*d4)) - (d2*(d3*d4)) + (d1*d2*(d3*d4))) / (m1 + m2 + (m3*m4) - (m1*m2) - (m1*(m3*m4)) - (m2*(m3*m4)) + (m1*m2*(m3*m4))));
-    } else if (channel_ == channel::mmmm) {
-      total_trg = ((d1 + d2 + d3 + d4 - (d1*d2) - (d1*d3) - (d1*d4) - (d2*d3) - (d2*d4) - (d3*d4) + (d1*d2*d3) + (d1*d2*d4) + (d1*d3*d4) + (d2*d3*d4) - (d1*d2*d3*d4)) / (m1 + m2 + m3 + m4 - (m1*m2) - (m1*m3) - (m1*m4) - (m2*m3) - (m2*m4) - (m3*m4) + (m1*m2*m3) + (m1*m2*m4) + (m1*m3*m4) + (m2*m3*m4) - (m1*m2*m3*m4)));
-    }
+        if ( td=="e" && i=="_up" ) {
+          d2 = 1.02*(event->Exists("trigeff_e_singlee_data_2") ? event->Get<double>("trigeff_e_singlee_data_2") : 1.0);
+        } else if ( td=="e" && i=="_down" ) {
+          d2 = (1.0/1.02)*(event->Exists("trigeff_e_singlee_data_2") ? event->Get<double>("trigeff_e_singlee_data_2") : 1.0);
+        } else {
+          d2 = event->Exists("trigeff_e_singlee_data_2") ? event->Get<double>("trigeff_e_singlee_data_2") : 1.0;
+        }
+        m2 = event->Exists("trigeff_e_singlee_mc_2") ? event->Get<double>("trigeff_e_singlee_mc_2") : 1.0;
 
+      } else if ( m_string == po[1] ) {
 
-    if (ind == 0) {
-      event->Add("wt_total_trg", total_trg);
-      eventInfo->set_weight("wt_total_trg",total_trg);
-    } else {
-      event->Add("wt_tau_trg_ratio"+i, total_trg/event->Get<double>("wt_total_trg"));
+        if ( td=="m" && i=="_up" ) {
+          d2 = 1.02*(event->Exists("trigeff_m_singlem_data_2") ? event->Get<double>("trigeff_m_singlem_data_2") : 1.0);
+        } else if ( td=="m" && i=="_down" ) {
+          d2 = (1.0/1.02)*(event->Exists("trigeff_m_singlem_data_2") ? event->Get<double>("trigeff_m_singlem_data_2") : 1.0);
+        } else {
+          d2 = event->Exists("trigeff_m_singlem_data_2") ? event->Get<double>("trigeff_m_singlem_data_2") : 1.0;
+        }
+        m2 = event->Exists("trigeff_m_singlem_mc_2") ? event->Get<double>("trigeff_m_singlem_mc_2") : 1.0;
+
+      } else if ( t_string == po[1] ) {
+
+        if ( td == "t" ) {
+          d2 = event->Exists("trigeff_t_doubletau_data_2"+i) ? event->Get<double>("trigeff_t_doubletau_data_2"+i) : 1.0;
+        } else {
+          d2 = event->Exists("trigeff_t_doubletau_data_2") ? event->Get<double>("trigeff_t_doubletau_data_2") : 1.0;
+        }
+        m2 = event->Exists("trigeff_t_doubletau_mc_2") ? event->Get<double>("trigeff_t_doubletau_mc_2") : 1.0;
+      }
+
+      if ( e_string == po[2] ) {
+
+        if ( td=="e" && i=="_up" ) {
+          d3 = 1.02*(event->Exists("trigeff_e_singlee_data_3") ? event->Get<double>("trigeff_e_singlee_data_3") : 1.0);
+        } else if ( td=="e" && i=="_down" ) {
+          d3 = (1.0/1.02)*(event->Exists("trigeff_e_singlee_data_3") ? event->Get<double>("trigeff_e_singlee_data_3") : 1.0);
+        } else {
+          d3 = event->Exists("trigeff_e_singlee_data_3") ? event->Get<double>("trigeff_e_singlee_data_3") : 1.0;
+        }
+        m3 = event->Exists("trigeff_e_singlee_mc_3") ? event->Get<double>("trigeff_e_singlee_mc_3") : 1.0;
+
+      } else if ( m_string == po[2] ) {
+
+        if ( td=="m" && i=="_up" ) {
+          d3 = 1.02*(event->Exists("trigeff_m_singlem_data_3") ? event->Get<double>("trigeff_m_singlem_data_3") : 1.0);
+        } else if ( td=="m" && i=="_down" ) {
+          d3 = (1.0/1.02)*(event->Exists("trigeff_m_singlem_data_3") ? event->Get<double>("trigeff_m_singlem_data_3") : 1.0);
+        } else {
+          d3 = event->Exists("trigeff_m_singlem_data_3") ? event->Get<double>("trigeff_m_singlem_data_3") : 1.0;
+        }
+        m3 = event->Exists("trigeff_m_singlem_mc_3") ? event->Get<double>("trigeff_m_singlem_mc_3") : 1.0;
+
+      } else if ( t_string == po[2] ) {
+
+        if ( td == "t" ) {
+          d3 = event->Exists("trigeff_t_doubletau_data_3"+i) ? event->Get<double>("trigeff_t_doubletau_data_3"+i) : 1.0;
+        } else {
+          d3 = event->Exists("trigeff_t_doubletau_data_3") ? event->Get<double>("trigeff_t_doubletau_data_3") : 1.0;
+        }
+        m3 = event->Exists("trigeff_t_doubletau_mc_3") ? event->Get<double>("trigeff_t_doubletau_mc_3") : 1.0;
+      }
+ 
+      if (channel_ != channel::ttt) {
+        if ( e_string == po[3] ) {
+  
+          if ( td=="e" && i=="_up" ) {
+            d4 = 1.02*(event->Exists("trigeff_e_singlee_data_4") ? event->Get<double>("trigeff_e_singlee_data_4") : 1.0);
+          } else if ( td=="e" && i=="_down" ) {
+            d4 = (1.0/1.02)*(event->Exists("trigeff_e_singlee_data_4") ? event->Get<double>("trigeff_e_singlee_data_4") : 1.0);
+          } else {
+            d4 = event->Exists("trigeff_e_singlee_data_4") ? event->Get<double>("trigeff_e_singlee_data_4") : 1.0;
+          }
+          m4 = event->Exists("trigeff_e_singlee_mc_4") ? event->Get<double>("trigeff_e_singlee_mc_4") : 1.0;
+  
+        } else if ( m_string == po[3] ) {
+  
+          if ( td=="m" && i=="_up" ) {
+            d4 = 1.02*(event->Exists("trigeff_m_singlem_data_4") ? event->Get<double>("trigeff_m_singlem_data_4") : 1.0);
+          } else if ( td=="m" && i=="_down" ) {
+            d4 = (1.0/1.02)*(event->Exists("trigeff_m_singlem_data_4") ? event->Get<double>("trigeff_m_singlem_data_4") : 1.0);
+          } else {
+            d4 = event->Exists("trigeff_m_singlem_data_4") ? event->Get<double>("trigeff_m_singlem_data_4") : 1.0;
+          }
+          m4 = event->Exists("trigeff_m_singlem_mc_4") ? event->Get<double>("trigeff_m_singlem_mc_4") : 1.0;
+  
+        } else if ( t_string == po[3] ) {
+  
+          if ( td == "t" ) {
+            d4 = event->Exists("trigeff_t_doubletau_data_4"+i) ? event->Get<double>("trigeff_t_doubletau_data_4"+i) : 1.0;
+          } else {
+            d4 = event->Exists("trigeff_t_doubletau_data_4") ? event->Get<double>("trigeff_t_doubletau_data_4") : 1.0;
+          }
+          m4 = event->Exists("trigeff_t_doubletau_mc_4") ? event->Get<double>("trigeff_t_doubletau_mc_4") : 1.0;
+        }
+
+      }
+  
+      if (channel_ == channel::ttt) {
+        total_trg = (((d1*d2) + (d1*d3) + (d2*d3) - ((d1*d2)*(d1*d3)) - ((d1*d2)*(d2*d3)) - ((d1*d3)*(d2*d3)) + ((d1*d2)*(d1*d3)*(d2*d3))) / ((m1*m2) + (m1*m3) + (m2*m3) - ((m1*m2)*(m1*m3)) - ((m1*m2)*(m2*m3)) - ((m1*m3)*(m2*m3)) + ((m1*m2)*(m1*m3)*(m2*m3))));
+      } else if (channel_ == channel::tttt) {
+        total_trg = (((d1*d2) + (d1*d3) + (d1*d4) + (d2*d3) + (d2*d4) + (d3*d4) - ((d1*d2)*(d1*d3)) - ((d1*d2)*(d1*d4)) - ((d1*d2)*(d2*d3)) - ((d1*d2)*(d2*d4)) - ((d1*d2)*(d3*d4)) - ((d1*d3)*(d1*d4)) - ((d1*d3)*(d2*d3)) - ((d1*d3)*(d2*d4)) - ((d1*d3)*(d3*d4)) - ((d1*d4)*(d2*d3)) - ((d1*d4)*(d2*d4)) - ((d1*d4)*(d3*d4)) - ((d2*d3)*(d2*d4)) - ((d2*d3)*(d3*d4)) - ((d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)) + ((d1*d2)*(d1*d3)*(d2*d3)) + ((d1*d2)*(d1*d3)*(d2*d4)) + ((d1*d2)*(d1*d3)*(d3*d4)) + ((d1*d2)*(d1*d4)*(d2*d3)) + ((d1*d2)*(d1*d4)*(d2*d4)) + ((d1*d2)*(d1*d4)*(d3*d4)) + ((d1*d2)*(d2*d3)*(d2*d4)) + ((d1*d2)*(d2*d3)*(d3*d4)) + ((d1*d2)*(d2*d4)*(d3*d4)) + ((d1*d3)*(d1*d4)*(d2*d3)) + ((d1*d3)*(d1*d4)*(d2*d4)) + ((d1*d3)*(d1*d4)*(d3*d4)) + ((d1*d3)*(d2*d3)*(d2*d4)) + ((d1*d3)*(d2*d3)*(d3*d4)) + ((d1*d3)*(d2*d4)*(d3*d4)) + ((d1*d4)*(d2*d3)*(d2*d4)) + ((d1*d4)*(d2*d3)*(d3*d4)) + ((d1*d4)*(d2*d4)*(d3*d4)) + ((d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d2*d3)*(d2*d4)) - ((d1*d2)*(d1*d3)*(d2*d3)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d4)*(d2*d3)*(d2*d4)) - ((d1*d2)*(d1*d4)*(d2*d3)*(d3*d4)) - ((d1*d2)*(d1*d4)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)) - ((d1*d3)*(d1*d4)*(d2*d3)*(d3*d4)) - ((d1*d3)*(d1*d4)*(d2*d4)*(d3*d4)) - ((d1*d3)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d3)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d2)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) + ((d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4)) - ((d1*d2)*(d1*d3)*(d1*d4)*(d2*d3)*(d2*d4)*(d3*d4))) / ((m1*m2) + (m1*m3) + (m1*m4) + (m2*m3) + (m2*m4) + (m3*m4) - ((m1*m2)*(m1*m3)) - ((m1*m2)*(m1*m4)) - ((m1*m2)*(m2*m3)) - ((m1*m2)*(m2*m4)) - ((m1*m2)*(m3*m4)) - ((m1*m3)*(m1*m4)) - ((m1*m3)*(m2*m3)) - ((m1*m3)*(m2*m4)) - ((m1*m3)*(m3*m4)) - ((m1*m4)*(m2*m3)) - ((m1*m4)*(m2*m4)) - ((m1*m4)*(m3*m4)) - ((m2*m3)*(m2*m4)) - ((m2*m3)*(m3*m4)) - ((m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)) + ((m1*m2)*(m1*m3)*(m2*m3)) + ((m1*m2)*(m1*m3)*(m2*m4)) + ((m1*m2)*(m1*m3)*(m3*m4)) + ((m1*m2)*(m1*m4)*(m2*m3)) + ((m1*m2)*(m1*m4)*(m2*m4)) + ((m1*m2)*(m1*m4)*(m3*m4)) + ((m1*m2)*(m2*m3)*(m2*m4)) + ((m1*m2)*(m2*m3)*(m3*m4)) + ((m1*m2)*(m2*m4)*(m3*m4)) + ((m1*m3)*(m1*m4)*(m2*m3)) + ((m1*m3)*(m1*m4)*(m2*m4)) + ((m1*m3)*(m1*m4)*(m3*m4)) + ((m1*m3)*(m2*m3)*(m2*m4)) + ((m1*m3)*(m2*m3)*(m3*m4)) + ((m1*m3)*(m2*m4)*(m3*m4)) + ((m1*m4)*(m2*m3)*(m2*m4)) + ((m1*m4)*(m2*m3)*(m3*m4)) + ((m1*m4)*(m2*m4)*(m3*m4)) + ((m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m2*m3)*(m2*m4)) - ((m1*m2)*(m1*m3)*(m2*m3)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m4)*(m2*m3)*(m2*m4)) - ((m1*m2)*(m1*m4)*(m2*m3)*(m3*m4)) - ((m1*m2)*(m1*m4)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)) - ((m1*m3)*(m1*m4)*(m2*m3)*(m3*m4)) - ((m1*m3)*(m1*m4)*(m2*m4)*(m3*m4)) - ((m1*m3)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m3)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m2)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) + ((m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4)) - ((m1*m2)*(m1*m3)*(m1*m4)*(m2*m3)*(m2*m4)*(m3*m4))));
+      } else if (channel_ == channel::ettt || channel_ == channel::mttt) {
+        total_trg = ((d1 + (d2*d3) + (d2*d4) + (d3*d4) - (d1*(d2*d3)) - (d1*(d2*d4)) - (d1*(d3*d4)) - ((d2*d3)*(d2*d4)) - ((d2*d3)*(d3*d4)) - ((d2*d4)*(d3*d4)) + (d1*(d2*d3)*(d2*d4)) + (d1*(d2*d3)*(d3*d4)) + (d1*(d2*d4)*(d3*d4)) + ((d2*d3)*(d2*d4)*(d3*d4)) - (d1*(d2*d3)*(d2*d4)*(d3*d4))) / (m1 + (m2*m3) + (m2*m4) + (m3*m4) - (m1*(m2*m3)) - (m1*(m2*m4)) - (m1*(m3*m4)) - ((m2*m3)*(m2*m4)) - ((m2*m3)*(m3*m4)) - ((m2*m4)*(m3*m4)) + (m1*(m2*m3)*(m2*m4)) + (m1*(m2*m3)*(m3*m4)) + (m1*(m2*m4)*(m3*m4)) + ((m2*m3)*(m2*m4)*(m3*m4)) - (m1*(m2*m3)*(m2*m4)*(m3*m4))));
+      } else if (channel_ == channel::emtt || channel_ == channel::eett || channel_ == channel::mmtt) {
+        total_trg = ((d1 + d2 + (d3*d4) - (d1*d2) - (d1*(d3*d4)) - (d2*(d3*d4)) + (d1*d2*(d3*d4))) / (m1 + m2 + (m3*m4) - (m1*m2) - (m1*(m3*m4)) - (m2*(m3*m4)) + (m1*m2*(m3*m4))));
+      } else if (channel_ == channel::mmmm) {
+        total_trg = ((d1 + d2 + d3 + d4 - (d1*d2) - (d1*d3) - (d1*d4) - (d2*d3) - (d2*d4) - (d3*d4) + (d1*d2*d3) + (d1*d2*d4) + (d1*d3*d4) + (d2*d3*d4) - (d1*d2*d3*d4)) / (m1 + m2 + m3 + m4 - (m1*m2) - (m1*m3) - (m1*m4) - (m2*m3) - (m2*m4) - (m3*m4) + (m1*m2*m3) + (m1*m2*m4) + (m1*m3*m4) + (m2*m3*m4) - (m1*m2*m3*m4)));
+      }
+  
+  
+      if (ind == 0) {
+        event->Add("wt_total_trg", total_trg);
+        eventInfo->set_weight("wt_total_trg",total_trg);
+      } else {
+        event->Add("wt_total_trg_ratio_"+td+i, total_trg/event->Get<double>("wt_total_trg"));
+      }
+      ind = ind + 1;
     }
-    ind = ind + 1;
   }
 
   return 0;

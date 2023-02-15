@@ -288,6 +288,10 @@ namespace ic {
 
       outtree_->Branch("total_trg_ratio_doubletau_up",    &total_trg_ratio_doubletau_up_);
       outtree_->Branch("total_trg_ratio_doubletau_down",  &total_trg_ratio_doubletau_down_);
+      outtree_->Branch("total_trg_ratio_singlem_up",      &total_trg_ratio_singlem_up_);
+      outtree_->Branch("total_trg_ratio_singlem_down",    &total_trg_ratio_singlem_down_);
+      outtree_->Branch("total_trg_ratio_singlee_up",      &total_trg_ratio_singlee_up_);
+      outtree_->Branch("total_trg_ratio_singlee_down",    &total_trg_ratio_singlee_down_);
 
       // dxy and dz
       outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
@@ -941,8 +945,12 @@ namespace ic {
 
     total_trg_ = event->Exists("wt_total_trg") ? event->Get<double>("wt_total_trg") : 1.0;
 
-    total_trg_ratio_doubletau_up_ = event->Exists("wt_tau_trg_ratio_up") ? event->Get<double>("wt_tau_trg_ratio_up") : 1.0;
-    total_trg_ratio_doubletau_down_ = event->Exists("wt_tau_trg_ratio_down") ? event->Get<double>("wt_tau_trg_ratio_down") : 1.0;
+    total_trg_ratio_doubletau_up_ = event->Exists("wt_total_trg_ratio_t_up") ? event->Get<double>("wt_total_trg_ratio_t_up") : 1.0;
+    total_trg_ratio_doubletau_down_ = event->Exists("wt_total_trg_ratio_t_down") ? event->Get<double>("wt_total_trg_ratio_t_down") : 1.0;
+    total_trg_ratio_singlem_up_ = event->Exists("wt_total_trg_ratio_m_up") ? event->Get<double>("wt_total_trg_ratio_m_up") : 1.0;
+    total_trg_ratio_singlem_down_ = event->Exists("wt_total_trg_ratio_m_down") ? event->Get<double>("wt_total_trg_ratio_m_down") : 1.0;
+    total_trg_ratio_singlee_up_ = event->Exists("wt_total_trg_ratio_e_up") ? event->Get<double>("wt_total_trg_ratio_e_up") : 1.0;
+    total_trg_ratio_singlee_down_ = event->Exists("wt_total_trg_ratio_e_down") ? event->Get<double>("wt_total_trg_ratio_e_down") : 1.0;
 
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();

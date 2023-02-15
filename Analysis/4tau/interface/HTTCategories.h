@@ -241,9 +241,12 @@ class HTTCategories : public ModuleBase {
   double trigeff_emucross_low_mc_2_;
 
   double total_trg_;
-
   double total_trg_ratio_doubletau_up_;
   double total_trg_ratio_doubletau_down_;
+  double total_trg_ratio_singlem_up_;
+  double total_trg_ratio_singlem_down_;
+  double total_trg_ratio_singlee_up_;
+  double total_trg_ratio_singlee_down_;
 
   double jet_probb_1_;
   double jet_probb_2_;

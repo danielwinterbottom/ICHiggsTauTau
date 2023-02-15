@@ -289,99 +289,99 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-#  # Drell-Yan LO
-#  'DY1JetsToLL-LO',
-#  'DY2JetsToLL-LO',
-#  'DY3JetsToLL-LO',
-#  'DY4JetsToLL-LO',
-#  'DYJetsToLL-LO',
-#
-#  # Low mass Drell Yan LO
-#  'DYJetsToLL_M-10to50-LO',
-#  'DY1JetsToLL_M-10to50-LO',
-#  'DY2JetsToLL_M-10to50-LO',
-#  'DY3JetsToLL_M-10to50-LO',
-#  'DY4JetsToLL_M-10to50-LO',
-#
-#  # Drell-Yan NLO
-#  #'DYJetsToLL-NLO',
-#  #'DYJetsToLL_0J-NLO',
-#  #'DYJetsToLL_1J-NLO',
-#  #'DYJetsToLL_2J-NLO',
-#
-#  # Electroweak W and Z
-#  'EWKWMinus2Jets_WToLNu',
-#  'EWKWPlus2Jets_WToLNu',
-#  'EWKZ2Jets_ZToLL',
-#
-#  # W + Jets L0
-#  'WJetsToLNu-LO',
-#  'W1JetsToLNu-LO',
-#  'W2JetsToLNu-LO',
-#  'W3JetsToLNu-LO',
-#  'W4JetsToLNu-LO',
-#
-#  # W + Jets NLO
-#  #'WJetsToLNu_0J-NLO',
-#  #'WJetsToLNu_1J-NLO',
-#  #'WJetsToLNu_2J-NLO',
-#  #'WJetsToLNu-NLO',
-#
-#  # ttbar
-#  'TTTo2L2Nu',
+  # Drell-Yan LO
+  'DY1JetsToLL-LO',
+  'DY2JetsToLL-LO',
+  'DY3JetsToLL-LO',
+  'DY4JetsToLL-LO',
+  'DYJetsToLL-LO',
+
+  # Low mass Drell Yan LO
+  'DYJetsToLL_M-10to50-LO',
+  'DY1JetsToLL_M-10to50-LO',
+  'DY2JetsToLL_M-10to50-LO',
+  'DY3JetsToLL_M-10to50-LO',
+  'DY4JetsToLL_M-10to50-LO',
+
+  # Drell-Yan NLO
+  #'DYJetsToLL-NLO',
+  #'DYJetsToLL_0J-NLO',
+  #'DYJetsToLL_1J-NLO',
+  #'DYJetsToLL_2J-NLO',
+
+  # Electroweak W and Z
+  'EWKWMinus2Jets_WToLNu',
+  'EWKWPlus2Jets_WToLNu',
+  'EWKZ2Jets_ZToLL',
+
+  # W + Jets L0
+  'WJetsToLNu-LO',
+  'W1JetsToLNu-LO',
+  'W2JetsToLNu-LO',
+  'W3JetsToLNu-LO',
+  'W4JetsToLNu-LO',
+
+  # W + Jets NLO
+  #'WJetsToLNu_0J-NLO',
+  #'WJetsToLNu_1J-NLO',
+  #'WJetsToLNu_2J-NLO',
+  #'WJetsToLNu-NLO',
+
+  # ttbar
+  'TTTo2L2Nu',
   'TTToHadronic',
   'TTToSemiLeptonic',
-#
-#  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
-#  'WZTo1L3Nu',
-#  'WZTo2Q2L',
-#  'WZTo1L1Nu2Q',
-#  'WZTo3LNu',
-#  'WWTo1L1Nu2Q',
-#  'WWTo2L2Nu',
-#  'ZZTo2L2Nu',
-#  'ZZTo4L',
-#
-#  # Inclusive
-#  'WW',
-#  'WZ',
-#  'ZZ',
-#
-#  # Triboson
-#  'WWZ',
-#  'WWZ-ext1',
-#  'WZZ',
-#  'WZZ-ext1',
-#  'WWW',
-#  'WWW-ext1',
-#  'ZZZ',
-#  'ZZZ-ext1',
-#
-#  # Other backgrounds
-#  'WGToLNuG',
-#  'Tbar-t',
-#  'Tbar-tW',
-#  'T-t',
-#  'T-tW',
-#
-#  # SM Higgs
-#  #'GluGluHToTauTau_M125',
-#  #'VBFHToTauTau_M125',
-#  #'WminusHToTauTau_M125',
-#  #'WplusHToTauTau_M125',
-#  #'ttHToTauTau_M125',
-#  'VBF_HToZZTo4L_M125',
-#  'GluGlu_HToZZTo4L_M125',
-#
-#  # gg -> ZZ
-#  'GluGluToContinToZZTo2e2mu',
-#  'GluGluToContinToZZTo2e2nu',
-#  'GluGluToContinToZZTo2e2tau',
-#  'GluGluToContinToZZTo2mu2nu',
-#  'GluGluToContinToZZTo2mu2tau',
-#  'GluGluToContinToZZTo4e',
-#  'GluGluToContinToZZTo4mu',
-#  'GluGluToContinToZZTo4tau', 
+
+  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
+  'WZTo1L3Nu',
+  'WZTo2Q2L',
+  'WZTo1L1Nu2Q',
+  'WZTo3LNu',
+  'WWTo1L1Nu2Q',
+  'WWTo2L2Nu',
+  'ZZTo2L2Nu',
+  'ZZTo4L',
+
+  # Inclusive
+  'WW',
+  'WZ',
+  'ZZ',
+
+  # Triboson
+  'WWZ',
+  'WWZ-ext1',
+  'WZZ',
+  'WZZ-ext1',
+  'WWW',
+  'WWW-ext1',
+  'ZZZ',
+  'ZZZ-ext1',
+
+  # Other backgrounds
+  'WGToLNuG',
+  'Tbar-t',
+  'Tbar-tW',
+  'T-t',
+  'T-tW',
+
+  # SM Higgs
+  #'GluGluHToTauTau_M125',
+  #'VBFHToTauTau_M125',
+  #'WminusHToTauTau_M125',
+  #'WplusHToTauTau_M125',
+  #'ttHToTauTau_M125',
+  'VBF_HToZZTo4L_M125',
+  'GluGlu_HToZZTo4L_M125',
+
+  # gg -> ZZ
+  'GluGluToContinToZZTo2e2mu',
+  'GluGluToContinToZZTo2e2nu',
+  'GluGluToContinToZZTo2e2tau',
+  'GluGluToContinToZZTo2mu2nu',
+  'GluGluToContinToZZTo2mu2tau',
+  'GluGluToContinToZZTo4e',
+  'GluGluToContinToZZTo4mu',
+  'GluGluToContinToZZTo4tau', 
    ]
 
     #Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WZTo1L3Nu","WZTo2Q2L"]       
@@ -410,10 +410,10 @@ if options.proc_bkg or options.proc_all:
             nperjob = 100
             if "TTToSemiLeptonic" in sa or "TTToHadronic" in sa:
               nperjob=20
-            if 'DY' not in sa and 'EWKZ' not in sa:
-                FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-            if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
-                FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
+            #if 'DY' not in sa and 'EWKZ' not in sa:
+            #    FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+            #if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
+            #    FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
             #else:
             #    FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
@@ -484,8 +484,8 @@ if options.proc_sig:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         job_num=0
         for FLATJSONPATCH in flatjsons:
-            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-            FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
+            #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+            #FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             #print '%(SIG_FILELIST)s_%(sa)s.dat' %vars(), os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars())
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):
