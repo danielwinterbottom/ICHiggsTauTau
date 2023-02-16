@@ -393,6 +393,9 @@ class HTTCategories : public ModuleBase {
   float scale_7_;
   float scale_8_;
   float scale_9_;
+  float scale_111_;
+  float scale_112_;
+  float scale_pdf_;
 
   int p_min_dphi_1_;
   int p_min_dR_1_;

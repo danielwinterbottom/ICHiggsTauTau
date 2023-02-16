@@ -260,12 +260,16 @@ common_shape_systematics = [
         '--syst_electron_scale', # Electron Energy Scale
 #        '--syst_efake_scale_0pi', # l to tau h fake energy scale
 #        '--syst_efake_scale_1pi', # l to tau h fake energy scale
-#        '--syst_muon_scale', # Muon Energy Scale
+#        '--syst_muon_scale', # Muon Energy Scale - uncomment when trees run
 #        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
 #        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
-        '--syst_electron_id' # Electron ID
-        '--syst_muon_id' # Muon ID
-        '--do_ff_systs', 
+        '--syst_electron_id', # Electron ID
+        '--syst_muon_id', # Muon ID
+        #'--syst_electron_trg', # SingleElectron trigger - uncomment when trees run
+        #'--syst_muon_trg', # SingleMuon trigger - uncomment when trees run
+        '--syst_k_factor', # ZZTo4L k factors
+        '--do_ff_systs', # Fake factor uncertainties
+        #'--syst_signal_theory', # signal theory uncertainty - uncomment when trees run
 	]
 
 # Set up output directories
@@ -300,7 +304,7 @@ for channel in channels:
         elif '(' in var: var_string = var.split('(')[0]
         if args.only_var != "" and args.only_var != var_string: continue
         if args.only_option != "" and args.only_option != name: continue
-        if "ff" in name and cat != "inclusive": continue
+        if "ff" in name and "ff_full" not in name and cat != "inclusive": continue
         if var_string[-1] == "4" and channel == "ttt": continue
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
@@ -315,7 +319,7 @@ for channel in channels:
         run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s --add_stat_to_syst\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        #SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
            
     
 

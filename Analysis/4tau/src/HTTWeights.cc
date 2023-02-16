@@ -648,7 +648,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         }
 
       }
-  
+
       if (channel_ == channel::ttt) {
         total_trg = (((d1*d2) + (d1*d3) + (d2*d3) - ((d1*d2)*(d1*d3)) - ((d1*d2)*(d2*d3)) - ((d1*d3)*(d2*d3)) + ((d1*d2)*(d1*d3)*(d2*d3))) / ((m1*m2) + (m1*m3) + (m2*m3) - ((m1*m2)*(m1*m3)) - ((m1*m2)*(m2*m3)) - ((m1*m3)*(m2*m3)) + ((m1*m2)*(m1*m3)*(m2*m3))));
       } else if (channel_ == channel::tttt) {
@@ -661,7 +661,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         total_trg = ((d1 + d2 + d3 + d4 - (d1*d2) - (d1*d3) - (d1*d4) - (d2*d3) - (d2*d4) - (d3*d4) + (d1*d2*d3) + (d1*d2*d4) + (d1*d3*d4) + (d2*d3*d4) - (d1*d2*d3*d4)) / (m1 + m2 + m3 + m4 - (m1*m2) - (m1*m3) - (m1*m4) - (m2*m3) - (m2*m4) - (m3*m4) + (m1*m2*m3) + (m1*m2*m4) + (m1*m3*m4) + (m2*m3*m4) - (m1*m2*m3*m4)));
       }
   
-  
+      if (std::isnan(total_trg)) total_trg = 0.0; 
       if (ind == 0) {
         event->Add("wt_total_trg", total_trg);
         eventInfo->set_weight("wt_total_trg",total_trg);

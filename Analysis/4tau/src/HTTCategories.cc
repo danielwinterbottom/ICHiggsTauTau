@@ -623,6 +623,9 @@ namespace ic {
       outtree_->Branch("wt_mc_1007",&scale_7_);
       outtree_->Branch("wt_mc_1008",&scale_8_);
       outtree_->Branch("wt_mc_1009",&scale_9_);
+      outtree_->Branch("wt_mc_1111",&scale_111_);
+      outtree_->Branch("wt_mc_1112",&scale_112_);
+      outtree_->Branch("wt_mc_pdf",&scale_pdf_);
 
       outtree_->Branch("wt_prefire",      &wt_prefire_);
       outtree_->Branch("wt_prefire_up",   &wt_prefire_up_);
@@ -2240,6 +2243,17 @@ namespace ic {
    if(eventInfo->weight_defined("1007")) scale_7_ = eventInfo->weight("1007"); else scale_7_=1.0;
    if(eventInfo->weight_defined("1008")) scale_8_ = eventInfo->weight("1008"); else scale_8_=1.0;
    if(eventInfo->weight_defined("1009")) scale_9_ = eventInfo->weight("1009"); else scale_9_=1.0;
+   if(eventInfo->weight_defined("1111")) scale_111_ = eventInfo->weight("1111"); else scale_111_=1.0;
+   if(eventInfo->weight_defined("1112")) scale_112_ = eventInfo->weight("1112"); else scale_112_=1.0;
+
+   scale_pdf_ = 0.0;
+   for (int i = 1010; i < 1111; i++) {
+     if(eventInfo->weight_defined(std::to_string(i))) {
+       scale_pdf_ = scale_pdf_ + pow((1-eventInfo->weight(std::to_string(i))),2);
+     }
+   }
+   scale_pdf_ = 1+pow(scale_pdf_,0.5);
+
 
     if (write_tree_ && fs_) outtree_->Fill();
     return 0;

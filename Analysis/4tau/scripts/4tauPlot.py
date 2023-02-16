@@ -203,12 +203,16 @@ parser.add_argument("--syst_met_res", dest="syst_met_res", action='store_true',
     help="Run MET energy resolution systematic uncertainty")
 parser.add_argument("--syst_electron_id", dest="syst_electron_id", action='store_true',
     help="Run systematic variations for electron id")
-parser.add_argument("--syst_electron_trg", dest="syst_electron_id", action='store_true',
+parser.add_argument("--syst_electron_trg", dest="syst_electron_trg", action='store_true',
     help="Run systematic variations for electron trigger")
 parser.add_argument("--syst_muon_id", dest="syst_muon_id", action='store_true',
     help="Run systematic variations for muon id")
-parser.add_argument("--syst_muon_trg", dest="syst_muon_id", action='store_true',
+parser.add_argument("--syst_muon_trg", dest="syst_muon_trg", action='store_true',
     help="Run systematic variations for muon trigger")
+parser.add_argument("--syst_signal_theory", dest="syst_signal_theory", action='store_true',
+    help="Run systematic variations for the theory shifts on the signal")
+parser.add_argument("--syst_k_factor", dest="syst_k_factor", action='store_true',
+    help="Run systematic variations for the ZZto4L k factors")
 parser.add_argument("--rebin_with_data", dest="rebin_with_data", action='store_true',
     help="Use data in the rebinning algorithm")
 parser.add_argument("--symmetrise_uncertainty", dest="symmetrise_uncertainty", action='store_true',
@@ -358,14 +362,14 @@ cats['nobtag'] = '(n_bjets==0)'
 cats['mvis2_0-100'] = '(mvis_min_sum_dR_2 > 0) && (mvis_min_sum_dR_2 < 100)'
 cats['mvis2_100-200'] = '(mvis_min_sum_dR_2 > 100) && (mvis_min_sum_dR_2 < 200)'
 cats['mvis2_200-500'] = '(mvis_min_sum_dR_2 > 200) && (mvis_min_sum_dR_2 < 500)'
-cats['z_control'] = '((q_1==-q_2) && (q_3==-q_4))'
-cats['2l2t_sig'] = '((q_1==q_2) && (q_3==q_4))'
+cats['z_control'] = '(q_1==-q_2)'
+cats['2l2t_sig'] = '(q_1==q_2)'
 
 cats['btag'] = '(n_bjets>=1)'
-cats['z_control_nobtag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets==0))'
-cats['2l2t_sig_nobtag'] = '((q_1==q_2) && (q_3==q_4) && (n_bjets==0))'
-cats['z_control_btag'] = '((q_1==-q_2) && (q_3==-q_4) && (n_bjets>0))'
-cats['2l2t_sig_btag'] = '((q_1==q_2) && (q_3==q_4) && (n_bjets>0))'
+cats['z_control_nobtag'] = '((q_1==-q_2) && (n_bjets==0))'
+cats['2l2t_sig_nobtag'] = '((q_1==q_2) && (n_bjets==0))'
+cats['z_control_btag'] = '((q_1==-q_2) && (n_bjets>0))'
+cats['2l2t_sig_btag'] = '((q_1==q_2) && (n_bjets>0))'
 
 cats['ettt_check'] = '(((q_1==-q_2) && (deepTauVsEle_loose_2>0.5)) || ((q_1==-q_3) && (deepTauVsEle_loose_3>0.5)) || ((q_1==-q_4) && (deepTauVsEle_loose_4>0.5)))'
 cats['mttt_check'] = '(((q_1==-q_2) && (deepTauVsMu_loose_2>0.5)) || ((q_1==-q_3) && (deepTauVsMu_loose_3>0.5)) || ((q_1==-q_4) && (deepTauVsMu_loose_4>0.5)))'
@@ -569,8 +573,7 @@ if options.year == "2016_preVFP":
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
   qqzz_samples = ['ZZTo4L']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-#  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
-  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu']
+  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
   wgam_samples = ['WGToLNuG']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
@@ -942,7 +945,11 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'ggZZ' not in samples_to_skip and options.channel == "mmmm": 
           GenerateGGZZ(ana, add_name, ggzz_samples, plot, wt, sel, cat)          
       if 'signal' not in samples_to_skip and not options.no_signal:
-          GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
+          run_signal_samples = copy.deepcopy(signal_samples)
+          for k,v in signal_samples:
+            if k in samples_to_skip:
+              run_signal_samples.remove(k)
+          GenerateSignal(ana, add_name, run_signal_samples, plot, wt, sel, cat)
     elif options.method == 2:
       mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + ggzz_samples + qqzz_samples
       if 'jetFakes' not in samples_to_skip:
@@ -997,7 +1004,13 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       #if 'W' not in samples_to_skip:
       #    GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
       if 'signal' not in samples_to_skip and not options.no_signal:
-          GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
+          #GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
+          run_signal_samples = copy.deepcopy(signal_samples)
+          for k,v in signal_samples:
+            if k in samples_to_skip:
+              run_signal_samples.remove([k,v])
+          GenerateSignal(ana, add_name, run_signal_samples, plot, wt, sel, cat)
+
 
 def Get1DBinNumFrom2D(h2d,xbin,ybin):
     Nxbins = h2d.GetNbinsX()
@@ -1048,6 +1061,7 @@ def NormSignals(outfile,add_name):
        if xs == 1.: continue
        sf = 1.0/xs
        hist_ = outfile.Get(nodename+'/'+samp[1]+add_name)
+       if type(hist_) == type(ROOT.TObject()): continue
        hist_norm = hist_.Clone()
        hist_norm.SetName(hist_.GetName()+"_norm")
        hist_norm.Scale(sf)
@@ -1254,11 +1268,45 @@ if options.syst_muon_id:
       systematics['syst_muon_id_up'] = ('', '_syst_muon_id'+'Up', 'wt*((1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
       systematics['syst_muon_id_down'] = ('', '_syst_muon_id'+'Down', 'wt*((1.0/1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
 
-#if options.syst_electron_trg:
+if options.syst_electron_trg:
+  if options.channel.count("e") >= 1:
+    systematics['syst_singlee_trg_up'] = ('', '_syst_singlee_trgUp', 'wt*total_trg_ratio_singlee_up', ['jetFakes'], False)
+    systematics['syst_singlee_trg_down'] = ('', '_syst_singlee_trgDown', 'wt*total_trg_ratio_singlee_down', ['jetFakes'], False)
+
+if options.syst_muon_trg:
+  if options.channel.count("m") >= 1:
+    systematics['syst_singlem_trg_up'] = ('', '_syst_singlem_trgUp', 'wt*total_trg_ratio_singlem_up', ['jetFakes'], False)
+    systematics['syst_singlem_trg_down'] = ('', '_syst_singlem_trgDown', 'wt*total_trg_ratio_singlem_down', ['jetFakes'], False)
+
+if options.syst_signal_theory:
+  import json
+  with open("input/4tau_xs_uncerts.json") as jsonfile: xs_shift = json.load(jsonfile)
+
+  for k,v in signal_samples:
+
+    removed_signal_samples = [i[0] for i in signal_samples]
+    removed_signal_samples.remove(k)
+
+    systematics['syst_signal_{}_qcd_scale_up'.format(v)] = ('', '_syst_signal_qcd_scaleUp', '(wt*wt_mc_1008/{})'.format(xs_shift[k]["qcd_scale"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+    systematics['syst_signal_{}_qcd_scale_down'.format(v)] = ('', '_syst_signal_qcd_scaleDown', '(wt*wt_mc_1006/{}'.format(xs_shift[k]["qcd_scale"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+
+    systematics['syst_signal_{}_pdf_up'.format(v)] = ('', '_syst_signal_pdfUp', '(wt*wt_mc_pdf/{})'.format(xs_shift[k]["pdf"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+    systematics['syst_signal_{}_pdf_down'.format(v)] = ('', '_syst_signal_pdfDown', '(wt/(wt_mc_pdf*{}))'.format(xs_shift[k]["pdf"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+
+    systematics['syst_signal_{}_alphas_up'.format(v)] = ('', '_syst_signal_alphasUp', '(wt*wt_mc_1112/{})'.format(xs_shift[k]["alpha_s"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+    systematics['syst_signal_{}_alphas_down'.format(v)] = ('', '_syst_signal_alphasDown', '(wt*wt_mc_1111/{})'.format(xs_shift[k]["alpha_s"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+
+if options.syst_k_factor: 
+    systematics['syst_qqZZ_k_factor_up'] = ('', '_syst_qqZZ_k_factorUp', 'wt*wt_qqZZ_k_factor', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
+    systematics['syst_qqZZ_k_factor_down'] = ('', '_syst_qqZZ_k_factorDown', '(wt/wt_qqZZ_k_factor)', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
+
+    systematics['syst_ggZZ_k_factor_up'] = ('', '_syst_ggZZ_k_factorUp', 'wt*wt_ggZZ_k_factor', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
+    systematics['syst_ggZZ_k_factor_down'] = ('', '_syst_ggZZ_k_factorDown', '(wt/wt_ggZZ_k_factor)', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
 
 
-
-
+    #for k in ["PDFScale","QCDScale","As","PDFReplica"]:
+    #  systematics['syst_ggZZ_k_factor_{}_up'.format(k)] = ('', '_syst_ggZZ_k_factor_{}Up'.format(k), 'wt*wt_ggZZ_{}Up'.format(k), ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
+    #  systematics['syst_ggZZ_k_factor_{}_down'.format(k)] = ('', '_syst_ggZZ_k_factor_{}Down'.format(k), 'wt*wt_ggZZ_{}Dn'.format(k), ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
 
 
 if options.plot_from_dc == "":
