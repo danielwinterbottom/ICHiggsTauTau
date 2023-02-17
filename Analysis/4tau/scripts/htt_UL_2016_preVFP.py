@@ -331,12 +331,12 @@ if options.proc_bkg or options.proc_all:
   'T-tW',
 
    # SM Higgs (Missing Files: VBFHToTauTau_M125,WminusHToTauTau_M125,WplusHToTauTau_M125,ttHToTauTau_M125)
-  'GluGluHToTauTau_M125',
-  'ZHToTauTau_M125',
-  'VBFHToTauTau_M125',
-  'WminusHToTauTau_M125',
-  'WplusHToTauTau_M125',
-  'ttHToTauTau_M125',
+#  'GluGluHToTauTau_M125',
+#  'ZHToTauTau_M125',
+#  'VBFHToTauTau_M125',
+#  'WminusHToTauTau_M125',
+#  'WplusHToTauTau_M125',
+#  'ttHToTauTau_M125',
   'VBF_HToZZTo4L_M125',
   'GluGlu_HToZZTo4L_M125',
 

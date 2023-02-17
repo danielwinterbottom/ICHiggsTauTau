@@ -666,7 +666,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         event->Add("wt_total_trg", total_trg);
         eventInfo->set_weight("wt_total_trg",total_trg);
       } else {
-        event->Add("wt_total_trg_ratio_"+td+i, total_trg/event->Get<double>("wt_total_trg"));
+        event->Add("wt_total_trg_ratio_"+td+i, event->Get<double>("wt_total_trg") != 0 ? total_trg/event->Get<double>("wt_total_trg") : 0.0);
       }
       ind = ind + 1;
     }

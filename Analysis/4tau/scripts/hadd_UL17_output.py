@@ -211,6 +211,7 @@ for sa in sample_list:
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
+      #print '%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0.root'%vars(), os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0.root'%vars())
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0.root'%vars()):
         if "%(sa)s_2017"%vars() in nfiles or ignore==True:
 #          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*.root'%vars())
@@ -257,4 +258,4 @@ for sa in sample_list:
         file.write('\necho \"End of job\"')
       job_err = JOB.replace(".sh","_error.log")
       job_out = JOB.replace(".sh","_output.log")
-      #os.system('%(JOBSUBMIT)s %(JOB)s %(job_err)s %(job_out)s' % vars())
+      os.system('%(JOBSUBMIT)s %(JOB)s %(job_err)s %(job_out)s' % vars())

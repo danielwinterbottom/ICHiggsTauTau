@@ -284,92 +284,92 @@ if options.proc_bkg or options.proc_all:
   'DY4JetsToLL-LO',
   'DYJetsToLL-LO',
 
-  # Low mass Drell Yan LO
-  'DYJetsToLL_M-10to50-LO',
-  'DY1JetsToLL_M-10to50-LO',
-  'DY2JetsToLL_M-10to50-LO',
-  'DY3JetsToLL_M-10to50-LO',
-  'DY4JetsToLL_M-10to50-LO',
-
-  # Drell-Yan NLO
-  #'DYJetsToLL_0J-NLO',
-  #'DYJetsToLL_1J-NLO',
-  #'DYJetsToLL_2J-NLO',
-  #'DYJetsToLL-NLO',
-
-  # Electroweak W and Z
-  'EWKWMinus2Jets_WToLNu',
-  'EWKWPlus2Jets_WToLNu',
-  'EWKZ2Jets_ZToLL',
-
-  # W + Jets L0
-  'WJetsToLNu-LO',
-  'W1JetsToLNu-LO',
-  'W2JetsToLNu-LO',
-  'W3JetsToLNu-LO',
-  'W4JetsToLNu-LO',
-
-  # W + Jets NLO
-  #'WJetsToLNu_0J-NLO',
-  #'WJetsToLNu_1J-NLO',
-  #'WJetsToLNu_2J-NLO',
-
-  # ttbar
-  'TTTo2L2Nu',
+#  # Low mass Drell Yan LO
+#  'DYJetsToLL_M-10to50-LO',
+#  'DY1JetsToLL_M-10to50-LO',
+#  'DY2JetsToLL_M-10to50-LO',
+#  'DY3JetsToLL_M-10to50-LO',
+#  'DY4JetsToLL_M-10to50-LO',
+#
+#  # Drell-Yan NLO
+#  #'DYJetsToLL_0J-NLO',
+#  #'DYJetsToLL_1J-NLO',
+#  #'DYJetsToLL_2J-NLO',
+#  #'DYJetsToLL-NLO',
+#
+#  # Electroweak W and Z
+#  'EWKWMinus2Jets_WToLNu',
+#  'EWKWPlus2Jets_WToLNu',
+#  'EWKZ2Jets_ZToLL',
+#
+#  # W + Jets L0
+#  'WJetsToLNu-LO',
+#  'W1JetsToLNu-LO',
+#  'W2JetsToLNu-LO',
+#  'W3JetsToLNu-LO',
+#  'W4JetsToLNu-LO',
+#
+#  # W + Jets NLO
+#  #'WJetsToLNu_0J-NLO',
+#  #'WJetsToLNu_1J-NLO',
+#  #'WJetsToLNu_2J-NLO',
+#
+#  # ttbar
+#  'TTTo2L2Nu',
   'TTToHadronic',
   'TTToSemiLeptonic',
-
-  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
-  'WZTo3LNu',
-  'WZTo1L3Nu',
-  'WZTo2Q2L',
-  'WZTo1L1Nu2Q',
-  'WWTo1L1Nu2Q', 
-  'WWTo2L2Nu',
-  'ZZTo2L2Nu',
-  'ZZTo4L',
-  
-  # Inclusive
-  'WW',
-  'WZ',
-  'ZZ',
-  
-  # Triboson
-  'WWZ',
-  'WWZ-ext1',
-  'WZZ',
-  'WZZ-ext1',
-  'WWW',
-  'WWW-ext1',
-  'ZZZ',
-  'ZZZ-ext1',
- 
-  # Other backgrounds
-  'WGToLNuG',
-  'Tbar-t',
-  'Tbar-tW',
-  'T-t',
-  'T-tW',
- 
-  # SM Higgs
-  'GluGluHToTauTau_M125',
-  'VBFHToTauTau_M125',
-  'WminusHToTauTau_M125',
-  'WplusHToTauTau_M125',
-  'ZHToTauTau_M125',
-  'ttHToTauTau_M125',    
-  'VBF_HToZZTo4L_M125',
-  'GluGlu_HToZZTo4L_M125',
- 
-  # gg -> ZZ
-  'GluGluToContinToZZTo2e2mu',
-  'GluGluToContinToZZTo2e2nu',
-  'GluGluToContinToZZTo2e2tau',
-  'GluGluToContinToZZTo2mu2nu',
-  'GluGluToContinToZZTo2mu2tau',
-  'GluGluToContinToZZTo4e',
-  'GluGluToContinToZZTo4mu',
-  'GluGluToContinToZZTo4tau', 
+#
+#  # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
+#  'WZTo3LNu',
+#  'WZTo1L3Nu',
+#  'WZTo2Q2L',
+#  'WZTo1L1Nu2Q',
+#  'WWTo1L1Nu2Q', 
+#  'WWTo2L2Nu',
+#  'ZZTo2L2Nu',
+#  'ZZTo4L',
+#  
+#  # Inclusive
+#  'WW',
+#  'WZ',
+#  'ZZ',
+#  
+#  # Triboson
+#  'WWZ',
+#  'WWZ-ext1',
+#  'WZZ',
+#  'WZZ-ext1',
+#  'WWW',
+#  'WWW-ext1',
+#  'ZZZ',
+#  'ZZZ-ext1',
+# 
+#  # Other backgrounds
+#  'WGToLNuG',
+#  'Tbar-t',
+#  'Tbar-tW',
+#  'T-t',
+#  'T-tW',
+# 
+#  # SM Higgs
+##  'GluGluHToTauTau_M125',
+##  'VBFHToTauTau_M125',
+##  'WminusHToTauTau_M125',
+##  'WplusHToTauTau_M125',
+##  'ZHToTauTau_M125',
+##  'ttHToTauTau_M125',    
+#  'VBF_HToZZTo4L_M125',
+#  'GluGlu_HToZZTo4L_M125',
+# 
+#  # gg -> ZZ
+#  'GluGluToContinToZZTo2e2mu',
+#  'GluGluToContinToZZTo2e2nu',
+#  'GluGluToContinToZZTo2e2tau',
+#  'GluGluToContinToZZTo2mu2nu',
+#  'GluGluToContinToZZTo2mu2tau',
+#  'GluGluToContinToZZTo4e',
+#  'GluGluToContinToZZTo4mu',
+#  'GluGluToContinToZZTo4tau', 
   	]
 
   #Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu","WZTo2Q2L"]
@@ -403,6 +403,7 @@ if options.proc_bkg or options.proc_all:
       job_num=0
       for FLATJSONPATCH in flatjsons:
         nperjob = 100
+        if "DY" in sa or "TTTo" in sa: nperjob = 40
         #if 'DY' not in sa and 'EWKZ' not in sa:
         #  FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         #if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:

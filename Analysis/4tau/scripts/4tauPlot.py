@@ -1063,7 +1063,8 @@ def NormSignals(outfile,add_name):
        hist_ = outfile.Get(nodename+'/'+samp[1]+add_name)
        if type(hist_) == type(ROOT.TObject()): continue
        hist_norm = hist_.Clone()
-       hist_norm.SetName(hist_.GetName()+"_norm")
+       #hist_norm.SetName(hist_.GetName()+"_norm")
+       hist_norm.SetName(samp[1]+"_norm"+add_name)
        hist_norm.Scale(sf)
        hist_norm.Write("",ROOT.TObject.kOverwrite)
        #hist_.Scale(sf)
@@ -1288,7 +1289,7 @@ if options.syst_signal_theory:
     removed_signal_samples.remove(k)
 
     systematics['syst_signal_{}_qcd_scale_up'.format(v)] = ('', '_syst_signal_qcd_scaleUp', '(wt*wt_mc_1008/{})'.format(xs_shift[k]["qcd_scale"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
-    systematics['syst_signal_{}_qcd_scale_down'.format(v)] = ('', '_syst_signal_qcd_scaleDown', '(wt*wt_mc_1006/{}'.format(xs_shift[k]["qcd_scale"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+    systematics['syst_signal_{}_qcd_scale_down'.format(v)] = ('', '_syst_signal_qcd_scaleDown', '(wt*wt_mc_1006/{})'.format(xs_shift[k]["qcd_scale"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
 
     systematics['syst_signal_{}_pdf_up'.format(v)] = ('', '_syst_signal_pdfUp', '(wt*wt_mc_pdf/{})'.format(xs_shift[k]["pdf"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
     systematics['syst_signal_{}_pdf_down'.format(v)] = ('', '_syst_signal_pdfDown', '(wt/(wt_mc_pdf*{}))'.format(xs_shift[k]["pdf"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
@@ -1397,6 +1398,25 @@ def FindRebinning(hist,BinThreshold=100,BinUncertFraction=0.5):
   binning = []
   for i in range(1,hist.GetNbinsX()+2):
     binning.append(hist.GetBinLowEdge(i))
+
+  # remove outer 0 bins
+  still_zero = True
+  for i in range(1,hist.GetNbinsX()):
+    if not (hist.GetBinContent(i) == 0 and hist.GetBinError(i) == 0): still_zero = False
+    if still_zero:
+      binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i))))
+    else:
+      break
+  hist = RebinHist(hist,binning)
+
+  still_zero = True
+  for i in reversed(range(2,hist.GetNbinsX()+1)):
+    if not (hist.GetBinContent(i) == 0 and hist.GetBinError(i) == 0): still_zero = False
+    if still_zero:
+      binning.remove(min(binning, key=lambda x:abs(x-hist.GetBinLowEdge(i+1))))
+    else:
+      break
+  hist = RebinHist(hist,binning)
 
   # left to right
   finished = False
@@ -1638,6 +1658,19 @@ if options.auto_rebinning:
 else:
   plot_file = ROOT.TFile(output_name)
 
+
+def ReplaceCategoryName(name):
+  replace_dict = {
+                  "z_control_nobtag": "Opposite Sign Leptons",
+                  "2l2t_sig_nobtag": "Same Sign Leptons",
+                  "nobtag": "",
+                  "inclusive": "",
+                  }
+  if name in replace_dict.keys():
+    return replace_dict[name]
+  else:
+    return name
+
 if not options.no_plot:
     if options.extra_name != '': vname = options.extra_name
     else: vname = var_name
@@ -1662,6 +1695,8 @@ if not options.no_plot:
         y_title = titles[1]
     else: y_title = options.y_title
 
+    
+
     plotting.HTTPlot(
       nodename=nodename, 
       infile=plot_file, 
@@ -1685,7 +1720,7 @@ if not options.no_plot:
       y_title=y_title,
       lumi=options.lumi,
       plot_name=plot_name,
-      cat=options.cat,
+      cat=ReplaceCategoryName(options.cat),
       plot_signals=options.plot_signals.split(","),
       draw_data=(not options.no_data),
       under_legend=options.under_legend,

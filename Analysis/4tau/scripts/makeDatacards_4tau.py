@@ -163,11 +163,11 @@ ch_dep_var = {"mttt":[
 categories = {
               "ttt" : ["inclusive"],
               "tttt": ["inclusive"],
-              "ettt": ["ettt_check"],
-              "mttt": ["mttt_check"],
+              "ettt": ["nobtag"],
+              "mttt": ["nobtag"],
               "emtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "eett": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
-              "mmtt": ["inclusive"],
+              "mmtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               }
 
 
@@ -181,7 +181,7 @@ add_options = {
                         ["ff_12","--no_signal --ff_from=12 --no_sig_sel --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
                         ["ff_13","--no_signal --ff_from=13 --no_sig_sel --under_legend='FF_{1} x FF_{3}' --rebin_with_data"],
                         ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}' --rebin_with_data"],
-                        ["ff_123","--no_signal --charges_non_zero --ff_from=112 --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
+                        ["ff_123","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
                         ],
                "tttt": [
                         ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
@@ -260,16 +260,17 @@ common_shape_systematics = [
         '--syst_electron_scale', # Electron Energy Scale
 #        '--syst_efake_scale_0pi', # l to tau h fake energy scale
 #        '--syst_efake_scale_1pi', # l to tau h fake energy scale
-#        '--syst_muon_scale', # Muon Energy Scale - uncomment when trees run
+#        '--syst_muon_scale', # Muon Energy Scale
 #        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
 #        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
         '--syst_electron_id', # Electron ID
         '--syst_muon_id', # Muon ID
-        #'--syst_electron_trg', # SingleElectron trigger - uncomment when trees run
-        #'--syst_muon_trg', # SingleMuon trigger - uncomment when trees run
+        '--syst_electron_trg', # SingleElectron trigger
+        '--syst_muon_trg', # SingleMuon trigger
         '--syst_k_factor', # ZZTo4L k factors
         '--do_ff_systs', # Fake factor uncertainties
-        #'--syst_signal_theory', # signal theory uncertainty - uncomment when trees run
+        '--syst_prefire', # Prefiring
+        '--syst_signal_theory', # signal theory uncertainty
 	]
 
 # Set up output directories
@@ -295,6 +296,8 @@ for channel in channels:
     systs.remove("--syst_electron_id")
   elif "m" not in channel:
     systs.remove("--syst_muon_id")
+
+  if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
 
   for name, option in add_options[channel]:
     for cat in categories[channel]:
