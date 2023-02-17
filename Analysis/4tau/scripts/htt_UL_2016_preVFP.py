@@ -331,12 +331,12 @@ if options.proc_bkg or options.proc_all:
   'T-tW',
 
    # SM Higgs (Missing Files: VBFHToTauTau_M125,WminusHToTauTau_M125,WplusHToTauTau_M125,ttHToTauTau_M125)
-  'GluGluHToTauTau_M125',
-  'ZHToTauTau_M125',
-  'VBFHToTauTau_M125',
-  'WminusHToTauTau_M125',
-  'WplusHToTauTau_M125',
-  'ttHToTauTau_M125',
+#  'GluGluHToTauTau_M125',
+#  'ZHToTauTau_M125',
+#  'VBFHToTauTau_M125',
+#  'WminusHToTauTau_M125',
+#  'WplusHToTauTau_M125',
+#  'ttHToTauTau_M125',
   'VBF_HToZZTo4L_M125',
   'GluGlu_HToZZTo4L_M125',
 
@@ -371,10 +371,10 @@ if options.proc_bkg or options.proc_all:
         nperjob = 100
         #if 'TT' in sa or 'VVTo2L2Nu' in sa: nperjob = 10
   
-        if 'DY' not in sa and 'EWKZ' not in sa:
-          FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-        if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
-          FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
+        #if 'DY' not in sa and 'EWKZ' not in sa:
+        #  FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+        #if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
+        #  FLATJSONPATCH = FLATJSONPATCH.replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
         n_scales = FLATJSONPATCH.count('_lo') + FLATJSONPATCH.count('default')
         #if n_scales*n_channels>=24: nperjob = 10
         #if n_scales*n_channels>=48: nperjob=5
@@ -447,8 +447,8 @@ if options.proc_sig:
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         job_num=0
         for FLATJSONPATCH in flatjsons:
-            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
-            FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
+            #FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
+            #FLATJSONPATCH = FLATJSONPATCH.replace('^met_uncl_hi^met_uncl_lo','')
             if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
             #print '%(SIG_FILELIST)s_%(sa)s.dat' %vars(), os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars())
             if os.path.exists('%(SIG_FILELIST)s_%(sa)s.dat' %vars()):

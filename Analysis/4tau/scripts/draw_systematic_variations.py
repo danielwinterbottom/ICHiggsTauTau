@@ -26,8 +26,8 @@ def SetEmptyBinToOne(h):
 
 
 f = ROOT.TFile(args.datacard)
-up = f.Get(args.category+'/'+args.process+'_'+args.systematic+'_up')
-down = f.Get(args.category+'/'+args.process+'_'+args.systematic+'_down')
+up = f.Get(args.category+'/'+args.process+'_'+args.systematic+'Up')
+down = f.Get(args.category+'/'+args.process+'_'+args.systematic+'Down')
 nom = f.Get(args.category+'/'+args.process)
 
 

@@ -163,11 +163,11 @@ ch_dep_var = {"mttt":[
 categories = {
               "ttt" : ["inclusive"],
               "tttt": ["inclusive"],
-              "ettt": ["ettt_check"],
-              "mttt": ["mttt_check"],
+              "ettt": ["nobtag"],
+              "mttt": ["nobtag"],
               "emtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "eett": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
-              "mmtt": ["inclusive"],
+              "mmtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               }
 
 
@@ -181,7 +181,7 @@ add_options = {
                         ["ff_12","--no_signal --ff_from=12 --no_sig_sel --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
                         ["ff_13","--no_signal --ff_from=13 --no_sig_sel --under_legend='FF_{1} x FF_{3}' --rebin_with_data"],
                         ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}' --rebin_with_data"],
-                        ["ff_123","--no_signal --charges_non_zero --ff_from=112 --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
+                        ["ff_123","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
                         ],
                "tttt": [
                         ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
@@ -263,9 +263,14 @@ common_shape_systematics = [
 #        '--syst_muon_scale', # Muon Energy Scale
 #        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
 #        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
-        '--syst_electron_id' # Electron ID
-        '--syst_muon_id' # Muon ID
-        '--do_ff_systs', 
+        '--syst_electron_id', # Electron ID
+        '--syst_muon_id', # Muon ID
+        '--syst_electron_trg', # SingleElectron trigger
+        '--syst_muon_trg', # SingleMuon trigger
+        '--syst_k_factor', # ZZTo4L k factors
+        '--do_ff_systs', # Fake factor uncertainties
+        '--syst_prefire', # Prefiring
+        '--syst_signal_theory', # signal theory uncertainty
 	]
 
 # Set up output directories
@@ -292,6 +297,8 @@ for channel in channels:
   elif "m" not in channel:
     systs.remove("--syst_muon_id")
 
+  if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
+
   for name, option in add_options[channel]:
     for cat in categories[channel]:
       variables = all_ch_variables+ch_dep_var[channel]
@@ -300,7 +307,7 @@ for channel in channels:
         elif '(' in var: var_string = var.split('(')[0]
         if args.only_var != "" and args.only_var != var_string: continue
         if args.only_option != "" and args.only_option != name: continue
-        if "ff" in name and cat != "inclusive": continue
+        if "ff" in name and "ff_full" not in name and cat != "inclusive": continue
         if var_string[-1] == "4" and channel == "ttt": continue
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
@@ -315,7 +322,7 @@ for channel in channels:
         run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s --add_stat_to_syst\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        #SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
            
     
 

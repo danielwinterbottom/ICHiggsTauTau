@@ -20,6 +20,9 @@ outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
 outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
 outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
 outtree_->Branch("gen_ht",&gen_ht_);
+outtree_->Branch("wt_pdf",&wt_pdf_);
+outtree_->Branch("wt_alphas_up",&wt_alphas_up_);
+outtree_->Branch("wt_alphas_down",&wt_alphas_down_);
 //outtree_->Branch("wt_mur2_muf2",    &scale5_);
 //outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
 if(do_qcd_scale_wts_){
@@ -70,16 +73,15 @@ int EffectiveEvents::Execute(TreeEvent *event){
 //  if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009")*mcsign_; else scale9_=mcsign_;
  if(do_qcd_scale_wts_){
    // note some of these labels may be generator dependent so need to make sure you check before using them
-   std::cout << eventInfo->weight_defined("1001") << std::endl;
-   if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001")*mcsign_; else scale1_=mcsign_;
-   if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002")*mcsign_; else scale2_=mcsign_;
-   if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003")*mcsign_; else scale3_=mcsign_;
-   if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004")*mcsign_; else scale4_=mcsign_;
-   if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005")*mcsign_; else scale5_=mcsign_;
-   if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006")*mcsign_; else scale6_=mcsign_;
-   if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007")*mcsign_; else scale7_=mcsign_;
-   if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008")*mcsign_; else scale8_=mcsign_;
-   if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009")*mcsign_; else scale9_=mcsign_;    
+   if(eventInfo->weight_defined("1001")) scale1_ = eventInfo->weight("1001"); else scale1_=1.0;
+   if(eventInfo->weight_defined("1002")) scale2_ = eventInfo->weight("1002"); else scale2_=1.0;
+   if(eventInfo->weight_defined("1003")) scale3_ = eventInfo->weight("1003"); else scale3_=1.0;
+   if(eventInfo->weight_defined("1004")) scale4_ = eventInfo->weight("1004"); else scale4_=1.0;
+   if(eventInfo->weight_defined("1005")) scale5_ = eventInfo->weight("1005"); else scale5_=1.0;
+   if(eventInfo->weight_defined("1006")) scale6_ = eventInfo->weight("1006"); else scale6_=1.0;
+   if(eventInfo->weight_defined("1007")) scale7_ = eventInfo->weight("1007"); else scale7_=1.0;
+   if(eventInfo->weight_defined("1008")) scale8_ = eventInfo->weight("1008"); else scale8_=1.0;
+   if(eventInfo->weight_defined("1009")) scale9_ = eventInfo->weight("1009"); else scale9_=1.0;    
 //   // lines below for Wjets scale uncertainties - be careful these don't over write the scale uncertainties for other backgrounds!
 //   if(eventInfo->weight_defined("1")) scale1_ = eventInfo->weight("1")*mcsign_; else scale1_=mcsign_;
 //   if(eventInfo->weight_defined("2")) scale2_ = eventInfo->weight("2")*mcsign_; else scale2_=mcsign_;
@@ -91,6 +93,21 @@ int EffectiveEvents::Execute(TreeEvent *event){
 //   if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8")*mcsign_; else scale8_=mcsign_;
 //   if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9")*mcsign_; else scale9_=mcsign_;
  }
+
+ wt_pdf_ = 0.0;
+ //int total = 0;
+ for (int i = 1010; i < 1111; i++) {
+   if(eventInfo->weight_defined(std::to_string(i))) {
+     //wt_pdf_ = wt_pdf_ + pow(eventInfo->weight(std::to_string(i)),2);
+     wt_pdf_ = wt_pdf_ + pow((1-eventInfo->weight(std::to_string(i))),2);
+     //total = total + 1;
+   }
+ }
+ //wt_pdf_ = pow((wt_pdf_/total),0.5);
+ wt_pdf_ = 1+pow(wt_pdf_,0.5);
+
+ if(eventInfo->weight_defined("1111")) wt_alphas_up_ = eventInfo->weight("1111"); else wt_alphas_up_=1.0;
+ if(eventInfo->weight_defined("1112")) wt_alphas_down_ = eventInfo->weight("1112"); else wt_alphas_down_=1.0;
  
  outtree_->Fill();
  return 0;
