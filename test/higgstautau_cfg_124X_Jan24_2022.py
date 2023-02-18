@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 process = cms.Process("MAIN")
+print(process)
 import sys
 
 ################################################################
@@ -1104,6 +1105,17 @@ process.icEle24TauHPS30TightIDObjectProducer = producers.icTriggerObjectProducer
     storeOnlyIfFired = cms.bool(False)
     )
 
+################################################################
+# RUN 3
+process.icEle24LooseDeepTauHPS30ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsEle24LooseDeepTauHPS30"),
+    hltPath = cms.string("HLT_Ele24_eta2p1_WPTight_Gsf_LooseDeepTauPFTauHPS30_eta2p1_CrossL1"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+################################################################
+
 # tt paths
 
 process.icDoubleTightIsoTau35ObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1154,13 +1166,48 @@ process.icDoubleMediumIsoTauHPS35TightIDObjectProducer = producers.icTriggerObje
     storeOnlyIfFired = cms.bool(False)
     )
 
-process.icMediumChargedIsoPFTau180HighPtRelaxedIsoProducer = producers.icTriggerObjectProducer.clone(
+################################################################
+# RUN 3
+process.icDoubleMediumIsoDisplacedTauHPS32ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso"),
-    hltPath = cms.string("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v"),
+    branch = cms.string("triggerObjectsDoubleMediumIsoDisplacedTauHPS32"),
+    hltPath = cms.string("HLT_DoubleMediumChargedIsoDisplacedPFTauHPS32_Trk1_eta2p1_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
+
+process.icDoubleMediumDeepPFTauHPS30PFJets60ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsDoubleMediumDeepPFTauHPS30PFJets60"),
+    hltPath = cms.string("HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icDoubleMediumDeepPFTauHPS30PFJets75ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsDoubleMediumDeepPFTauHPS30PFJets75"),
+    hltPath = cms.string("HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icDoubleMediumDeepPFTauHPS35ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsDoubleMediumDeepPFTauHPS35"),
+    hltPath = cms.string("HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+#process.icMediumChargedIsoPFTau180HighPtRelaxedIsoProducer = producers.icTriggerObjectProducer.clone(
+#    input   = cms.InputTag("selectedPatTrigger"),
+#    branch = cms.string("triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso"),
+#    hltPath = cms.string("HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v"),
+#    inputIsStandAlone = cms.bool(True),
+#    storeOnlyIfFired = cms.bool(False)
+#    )
+################################################################
 
 process.icMediumChargedIsoPFTau180HighPtRelaxedIso1prProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
@@ -1169,6 +1216,25 @@ process.icMediumChargedIsoPFTau180HighPtRelaxedIso1prProducer = producers.icTrig
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
+
+################################################################
+# RUN 3
+process.icLooseDeepTauPFTauHPS180ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsLooseDeepTauPFTauHPS180"),
+    hltPath = cms.string("HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icDoublePFJets40Mass500MediumDeepTauPFTauHPS45HPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsDoublePFJets40Mass500MediumDeepTauPFTauHPS45HPS20"),
+    hltPath = cms.string("HLT_DoublePFJets40_Mass500_MediumDeepTauPFTauHPS45_L2NN_MediumDeepTauPFTauHPS20_eta2p1_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+################################################################
 
 # tt monitoring paths
 
@@ -1203,6 +1269,65 @@ process.icMu24MediumIsoTauHPS35ObjectProducer = producers.icTriggerObjectProduce
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     )
+
+################################################################
+# RUN 3
+process.icMu24LooseDeepTauHPS30ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMu24LooseDeepTauHPS30"),
+    hltPath = cms.string("HLT_IsoMu24_eta2p1_LooseDeepTauPFTauHPS30_eta2p1_CrossL1"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icMu24MediumDeepTauHPS35ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMu24MediumDeepTauHPS35"),
+    hltPath = cms.string("HLT_IsoMu24_eta2p1_MediumDeepTauPFTauHPS35_L2NN_eta2p1_CrossL1"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icMu24MediumDeepTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMu24MediumDeepTauHPS20"),
+    hltPath = cms.string("HLT_IsoMu24_eta2p1_MediumDeepTauIsoPFTauHPS20_eta2p1_SingleL1_v1"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icMu24MediumDeepTauHPS45ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMu24MediumDeepTauHPS45"),
+    hltPath = cms.string("HLT_IsoMu24_eta2p1_MediumDeepTauIsoPFTauHPS45_L2NN_eta2p1_CrossL1_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icMu24MediumDeepTauHPS30ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMu24MediumDeepTauHPS30"),
+    hltPath = cms.string("HLT_IsoMu24_eta2p1_MediumDeepTauPFTauHPS30_L2NN_eta2p1_CrossL1"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icMu24MediumDeepTauHPS30PFJets60ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMu24MediumDeepTauHPS30PFJets60"),
+    hltPath = cms.string("HLT_IsoMu24_eta2p1_MediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60_CrossL1"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+
+process.icMu20MediumDeepTauHPS27ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsMu24LooseDeepTauHPS27"),
+    hltPath = cms.string("HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    )
+################################################################
 
 # vbf paths
 
@@ -1246,13 +1371,24 @@ process.icVBFDoubleTightChargedIsoPFTau20ObjectProducer = producers.icTriggerObj
       storeOnlyIfFired = cms.bool(False)
 )
 
-process.icVBFDoubleTightChargedIsoPFTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
+################################################################
+# RUN 3
+#process.icVBFDoubleTightChargedIsoPFTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
+#      input   = cms.InputTag("selectedPatTrigger"),
+#      branch = cms.string("triggerObjectsVBFDoubleTightChargedIsoPFTauHPS20"),
+#      hltPath = cms.string("HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v"),
+#      inputIsStandAlone = cms.bool(True),
+#      storeOnlyIfFired = cms.bool(False)
+#)
+
+process.icVBFDoubleMediumDeepPFTauHPS20ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("selectedPatTrigger"),
-      branch = cms.string("triggerObjectsVBFDoubleTightChargedIsoPFTauHPS20"),
-      hltPath = cms.string("HLT_VBF_DoubleTightChargedIsoPFTauHPS20_Trk1_eta2p1_v"),
+      branch = cms.string("triggerObjectsVBFDoubleMediumDeepPFTauHPS20"),
+      hltPath = cms.string("HLT_VBF_DoubleMediumDeepTauPFTauHPS20_eta2p1_v"),
       inputIsStandAlone = cms.bool(True),
       storeOnlyIfFired = cms.bool(False)
 )
+################################################################
 
 # vbf monitoring paths
 
@@ -1488,7 +1624,7 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icDoubleTightIsoTau40TightIDObjectProducer+
     process.icDoubleMediumIsoTauHPS35ObjectProducer+
     process.icDoubleMediumIsoTauHPS35TightIDObjectProducer+
-    process.icMediumChargedIsoPFTau180HighPtRelaxedIsoProducer+
+    #process.icMediumChargedIsoPFTau180HighPtRelaxedIsoProducer+ run3
     process.icMediumChargedIsoPFTau180HighPtRelaxedIso1prProducer+
     process.icMu24TightIsoTightIDTau35ObjectProducer+
     process.icMu24MediumIsoTau35ObjectProducer+
@@ -1499,7 +1635,7 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icVBFDoubleMediumChargedIsoPFTau20ObjectProducer+
     process.icVBFDoubleMediumChargedIsoPFTauHPS20ObjectProducer+
     process.icVBFDoubleTightChargedIsoPFTau20ObjectProducer+
-    process.icVBFDoubleTightChargedIsoPFTauHPS20ObjectProducer+
+    #process.icVBFDoubleTightChargedIsoPFTauHPS20ObjectProducer+ run3
     process.icIsoMu24LooseIsoTau20ObjectProducer+
     process.icIsoMu24MediumIsoTau20ObjectProducer+
     process.icIsoMu24TightIsoTau20ObjectProducer+
@@ -1524,7 +1660,17 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icTripleMuDZObjectProducer+
     process.icDiMu9Ele9DZ+
     process.icMu8DiEle12DZ+
-    process.icEle16Ele12Ele8   
+    process.icEle16Ele12Ele8+
+    process.icVBFDoubleMediumDeepPFTauHPS20ObjectProducer+ #run3
+    process.icMu24LooseDeepTauHPS30ObjectProducer+ #run3
+    process.icEle24LooseDeepTauHPS30ObjectProducer+ #run3 
+    process.icLooseDeepTauPFTauHPS180ObjectProducer+ #run3
+    process.icMu24MediumDeepTauHPS35ObjectProducer+ #run3
+    process.icMu24MediumDeepTauHPS20ObjectProducer+ #run3
+    process.icMu24MediumDeepTauHPS45ObjectProducer+ #run3
+    process.icMu24MediumDeepTauHPS30ObjectProducer+ #run3
+    process.icMu24MediumDeepTauHPS30PFJets60ObjectProducer+ #run3
+    process.icMu20MediumDeepTauHPS27ObjectProducer #run3
     )
 
 for name in process.icTriggerObjectSequence.moduleNames():
