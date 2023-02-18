@@ -59,9 +59,7 @@ namespace ic {
     std::vector<CompositeCandidate *> result;
 
     // Remove duplicate decay products from multilepton
-    std::cout << multilepton.size() << std::endl;
     for (unsigned i = 0; i < multilepton.size(); ++i) {
-      std::cout << "RE " << i << std::endl;
       if (NoDuplicateParticle(multilepton[i],0.3)) {
         if (TotalZeroChargeFourParticles(multilepton[i])) zero_charge.push_back(multilepton[i]);
         if (TotalNonZeroChargeFourParticles(multilepton[i])) non_zero_charge.push_back(multilepton[i]);
@@ -108,6 +106,10 @@ namespace ic {
            std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
            std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
         }
+        if(channel_ ==  channel::mmmm) {
+           std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoMMMM,_1,_2,strategy_)) ;
+           std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoMMMM,_1,_2,strategy_)) ;
+        }
         if(channel_ ==  channel::emtt) { 
            std::sort(zero_charge.begin(), zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
            std::sort(non_zero_charge.begin(), non_zero_charge.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
@@ -142,6 +144,9 @@ namespace ic {
         if(channel_ ==  channel::mmtt) {
            std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoMMTT,_1,_2,strategy_,tau_idiso_name_)) ;
         }
+        if(channel_ ==  channel::mmmm) {
+           std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoMMMM,_1,_2,strategy_)) ;
+        }
         if(channel_ ==  channel::emtt) {
            std::sort(all_multilepton.begin(), all_multilepton.end(), boost::bind(SortByIsoEMTT,_1,_2,strategy_,eventInfo,tau_idiso_name_)) ;
         }
@@ -175,6 +180,11 @@ namespace ic {
         pt_sorted_collection = sort_collection_1;
         pt_sorted_collection.insert(pt_sorted_collection.end(), sort_collection_2.begin(), sort_collection_2.end());
       }
+      if (channel_ == channel::mmmm) {
+        sort_collection_1 = {lep1, lep2,lep3,lep4};
+        std::sort(sort_collection_1.begin(),sort_collection_1.end(), SortByPt);
+        pt_sorted_collection = sort_collection_1;
+      }
       if (channel_ == channel::emtt) {
         sort_collection = {lep3, lep4};
         std::sort(sort_collection.begin(),sort_collection.end(), SortByPt);
@@ -207,6 +217,108 @@ namespace ic {
       pfmet->set_vector(ROOT::Math::PtEtaPhiEVector(pt,0,phi,pt));
     }
     event->Add("pfMET", pfmet);
+
+    // Scale met for the tau energy scale shift
+    Tau const* tau1 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton1"));
+    Tau const* tau2 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+    Tau const* tau3 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton3"));
+    Tau const* tau4 = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton4"));
+    typedef std::map<std::size_t, ROOT::Math::PxPyPzEVector> map_id_vec;
+    Met * met = event->GetPtr<Met>("pfMET");
+    std::vector<std::string> tau_shifts {"scales_taues","scales_taues_1prong0pi0",
+     "scales_taues_1prong1pi0","scales_taues_3prong0pi0","scales_efaketaues_1prong0pi0","scales_efaketaues_1prong1pi0","scales_efaketaues_1prong0pi0_endcap","scales_efaketaues_1prong1pi0_endcap", "scales_mufaketaues_1prong0pi0", "scales_mufaketaues_1prong1pi0"};
+    for(unsigned int i = 0; i < tau_shifts.size(); ++i) {
+      if(event->Exists(tau_shifts.at(i))){
+
+        auto const& es_shifts = event->Get<map_id_vec>(tau_shifts.at(i));
+
+        if (channel_ == channel::tttt) {
+          if(es_shifts.count(tau1->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau1->id()));
+          }
+        }
+
+        if (channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::tttt) {
+          if(es_shifts.count(tau2->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau2->id()));
+          }
+        }
+
+        if (channel_ == channel::ettt || channel_ == channel::mttt || channel_ == channel::mttt || channel_ == channel::mmtt || channel_ == channel::eett || channel_ == channel::emtt) {
+          if(es_shifts.count(tau3->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau3->id()));
+          }
+          if(es_shifts.count(tau4->id()) > 0){
+             this->CorrectMETForShift(met, es_shifts.at(tau4->id()));
+          }
+        }
+      }
+    }
+
+    // Scale met for the electron energy scale shift
+    if (channel_ == channel::eett || channel_ == channel::ettt || channel_ == channel::emtt) {
+      Electron const* elec1 = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
+      Electron const* elec2 = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton2"));
+      double t_scale_ = 1.0;
+      if (event->Exists("elec_scales")) {
+        std::map<std::size_t, double> const& elec_scales1 = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+        std::map<std::size_t, double>::const_iterator it1 = elec_scales1.find(elec1->id());
+        if (it1 != elec_scales1.end()) {
+          t_scale_ = it1->second;
+        } else {
+          std::cout << "Scale for chosen electron not found!" << std::endl;
+          throw;
+        }
+      }
+      double metx1 = met->vector().px();
+      double mety1 = met->vector().py();
+      double metet1 = met->vector().energy();
+      double dx1 = elec1->vector().px() * (( 1. / t_scale_) - 1.);
+      double dy1 = elec1->vector().py() * (( 1. / t_scale_) - 1.);
+      metx1 = metx1 + dx1;
+      mety1 = mety1 + dy1;
+      metet1 = sqrt(metx1*metx1 + mety1*mety1);
+      ROOT::Math::PxPyPzEVector new_met1(metx1, mety1, 0, metet1);
+      met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met1));
+
+      if (channel_ == channel::eett) {
+        if (event->Exists("elec_scales")) {
+          std::map<std::size_t, double> const& elec_scales2 = event->Get< std::map<std::size_t, double>  > ("elec_scales");
+          std::map<std::size_t, double>::const_iterator it2 = elec_scales2.find(elec2->id());
+          if (it2 != elec_scales2.end()) {
+            t_scale_ = it2->second;
+          } else {
+            std::cout << "Scale for chosen electron not found!" << std::endl;
+            throw;
+          }
+        }
+        double metx2 = met->vector().px();
+        double mety2 = met->vector().py();
+        double metet2 = met->vector().energy();
+        double dx2 = elec2->vector().px() * (( 1. / t_scale_) - 1.);
+        double dy2 = elec2->vector().py() * (( 1. / t_scale_) - 1.);
+        metx2 = metx2 + dx2;
+        mety2 = mety2 + dy2;
+        metet2 = sqrt(metx2*metx2 + mety2*mety2);
+        ROOT::Math::PxPyPzEVector new_met2(metx2, mety2, 0, metet2);
+        met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met2));
+      }
+    }
+   
+
+    // Scale met for the jet energy scale shift
+    if(event->Exists("jes_shift")){
+      Met * met = event->GetPtr<Met>("pfMET");
+      ROOT::Math::PxPyPzEVector jes_shift = event->Get<ROOT::Math::PxPyPzEVector>("jes_shift");
+      this->CorrectMETForShift(met, jes_shift);
+    }
+
+    // Scale met for the jet energy resolution
+    if(event->Exists("jer_shift")){
+      Met * met = event->GetPtr<Met>("pfMET");
+      ROOT::Math::PxPyPzEVector jer_shift = event->Get<ROOT::Math::PxPyPzEVector>("jer_shift");
+      this->CorrectMETForShift(met, jer_shift);
+    }
 
 
     multilepton = result;
@@ -363,7 +475,44 @@ namespace ic {
     return (t1_2->pt() > t2_2->pt());
   }
 
+  bool SortByIsoMMMM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy) {
+    Muon const* m1_1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m2_1 = static_cast<Muon const*>(c2->At(0));
+    double m_iso1_1;
+    m_iso1_1 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_1, 0.5, 0) : PF04IsolationVal(m1_1, 0.5, 0);
+    double m_iso2_1;
+    m_iso2_1 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_1, 0.5, 0) : PF04IsolationVal(m2_1, 0.5, 0);
+    if (m_iso1_1 != m_iso2_1) return m_iso1_1 < m_iso2_1;
+    if (m1_1->pt() != m2_1->pt()) return m1_1->pt() > m2_1->pt();
 
+    Muon const* m1_2 = static_cast<Muon const*>(c1->At(1));
+    Muon const* m2_2 = static_cast<Muon const*>(c2->At(1));
+    double m_iso1_2;
+    m_iso1_2 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_2, 0.5, 0) : PF04IsolationVal(m1_2, 0.5, 0);
+    double m_iso2_2;
+    m_iso2_2 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_2, 0.5, 0) : PF04IsolationVal(m2_2, 0.5, 0);
+    if (m_iso1_2 != m_iso2_2) return m_iso1_2 < m_iso2_2;
+    if (m1_2->pt() != m2_2->pt()) return m1_2->pt() > m2_2->pt();
+
+    Muon const* m1_3 = static_cast<Muon const*>(c1->At(2));
+    Muon const* m2_3 = static_cast<Muon const*>(c2->At(2));
+    double m_iso1_3;
+    m_iso1_3 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_3, 0.5, 0) : PF04IsolationVal(m1_3, 0.5, 0);
+    double m_iso2_3;
+    m_iso2_3 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_3, 0.5, 0) : PF04IsolationVal(m2_3, 0.5, 0);
+    if (m_iso1_3 != m_iso2_3) return m_iso1_3 < m_iso2_3;
+    if (m1_3->pt() != m2_3->pt()) return m1_3->pt() > m2_3->pt();
+
+    Muon const* m1_4 = static_cast<Muon const*>(c1->At(3));
+    Muon const* m2_4 = static_cast<Muon const*>(c2->At(3));
+    double m_iso1_4;
+    m_iso1_4 = (strategy == strategy::fall15) ? PF03IsolationVal(m1_4, 0.5, 0) : PF04IsolationVal(m1_4, 0.5, 0);
+    double m_iso2_4;
+    m_iso2_4 = (strategy == strategy::fall15) ? PF03IsolationVal(m2_4, 0.5, 0) : PF04IsolationVal(m2_4, 0.5, 0);
+    if (m_iso1_4 != m_iso2_4) return m_iso1_4 < m_iso2_4;
+    return (m1_4->pt() > m2_4->pt());
+
+  }
 
   bool SortByIsoMTTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, std::string tau_idiso_name) {
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));

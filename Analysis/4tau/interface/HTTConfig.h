@@ -46,18 +46,18 @@ struct strategy_def {
 	enum type {
 		paper2013,				// Strategy for the final paper in 2013
 		phys14,				// Strategy for running on phys14 samples
-        spring15,    //Strategy for running on spring15 samples
-        fall15,    //Strategy for running on fall15 samples
-        mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
-        smspring16,    //Strategy for running on spring16 samples, SM analysis
-        mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
-        smsummer16,    //Strategy for running on summer16 samples, SM analysis
-        cpsummer16,
-        legacy16,
-        cpsummer17,
-        cpdecays16,
-        cpdecays17,
-        cpdecays18
+    spring15,    //Strategy for running on spring15 samples
+    fall15,    //Strategy for running on fall15 samples
+    mssmspring16,    //Strategy for running on spring16 samples, MSSM analysis
+    smspring16,    //Strategy for running on spring16 samples, SM analysis
+    mssmsummer16, //Strategy for running on summer16 samples, MSSM analysis
+    smsummer16,    //Strategy for running on summer16 samples, SM analysis
+    cpsummer16,
+    legacy16,
+    cpsummer17,
+    cpdecays16,
+    cpdecays17,
+    cpdecays18
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -233,6 +233,7 @@ struct channel_def {
     emtt,
     eett,
     mmtt,
+    mmmm,
     ttt,   
 		et,							
 		mt,		
@@ -259,6 +260,7 @@ inline std::string Channel2String(channel const& in) {
     (channel::emtt, "emtt")
     (channel::eett, "eett")
     (channel::mmtt, "mmtt")
+    (channel::mmmm, "mmmm")
     (channel::ttt, "ttt")
 		(channel::et, "et")
 		(channel::mt, "mt")
@@ -289,6 +291,7 @@ inline channel String2Channel(std::string const& in) {
   ("emtt", channel::emtt)
   ("eett", channel::eett)
   ("mmtt", channel::mmtt)
+  ("mmmm", channel::mmmm)
   ("ttt", channel::ttt)
 	("et", channel::et)
 	("mt", channel::mt)

@@ -39,6 +39,10 @@ class EffectiveEvents : public ModuleBase {
   double scale8_;
   double scale9_;
 
+  float wt_pdf_;
+  float wt_alphas_up_;
+  float wt_alphas_down_;
+
  public:
   EffectiveEvents(std::string const& name);
   virtual ~EffectiveEvents();

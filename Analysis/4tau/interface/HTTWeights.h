@@ -12,7 +12,7 @@
 #include "Utilities/interface/FnRootTools.h"
 
 #include <string>
-
+#include <TSpline.h>
 
 namespace ic {
 
@@ -38,6 +38,8 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_mtaucross_trg)
   CLASS_MEMBER(HTTWeights, bool, do_singlem_trg) 
   CLASS_MEMBER(HTTWeights, bool, do_emucross_trg)
+  CLASS_MEMBER(HTTWeights, bool, do_ggZZ_k_fact)
+  CLASS_MEMBER(HTTWeights, bool, do_qqZZ_k_fact)
 
   std::shared_ptr<RooWorkspace> w_;
   std::map<std::string, std::shared_ptr<RooFunctor>> fns_;
@@ -50,6 +52,17 @@ class HTTWeights : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+
+  TFile *fin = TFile::Open("input/k_factors/Kfactor_Collected_ggHZZ_2l2l_NNLO_NNPDF_NarrowWidth_13TeV.root");
+  TSpline3* ggZZ_kf_Nominal = (TSpline3*)fin->Get("sp_kfactor_Nominal");
+  TSpline3* ggZZ_kf_PDFScaleDn = (TSpline3*)fin->Get("sp_kfactor_PDFScaleDn");
+  TSpline3* ggZZ_kf_PDFScaleUp = (TSpline3*)fin->Get("sp_kfactor_PDFScaleUp");
+  TSpline3* ggZZ_kf_QCDScaleDn = (TSpline3*)fin->Get("sp_kfactor_QCDScaleDn");
+  TSpline3* ggZZ_kf_QCDScaleUp = (TSpline3*)fin->Get("sp_kfactor_QCDScaleUp");
+  TSpline3* ggZZ_kf_AsDn = (TSpline3*)fin->Get("sp_kfactor_AsDn");
+  TSpline3* ggZZ_kf_AsUp = (TSpline3*)fin->Get("sp_kfactor_AsUp");
+  TSpline3* ggZZ_kf_PDFReplicaDn = (TSpline3*)fin->Get("sp_kfactor_PDFReplicaDn");
+  TSpline3* ggZZ_kf_PDFReplicaUp = (TSpline3*)fin->Get("sp_kfactor_PDFReplicaUp");
 };
 
 }

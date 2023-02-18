@@ -22,6 +22,7 @@ class HTTStitching : public ModuleBase {
   CLASS_MEMBER(HTTStitching, bool, do_dy_soup_high_mass)
   CLASS_MEMBER(HTTStitching, bool, do_dy_soup_htbinned)
   CLASS_MEMBER(HTTStitching, bool, do_ggH_soup)
+  CLASS_MEMBER(HTTStitching, bool, do_dy_soup_NLO)
   CLASS_MEMBER(HTTStitching, fwlite::TFileService*, fs)
 
   TTree *t_gen_info_;
@@ -35,9 +36,11 @@ class HTTStitching : public ModuleBase {
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zn_hm_,zw0_,zw1_,zw2_,zw3_,zw4_;
   double zfhm_,zfhm1_,zfhm2_,zfhm3_,zfhm4_,zw0hi_,zw1lo_,zw1hi_,zw2lo_,zw2hi_,zw3lo_,zw3hi_,zw4lo_,zw4hi_;
   double zxs0_,zxs1_,zxs2_,zxs3_,zxs4_,z_lo_nlo_corr_,zxsinc_,zxshm_;
+  double zxs_inc_,zxs_0J_,zxs_1J_,zxs_2J_,zn_inc_NLO_,zn_0J_,zn_1J_,zn_2J_;
   double wxs0_,wxs1_,wxs2_,wxs3_,wxs4_,w_lo_nlo_corr_;
   double wt_lumi_;
   double ggH_n_inc_, ggH_n_2_, ggH_frac_, ggHw2_;
+
 
  public:
   HTTStitching(std::string const& name);
@@ -51,8 +54,10 @@ class HTTStitching : public ModuleBase {
   void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4);
   void SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4);
   void SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4);
+  void SetDYInputYields_NLO(double zn_inc_NLO, double zn_0J, double zn_1J, double zn_2J);
   void SetDYInputYieldsHighMass(double zn_inc, double zn1, double zn2, double zn3, double zn4, double zn_hm);
   void SetDYInputCrossSections(double zxs0, double zxs1, double zxs2, double zxs3, double zxs4);
+  void SetDYInputCrossSections_NLO(double zxs_inc, double zxs_0J, double zxs_1J, double zxs_2J);
   void SetDYInputCrossSectionsHighMass(double zxsinc, double zxs1, double zxs2, double zxs3, double zxs4, double zxshm);
   void SetWInputCrossSections(double wxs0, double wxs1, double wxs2, double wxs3, double wxs4);
   void SetggHInputYieldsAndFrac(double ggH_n_inc, double ggH_n2, double ggH_frac);

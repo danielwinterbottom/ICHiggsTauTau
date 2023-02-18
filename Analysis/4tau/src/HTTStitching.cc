@@ -23,6 +23,7 @@ namespace ic {
     do_dy_soup_htbinned_      = false;
     do_w_soup_htbinned_      = false;
     do_ggH_soup_ = false;
+    do_dy_soup_NLO_ = false;
     fs_ = NULL;
   }
   HTTStitching::~HTTStitching() {
@@ -86,6 +87,19 @@ namespace ic {
         t_gen_info_->Branch("njets", &t_njets_);
         t_gen_info_->Branch("wt", &t_wt_);
       }
+    }
+    if (do_dy_soup_NLO_ && (era_==era::data_2015 || era_==era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)) {
+      std::cout << boost::format(param_fmt()) % "make_dy_soup_NLO"      % true;
+      std::cout << "nInc = " << zn_inc_NLO_ << std::endl;
+      zf0_ = zxs_0J_/zxs_inc_;
+      zf1_ = zxs_1J_/zxs_inc_;
+      zf2_ = zxs_2J_/zxs_inc_;
+      zw0_ = (zn_inc_NLO_*zf0_) / ( (zn_inc_NLO_*zf0_) + zn_0J_ );
+      zw1_ = (zn_inc_NLO_*zf1_) / ( (zn_inc_NLO_*zf1_) + zn_1J_ );
+      zw2_ = (zn_inc_NLO_*zf2_) / ( (zn_inc_NLO_*zf2_) + zn_2J_ );
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % zf0_ % zn_0J_ % zw0_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf1_ % zn_1J_ % zw1_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf2_ % zn_2J_ % zw2_;
     }
     if (do_dy_soup_high_mass_ ) {
       std::cout << boost::format(param_fmt()) % "make_dy_soup_high_mass"      % true;
@@ -291,7 +305,12 @@ namespace ic {
 
       // unsigned gen_match_1 = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_1"));
     }
-
+    if (do_dy_soup_NLO_){
+       int partons = eventInfo->npNLO();
+       if (partons == 0) eventInfo->set_weight("dysoup_NLO", zw0_);
+       if (partons == 1) eventInfo->set_weight("dysoup_NLO", zw1_);
+       if (partons == 2) eventInfo->set_weight("dysoup_NLO", zw2_);
+    }
 
     if (do_dy_soup_high_mass_) {
         unsigned partons = 0; 
@@ -420,6 +439,12 @@ namespace ic {
     zn3_ = zn3;
     zn4_ = zn4;
   }
+  void HTTStitching::SetDYInputYields_NLO(double zn_inc_NLO, double zn_0J, double zn_1J, double zn_2J) {
+    zn_inc_NLO_ = zn_inc_NLO;
+    zn_0J_ = zn_0J;
+    zn_1J_ = zn_1J;
+    zn_2J_ = zn_2J;
+  }
 
   void HTTStitching::SetDYInputYieldsHighMass(double zn_inc, double zn1, double zn2, double zn3, double zn4, double zn_hm) {
     zn_inc_ = zn_inc;
@@ -437,7 +462,12 @@ namespace ic {
     zxs3_ = zxs3;
     zxs4_ = zxs4;
   }
-
+  void HTTStitching::SetDYInputCrossSections_NLO(double zxs_inc, double zxs_0J, double zxs_1J, double zxs_2J) {
+    zxs_inc_ = zxs_inc;
+    zxs_0J_ = zxs_0J;
+    zxs_1J_ = zxs_1J;
+    zxs_2J_ = zxs_2J;
+  }
 
   void HTTStitching::SetDYInputCrossSectionsHighMass(double zxsinc, double zxs1, double zxs2, double zxs3, double zxs4, double zxshm) {
     zxsinc_ = zxsinc;

@@ -66,7 +66,8 @@ namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json, Json::Value const& unmod_json) {
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
-  do_recoil = json["do_recoil"].asBool() && ((output_name.find("DY")!=output_name.npos && output_name.find("JetsToLL")!=output_name.npos) || output_name.find("HToTauTau")!=output_name.npos || output_name.find("WJetsToLNu") != output_name.npos || output_name.find("W1JetsToLNu") != output_name.npos || output_name.find("W2JetsToLNu")!=output_name.npos || output_name.find("W3JetsToLNu")!=output_name.npos || output_name.find("W4JetsToLNu")!=output_name.npos || output_name.find("WG")!=output_name.npos || output_name.find("EWKW")!=output_name.npos || output_name.find("EWKZ")!=output_name.npos || output_name.find("VBFH")!=output_name.npos || output_name.find("GluGluH")!=output_name.npos || output_name.find("ZHiggs")!=output_name.npos || output_name.find("WHiggs")!=output_name.npos || output_name.find("JJH")!=output_name.npos);
+  //do_recoil = json["do_recoil"].asBool() && ((output_name.find("DY")!=output_name.npos && output_name.find("JetsToLL")!=output_name.npos) || output_name.find("HToTauTau")!=output_name.npos || output_name.find("WJetsToLNu") != output_name.npos || output_name.find("W1JetsToLNu") != output_name.npos || output_name.find("W2JetsToLNu")!=output_name.npos || output_name.find("W3JetsToLNu")!=output_name.npos || output_name.find("W4JetsToLNu")!=output_name.npos || output_name.find("WG")!=output_name.npos || output_name.find("EWKW")!=output_name.npos || output_name.find("EWKZ")!=output_name.npos || output_name.find("VBFH")!=output_name.npos || output_name.find("GluGluH")!=output_name.npos || output_name.find("ZHiggs")!=output_name.npos || output_name.find("WHiggs")!=output_name.npos || output_name.find("JJH")!=output_name.npos);
+  do_recoil = false;
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   if(new_svfit_mode > 0){
@@ -113,8 +114,6 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   era_str = js["era"].asString();
   if(js["strategy"].asString()==""){std::cout<<"ERROR: strategy not set"<<std::endl; exit(1);}
   strategy_str = js["strategy"].asString();
-  ic::strategy strategy_type  = String2Strategy(strategy_str);
-  //ic::era  era_type  = String2Era(era_str);
   veto_elec_pt = 10;
   veto_elec_eta = 2.5;
   veto_elec_dxy = 0.045;
@@ -135,8 +134,6 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   veto_tau_eta = 2.3;
   veto_tau_dz = 0.2;
 
-
-  // TO DO: Check these and try changing them
   elec_dz = 0.2;
   elec_dxy = 0.045;
   muon_dxy = 0.045;
@@ -160,6 +157,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(channel_str == "mmtt"){
     min_taus = 2;
   }
+  if(channel_str == "mmmm"){
+    min_taus = 0;
+  }
   if (channel_str == "ettt"){
     min_taus = 3;
   } 
@@ -168,82 +168,51 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   }
   if (channel_str == "tttt"){
    min_taus = 4;
-   tau_pt = 35;
   }
 
   if (channel_str == "ttt"){
    min_taus = 3;
-   tau_pt = 20;
   }
 
 
- do_qcd_scale_wts_=false;
- do_qcd_scale_wts_ = js["do_qcd_scale_wts"].asBool();
- if (output_name.find("SUSYGluGluToBBHToTauTau_M") != output_name.npos && output_name.find("NLO") != output_name.npos) do_qcd_scale_wts_=true;
-  
- is_data      = json["is_data"].asBool();
- is_embedded  = json["is_embedded"].asBool();
- jets_label   = json["jets"].asString();
- met_label    = json["met"].asString();
- if(json["baseline"]["mass_scale_mode"].asBool()==true){
-   mass_shift = json["baseline"]["mass_shift"].asDouble();
- } else mass_shift=1.00;
- do_met_filters = json["do_met_filters"].asBool();
- tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
- e_scale_mode = json["baseline"]["e_scale_mode"].asBool();
- e_unc_mode = js["baseline"]["e_unc_mode"].asUInt();
- mu_scale_mode = json["baseline"]["mu_scale_mode"].asBool();
- //Need this to correctly set tau /elec ES
- muon_shift = json["baseline"]["muon_es_shift"].asDouble();
- muon_shift_barrel = json["baseline"]["muon_es_shift_barrel"].asDouble();
- muon_shift_nearendcap = json["baseline"]["muon_es_shift_nearendcap"].asDouble();
- muon_shift_farendcap = json["baseline"]["muon_es_shift_farendcap"].asDouble();
- elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
- elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
- tau_shift_1prong0pi0 = 1.0;
- tau_shift_1prong1pi0 = 1.0;
- tau_shift_3prong0pi0 = 1.0;
- tau_shift_3prong1pi0 = 1.0;
- fakeE_tau_shift_0pi = 1.0;
- fakeE_tau_shift_1pi = 1.0;
- fakeE_tau_shift_0pi_endcap = 1.0;
- fakeE_tau_shift_1pi_endcap = 1.0;
- fakeMu_tau_shift_0pi = 1.0;
- fakeMu_tau_shift_1pi = 1.0;
- if(strategy_type==strategy::mssmsummer16 || strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 ||strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
-   fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
-   fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
-   fakeE_tau_shift_0pi_endcap = json["baseline"]["efaketau_0pi_es_shift_endcap"].asDouble();
-   fakeE_tau_shift_1pi_endcap = json["baseline"]["efaketau_1pi_es_shift_endcap"].asDouble();
-   if(!is_embedded){
-     tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
-     tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
-     tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
-     tau_shift_3prong1pi0 = json["baseline"]["tau_3prong1pi0_es_shift"].asDouble();
-   } else {
-     tau_shift_1prong0pi0 = json["baseline"]["embedtau_1prong0pi0_es_shift"].asDouble();
-     tau_shift_1prong1pi0 = json["baseline"]["embedtau_1prong1pi0_es_shift"].asDouble();
-     tau_shift_3prong0pi0 = json["baseline"]["embedtau_3prong0pi0_es_shift"].asDouble();
-     tau_shift_3prong1pi0 = json["baseline"]["embedtau_3prong1pi0_es_shift"].asDouble();
-   }
- }
- if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
-   fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
-   fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
- }
-
-tau_shift_func_1prong0pi0 = "";
-tau_shift_func_1prong1pi0 = "";
-tau_shift_func_3prong0pi0 = "";
-tau_shift_func_3prong1pi0 = "";
-if(!is_embedded){
-  if(json["baseline"]["tau_shift_func_1prong0pi0"].asString()!="") tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
-  if(json["baseline"]["tau_shift_func_1prong1pi0"].asString()!="") tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
-  if(json["baseline"]["tau_shift_func_3prong0pi0"].asString()!="") tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
-  if(json["baseline"]["tau_shift_func_3prong1pi0"].asString()!="") tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
-}
-
-alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
+  do_qcd_scale_wts_=false;
+  do_qcd_scale_wts_ = js["do_qcd_scale_wts"].asBool();
+  if (output_name.find("SUSYGluGluToBBHToTauTau_M") != output_name.npos && output_name.find("NLO") != output_name.npos) do_qcd_scale_wts_=true;
+   
+  is_data      = json["is_data"].asBool();
+  is_embedded  = json["is_embedded"].asBool();
+  jets_label   = json["jets"].asString();
+  met_label    = json["met"].asString();
+  if(json["baseline"]["mass_scale_mode"].asBool()==true){
+    mass_shift = json["baseline"]["mass_shift"].asDouble();
+  } else mass_shift=1.00;
+  do_met_filters = json["do_met_filters"].asBool();
+  tau_scale_mode = json["baseline"]["tau_scale_mode"].asBool();
+  e_scale_mode = json["baseline"]["e_scale_mode"].asBool();
+  e_unc_mode = js["baseline"]["e_unc_mode"].asUInt();
+  mu_scale_mode = json["baseline"]["mu_scale_mode"].asBool();
+  //Need this to correctly set tau /elec ES
+  muon_shift = json["baseline"]["muon_es_shift"].asDouble();
+  muon_shift_barrel = json["baseline"]["muon_es_shift_barrel"].asDouble();
+  muon_shift_nearendcap = json["baseline"]["muon_es_shift_nearendcap"].asDouble();
+  muon_shift_farendcap = json["baseline"]["muon_es_shift_farendcap"].asDouble();
+  elec_shift_barrel = json["baseline"]["elec_es_shift_barrel"].asDouble();
+  elec_shift_endcap = json["baseline"]["elec_es_shift_endcap"].asDouble();
+  fakeE_tau_shift_0pi = json["baseline"]["efaketau_0pi_es_shift"].asDouble();
+  fakeE_tau_shift_1pi = json["baseline"]["efaketau_1pi_es_shift"].asDouble();
+  fakeE_tau_shift_0pi_endcap = json["baseline"]["efaketau_0pi_es_shift_endcap"].asDouble();
+  fakeE_tau_shift_1pi_endcap = json["baseline"]["efaketau_1pi_es_shift_endcap"].asDouble();
+  tau_shift_1prong0pi0 = json["baseline"]["tau_1prong0pi0_es_shift"].asDouble();
+  tau_shift_1prong1pi0 = json["baseline"]["tau_1prong1pi0_es_shift"].asDouble();
+  tau_shift_3prong0pi0 = json["baseline"]["tau_3prong0pi0_es_shift"].asDouble();
+  tau_shift_3prong1pi0 = json["baseline"]["tau_3prong1pi0_es_shift"].asDouble();
+  fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
+  fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
+  tau_shift_func_1prong0pi0=json["baseline"]["tau_shift_func_1prong0pi0"].asString();
+  tau_shift_func_1prong1pi0=json["baseline"]["tau_shift_func_1prong1pi0"].asString();
+  tau_shift_func_3prong0pi0=json["baseline"]["tau_shift_func_3prong0pi0"].asString();
+  tau_shift_func_3prong1pi0=json["baseline"]["tau_shift_func_3prong1pi0"].asString();
+  alt_jes_input_set = json["baseline"]["jes_input_set"].asString();
 
 }
 
@@ -327,7 +296,6 @@ void HTTSequence::BuildSequence(){
     file.close();
   }
 
-  // TO DO: Check good-lumi jsons haven't changed for UL
   // Defining good-lumi jsons
   std::string data_json = "";
   if ((era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP))
@@ -372,7 +340,6 @@ void HTTSequence::BuildSequence(){
   BuildModule(httPrint);  
 }
 
-// TO DO: Build new gen analysis module for 4taus
 if(!is_data && js["do_gen_analysis"].asBool()){
 
   std::string mass_str = output_name;
@@ -410,6 +377,7 @@ if (channel == channel::emtt) BuildEMTTProducts();
 if (channel == channel::tttt) BuildTTTTProducts();
 if (channel == channel::eett) BuildEETTProducts();
 if (channel == channel::mmtt) BuildMMTTProducts();
+if (channel == channel::mmmm) BuildMMMMProducts();
 if (channel == channel::ttt)  BuildTTTProducts();
 
 
@@ -439,7 +407,6 @@ if (channel == channel::ttt) {
    BuildModule(httFourTauSelector);
 }
 
-// TO DO: Update for 4tau UL
 BuildModule(HTTTriggerFilter("HTTTriggerFilter")
     .set_channel(channel)
     .set_mc(mc_type)
@@ -448,23 +415,9 @@ BuildModule(HTTTriggerFilter("HTTTriggerFilter")
     .set_is_data(is_data)
     .set_pair_label("4tau"));
 
-// TO DO: Implement extra lepton vetos for leptonic decay channels
-// Lepton Vetoes
-//if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
-//if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
 if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto();
 if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto();
 if (js["baseline"]["extra_tau_veto"].asBool()) BuildExtraTauVeto();
-//std::cout << js["baseline"]["extra_elec_veto"].asBool() << std::endl;
-//std::cout << js["baseline"]["extra_muon_veto"].asBool() << std::endl;
-//std::cout << js["baseline"]["extra_tau_veto"].asBool() << std::endl;
-// do not need in this analysis as stats are low enough
-//if(js["do_preselection"].asBool() && channel != channel::tpzee && channel != channel::tpzmm){
-//  BuildModule(PreselectionFilter("PreselectionFilter")
-//   .set_channel(channel)
-//   .set_do_preselection(true)
-//   .set_dilepton_label("4tau"));
-//}
 
 // Pileup Weighting
 TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
@@ -474,7 +427,6 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
       .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
 }
 
-// TO DO: Add missing UL filter once rerun MC
 if(do_met_filters){
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
@@ -553,6 +505,7 @@ BuildModule(jetIDFilter);
 //  })
 //);
 
+
 if ((era_type == era::data_2017 || era_type == era::data_2017UL)) {
   BuildModule(SimpleFilter<PFJet>("JetEENoiseVetoFilter")
     .set_input_label(jets_label)
@@ -573,6 +526,12 @@ if (!is_data && !is_embedded) {
      .set_shift_met(false)
    );
 }
+
+BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+  .set_input_label(jets_label)
+  .set_reference_label("4tau")
+  .set_min_dr(0.5));
+
 
 if(!is_data) {
 	
@@ -633,7 +592,9 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_do_singlee_trg(!is_data)
  .set_do_mtaucross_trg(!is_data)
  .set_do_singlem_trg(!is_data)  
- .set_do_emucross_trg(!is_data); 
+ .set_do_emucross_trg(!is_data)
+ .set_do_ggZZ_k_fact(output_name.find("GluGluToContinToZZ") != output_name.npos)
+ .set_do_qqZZ_k_fact(output_name.find("ZZTo4L") != output_name.npos);
 
 BuildModule(httWeights);
 
@@ -648,44 +609,43 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
    httStitching.SetWInputYields(29514020+57402435, 45283121, 30064264+30374504, 39356879+19798117, 18751462+2073275+9116657);
   }
   if(era_type == era::data_2016UL_preVFP){
-   httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-   httStitching.SetWInputYields(74355906, 47759343, 26843838, 16256054, 4500134);
+   httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+   httStitching.SetWInputYields(74666678,48027537,26899459,16700652,4512908);
   }
   if(era_type == era::data_2016UL_postVFP){
-   httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6);
-   httStitching.SetWInputYields(88463979, 44365039, 27433318, 17836907, 4610052);
+   httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+   httStitching.SetWInputYields(88449177,44776881,27508906,17865879,4658574);
   } 
   if(era_type == era::data_2017) {
-    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-    httStitching.SetWInputYields(33043732+44579681,54070624,6511577,19644624,10874617);
+   httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+   httStitching.SetWInputYields(33043732+44579681,54070624,6511577,19644624,10874617);
   }
   if(era_type == era::data_2017UL){
-    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-    httStitching.SetWInputYields(81204986,46819392,27749394,18149048,9485631);
+   httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+   httStitching.SetWInputYields(80769480,46632904,27676442,18149048,9386322);
   }
   if(era_type == era::data_2018) {
-    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-    httStitching.SetWInputYields(63389404, 31521085, 16766140, 13815650, 9874750); 
+   httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+   httStitching.SetWInputYields(63389404, 31521085, 16766140, 13815650, 9874750); 
   }
   if(era_type == era::data_2018UL){
-    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-    httStitching.SetWInputYields(82650833, 47337787, 27850972, 18020893, 9045482);
+   httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+   httStitching.SetWInputYields(82943459,47420631,28072865,18020893,9036122);
   }
 }
 if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
   httStitching.set_do_dy_soup(true);
   if(era_type == era::data_2016) {
-    // TO DO: Check the new inclusive cross sections looks fine
     httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
     httStitching.SetDYInputYields(146280395, 63730337, 19879279, 5857441, 4197868);
   }
   if(era_type == era::data_2016UL_preVFP){
-    httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
-    httStitching.SetDYInputYields(92023543, 31026873, 12229520, 9084164, 4564320);
+    httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
+    httStitching.SetDYInputYields(95170542, 31961410, 12696373, 10285720, 4630986);
   }
   if(era_type == era::data_2016UL_postVFP){
-    httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
-    httStitching.SetDYInputYields(104133207, 33413859, 14377389, 10416356, 4543415);
+    httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
+    httStitching.SetDYInputYields(103681490, 33389481, 14499284, 10430201, 4581523);
   }
   if(era_type == era::data_2017) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -693,7 +653,7 @@ if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO
   }
   if(era_type == era::data_2017UL) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-    httStitching.SetDYInputYields(103265734,65976022,28875377,21569424,11396121);
+    httStitching.SetDYInputYields(100829338,65925787,28990629,21037534,11451413);
   }
   if(era_type == era::data_2018) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -701,7 +661,26 @@ if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO
   }
   if(era_type == era::data_2018UL) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-    httStitching.SetDYInputYields(97808057, 65737507, 29077862, 20436016, 9205625);
+    httStitching.SetDYInputYields(98357936, 65810202, 29068773, 20436016, 9105126);
+  }
+}
+if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
+  httStitching.set_do_dy_soup_NLO(true);
+  if(era_type == era::data_2016UL_preVFP){
+    httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+    httStitching.SetDYInputYields_NLO(61968877, 63927658, 41467188, 13149249);
+  }
+  if(era_type == era::data_2016UL_postVFP){
+    httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+    httStitching.SetDYInputYields_NLO(49687671,77292489,43799187,13744579);
+  }
+  if(era_type == era::data_2017UL) {
+    httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+    httStitching.SetDYInputYields_NLO(132006980,70426128,44912593,14398418);
+  }
+  if(era_type == era::data_2018UL) {
+    httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+    httStitching.SetDYInputYields_NLO(132322003,70018162,43196379,13761572);
   }
 }
 BuildModule(httStitching);   
@@ -795,19 +774,36 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if (jes_mode_ > 0 && !is_data ){
     std::string jes_input_file  = "";
     std::string jes_input_set  = "";
-    if ((era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP)) {
+    if (era_type == era::data_2016) {
       jes_input_file = "input/jec/Regrouped_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
       jes_input_set  = "Total";
     }
-    if ((era_type == era::data_2017 || era_type == era::data_2017UL)) {
+    if (era_type == era::data_2017) {
       jes_input_file = "input/jec/Regrouped_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
-    if ((era_type == era::data_2018 || era_type == era::data_2018UL)) {
+    if (era_type == era::data_2018) {
       jes_input_file = "input/jec/Regrouped_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
-    
+    if (era_type == era::data_2016UL_preVFP) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL16APV_V7_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2016UL_postVFP) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL16_V7_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2017UL) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL17_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2018UL) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+
+ 
     if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
    
     std::string jes_input_set_ = jes_input_set;
@@ -824,7 +820,6 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
    
   }
  
-  // TO DO: Ignoring this for now, will need to fix for 4tau 
   if(js["do_btag_eff"].asBool()){
      BuildModule(BTagCheck("BTagCheck")
       .set_fs(fs.get())
@@ -1224,6 +1219,48 @@ void HTTSequence::BuildMMTTProducts() {
       .set_output_label("4tau"));
 }
 
+// --------------------------------------------------------------------------
+//  MMMM Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildMMMMProducts() {
+
+  if (mu_scale_mode > 0){
+    BuildModule(HTTMuonEnergyScale("MuonEnergyScaleCorrection")
+       .set_input_label("muons")
+       .set_far_endcap(muon_shift_farendcap)
+       .set_near_endcap(muon_shift_nearendcap)
+       .set_barrel(muon_shift_barrel)
+       );
+  }
+
+  BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+       js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+    .set_input_label("sel_muons").set_min(4)
+    .set_predicate([=](Muon const* m) {
+      return  m->pt()                 > muon_pt    &&
+              fabs(m->eta())          < muon_eta   &&
+              fabs(m->dxy_vertex())   < muon_dxy   &&
+              fabs(m->dz_vertex())    < muon_dz   &&
+              MuonID(m);
+    }));
+
+
+  BuildModule(FourParticleCompositeProducer<Muon, Muon, Muon, Muon>("MMMMProducer")
+      .set_input_label_first("sel_muons")
+      .set_input_label_second("sel_muons")
+      .set_input_label_third("sel_muons")
+      .set_input_label_fourth("sel_muons")
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_candidate_name_third("lepton3")
+      .set_candidate_name_fourth("lepton4")
+      .set_output_label("4tau"));
+}
+
 
 // --------------------------------------------------------------------------
 // Tau Selection Sequence
@@ -1240,8 +1277,8 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->eta())              <  tau_eta    &&
                fabs(t->lead_dz_vertex())   <  tau_dz     &&
                fabs(t->charge())           == 1          &&
-               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
-               //t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
+               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
+               t->GetTauID("byDeepTau2017v2p1VSjetraw") > 0.1 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
      }));
  
   if (tau_scale_mode > 0 && !is_data){
@@ -1425,8 +1462,8 @@ void HTTSequence::BuildTauSelection(){
               fabs(t->eta())              <  tau_eta    &&
               fabs(t->lead_dz_vertex())   <  tau_dz     &&
               fabs(t->charge())           == 1          &&
-              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
-              //t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
+              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
+              t->GetTauID("byDeepTau2017v2p1VSjetraw") > 0.1 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
     }));
 
  }
@@ -1569,7 +1606,8 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->eta())              <  veto_tau_eta    &&
                fabs(t->lead_dz_vertex())   <  veto_tau_dz     &&
                fabs(t->charge())           == 1          &&
-               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
+               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && 
+               t->GetTauID("byLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
    });  
    BuildModule(extraTauFilter);
  }

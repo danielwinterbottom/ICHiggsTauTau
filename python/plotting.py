@@ -94,12 +94,18 @@ def SetAxisTitles(plot, channel):
     lep2_label = '#mu_{2}'
     lep3_label = '#tau_{1}'
     lep4_label = '#tau_{2}'
+  elif channel == 'mmmm':
+    chan_label = '#mu#mu#mu#mu'
+    lep1_label = '#mu_{1}'
+    lep2_label = '#mu_{2}'
+    lep3_label = '#mu_{3}'
+    lep4_label = '#mu_{4}'
 
   bin_width=''
-  #if not isVarBins:
-  #    binning = plot.split('(')[1].split(')')[0].split(',')
-  #    binning = map(float,binning)
-  #    bin_width = str(round((binning[2]-binning[1])/binning[0],1))
+  if not isVarBins:
+      binning = plot.split('(')[1].split(')')[0].split(',')
+      binning = map(float,binning)
+      bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
   titles = {}
   titles['iso_1'] = ['iso_{'+lep1_label+'}','Events / '+bin_width+' GeV', 'iso_{'+lep1_label+'}']
@@ -111,9 +117,10 @@ def SetAxisTitles(plot, channel):
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
-  titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)']
+  titles['mt_tot'] = ['m_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{tot} (1/GeV)']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
   titles['m_vis'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
+  titles['mvis_1234'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
   titles['mvis_min_dphi_1'] = ['m_{vis}^{high} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{vis}^{high} (1/GeV)']
   titles['mvis_min_dphi_2'] = ['m_{vis}^{low} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{vis}^{low} (1/GeV)']
   titles['mvis_min_sum_dphi_1'] = ['m_{vis}^{high} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{vis}^{high} (1/GeV)']
@@ -166,14 +173,18 @@ def SetAxisTitles(plot, channel):
       titles['tau_decay_mode_1'] = ['Lead #tau decay mode','Events', 'Events']
       titles['tau_decay_mode_2'] = ['Sub-lead #tau decay mode','Events', 'Events']
 
+  #if "(" in plot:
+  #  bin_brac = plot.split("(")[1],split(")")[0].split(",")
+  #  bin_width = (float(bin_brac[2]) - float(bin_brac[1]))/float(bin_brac[0])
+  #  if isinstance(bin_width, int): bin_width = int(bin_width)
 
-    
   if var not in titles: 
     if not isVarBins: return [var,'Events']
     else: return [var, 'dN/d'+var]
   else:
     if not isVarBins: return [titles[var][0],titles[var][1]]
     else: return [titles[var][0], titles[var][2]]
+
 
 def SetAxisTitles2D(plot, channel):
   if '[' in plot: 
@@ -225,7 +236,7 @@ def SetAxisTitles2D(plot, channel):
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)','GeV']
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}','']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}','']
-  titles['mt_tot'] = ['M_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dM_{T}^{tot} (1/GeV)','GeV']
+  titles['mt_tot'] = ['m_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{tot} (1/GeV)','GeV']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)','GeV']
   titles['m_vis'] = ['m_{'+chan_label+'}^{vis} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'}^{vis} (1/GeV)','GeV']
   titles['m_sv'] = ['m_{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{#tau#tau} (1/GeV)','GeV']
@@ -276,7 +287,7 @@ def SetAxisTitles2D(plot, channel):
     unit = titles[yvar][3]  
     if not isVarBins: y_titles = [titles[yvar][0],titles[yvar][1],unit]
     else: y_titles =  [titles[yvar][0], titles[yvar][2],unit]
-    
+  
   return [x_titles, y_titles]
   
 
@@ -2192,26 +2203,206 @@ def HTTPlot(nodename,
             custom_uncerts_down_name="total_bkg_custom_uncerts_down",
             cat="",
             plot_signals=[""],
-            draw_data=True
+            draw_data=True,
+            under_legend=""
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
 
    
     plot_signals_dict = {
-        "phi200A200To4Tau":"H(200)A(200) #rightarrow 4#tau (XS)",
-        "phi100A100To4Tau":"H(100)A(100) #rightarrow 4#tau (XS)",
-        "phi100A150To4Tau":"H(100)A(150) #rightarrow 4#tau (XS)",
-        "phi100A60To4Tau" :"H(100)A(60) #rightarrow 4#tau (XS)",
-        "phi200A100To4Tau":"H(200)A(100) #rightarrow 4#tau (XS)",
-        "phi200A150To4Tau":"H(200)A(150) #rightarrow 4#tau (XS)",
-        "phi200A20To4Tau" :"H(200)A(20) #rightarrow 4#tau (XS)",
-        "phi200A60To4Tau" :"H(200)A(60) #rightarrow 4#tau (XS)",
-        "phi300A100To4Tau":"H(300)A(100) #rightarrow 4#tau (XS)",
-        "phi300A150To4Tau":"H(300)A(150) #rightarrow 4#tau (XS)",
-        "phi300A20To4Tau" :"H(300)A(20) #rightarrow 4#tau (XS)",
-        "phi300A60To4Tau" :"H(300)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A60To4Tau":"H(100)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A70To4Tau":"H(100)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A80To4Tau":"H(100)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A90To4Tau":"H(100)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A100To4Tau":"H(100)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A125To4Tau":"H(100)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A140To4Tau":"H(100)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi100A160To4Tau":"H(100)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi110A60To4Tau":"H(110)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A70To4Tau":"H(110)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A80To4Tau":"H(110)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A90To4Tau":"H(110)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A100To4Tau":"H(110)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A125To4Tau":"H(110)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A140To4Tau":"H(110)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi110A160To4Tau":"H(110)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi125A60To4Tau":"H(125)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A70To4Tau":"H(125)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A80To4Tau":"H(125)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A90To4Tau":"H(125)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A100To4Tau":"H(125)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A125To4Tau":"H(125)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A140To4Tau":"H(125)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi125A160To4Tau":"H(125)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi140A60To4Tau":"H(140)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A70To4Tau":"H(140)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A80To4Tau":"H(140)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A90To4Tau":"H(140)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A100To4Tau":"H(140)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A125To4Tau":"H(140)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A140To4Tau":"H(140)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi140A160To4Tau":"H(140)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi160A60To4Tau":"H(160)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A70To4Tau":"H(160)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A80To4Tau":"H(160)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A90To4Tau":"H(160)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A100To4Tau":"H(160)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A125To4Tau":"H(160)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A140To4Tau":"H(160)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi160A160To4Tau":"H(160)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi180A60To4Tau":"H(180)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A70To4Tau":"H(180)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A80To4Tau":"H(180)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A90To4Tau":"H(180)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A100To4Tau":"H(180)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A125To4Tau":"H(180)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A140To4Tau":"H(180)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi180A160To4Tau":"H(180)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi200A60To4Tau":"H(200)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A70To4Tau":"H(200)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A80To4Tau":"H(200)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A90To4Tau":"H(200)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A100To4Tau":"H(200)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A125To4Tau":"H(200)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A140To4Tau":"H(200)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi200A160To4Tau":"H(200)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi250A60To4Tau":"H(250)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A70To4Tau":"H(250)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A80To4Tau":"H(250)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A90To4Tau":"H(250)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A100To4Tau":"H(250)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A125To4Tau":"H(250)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A140To4Tau":"H(250)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi250A160To4Tau":"H(250)A(160) #rightarrow 4#tau (XS)",
+
+        "ZstarTophi300A60To4Tau":"H(300)A(60) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A70To4Tau":"H(300)A(70) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A80To4Tau":"H(300)A(80) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A90To4Tau":"H(300)A(90) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A100To4Tau":"H(300)A(100) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A125To4Tau":"H(300)A(125) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A140To4Tau":"H(300)A(140) #rightarrow 4#tau (XS)",
+        "ZstarTophi300A160To4Tau":"H(300)A(160) #rightarrow 4#tau (XS)",
+
+        #"phi100A150To4Tau":"H(100)A(150) #rightarrow 4#tau (XS)",
+        #"phi100A60To4Tau" :"H(100)A(60) #rightarrow 4#tau (XS)",
+        #"phi200A100To4Tau":"H(200)A(100) #rightarrow 4#tau (XS)",
+        #"phi200A150To4Tau":"H(200)A(150) #rightarrow 4#tau (XS)",
+        #"phi200A20To4Tau" :"H(200)A(20) #rightarrow 4#tau (XS)",
+        #"phi200A60To4Tau" :"H(200)A(60) #rightarrow 4#tau (XS)",
+        #"phi300A100To4Tau":"H(300)A(100) #rightarrow 4#tau (XS)",
+        #"phi300A150To4Tau":"H(300)A(150) #rightarrow 4#tau (XS)",
+        #"phi300A20To4Tau" :"H(300)A(20) #rightarrow 4#tau (XS)",
+        #"phi300A60To4Tau" :"H(300)A(60) #rightarrow 4#tau (XS)",
     }
+
+    rf_plot_signals_dict = {
+
+
+        "ZstarTophi100A60To4Tau":"A60phi100",
+        "ZstarTophi100A70To4Tau":"A70phi100",
+        "ZstarTophi100A80To4Tau":"A80phi100",
+        "ZstarTophi100A90To4Tau":"A90phi100",
+        "ZstarTophi100A100To4Tau":"A100phi100",
+        "ZstarTophi100A125To4Tau":"A125phi100",
+        "ZstarTophi100A140To4Tau":"A140phi100",
+        "ZstarTophi100A160To4Tau":"A160phi100",
+
+        "ZstarTophi110A60To4Tau":"A60phi110",
+        "ZstarTophi110A70To4Tau":"A70phi110",
+        "ZstarTophi110A80To4Tau":"A80phi110",
+        "ZstarTophi110A90To4Tau":"A90phi110",
+        "ZstarTophi110A100To4Tau":"A100phi110",
+        "ZstarTophi110A125To4Tau":"A125phi110",
+        "ZstarTophi110A140To4Tau":"A140phi110",
+        "ZstarTophi110A160To4Tau":"A160phi110",
+
+        "ZstarTophi125A60To4Tau":"A60phi125",
+        "ZstarTophi125A70To4Tau":"A70phi125",
+        "ZstarTophi125A80To4Tau":"A80phi125",
+        "ZstarTophi125A90To4Tau":"A90phi125",
+        "ZstarTophi125A100To4Tau":"A100phi125",
+        "ZstarTophi125A125To4Tau":"A125phi125",
+        "ZstarTophi125A140To4Tau":"A140phi125",
+        "ZstarTophi125A160To4Tau":"A160phi125",
+
+        "ZstarTophi140A60To4Tau":"A60phi140",
+        "ZstarTophi140A70To4Tau":"A70phi140",
+        "ZstarTophi140A80To4Tau":"A80phi140",
+        "ZstarTophi140A90To4Tau":"A90phi140",
+        "ZstarTophi140A100To4Tau":"A100phi140",
+        "ZstarTophi140A125To4Tau":"A125phi140",
+        "ZstarTophi140A140To4Tau":"A140phi140",
+        "ZstarTophi140A160To4Tau":"A160phi140",
+
+        "ZstarTophi160A60To4Tau":"A60phi160",
+        "ZstarTophi160A70To4Tau":"A70phi160",
+        "ZstarTophi160A80To4Tau":"A80phi160",
+        "ZstarTophi160A90To4Tau":"A90phi160",
+        "ZstarTophi160A100To4Tau":"A100phi160",
+        "ZstarTophi160A125To4Tau":"A125phi160",
+        "ZstarTophi160A140To4Tau":"A140phi160",
+        "ZstarTophi160A160To4Tau":"A160phi160",
+
+        "ZstarTophi180A60To4Tau":"A60phi180",
+        "ZstarTophi180A70To4Tau":"A70phi180",
+        "ZstarTophi180A80To4Tau":"A80phi180",
+        "ZstarTophi180A90To4Tau":"A90phi180",
+        "ZstarTophi180A100To4Tau":"A100phi180",
+        "ZstarTophi180A125To4Tau":"A125phi180",
+        "ZstarTophi180A140To4Tau":"A140phi180",
+        "ZstarTophi180A160To4Tau":"A160phi180",
+
+        "ZstarTophi200A60To4Tau":"A60phi200",
+        "ZstarTophi200A70To4Tau":"A70phi200",
+        "ZstarTophi200A80To4Tau":"A80phi200",
+        "ZstarTophi200A90To4Tau":"A90phi200",
+        "ZstarTophi200A100To4Tau":"A100phi200",
+        "ZstarTophi200A125To4Tau":"A125phi200",
+        "ZstarTophi200A140To4Tau":"A140phi200",
+        "ZstarTophi200A160To4Tau":"A160phi200",
+
+        "ZstarTophi250A60To4Tau":"A60phi250",
+        "ZstarTophi250A70To4Tau":"A70phi250",
+        "ZstarTophi250A80To4Tau":"A80phi250",
+        "ZstarTophi250A90To4Tau":"A90phi250",
+        "ZstarTophi250A100To4Tau":"A100phi250",
+        "ZstarTophi250A125To4Tau":"A125phi250",
+        "ZstarTophi250A140To4Tau":"A140phi250",
+        "ZstarTophi250A160To4Tau":"A160phi250",
+
+        "ZstarTophi300A60To4Tau":"A60phi300",
+        "ZstarTophi300A70To4Tau":"A70phi300",
+        "ZstarTophi300A80To4Tau":"A80phi300",
+        "ZstarTophi300A90To4Tau":"A90phi300",
+        "ZstarTophi300A100To4Tau":"A100phi300",
+        "ZstarTophi300A125To4Tau":"A125phi300",
+        "ZstarTophi300A140To4Tau":"A140phi300",
+        "ZstarTophi300A160To4Tau":"A160phi300",
+
+
+        #"phi200A200To4Tau":"A200phi200",
+        #"phi100A100To4Tau":"A100phi100",
+        #"phi100A150To4Tau":"A150phi100",
+        #"phi100A60To4Tau" :"A60phi100",
+        #"phi200A100To4Tau":"A100phi200",
+        #"phi200A150To4Tau":"A150phi200",
+        #"phi200A20To4Tau" :"A20phi200",
+        #"phi200A60To4Tau" :"A60phi200",
+        #"phi300A100To4Tau":"A100phi300",
+        #"phi300A150To4Tau":"A150phi300",
+        #"phi300A20To4Tau" :"A20phi300",
+        #"phi300A60To4Tau" :"A60phi300",
+    }
+
 
     ModTDRStyle(r=0.04, l=0.14)
     R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
@@ -2276,72 +2467,48 @@ def HTTPlot(nodename,
 
     background_schemes = {
       'mttt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'ettt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'tttt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'ttt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZMMR","ZMM1F","ZMM3F","ZEER","ZEE1F","ZEE3F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'eett': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69)),
-        backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'mmtt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69)),
-        backgroundComp("jet#rightarrow#tau_{h}",["jetFakes"],R.TColor.GetColor(192,232,100))],
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'emtt': [
-        backgroundComp("t#bar{t}",["TTR","TT1F","TT2F","TT3F","TT4F"],R.TColor.GetColor(107,174,214)),
-        backgroundComp("Diboson + Triboson",["VVR","VV1F","VV2F","VV3F","VV4F","VVV"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("W (3 fakes)",["W3F"],R.TColor.GetColor(158,154,200)),
-        backgroundComp("W (other)",["WR","W1F","W2F","W4F","Wgam"],R.TColor.GetColor(106,81,163)),
-        backgroundComp("Z (other)",["ZTTR","ZTT1F","ZTT3F","ZTT4F","ZMMR","ZMM1F","ZMM3F","ZMM4F","ZEER","ZEE1F","ZEE3F","ZEE4F","ZO"],R.TColor.GetColor(253,190,133)),
-        backgroundComp("Z#rightarrow#tau#tau (2 fakes)",["ZTT2F"],R.TColor.GetColor(217,71,1)),
-        backgroundComp("Z#rightarrow#mu#mu (2 fakes)",["ZMM2F"],R.TColor.GetColor(253,141,60)),
-        backgroundComp("Z#rightarrow ee (2 fakes)",["ZEE2F"],R.TColor.GetColor(35,139,69))],
+        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
+      'mmmm': [
+        backgroundComp("Other",["ZR","TTR","WR"],R.TColor.GetColor(156,20,41)),
+        backgroundComp("H #rightarrow ZZ",["HZZ"],R.TColor.GetColor(250,5,5)),
+        backgroundComp("gg #rightarrow ZZ",["ggZZ"],R.TColor.GetColor(14,250,12)),
+        backgroundComp("qq #rightarrow ZZ",["qqZZ"],R.TColor.GetColor(136,65,157))],
     }
 
+    
 
     if draw_data: 
       total_datahist = infile.Get(nodename+'/data_obs').Clone()
@@ -2349,6 +2516,7 @@ def HTTPlot(nodename,
       total_datahist.SetMarkerStyle(20)
       blind_datahist.SetMarkerStyle(20)
       blind_datahist.SetLineColor(1)
+#      total_datahist.Print("all")
 
     #Blinding by hand using requested range, set to 200-4000 by default:
     if blind and draw_data:
@@ -2366,18 +2534,23 @@ def HTTPlot(nodename,
     for i,t in enumerate(background_schemes[channel]):
         plots = t['plot_list']
         h = R.TH1F()
+        remove = True
         for j,k in enumerate(plots):
             if not (isinstance(infile.Get(nodename+'/'+k),R.TH1D) or isinstance(infile.Get(nodename+'/'+k),R.TH1F)): continue
+            remove = False
             if h.GetEntries()==0:
                 h = infile.Get(nodename+'/'+k).Clone()
                 h.SetName(k)
             else:
                 h.Add(infile.Get(nodename+'/'+k).Clone())
+        if remove:
+          del background_schemes[channel][i]
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
     
         if norm_bins:
+            print "Normalising bins to bin width"
             h.Scale(1.0,"width")
         if h.GetName() == '': continue     
         bkg_histos.append(h)
@@ -2391,7 +2564,6 @@ def HTTPlot(nodename,
       else:
           bkghist.Add(hists.Clone())
 
-      
     c1 = R.TCanvas()
     c1.cd()    
     
@@ -2456,14 +2628,15 @@ def HTTPlot(nodename,
     
     stack.Draw("histsame")
        
-    colours = [8,2,3,4,5,6,7,9,11,12,13,14,16]
+    colours = [4,2,3,5,6,7,9,11,12,13,14,16]
     h = []
     h_hist = []
     h_ratio = []
     pads[0].cd()
     if plot_signals != [""]:
       for i in range(0,len(plot_signals)):
-        h.append(infile.Get(nodename+'/'+plot_signals[i]).Clone())
+        if plot_signals[i] in rf_plot_signals_dict.keys():
+          h.append(infile.Get(nodename+'/'+rf_plot_signals_dict[plot_signals[i]]).Clone())
         if norm_bins:
           h[i].Scale(1.0,"width")
         h[i].SetLineColor(colours[i])
@@ -2508,10 +2681,10 @@ def HTTPlot(nodename,
     
     #Setup legend
     #legend = PositionedLegend(0.37,0.4,3,0.03) 
-    legend = PositionedLegend(0.25,0.37,3,0.03) # when showing plots of signal
+    legend = PositionedLegend(0.28,0.3,3,0.03) # when showing plots of signal
     legend.SetTextFont(42)
-    #legend.SetTextSize(0.02)
-    legend.SetTextSize(0.018)
+    legend.SetTextSize(0.02)
+    #legend.SetTextSize(0.018)
     legend.SetFillColor(0)
 #    legend.SetTextAlign(13);
     #else: legend.AddEntry(blind_datahist,"Observation","PE")
@@ -2521,7 +2694,7 @@ def HTTPlot(nodename,
     background_schemes[channel].reverse()
     num_leg = 0
     for legi,hists in enumerate(bkg_histos):
-        if hists.Integral()/bkghist.Integral() > 0.005:
+        if hists.Integral()/bkghist.Integral() > 0.001 and hists.Integral()>0:
           legend.AddEntry(hists,background_schemes[channel][legi]['leg_text'],"f")
           num_leg += 1
     if do_custom_uncerts and uncert_title != "": legend.AddEntry(error_hist,uncert_title,"f")
@@ -2542,6 +2715,7 @@ def HTTPlot(nodename,
     if channel == "mttt": channel_label = "#mu_{}#tau_{h}#tau_{h}#tau_{h}"
     if channel == "ettt": channel_label = "e_{}#tau_{h}#tau_{h}#tau_{h}"
     if channel == "mmtt": channel_label = "#mu_{}#mu_{}#tau_{h}#tau_{h}"
+    if channel == "mmmm": channel_label = "#mu_{}#mu_{}#mu_{}#mu_{}"
     if channel == "eett": channel_label = "e_{}e_{}#tau_{h}#tau_{h}"
     if channel == "emtt": channel_label = "e_{}#mu_{}#tau_{h}#tau_{h}"
     if cat != "": channel_label+=" "+cat
@@ -2559,6 +2733,13 @@ def HTTPlot(nodename,
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
     
+    latex2 = R.TLatex()
+    latex2.SetNDC()
+    latex2.SetTextAngle(0)
+    latex2.SetTextColor(R.kBlack)
+    latex2.SetTextSize(0.03)
+    latex2.DrawLatex(0.68,0.55,under_legend)
+
 
     if ratio:
         ratio_bkghist = MakeRatioHist(error_hist.Clone(),bkghist.Clone(),True,False)
@@ -3766,7 +3947,7 @@ def HTTPlotUnrolled(nodename,
 
     
     #Setup legend
-    legend = PositionedLegend(0.13,0.15,7,0.02)
+    legend = PositionedLegend(0.1,0.15,7,0.0)
     legend.SetTextFont(42)
     legend.SetTextSize(0.022)
     legend.SetFillColor(0)
