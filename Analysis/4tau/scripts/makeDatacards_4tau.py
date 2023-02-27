@@ -163,8 +163,8 @@ ch_dep_var = {"mttt":[
 categories = {
               "ttt" : ["inclusive"],
               "tttt": ["inclusive"],
-              "ettt": ["nobtag"],
-              "mttt": ["nobtag"],
+              "ettt": ["inclusive","nobtag"],
+              "mttt": ["inclusive","nobtag"],
               "emtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "eett": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "mmtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
@@ -174,76 +174,61 @@ categories = {
 add_options = {              
                "ttt" : [
                         ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
-                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}' --rebin_with_data"],
-                        ["ff_1","--no_signal --ff_from=1 --no_sig_sel --under_legend='FF_{1}' --rebin_with_data"],
-                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{2}' --rebin_with_data"],
-                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}' --rebin_with_data"],
-                        ["ff_12","--no_signal --ff_from=12 --no_sig_sel --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
-                        ["ff_13","--no_signal --ff_from=13 --no_sig_sel --under_legend='FF_{1} x FF_{3}' --rebin_with_data"],
-                        ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}' --rebin_with_data"],
-                        ["ff_123","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_1","--no_signal --ff_from=1 --no_sig_sel --under_legend='FF_{1}'"],
+                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{2}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}'"],
+                        #["ff_12","--no_signal --ff_from=12 --no_sig_sel --under_legend='FF_{1} x FF_{2}'"],
+                        #["ff_13","--no_signal --ff_from=13 --no_sig_sel --under_legend='FF_{1} x FF_{3}'"],
+                        #["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}'"],
+                        #["ff_123","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}'"],
                         ],
                "tttt": [
                         ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
-                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}' --rebin_with_data"],
-                        ["ff_1","--no_signal --ff_from=1 --no_sig_sel --under_legend='FF_{1}' --rebin_with_data"],
-                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{2}' --rebin_with_data"],
-                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{3}' --rebin_with_data"],
-                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{4}' --rebin_with_data"],
-                        ["ff_12","--no_signal --ff_from=12 --no_sig_sel --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
-                        ["ff_13","--no_signal --ff_from=13 --no_sig_sel --under_legend='FF_{1} x FF_{3}' --rebin_with_data"],
-                        ["ff_14","--no_signal --ff_from=14 --no_sig_sel --under_legend='FF_{1} x FF_{4}' --rebin_with_data"],
-                        ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{2} x FF_{3}' --rebin_with_data"],
-                        ["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{2} x FF_{4}' --rebin_with_data"],
-                        ["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{3} x FF_{4}' --rebin_with_data"],
-                        ["ff_123","--no_signal --ff_from=123 --no_sig_sel --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
-                        ["ff_124","--no_signal --ff_from=124 --no_sig_sel --under_legend='FF_{1} x FF_{2} x FF_{4}' --rebin_with_data"],
-                        ["ff_134","--no_signal --ff_from=134 --no_sig_sel --under_legend='FF_{1} x FF_{3} x FF_{4}' --rebin_with_data"],
-                        ["ff_234","--no_signal --ff_from=234 --no_sig_sel --under_legend='FF_{2} x FF_{3} x FF_{4}' --rebin_with_data"],
-                        ["ff_1234","--no_signal --charges_non_zero --ff_from=1234 --under_legend='FF_{1} x FF_{2} x FF_{3} x FF_{4}' --rebin_with_data"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
                         ],
                "ettt": [
                         ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
-                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}' --rebin_with_data"],
-                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{1}' --rebin_with_data"],
-                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{2}' --rebin_with_data"],
-                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{3}' --rebin_with_data"],
-                        ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
-                        ["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{1} x FF_{3}' --rebin_with_data"],
-                        ["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{2} x FF_{3}' --rebin_with_data"],
-                        ["ff_234","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{1}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{2}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{3}'"],
+                        #["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{1} x FF_{2}'"],
+                        #["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{1} x FF_{3}'"],
+                        #["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{2} x FF_{3}'"],
+                        #["ff_234","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}'"],
                         ],
                "mttt": [
                         ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
-                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}' --rebin_with_data"],
-                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{1}' --rebin_with_data"],
-                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{2}' --rebin_with_data"],
-                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{3}' --rebin_with_data"],
-                        ["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
-                        ["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{1} x FF_{3}' --rebin_with_data"],
-                        ["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{2} x FF_{3}' --rebin_with_data"],
-                        ["ff_234","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}' --rebin_with_data"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_2","--no_signal --ff_from=2 --no_sig_sel --under_legend='FF_{1}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{2}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{3}'"],
+                        #["ff_23","--no_signal --ff_from=23 --no_sig_sel --under_legend='FF_{1} x FF_{2}'"],
+                        #["ff_24","--no_signal --ff_from=24 --no_sig_sel --under_legend='FF_{1} x FF_{3}'"],
+                        #["ff_34","--no_signal --ff_from=34 --no_sig_sel --under_legend='FF_{2} x FF_{3}'"],
+                        #["ff_234","--no_signal --charges_non_zero --ff_from=123 --under_legend='FF_{1} x FF_{2} x FF_{3}'"],
                         ],
                "emtt": [
                         ["signal","--blind --x_blind_min=-999 --x_blind_max=999 --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
-                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'  --rebin_with_data"],
-                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{1}' --rebin_with_data"],
-                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{2}' --rebin_with_data"],
-                        ["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}' "],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{1}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{2}'"],
+                        #["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{1} x FF_{2}'"],
                         ],
                "eett": [
-                        ["signal","--plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
-                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}' --rebin_with_data"],
-                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{1}' --rebin_with_data"],
-                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{2}' --rebin_with_data"],
-                        ["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
+                        ["signal","--blind --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{1}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{2}'"],
+                        #["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{1} x FF_{2}'"],
                         ],
                "mmtt": [
-                        ["signal","--plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
-                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}' --rebin_with_data"],
-                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{1}' --rebin_with_data"],
-                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{2}' --rebin_with_data"],
-                        ["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{1} x FF_{2}' --rebin_with_data"],
+                        ["signal","--blind --plot_signal=ZstarTophi200A60To4Tau,ZstarTophi300A60To4Tau"],
+                        ["ff_full","--no_signal --charges_non_zero --under_legend='FF_{total}'"],
+                        ["ff_3","--no_signal --ff_from=3 --no_sig_sel --under_legend='FF_{1}'"],
+                        ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{2}'"],
+                        #["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{1} x FF_{2}'"],
                         ],                    
                }
 
@@ -251,17 +236,17 @@ add_options = {
 common_shape_systematics = [
  	      '--syst_tau_id', # Tau ID Efficiency
 	      '--syst_doubletau_trg', # Double Tau Trigger Effieciency
-        '--syst_tau_scale_group', #Tau Energy Scale
-        '--syst_jet_res', # Jet Energy Resolution
-        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
-#        '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
-#        '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
-        '--syst_jet_scale_group', # Jet Energy Scale Grouped
+#        '--syst_tau_scale_group', #Tau Energy Scale
+#        '--syst_jet_res', # Jet Energy Resolution
+#        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
+##        '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
+##        '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
+#        '--syst_jet_scale_group', # Jet Energy Scale Grouped
         '--syst_electron_scale', # Electron Energy Scale
-#        '--syst_efake_scale_0pi', # l to tau h fake energy scale
-#        '--syst_efake_scale_1pi', # l to tau h fake energy scale
-#        '--syst_muon_scale', # Muon Energy Scale
-#        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
+##        '--syst_efake_scale_0pi', # l to tau h fake energy scale
+##        '--syst_efake_scale_1pi', # l to tau h fake energy scale
+##        '--syst_muon_scale', # Muon Energy Scale
+##        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
 #        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
         '--syst_electron_id', # Electron ID
         '--syst_muon_id', # Muon ID
@@ -291,17 +276,21 @@ for channel in channels:
 # Job loop
 for channel in channels:
   systs = copy.deepcopy(common_shape_systematics)
-  if "e" not in channel: 
-    systs.remove("--syst_electron_scale")
-    systs.remove("--syst_electron_id")
-  elif "m" not in channel:
-    systs.remove("--syst_muon_id")
+  #if "e" not in channel: 
+  #  systs.remove("--syst_electron_scale")
+  #  systs.remove("--syst_electron_id")
+  #elif "m" not in channel:
+  #  systs.remove("--syst_muon_id")
 
-  if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
+  #if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
 
   for name, option in add_options[channel]:
     for cat in categories[channel]:
+
       variables = all_ch_variables+ch_dep_var[channel]
+      changed_option = copy.deepcopy(option)
+      if (channel == "eett" or channel == "mmtt") and "z_control" in cat: changed_option = changed_option.replace("--blind","")
+
       for var in variables:
         if '[' in var: var_string = var.split('[')[0]
         elif '(' in var: var_string = var.split('(')[0]
@@ -311,7 +300,6 @@ for channel in channels:
         if var_string[-1] == "4" and channel == "ttt": continue
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
-        if "tau_decay_mode" not in var: combined_options = " --combined_options=\\\"--auto_rebinning --bin_uncert_fraction=0.25\\\""
         add_cond = ""
         if not (args.no_syst or "ff" in name):
            print "Adding Systematics"
@@ -319,7 +307,9 @@ for channel in channels:
               add_cond += (syst + " ")
         if "ff" in name:
           add_cond += "--do_ff_systs"
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s --add_stat_to_syst\\\" %(combined_options)s --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s" % vars()
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
+        #run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
+        if "ff" in name: run_cmd += " --rebin_with_data"
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
         SubmitBatchJob(job_file,time=180,memory=24,cores=1)

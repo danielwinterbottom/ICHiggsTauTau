@@ -166,9 +166,10 @@ for s in sorted(sample_list): out+='    - %s\n' %s
 
 channel = ["ttt","tttt","mttt","ettt","emtt","eett","mmtt","mmmm"]
 
+
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
-
+ 
 subdirs=['']
 subdirs+=list_paths(outputf)
 
@@ -196,9 +197,10 @@ def FindMissingFiles(outf, d, samp, chan, infiles):
     return True
 
 
-
+print lines
 for ind in range(0,len(lines)):
   nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
+print sample_list
 for sa in sample_list:
   for ch in channel:
     remove=True

@@ -955,8 +955,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'jetFakes' not in samples_to_skip:
 
         if options.do_ff_systs and not options.no_sig_sel:
-          wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
-          #wt_exts = ["_non_closure_down","_non_closure_up"]
+          #wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
+          wt_exts = ["_non_closure_down","_non_closure_up"]
         elif options.do_ff_systs and options.no_sig_sel:
           wt_exts = ["_non_closure_down","_non_closure_up"]
         else:
@@ -1347,9 +1347,10 @@ if options.plot_from_dc == "":
         syst_add_name=add_folder_name
         
 
+        print 1
         mc_input_folder_name = options.folder
         if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
-        
+       
         if options.signal_folder: signal_mc_input_folder_name = options.signal_folder
         else: signal_mc_input_folder_name = options.folder
         if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
@@ -1359,8 +1360,10 @@ if options.plot_from_dc == "":
          
         # Add all data files
         for sample_name in data_samples:
+            print sample_name
             ana.AddSamples(data_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         
+        print 2
         # Add all MC background files
         for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + qqzz_samples + hzz_samples + ggzz_samples:
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
@@ -1370,6 +1373,7 @@ if options.plot_from_dc == "":
  
         ana.AddInfo(options.paramfile, scaleTo='data_obs')
     
+        print 3
         # Add data only for default
         if systematic == 'default': do_data = True
         else: do_data = False
@@ -1379,6 +1383,8 @@ if options.plot_from_dc == "":
         #weight="wt"
         RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile)
         del systematics[systematic]
+        print 4
+
 
     ana.Run()
     ana.nodes.Output(outfile)
@@ -1585,31 +1591,31 @@ if is_3d and options.do_unrolling and options.plot_from_dc == "":
         if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
-if options.add_stat_to_syst and options.plot_from_dc == "":
-
-  custom_uncerts_up_name = 'total_bkg_uncerts_custom_up'
-  custom_uncerts_down_name = 'total_bkg_uncerts_custom_down'
-  directory = outfile.Get(nodename)
-  h0 = directory.Get('total_bkg')
-  hists=[]
-  for hist in directory.GetListOfKeys():
-    if ".subnodes" in hist.GetName(): continue
-
-    proc_names = ["VVR","VVLF","VVJF","jetFakes"]
-    if hist.GetName().endswith("Up") or hist.GetName().endswith("Down"):
-      for p in proc_names:
-        if p+"_" in hist.GetName():
-          no_syst_name = p
-          temp_hist = h0.Clone()
-          temp_hist.Add(directory.Get(no_syst_name),-1)
-          temp_hist.Add(directory.Get(hist.GetName()))
-          hists.append(temp_hist)
-
-  (uncert, up, down) = TotalUnc(h0, hists)
-  outfile.cd(nodename)
-  uncert.Write()
-  up.Write()
-  down.Write()
+#if options.add_stat_to_syst and options.plot_from_dc == "":
+#
+#  custom_uncerts_up_name = 'total_bkg_uncerts_custom_up'
+#  custom_uncerts_down_name = 'total_bkg_uncerts_custom_down'
+#  directory = outfile.Get(nodename)
+#  h0 = directory.Get('total_bkg')
+#  hists=[]
+#  for hist in directory.GetListOfKeys():
+#    if ".subnodes" in hist.GetName(): continue
+#
+#    proc_names = ["VVR","VVLF","VVJF","jetFakes"]
+#    if hist.GetName().endswith("Up") or hist.GetName().endswith("Down"):
+#      for p in proc_names:
+#        if p+"_" in hist.GetName():
+#          no_syst_name = p
+#          temp_hist = h0.Clone()
+#          temp_hist.Add(directory.Get(no_syst_name),-1)
+#          temp_hist.Add(directory.Get(hist.GetName()))
+#          hists.append(temp_hist)
+#
+#  (uncert, up, down) = TotalUnc(h0, hists)
+#  outfile.cd(nodename)
+#  uncert.Write()
+#  up.Write()
+#  down.Write()
 
 
 if options.plot_from_dc == "": outfile.Close()

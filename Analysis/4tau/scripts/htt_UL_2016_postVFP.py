@@ -373,7 +373,7 @@ if options.proc_bkg or options.proc_all:
       for FLATJSONPATCH in flatjsons: 
         nperjob = 100
         #if 'TT' in sa or 'VVTo2L2Nu' in sa: nperjob = 10
-  
+        if 'GluGluToContinToZZTo4mu' in sa: nperjob=20  
         #if 'DY' not in sa and 'EWKZ' not in sa:
         #  FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
         #if 'DY' not in sa and 'JetsToLNu' not in sa and 'WG' not in sa and 'EWKZ' not in sa and 'EWKW' not in sa:
