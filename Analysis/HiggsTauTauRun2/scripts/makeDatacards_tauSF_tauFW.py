@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+#python scripts/makeDatacards_tauSF_tauFW.py --systs --batch --years 2016_preVFP,2016_postVFP,2017,2018 --output_folder tau_SF_UL_220223_medium_PFMet_oldpTetacuts_v1
+
 # importing packages
 import sys
 from optparse import OptionParser

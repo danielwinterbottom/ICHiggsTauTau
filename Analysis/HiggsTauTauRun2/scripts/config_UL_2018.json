@@ -21,7 +21,7 @@
   "sequence": {
     // "do_mssm_higgspt" : true,
     // "mssm_higgspt_file" : "/vols/build/cms/gu18/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau2/input/mssm_higgspt/higgs_pt_v2_mssm_mode.root",
-    "usePFMET" : true, // don't forget to change this back to puppi!!!
+    "usePFMET" : true,
     "do_gen_analysis" : false,
     "mc"            : "mc2018",
     "era"           : "data_2018UL",

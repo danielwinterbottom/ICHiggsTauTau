@@ -2373,8 +2373,7 @@ void HTTSequence::BuildTPZMMPairs() {
 void HTTSequence::BuildTauSelection(){
   
   // filter taus first with loose pT cut - this avoids running more time consuming parts of the code for events with taus that just wont pass the offline cuts anyway 
-  //double loose_tau_pt = tau_pt*0.8;
-  double loose_tau_pt = 0.; //don't forget to change it back later!!!
+  double loose_tau_pt = tau_pt*0.8;
   BuildModule(SimpleFilter<Tau>("TauFilterNewDMLoosePT")
      .set_input_label(js["taus"].asString()).set_min(min_taus)
      .set_predicate([=](Tau const* t) {
