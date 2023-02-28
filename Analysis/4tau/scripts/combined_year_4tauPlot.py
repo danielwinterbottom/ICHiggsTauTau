@@ -233,12 +233,18 @@ if args.zero_negative_bins:
   cf.cd(dir_name)
   for i in keys:
     if ".subnodes" not in i:
-      new_hist = ZeroNegativeBins(copy.deepcopy(cf.Get(dir_name+'/'+i)))
+      hist = cf.Get(dir_name+'/'+i)
+      scale = False
+      if hist.Integral() < 0:  
+        scale = True
+        hist.Scale(-1)
+      new_hist = ZeroNegativeBins(copy.deepcopy(hist))
+      if scale: new_hist.Scale(-1)
       directory.Delete(i+';1')
       new_hist.Write()
 
 #recalculate total
-proc_names = ["VVR","VVLF","jetFakes","MC_jetFakes"]
+proc_names = ["VVR","VVLF","jetFakes","MC_jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes234","jetFakes1234"]
 first = True
 for i in proc_names:
   if i in directory.GetListOfKeys():
@@ -260,18 +266,23 @@ if args.add_stat_to_syst:
   directory = cf.Get(dir_name)
   h0 = directory.Get('total_bkg')
   hists=[]
+  uncerts_needed = []
   for hist in directory.GetListOfKeys():
     if ".subnodes" in hist.GetName(): continue
-
-    #proc_names =  ["VVR"]
     if hist.GetName().endswith("Up") or hist.GetName().endswith("Down"):
       for p in proc_names:
         if p+"_" in hist.GetName():
-          no_syst_name = p
-          temp_hist = copy.deepcopy(h0)
-          temp_hist.Add(directory.Get(no_syst_name),-1)
-          temp_hist.Add(directory.Get(hist.GetName()))
-          hists.append(temp_hist)
+          uncert_name = hist.GetName().split(p+"_")[1]
+          if uncert_name not in uncerts_needed: uncerts_needed.append(uncert_name)
+          break
+
+  for uncert_name in uncerts_needed: 
+    temp_hist = copy.deepcopy(h0)
+    for p in proc_names:
+      if p+"_"+uncert_name in directory.GetListOfKeys():
+        temp_hist.Add(directory.Get(p),-1)
+        temp_hist.Add(directory.Get(p+"_"+uncert_name))
+    hists.append(temp_hist)
 
   (uncert, up, down) = TotalUnc(h0, hists)
   cf.cd(dir_name)

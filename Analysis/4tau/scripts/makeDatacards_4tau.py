@@ -236,18 +236,18 @@ add_options = {
 common_shape_systematics = [
  	      '--syst_tau_id', # Tau ID Efficiency
 	      '--syst_doubletau_trg', # Double Tau Trigger Effieciency
-#        '--syst_tau_scale_group', #Tau Energy Scale
-#        '--syst_jet_res', # Jet Energy Resolution
-#        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
+        '--syst_tau_scale_group', #Tau Energy Scale
+        '--syst_jet_res', # Jet Energy Resolution
+        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
 ##        '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
 ##        '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
-#        '--syst_jet_scale_group', # Jet Energy Scale Grouped
+        '--syst_jet_scale_group', # Jet Energy Scale Grouped
         '--syst_electron_scale', # Electron Energy Scale
 ##        '--syst_efake_scale_0pi', # l to tau h fake energy scale
 ##        '--syst_efake_scale_1pi', # l to tau h fake energy scale
 ##        '--syst_muon_scale', # Muon Energy Scale
 ##        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
-#        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
+##        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
         '--syst_electron_id', # Electron ID
         '--syst_muon_id', # Muon ID
         '--syst_electron_trg', # SingleElectron trigger
@@ -276,11 +276,11 @@ for channel in channels:
 # Job loop
 for channel in channels:
   systs = copy.deepcopy(common_shape_systematics)
-  #if "e" not in channel: 
-  #  systs.remove("--syst_electron_scale")
-  #  systs.remove("--syst_electron_id")
-  #elif "m" not in channel:
-  #  systs.remove("--syst_muon_id")
+  if "e" not in channel: 
+    if "--syst_electron_scale" in systs: systs.remove("--syst_electron_scale")
+    if "--syst_electron_id" in systs: systs.remove("--syst_electron_id")
+  elif "m" not in channel:
+    if "--syst_muon_id" in systs: systs.remove("--syst_muon_id")
 
   #if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
 
@@ -307,12 +307,12 @@ for channel in channels:
               add_cond += (syst + " ")
         if "ff" in name:
           add_cond += "--do_ff_systs"
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1502_full %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
         #run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
         if "ff" in name: run_cmd += " --rebin_with_data"
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        #SubmitBatchJob(job_file,time=180,memory=24,cores=1)
            
     
 
