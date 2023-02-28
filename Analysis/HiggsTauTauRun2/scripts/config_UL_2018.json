@@ -4,7 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-   "channels":     ["mt"],
+   //"channels":     ["mt","et","tt","zmm"],
+   "channels":     ["et","tt"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -20,7 +21,7 @@
   "sequence": {
     // "do_mssm_higgspt" : true,
     // "mssm_higgspt_file" : "/vols/build/cms/gu18/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau2/input/mssm_higgspt/higgs_pt_v2_mssm_mode.root",
-    "usePFMET" : false,
+    "usePFMET" : true, // don't forget to change this back to puppi!!!
     "do_gen_analysis" : false,
     "mc"            : "mc2018",
     "era"           : "data_2018UL",
@@ -64,7 +65,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018_PFMet_muoneta2p3/",
 //    "output_folder" : "/vols/cms/dw515/outputs/MSSM/Gen_DY_2018/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

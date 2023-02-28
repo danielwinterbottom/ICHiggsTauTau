@@ -18,6 +18,7 @@
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
+    "usePFMET" : true,
     "do_gen_analysis" : false,
     "mc"            : "mcleg2016",
     "era"           : "data_2016UL_postVFP",
@@ -59,7 +60,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2016-postVFP/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2016-postVFP_PFMet_muoneta2p3/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2016_tres1_v2_svfit/",
@@ -116,6 +117,7 @@
       "muon_res_shift": 0.0,
       "elec_res_shift": 0.0,
       "tau_res_shift": 0.0,
+      "fakeJ_tau_shift": 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
       "metcl_mode"        : 0,
