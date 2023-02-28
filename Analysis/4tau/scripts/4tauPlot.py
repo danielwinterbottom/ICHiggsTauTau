@@ -910,6 +910,22 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     if not first_hist:        
       total_bkg.SetName('total_bkg'+add_name)
       total_bkg.Write()
+   
+   # first_hist = True
+   # for node in nodes:
+   #   if add_name not in node.name: continue
+   #   if node.name == "data_obs": continue
+   #   if node.name.endswith("Up"): continue
+   #   if node.name.endswith("Down"): continue
+   #   if node.name not in list(chain.from_iterable(signal_samples)): continue
+   #   if first_hist:
+   #     total_sig = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
+   #     first_hist=False
+   #   else: total_sig.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
+   # if not first_hist:
+   #   total_sig.SetName('total_sig'+add_name)
+   #   total_sig.Write()
+
     outfile.cd()
 
 
@@ -955,8 +971,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'jetFakes' not in samples_to_skip:
 
         if options.do_ff_systs and not options.no_sig_sel:
-          wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
-          #wt_exts = ["_non_closure_down","_non_closure_up"]
+          #wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
+          wt_exts = ["_non_closure_down","_non_closure_up"]
         elif options.do_ff_systs and options.no_sig_sel:
           wt_exts = ["_non_closure_down","_non_closure_up"]
         else:
@@ -1346,10 +1362,9 @@ if options.plot_from_dc == "":
         add_names.append(add_name)
         syst_add_name=add_folder_name
         
-
         mc_input_folder_name = options.folder
         if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
-        
+       
         if options.signal_folder: signal_mc_input_folder_name = options.signal_folder
         else: signal_mc_input_folder_name = options.folder
         if add_folder_name != '': signal_mc_input_folder_name += '/'+add_folder_name
@@ -1359,6 +1374,7 @@ if options.plot_from_dc == "":
          
         # Add all data files
         for sample_name in data_samples:
+            print sample_name
             ana.AddSamples(data_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         
         # Add all MC background files
@@ -1379,6 +1395,7 @@ if options.plot_from_dc == "":
         #weight="wt"
         RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile)
         del systematics[systematic]
+
 
     ana.Run()
     ana.nodes.Output(outfile)
@@ -1585,31 +1602,31 @@ if is_3d and options.do_unrolling and options.plot_from_dc == "":
         if include_z_of: z_labels.append([hist.GetZaxis().GetBinLowEdge(hist.GetNbinsZ()+1),-1])
   for hist in hists_to_add: hist.Write("",ROOT.TObject.kOverwrite)
 
-if options.add_stat_to_syst and options.plot_from_dc == "":
-
-  custom_uncerts_up_name = 'total_bkg_uncerts_custom_up'
-  custom_uncerts_down_name = 'total_bkg_uncerts_custom_down'
-  directory = outfile.Get(nodename)
-  h0 = directory.Get('total_bkg')
-  hists=[]
-  for hist in directory.GetListOfKeys():
-    if ".subnodes" in hist.GetName(): continue
-
-    proc_names = ["VVR","VVLF","VVJF","jetFakes"]
-    if hist.GetName().endswith("Up") or hist.GetName().endswith("Down"):
-      for p in proc_names:
-        if p+"_" in hist.GetName():
-          no_syst_name = p
-          temp_hist = h0.Clone()
-          temp_hist.Add(directory.Get(no_syst_name),-1)
-          temp_hist.Add(directory.Get(hist.GetName()))
-          hists.append(temp_hist)
-
-  (uncert, up, down) = TotalUnc(h0, hists)
-  outfile.cd(nodename)
-  uncert.Write()
-  up.Write()
-  down.Write()
+#if options.add_stat_to_syst and options.plot_from_dc == "":
+#
+#  custom_uncerts_up_name = 'total_bkg_uncerts_custom_up'
+#  custom_uncerts_down_name = 'total_bkg_uncerts_custom_down'
+#  directory = outfile.Get(nodename)
+#  h0 = directory.Get('total_bkg')
+#  hists=[]
+#  for hist in directory.GetListOfKeys():
+#    if ".subnodes" in hist.GetName(): continue
+#
+#    proc_names = ["VVR","VVLF","VVJF","jetFakes"]
+#    if hist.GetName().endswith("Up") or hist.GetName().endswith("Down"):
+#      for p in proc_names:
+#        if p+"_" in hist.GetName():
+#          no_syst_name = p
+#          temp_hist = h0.Clone()
+#          temp_hist.Add(directory.Get(no_syst_name),-1)
+#          temp_hist.Add(directory.Get(hist.GetName()))
+#          hists.append(temp_hist)
+#
+#  (uncert, up, down) = TotalUnc(h0, hists)
+#  outfile.cd(nodename)
+#  uncert.Write()
+#  up.Write()
+#  down.Write()
 
 
 if options.plot_from_dc == "": outfile.Close()
@@ -1730,6 +1747,7 @@ if not options.no_plot:
 
 #norm signal yields on datacards to 1pb AFTER plotting    
 if not options.no_signal and not options.plot_from_dc:
+  print "norm signal yields"
   outfile =  ROOT.TFile(output_name, 'UPDATE')
   for add_name in add_names:
       NormSignals(outfile,add_name)
