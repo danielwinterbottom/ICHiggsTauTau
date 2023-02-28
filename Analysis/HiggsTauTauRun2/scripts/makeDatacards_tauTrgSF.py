@@ -172,6 +172,7 @@ for year in years:
 
                cuts='m_vis>40&&m_vis<80&&pt_1>25&&trg_singlemuon&&fabs(eta_2)<2.1'
                if '2016' in year: cuts=cuts.replace('trg_singlemuon','trg_singlemuon24') # make sure you use the un-prescaled trigger that matches the mu+tau monitoring path selections 
+               if '2017' in year: cuts=cuts.replace('trg_singlemuon','trg_singlemuon27') # make sure you use the un-prescaled trigger that matches the mu+tau monitoring path selections 
                if year == '2017': cuts+='&&pt_1>28' # make sure muon is above 27 GeV trigger threshold as 24 GeV trigger was prescaled in 4/fb of datataking 
 
  

@@ -99,6 +99,7 @@ int PreselectionFilter::Execute(TreeEvent *event) {
     
   bool lepton_veto_ = extraelec_veto_ || extramuon_veto_;
   if ( channel_ == channel::zmm || channel_ == channel::zee ) lepton_veto_ = false;
+  lepton_veto_=false; // remove lepton vetos from preselection
 
   bool preselect_evt = pass_presel&&!lepton_veto_;
 

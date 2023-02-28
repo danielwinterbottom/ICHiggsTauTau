@@ -890,6 +890,7 @@ namespace ic {
       outtree_->Branch("mt_lep",            &mt_lep_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
+      outtree_->Branch("pf_mt_1"    , &pf_mt_1_     );
       outtree_->Branch("pzeta",             &pzeta_.var_double);
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
@@ -1141,6 +1142,7 @@ namespace ic {
       outtree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       outtree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       outtree_->Branch("trg_singlemuon24",    &trg_singlemuon24_);
+      outtree_->Branch("trg_singlemuon27",    &trg_singlemuon27_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
       outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
 
@@ -1724,6 +1726,8 @@ namespace ic {
     if (event->Exists("trg_singlemuon"))     trg_singlemuon_     = event->Get<bool>("trg_singlemuon");
     if (event->Exists("trg_singlemuon24"))     trg_singlemuon24_     = event->Get<bool>("trg_singlemuon24");
     else trg_singlemuon24_ = false;
+    if (event->Exists("trg_singlemuon27"))     trg_singlemuon27_     = event->Get<bool>("trg_singlemuon27");
+    else trg_singlemuon27_ = false;
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
 
     if (event->Exists("trg_tt_monitoring_1"))trg_tt_monitoring_1_ = event->Get<bool>("trg_tt_monitoring_1");
@@ -2914,6 +2918,7 @@ namespace ic {
     std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetFromSlimmed");
     pf_met_ = pfMet_vec[0]->pt();
 
+    pf_mt_1_ = MT(lep1, pfMet_vec[0]);
 
     metCov00_ = mets->xx_sig();
     metCov10_ = mets->yx_sig();

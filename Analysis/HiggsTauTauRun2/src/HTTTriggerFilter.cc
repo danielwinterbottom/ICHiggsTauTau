@@ -1142,6 +1142,11 @@ namespace ic {
       bool passed_singlemuon24 = IsFilterMatchedWithIndex(dileptons[0]->At(0), objs24, "hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09", 0.5).first;
       event->Add("trg_singlemuon24", passed_singlemuon24);
     }
+    if(era_ == era::data_2017UL || era_ == era::data_2018UL) {
+      std::vector<TriggerObject *> const& objs27 = event->GetPtrVec<TriggerObject>("triggerObjectsIsoMu27");
+      bool passed_singlemuon27 = IsFilterMatchedWithIndex(dileptons[0]->At(0), objs27, "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07", 0.5).first;
+      event->Add("trg_singlemuon27", passed_singlemuon27);
+    }
 
     if(!do_filter_){
       return 0;    

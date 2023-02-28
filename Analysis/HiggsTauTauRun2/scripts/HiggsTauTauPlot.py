@@ -390,7 +390,7 @@ parser.add_argument("--vlq_sig", dest="vlq_sig", type=str,
     help="Comma separated list of signal parameter names i.e. vlq_betaRd33_minus1_mU4_gU1,vlq_betaRd33_minus1_mU4_gU2,vlq_betaRd33_minus1_mU4_gU3")
 parser.add_argument("--plot_signals", dest="plot_signals", type=str,
     help="Comma separated list of what signals to plot")
-parser.add_argument("--DY_NLO", dest="DY_NLO", type=str,
+parser.add_argument("--DY_NLO", dest="DY_NLO", action='store_true',
     help="Use DY NLO samples")
 parser.add_argument("--plot_from_dc", default="", type=str,
       help="If not empty will draw plot straight from datacard")
@@ -644,15 +644,18 @@ if options.analysis == 'cpprod':
   cats['baseline'] = cats['baseline'].replace('deepTauVsEle_vvloose_2','deepTauVsEle_vvvloose_2').replace('deepTauVsEle_vvloose_1','deepTauVsEle_vvvloose_1')
 
 cats['baseline'] = cats['baseline'].replace('pt_2>30','pt_2>20') # delete me!!!
+#cats['baseline'] = cats['baseline'].replace('leptonveto','(extramuon_veto||extraelec_veto)') # delete me!!!
 
 cats['oneprong'] = '(tau_decay_mode_2<3)'
 cats['threeprong'] = '(tau_decay_mode_2>9)'
 cats['dm0'] = '(tau_decay_mode_2==0)'
 cats['dm1'] = '(tau_decay_mode_2==1)'
+cats['dm1_ptLt40'] = '(tau_decay_mode_2==1&&pt_2<40)'
 cats['dm10'] = '(tau_decay_mode_2==10)'
 cats['dm11'] = '(tau_decay_mode_2==11)'
 
 cats['baseline'] = cats['baseline'].replace('pt_2>30','pt_2>20') # delete me!!! - this is to select pT down to 20 for SF measurments!!!!!
+#cats['baseline'] = cats['baseline'].replace('leptonveto','(extramuon_veto||extraelec_veto)') # delete me!!! - this is to select pT down to 20 for SF measurments!!!!!
 
 cats['qcd_loose_shape'] = cats['baseline'].replace('iso_1<0.15','iso_1>0.05&&iso_1<0.3')
 
@@ -1507,6 +1510,7 @@ if options.era in ['cp18']:
 if options.era in ['UL_18']:
     if (options.DY_NLO==False):
         ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        #ztt_samples = ['DYJetsToLL-LO']
     else:
         ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
 

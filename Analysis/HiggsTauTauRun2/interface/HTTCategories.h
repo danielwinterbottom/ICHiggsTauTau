@@ -152,6 +152,7 @@ class HTTCategories : public ModuleBase {
   double pt_tt_inc_met_;
   branch_var pt_vis_;
   branch_var mt_1_;
+  float pf_mt_1_;
   branch_var mt_lep_;
   branch_var mt_tot_;
   branch_var mt_2_;
@@ -830,6 +831,7 @@ class HTTCategories : public ModuleBase {
   bool trg_singleelectron_;
   bool trg_singlemuon_;
   bool trg_singlemuon24_;
+  bool trg_singlemuon27_;
   bool trg_muonelectron_;
   bool trg_doubletau_;
   bool trg_tt_monitoring_1_;
