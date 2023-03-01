@@ -33,6 +33,68 @@ def RebinHist(hist,binning):
         hout.SetBinError(i,new_error)
   return hout
 
+def FindRebinning_v2(bkg_hist,sig_hist,BinUncertFraction=0.25):
+
+  binning = []
+  for i in range(1,bkg_hist.GetNbinsX()+2):
+    binning.append(bkg_hist.GetBinLowEdge(i))
+
+  turnOnBin = 0 
+  for i in range(1,bkg_hist.GetNbinsX()+1):
+    bin_start = bkg_hist.GetBinLowEdge(i)
+    bin_end = bkg_hist.GetBinLowEdge(i+1)
+    if bkg_hist.GetBinContent(i) > 0 and bkg_hist.GetBinContent(i+1) >0:   
+    # Calculate score of bin i
+        signal  = sig_hist.GetBinContent(i)
+        bkg = bkg_hist.GetBinContent(i)
+        AMS_bin = AMS(signal,bkg)
+        # Calculate score of bin i + 1
+        signal_  = sig_hist.GetBinContent(i+1)
+        bkg_ = bkg_hist.GetBinContent(i+1)
+        AMS_bin_ = AMS(signal_,bkg_)
+        if AMS_bin_ > AMS_bin:
+           turnOnBin = bkg_hist.GetBinLowEdge(i+1)
+           break
+  if binning.index(turnOnBin) != 0:
+     del binning[1:binning.index(turnOnBin)]
+  bkg_hist = RebinHist(bkg_hist,binning)
+
+  # --------- Rebin on Bin Uncertainty ----------
+  # left to right
+  finished = False
+  k = 0
+  while finished == False and k < 1000:
+    k += 1
+
+    # Ignore first bin
+    for i in range(2,bkg_hist.GetNbinsX()):
+      if bkg_hist.GetBinContent(i) > 0: uncert_frac = bkg_hist.GetBinError(i)/bkg_hist.GetBinContent(i)
+      else: uncert_frac = BinUncertFraction+1
+      if uncert_frac > BinUncertFraction:
+        binning.remove(min(binning, key=lambda x:abs(x-bkg_hist.GetBinLowEdge(i+1))))
+        bkg_hist = RebinHist(bkg_hist,binning)
+        break
+      elif i+1 == bkg_hist.GetNbinsX():
+        finished = True
+
+  # right to left
+  finished = False
+  k = 0
+  while finished == False and k < 1000:
+    k+= 1
+    for i in reversed(range(3,bkg_hist.GetNbinsX()+1)):
+      if bkg_hist.GetBinContent(i) > 0: uncert_frac = bkg_hist.GetBinError(i)/bkg_hist.GetBinContent(i)
+      else: uncert_frac = BinUncertFraction+1
+      if uncert_frac > BinUncertFraction:
+        binning.remove(min(binning, key=lambda x:abs(x-bkg_hist.GetBinLowEdge(i))))
+        bkg_hist = RebinHist(bkg_hist,binning)
+        break
+      elif i == 2:
+        finished = True
+
+  return binning
+
+
 def FindRebinning(bkg_hist,sig_hist,BinUncertFraction=0.25):
   binning = []
   for i in range(1,bkg_hist.GetNbinsX()+2):
@@ -208,7 +270,7 @@ total_bkghist = copy.deepcopy(hist_dict["total_bkg"])
 sig_hist = copy.deepcopy(hist_dict["A60phi100_norm"])
 total_bkghist.Scale(1/total_bkghist.Integral())
 sig_hist.Scale(1/sig_hist.Integral())
-binning = FindRebinning(total_bkghist,sig_hist)
+binning = FindRebinning_v2(total_bkghist,sig_hist)
 print("Binning")
 print(binning)
 
