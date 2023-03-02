@@ -72,7 +72,7 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
 all_ch_variables = [
-                    GetBinning('mt_tot',0,600,60,round=1),
+                    "mt_tot[0,10,20,30,40,50,60,70,80,90,100,110,125,140,160,180,200,220,240,270,300,350,400,450,500,600]",
 #                    GetBinning('st',0,600,100,round=1),
                     GetBinning('pt_1',0,250,25,round=1),
                     GetBinning('pt_2',0,250,25,round=1),
@@ -298,6 +298,19 @@ for channel in channels:
       if (channel == "eett" or channel == "mmtt") and "z_control" in cat: changed_option = changed_option.replace("--blind","")
 
       for var in variables:
+
+        if channel == "ttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 30.0, 80.0, 100.0, 110.0, 125.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 600.0]"
+        if channel == "tttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 600.0]"
+        if channel == "eett" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 600.0]"
+        if channel == "eett" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 600.0]"
+        if channel == "mmtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 90.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600.0]"
+        if channel == "mmtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 600.0]"
+        if channel == "emtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 100.0, 200.0, 240.0, 300.0, 600.0]"
+        if channel == "emtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 220.0, 600.0]"
+        if channel == "ettt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 600.0]"
+        if channel == "mttt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 600.0]"
+
+
         if '[' in var: var_string = var.split('[')[0]
         elif '(' in var: var_string = var.split('(')[0]
         if args.only_var != "" and args.only_var != var_string: continue
