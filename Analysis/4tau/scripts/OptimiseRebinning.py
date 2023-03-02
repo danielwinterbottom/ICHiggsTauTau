@@ -91,7 +91,13 @@ def FindRebinning_v2(bkg_hist,sig_hist,BinUncertFraction=0.25):
         break
       elif i == 2:
         finished = True
+  
 
+  for i in range(1,bkg_hist.GetNbinsX()+1):
+    bin_start = bkg_hist.GetBinLowEdge(i)
+    bin_end = bkg_hist.GetBinLowEdge(i+1)
+    uncert_frac = bkg_hist.GetBinError(i)/bkg_hist.GetBinContent(i)
+    print(bin_start,bin_end,bkg_hist.GetBinContent(i),uncert_frac)
   return binning
 
 
