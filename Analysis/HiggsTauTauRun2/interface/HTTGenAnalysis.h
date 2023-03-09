@@ -156,7 +156,6 @@ class HTTGenAnalysis : public ModuleBase {
   unsigned n_pjets_;
 
 
-  float n_pu_;
   
   double pT_A_;
  
@@ -369,8 +368,9 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ps_fsr_up_;
   double wt_ps_fsr_down_;
 
-  double tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
+  double tau_pt_1_v2p1_, tau_pt_1_v2p5_, gen_tau_pt_1_, gen_tau_eta_1_, tau_pt_1_hps_;
   int gen_tau_dm_1_;
+  float n_pu_, n_pu_alt_;
  
   const BTagCalibration *calib;
   BTagCalibrationReader* reader_incl;

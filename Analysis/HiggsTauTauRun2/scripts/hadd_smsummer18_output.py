@@ -69,6 +69,7 @@ sample_list = [
     'EWKWPlus2Jets',
     'EWKZ2Jets',#new
     'T-t',
+    'T-tW',
     'T-tW-ext1',
     'TTTo2L2Nu',
     'TTToHadronic',

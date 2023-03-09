@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
   AnalysisBase analysis("HiggsTauTauRun2", files, "icEventProducer/EventTree",
                         js["job"]["max_events"].asInt64());
   analysis.SetTTreeCaching(true);
-  analysis.StopOnFileFailure(false); //just for 2018 right now as some files broke on dcache?
+  analysis.StopOnFileFailure(true); 
   analysis.RetryFileAfterFailure(7, 3);
 //  analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());

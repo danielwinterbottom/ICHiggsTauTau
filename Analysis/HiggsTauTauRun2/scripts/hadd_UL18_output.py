@@ -36,7 +36,7 @@ ignore = options.ignore
 batch = options.batch
 
 JOBWRAPPER      = './scripts/generate_job.sh'
-JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0"'
+JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=3:0:0"'
 #JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=9:0:0"'
 
 
@@ -194,7 +194,7 @@ for sa in sample_list:
   hadd_dirs=[]
   command=''
   if batch:
-    JOB='jobs/hadd_%s.sh' % sa
+    JOB='jobs/hadd_%s_2018.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:

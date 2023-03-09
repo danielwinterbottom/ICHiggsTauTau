@@ -152,6 +152,7 @@ class HTTCategories : public ModuleBase {
   double pt_tt_inc_met_;
   branch_var pt_vis_;
   branch_var mt_1_;
+  float pf_mt_1_;
   branch_var mt_lep_;
   branch_var mt_tot_;
   branch_var mt_2_;
@@ -829,6 +830,8 @@ class HTTCategories : public ModuleBase {
 
   bool trg_singleelectron_;
   bool trg_singlemuon_;
+  bool trg_singlemuon24_;
+  bool trg_singlemuon27_;
   bool trg_muonelectron_;
   bool trg_doubletau_;
   bool trg_tt_monitoring_1_;
@@ -837,6 +840,7 @@ class HTTCategories : public ModuleBase {
   bool trg_tt_monitoring_4_;
   bool trg_tt_monitoring_5_;
   bool trg_tt_monitoring_6_;
+  float trg_tt_monitoring_l1_;
   bool trg_doubletau_mssm_;
   bool trg_vbfdoubletau_;
   bool trg_singletau_1_;
@@ -966,6 +970,33 @@ class HTTCategories : public ModuleBase {
   bool deepTauVsMu_vtight_2_;
   bool deepTauVsMu_vvtight_1_;
   bool deepTauVsMu_vvtight_2_;
+
+  bool deepTauVsJetsV2p5_vvvloose_1_;
+  bool deepTauVsJetsV2p5_vvvloose_2_;
+  bool deepTauVsJetsV2p5_vvloose_1_;
+  bool deepTauVsJetsV2p5_vvloose_2_;
+  bool deepTauVsJetsV2p5_vloose_1_;
+  bool deepTauVsJetsV2p5_vloose_2_;
+  bool deepTauVsJetsV2p5_loose_1_;
+  bool deepTauVsJetsV2p5_loose_2_;
+  bool deepTauVsJetsV2p5_medium_1_;
+  bool deepTauVsJetsV2p5_medium_2_;
+  bool deepTauVsJetsV2p5_tight_1_;
+  bool deepTauVsJetsV2p5_tight_2_;
+  bool deepTauVsJetsV2p5_vtight_1_;
+  bool deepTauVsJetsV2p5_vtight_2_;
+  bool deepTauVsJetsV2p5_vvtight_1_;
+  bool deepTauVsJetsV2p5_vvtight_2_;
+  bool deepTauVsEleV2p5_vvloose_1_;
+  bool deepTauVsEleV2p5_vvloose_2_;
+  bool deepTauVsEleV2p5_tight_1_;
+  bool deepTauVsEleV2p5_tight_2_;
+  bool deepTauVsMuV2p5_tight_1_;
+  bool deepTauVsMuV2p5_tight_2_;
+  bool deepTauVsMuV2p5_vloose_1_;
+  bool deepTauVsMuV2p5_vloose_2_;
+  float iso_1_V2p5_;
+  float iso_2_V2p5_;
 
   double mt_1_nomu_, mu_pt_;
 
