@@ -47,7 +47,7 @@ defaults = {
     "ratio_range":"0.6,1.4", "datacard":"", "do_custom_uncerts":False, "uncert_title":"Background uncertainty", 
     "custom_uncerts_wt_up":"","custom_uncerts_wt_down":"", "add_flat_uncert":0,
     "add_stat_to_syst":False, "add_wt":"", "custom_uncerts_up_name":"", "custom_uncerts_down_name":"",
-    "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"",
+    "do_ff_systs":False, "syst_efake_0pi_scale":"", "syst_efake_1pi_scale":"", "syst_jfake_scale":"",
     "syst_mufake_0pi_scale":"", "syst_mufake_1pi_scale":"", "scheme":"","scheme":"", "syst_zpt_es":"",
     "syst_zpt_tt":"", "syst_zpt_statpt0":"", "syst_zpt_statpt40":"", "syst_zpt_statpt80":"",
     "syst_jfake_m":"", "syst_jfake_e":"", "syst_z_mjj":"", "syst_qcd_scale":"", "syst_quarkmass":"", "syst_mssm_ggh":False,
@@ -276,6 +276,8 @@ parser.add_argument("--syst_mufake_0pi_scale", dest="syst_mufake_0pi_scale", typ
     help="If this string is set then the mu->tau dm=0 fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--syst_mufake_1pi_scale", dest="syst_mufake_1pi_scale", type=str,
     help="If this string is set then the mu->tau dm=1 fake-rate systematic is performed with the set string appended to the resulting histogram name")
+parser.add_argument("--syst_jfake_scale", dest="syst_jfake_scale", type=str,
+    help="If this string is set then the j->tau fake-rate systematic is performed with the set string appended to the resulting histogram name")
 parser.add_argument("--scheme", dest="scheme", type=str,
     help="Set plotting scheme")
 parser.add_argument("--syst_zpt_es", dest="syst_zpt_es", type=str,
@@ -388,10 +390,14 @@ parser.add_argument("--vlq_sig", dest="vlq_sig", type=str,
     help="Comma separated list of signal parameter names i.e. vlq_betaRd33_minus1_mU4_gU1,vlq_betaRd33_minus1_mU4_gU2,vlq_betaRd33_minus1_mU4_gU3")
 parser.add_argument("--plot_signals", dest="plot_signals", type=str,
     help="Comma separated list of what signals to plot")
-parser.add_argument("--DY_NLO", dest="DY_NLO", type=str,
+parser.add_argument("--DY_NLO", dest="DY_NLO", action='store_true',
     help="Use DY NLO samples")
+parser.add_argument("--plot_from_dc", default="", type=str,
+      help="If not empty will draw plot straight from datacard")
 
 options = parser.parse_args(remaining_argv)   
+
+print 'do_unrolling = %s' % options.do_unrolling 
 
 print ''
 print '################### Options ###################'
@@ -638,13 +644,29 @@ if options.analysis == 'cpprod':
   cats['baseline'] = cats['baseline'].replace('deepTauVsEle_vvloose_2','deepTauVsEle_vvvloose_2').replace('deepTauVsEle_vvloose_1','deepTauVsEle_vvvloose_1')
 
 cats['baseline'] = cats['baseline'].replace('pt_2>30','pt_2>20') # delete me!!!
+#cats['baseline'] = cats['baseline'].replace('leptonveto','(extramuon_veto||extraelec_veto)') # delete me!!!
 
 cats['oneprong'] = '(tau_decay_mode_2<3)'
 cats['threeprong'] = '(tau_decay_mode_2>9)'
 cats['dm0'] = '(tau_decay_mode_2==0)'
 cats['dm1'] = '(tau_decay_mode_2==1)'
+cats['dm1_ptLt40'] = '(tau_decay_mode_2==1&&pt_2<40)'
+cats['inclusive_ptLt40'] = '(pt_2<40)'
 cats['dm10'] = '(tau_decay_mode_2==10)'
 cats['dm11'] = '(tau_decay_mode_2==11)'
+cats['pt20to30'] = '(pt_2>20&&pt_2<30)'
+cats['pt30to40'] = '(pt_2>30&&pt_2<40)'
+cats['pt40to60'] = '(pt_2>40&&pt_2<60)'
+cats['ptGt60'] = '(pt_2>60)'
+
+for x in ['pt20to30','pt30to40','pt40to60','ptGt60']:
+  cats['inclusive_'+x] = cats[x] 
+  for dm in [0,1,10,11]: cats['dm%i_%s' % (dm,x) ] = cats['dm%i' % dm] + '&&' + cats[x] 
+
+cats['baseline'] = cats['baseline'].replace('pt_2>30','pt_2>20') # delete me!!! - this is to select pT down to 20 for SF measurments!!!!!
+#cats['baseline'] = cats['baseline'].replace('leptonveto','(extramuon_veto||extraelec_veto)') # delete me!!! - this is to select pT down to 20 for SF measurments!!!!!
+
+cats['qcd_loose_shape'] = cats['baseline'].replace('iso_1<0.15','iso_1>0.05&&iso_1<0.3')
 
 cats['inclusive'] = '(1)'
 cats['wj_cut'] = "mt_1 < 40 && pt_1 > 40" 
@@ -658,9 +680,8 @@ cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_ol
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['tt_qcd_norm'] = '(pt_1>40 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 # if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-cats['qcd_loose_shape'] = '(iso_1>0.2 && iso_1<0.5 && mva_olddm_tight_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
 
-cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_loose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
+cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_vloose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 
 
 # CR categories
@@ -684,6 +705,7 @@ cats['w_shape']=''
 cats['qcd_shape']=''
 cats['w_shape_comp']=''
 cats['qcd_shape_comp']=''
+cats['Nbtag0_NjetsGt1'] = '(n_deepbjets==0 && n_jets>0 && jpt_1>50 && m_vis>100)'
 
 # MSSM run 2 categories
 if options.channel == "tt":
@@ -1497,6 +1519,7 @@ if options.era in ['cp18']:
 if options.era in ['UL_18']:
     if (options.DY_NLO==False):
         ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        #ztt_samples = ['DYJetsToLL-LO']
     else:
         ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
 
@@ -2077,8 +2100,10 @@ if options.syst_qcd_shape_wsf != '':
             ]:
         w_abs_shift=0.3
 if options.syst_scale_met_unclustered != '':
-    systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
-    systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
+    #systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
+    #systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['EWKZ','ZLL','ZL','ZJ','ZTT','W','signal','QCD','jetFakes','EmbedZTT','ggH_hww','qqH_hww'], False)
+    systematics['syst_scale_met_unclustered_up'] = ('METUNCL_UP' , '_'+options.syst_scale_met_unclustered+'Up', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
+    systematics['syst_scale_met_unclustered_down'] = ('METUNCL_DOWN' , '_'+options.syst_scale_met_unclustered+'Down', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
 if options.syst_scale_met_clustered != '':
     systematics['syst_scale_met_clustered_up'] = ('METCL_UP' , '_'+options.syst_scale_met_clustered+'Up', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
     systematics['syst_scale_met_clustered_down'] = ('METCL_DOWN' , '_'+options.syst_scale_met_clustered+'Down', 'wt', ['QCD','jetFakes','EmbedZTT'], False)
@@ -2143,6 +2168,17 @@ if options.syst_scale_j_by_source != '':
       systematics[syst_name+'_up'] = ('JES_UP' , '_'+hist_name+'Up', 'wt', ['jetFakes','EmbedZTT'], False,replace_dict)
       systematics[syst_name+'_down'] = ('JES_DOWN' , '_'+hist_name+'Down', 'wt', ['jetFakes','EmbedZTT'], False,replace_dict)
 
+if options.syst_jfake_scale != '':
+  # this is an approximate version of this uncertainty for now
+  replace_dict_up = {'pt_2':'pt_2*1.03', 'm_vis':'m_vis*sqrt(1.03)'}
+  replace_dict_down = {'pt_2':'pt_2*0.97', 'm_vis':'m_vis*sqrt(0.97)'}
+  syst_name = 'syst_jfake_scale'
+  hist_name = options.syst_jfake_scale
+  to_skip = ['VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes','EmbedZTT','ZJ','ZL','ZLL','ZTT']
+  systematics[syst_name+'_approx_up'] = ('' , '_'+hist_name+'ApproxUp', 'wt', to_skip, False,replace_dict_up)
+  systematics[syst_name+'_approx_down'] = ('' , '_'+hist_name+'ApproxDown', 'wt', to_skip, False,replace_dict_down)
+  systematics[syst_name+'_up'] = ('JFAKE_UP' , '_'+hist_name+'Up', 'wt', to_skip, False)
+  systematics[syst_name+'_down'] = ('JFAKE_DOWN' , '_'+hist_name+'Down', 'wt', to_skip, False)
 
 ## em QCD uncertainties
 if options.syst_em_qcd != '' and options.channel == 'em':
@@ -3268,7 +3304,7 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
                 shape_cat = '(n_jets<=1 && n_loose_bjets>=1)*('+cats['baseline']+')'
                 shape_cat_data = '(n_jets<=1 && n_loose_bjets>=1)*('+cats_unmodified['baseline']+')'
             shape_selection = BuildCutString(wt, sel, shape_cat_data, '!os')
-            subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel,shape_cat,shape_cat_data,method,qcd_os_ss_ratio,False,True)  
+            subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+sub_shift,sel,shape_cat,shape_cat_data,method,qcd_os_ss_ratio,False,True)  
             shape_node = SubtractNode('shape', ana.SummedFactory('data_ss', data, plot_unmodified, shape_selection), subtract_node)
         
         #if options.channel == 'em': qcd_os_ss_factor = 1
@@ -3556,6 +3592,7 @@ def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='
               fake_factor_wt_string_2='0'
               if options.wp == 'medium':
                 fake_factor_wt_string_1 = "wt_ff_mssm_1"
+                #fake_factor_wt_string_1 = "wt_ff_mssm_qcd_syst_down_1" # change back afterwards!!!!
                 if options.ml_ff:
                   fake_factor_wt_string_1 = "0.5*wt_ff_reweight_qcd_1*((os==0) + (wt_ff_reweight_qcd_dr_to_ar_1*(os==1)))"
                   fake_factor_wt_string_2 = "0.5*wt_ff_reweight_qcd_2*((os==0) + (wt_ff_reweight_qcd_dr_to_ar_2*(os==1)))"
@@ -4673,9 +4710,13 @@ def RenameMSSMrun2Datacards(outfile):
 
 
   # count number of directories
-  count = 0    
-  for key in directory.GetListOfKeys(): count += 1
-
+  count = 0
+  print nodename
+  print directory
+  print outfile    
+  for key in directory.GetListOfKeys(): 
+     count += 1
+     print key
 
   i = 0
   for key in directory.GetListOfKeys():
@@ -4875,7 +4916,7 @@ while len(systematics) > 0:
       wshift=1.0
       if systematic == 'syst_qcd_shape_wsf_up' and w_abs_shift is not None: wshift+=w_abs_shift
       if systematic == 'syst_qcd_shape_wsf_down' and w_abs_shift is not None: wshift-=w_abs_shift
-      if options.syst_scale_j_by_source != '' and 'syst_scale_j_by_source' in systematic:
+      if (options.syst_scale_j_by_source != '' and 'syst_scale_j_by_source' in systematic) or (options.syst_jfake_scale and 'syst_jfake_scale_approx' in systematic):
         # if JES systematic split by source then the category and plotting variable strings need to be modified to use the shifted variables
         replace_dict = systematics[systematic][5]  
         for cat in cats: cats[cat] = OverwriteNames(cats[cat], replace_dict)
@@ -5024,15 +5065,16 @@ while len(systematics) > 0:
       add_names_dict[add_name] = samples_to_skip
       
       del systematics[systematic]
-  ana.Run()
-  ana.nodes.Output(outfile)
+  if options.plot_from_dc == "":
+     ana.Run()
+     ana.nodes.Output(outfile)
 
 
   # fix negative bns,empty histograms etc.
-  FixBins(ana,outfile)
-  for n in add_names: 
-    GetTotals(ana,n,outfile)
-  PrintSummary(nodename, ['data_obs'], add_names)
+     FixBins(ana,outfile)
+     for n in add_names: 
+       GetTotals(ana,n,outfile)
+     PrintSummary(nodename, ['data_obs'], add_names)
 
 
 if compare_w_shapes or compare_qcd_shapes: CompareShapes(compare_w_shapes, compare_qcd_shapes)
@@ -5304,8 +5346,8 @@ if options.do_unrolling==0:
 if is_2d and not options.do_unrolling:
   print "Finished Processing"
   exit(0) # add options for is_3d as well!
+if options.plot_from_dc != "": output_name = options.plot_from_dc
 plot_file = ROOT.TFile(output_name, 'READ')
-
 
 #if options.method in [12,16] or (options.channel != "tt" and options.method == "18"):
 #    w_os = plot_file.Get(nodename+"/W.subnodes/W_os")    
@@ -5337,6 +5379,10 @@ if not options.no_plot:
 
     if options.datacard != "": plot_name = options.outputfolder+'/'+vname+'_'+options.datacard+'_'+options.channel+'_'+options.year
     else: plot_name = options.outputfolder+'/'+vname+'_'+options.cat+'_'+options.channel+'_'+options.year
+
+    if options.plot_from_dc != "": plot_name = options.outputfolder + '/combined'     
+
+
     if options.do_ss: plot_name += "_ss"
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
@@ -5556,8 +5602,8 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVF
   for hist in hists_to_add: hist.Write()
 
 
-if options.analysis in ['mssmrun2','vlq']:
-  RenameMSSMrun2Datacards(outfile)
+if options.analysis in ['mssmrun2','vlq'] and options.era not in ['UL_16_preVFP','UL_16_postVFP','UL_17','UL_18']:
+   RenameMSSMrun2Datacards(outfile)
 
 
 outfile.Close()

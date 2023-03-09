@@ -11,7 +11,7 @@ import json
 
 # setting up job stuff and condor template
 # ----------------------------------------
-os.system("voms-proxy-init --voms cms --valid 96:00 --out ~/cms.proxy")
+os.system("voms-proxy-init --voms cms --valid 192:00 --out ~/cms.proxy")
 
 JOBWRAPPER      = './scripts/generate_job.sh'
 JOBSUBMIT       = 'true'
@@ -245,7 +245,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
-
 if options.proc_bkg or options.proc_all:
   central_samples = [
     # Drell-Yan LO
@@ -301,20 +300,20 @@ if options.proc_bkg or options.proc_all:
     'WZTo1L1Nu2Q',
     'WWTo1L1Nu2Q',
 
-    # Inclusive
-    'WW',
-    'WZ',
-    'ZZ',
+ #   # Inclusive
+ #   'WW',
+ #   'WZ',
+ #   'ZZ',
 
-    # Triboson
-    'WWZ',
-    'WWZ-ext1',
-    'WZZ',
-    'WZZ-ext1',
-    'WWW',
-    'WWW-ext1',
-    'ZZZ',
-    'ZZZ-ext1',
+ #   # Triboson
+ #   'WWZ',
+ #   'WWZ-ext1',
+ #   'WZZ',
+ #   'WZZ-ext1',
+ #   'WWW',
+ #   'WWW-ext1',
+ #   'ZZZ',
+ #   'ZZZ-ext1',
 
     # Other backgrounds
     'WGToLNuG',
@@ -323,13 +322,13 @@ if options.proc_bkg or options.proc_all:
     'T-t',
     'T-tW',
 
-    # SM Higgs
-    'GluGluHToTauTau_M125',
-    'VBFHToTauTau_M125',
-    'WminusHToTauTau_M125',
-    'WplusHToTauTau_M125',
-    'ZHToTauTau_M125',
-    'ttHToTauTau_M125',
+#    # SM Higgs
+#    'GluGluHToTauTau_M125',
+#    'VBFHToTauTau_M125',
+#    'WminusHToTauTau_M125',
+#    'WplusHToTauTau_M125',
+#    'ZHToTauTau_M125',
+#    'ttHToTauTau_M125',
   ] 
   #Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu"]
   for sa in central_samples:
@@ -337,7 +336,7 @@ if options.proc_bkg or options.proc_all:
       FILELIST='filelists/Nov29_2016-postVFP_MC_106X'
       user='ksavva'
       PREFIX='Nov29_MC_106X_2016-postVFP'
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s /\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
       job_num=0
       for FLATJSONPATCH in flatjsons: 

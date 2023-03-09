@@ -267,16 +267,18 @@ namespace ic {
           // trig monitoring path superseeds: triggerObjectsDoubleMediumTau35
           // HLT: HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v
           // Have to raise online pT cut to 35 
-          monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumTau32";
-          monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+          monitoring_16_trig_obj_label = "triggerObjectsIsoMu19MediumTau32";
+          monitoring_16_leg1_filter = "hltL3crIsoL1sMu18erIsoTau26erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumIsolationL1HLTMatchedReg";
+          //monitoring_16_leg2_filter = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg"; //this is the one that Mohammad used but the name doesn't seem correct...
           if(strategy_ == strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 || strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16){
             // trig monitoring path superseeds: triggerObjectsDoubleMediumCombinedIsoTau35Reg
             // HLT: HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v
             // Have to raise online pT cut to 35 
-            alt_monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumCombinedIsoTau32Reg";
-            alt_monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+            alt_monitoring_16_trig_obj_label = "triggerObjectsIsoMu19MediumCombinedIsoTau32Reg";
+            alt_monitoring_16_leg1_filter = "hltL3crIsoL1sMu18erIsoTau26erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
             alt_monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumCombinedIsolationL1HLTMatchedReg";
+            //alt_monitoring_16_leg2_filter = "hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg"; //this is the one that Mohammad used but the name doesn't seem correct...
           }
         }
         if(run >= 294927 && run < 317509){ // 2017 + 2018 pre HPS
@@ -512,13 +514,16 @@ namespace ic {
 
           // ---------------------------
           // Monitoring Paths for double tau trigger checks
-          monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumTau32";
-          monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+          monitoring_16_trig_obj_label = "triggerObjectsIsoMu19MediumTau32";
+          monitoring_16_leg1_filter = "hltL3crIsoL1sMu18erIsoTau26erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumIsolationL1HLTMatchedReg";
+          //monitoring_16_leg2_filter = "hltOverlapFilterIsoMu19MediumIsoPFTau32Reg"; //this is the one that Mohammad used but the name doesn't seem correct...
 
-          alt_monitoring_16_trig_obj_label = "triggerObjectsIsoMu21MediumCombinedIsoTau32Reg";
-          alt_monitoring_16_leg1_filter = "hltL3crIsoL1sMu20erIsoTau26erL1f0L2f10QL3f21QL3trkIsoFiltered0p09";
+
+          alt_monitoring_16_trig_obj_label = "triggerObjectsIsoMu19MediumCombinedIsoTau32Reg";
+          alt_monitoring_16_leg1_filter = "hltL3crIsoL1sMu18erIsoTau26erL1f0L2f10QL3f19QL3trkIsoFiltered0p09";
           alt_monitoring_16_leg2_filter = "hltPFTau32TrackPt1MediumCombinedIsolationL1HLTMatchedReg";
+          //alt_monitoring_16_leg2_filter = "hltOverlapFilterIsoMu19MediumCombinedIsoPFTau32Reg"; //this is the one that Mohammad used but the name doesn't seem correct...
 
          
 
@@ -747,8 +752,20 @@ namespace ic {
     bool passed_monitoring_4 = false;
     bool passed_monitoring_5 = false;
     bool passed_monitoring_6 = false;
+    float trg_tt_monitoring_l1_=-1.;
 
     if (channel_ == channel::mt){
+
+      // also store the L1 information seperatly
+      std::vector<ic::L1TObject*> l1taus = event->GetPtrVec<ic::L1TObject>("L1Taus");
+      std::vector<ic::L1TObject*> passed_l1_monitoring_taus;
+      for(unsigned ta=0; ta<l1taus.size(); ++ta){
+        if(l1taus[ta]->isolation()!=0) passed_l1_monitoring_taus.push_back(l1taus[ta]);
+      }
+      std::vector<ic::Candidate*> sel_tau_vec = {dileptons[0]->GetCandidate("lepton2")};
+      auto match_l1s = MatchByDR(sel_tau_vec,passed_l1_monitoring_taus,0.5,true,true);
+      if (match_l1s.size()>0) trg_tt_monitoring_l1_ = match_l1s[0].second->vector().Pt();
+
       unsigned run = 0;
       if (is_data_){
         EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -760,13 +777,13 @@ namespace ic {
         for(unsigned i = 0; i < dileptons.size(); ++i){
           bool leg1_match_1 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_1, monitoring_16_leg1_filter, 0.5).first;
           bool leg2_match_1 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_1, monitoring_16_leg2_filter, 0.5).first;
-          unsigned leg2_match_index_1 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_1, monitoring_16_leg2_filter, 0.5).second;
+          unsigned leg2_match_index_1 = IsFilterMatchedWithIndex(dileptons[i]->At(1),monitoring_objs_1, monitoring_16_leg2_filter, 0.5).second;
 	  if (leg2_match_1) {
             if(monitoring_objs_1[leg2_match_index_1]->pt() < 35) leg2_match_1 = false;
           }
           bool leg1_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_2, alt_monitoring_16_leg1_filter, 0.5).first;
           bool leg2_match_2 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_2, alt_monitoring_16_leg2_filter, 0.5).first;
-          unsigned leg2_match_index_2 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_2, alt_monitoring_16_leg2_filter, 0.5).second;
+          unsigned leg2_match_index_2 = IsFilterMatchedWithIndex(dileptons[i]->At(1),monitoring_objs_2, alt_monitoring_16_leg2_filter, 0.5).second;
           if (leg2_match_2){
             if(monitoring_objs_2[leg2_match_index_2]->pt() < 35) leg2_match_2 = false;
           }
@@ -790,13 +807,13 @@ namespace ic {
 
           bool leg1_match_4 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_4, alt_monitoring_17_leg1_filter, 0.5).first;
           bool leg2_match_4 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_4, alt_monitoring_17_leg2_filter, 0.5).first;
-          unsigned leg2_match_index_4 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_4, alt_monitoring_17_leg2_filter, 0.5).second;
+          unsigned leg2_match_index_4 = IsFilterMatchedWithIndex(dileptons[i]->At(1),monitoring_objs_4, alt_monitoring_17_leg2_filter, 0.5).second;
           if (leg2_match_4){
             if(monitoring_objs_4[leg2_match_index_4]->pt() < 40) leg2_match_4 = false;
           }
           bool leg1_match_5 = IsFilterMatchedWithIndex(dileptons[i]->At(0), monitoring_objs_5, alt_monitoring_17_leg1_filter_2, 0.5).first;
           bool leg2_match_5 = IsFilterMatchedWithIndex(dileptons[i]->At(1), monitoring_objs_5, alt_monitoring_17_leg2_filter_2, 0.5).first;
-          unsigned leg2_match_index_5 = IsFilterMatchedWithIndex(dileptons[i]->At(0),monitoring_objs_5, alt_monitoring_17_leg2_filter_2, 0.5).second;
+          unsigned leg2_match_index_5 = IsFilterMatchedWithIndex(dileptons[i]->At(1),monitoring_objs_5, alt_monitoring_17_leg2_filter_2, 0.5).second;
           if (leg2_match_5){
             if(monitoring_objs_5[leg2_match_index_5]->pt() < 40) leg2_match_5 = false;
           }
@@ -812,6 +829,12 @@ namespace ic {
             passed_monitoring_5 = true;
             dileptons_pass.push_back(dileptons[i]);
           }
+        }
+        if(era_ == era::data_2017UL) {
+          // for 2017 have the raise the L1 threshold as well
+          passed_monitoring_3 = passed_monitoring_3 && trg_tt_monitoring_l1_>32;
+          passed_monitoring_4 = passed_monitoring_4 && trg_tt_monitoring_l1_>32;
+          passed_monitoring_5 = passed_monitoring_5 && trg_tt_monitoring_l1_>32;
         }
       }
       if ((era_ == era::data_2018UL && (!is_data_)) || (is_data_ && (run >= 317509))){
@@ -832,6 +855,7 @@ namespace ic {
     event->Add("trg_tt_monitoring_4", passed_monitoring_4);
     event->Add("trg_tt_monitoring_5", passed_monitoring_5);
     event->Add("trg_tt_monitoring_6", passed_monitoring_6);
+    event->Add("trg_tt_monitoring_l1", trg_tt_monitoring_l1_);
 
     
     bool passed_etaucross = false;
@@ -1112,7 +1136,18 @@ namespace ic {
 
     event->Add("trg_singlemuon", passed_singlemuon);
     event->Add("trg_singleelectron", passed_singleelectron);
- 
+
+    if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {  
+      std::vector<TriggerObject *> const& objs24 = event->GetPtrVec<TriggerObject>("triggerObjectsIsoMu24");
+      bool passed_singlemuon24 = IsFilterMatchedWithIndex(dileptons[0]->At(0), objs24, "hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09", 0.5).first;
+      event->Add("trg_singlemuon24", passed_singlemuon24);
+    }
+    if(era_ == era::data_2017UL || era_ == era::data_2018UL) {
+      std::vector<TriggerObject *> const& objs27 = event->GetPtrVec<TriggerObject>("triggerObjectsIsoMu27");
+      bool passed_singlemuon27 = IsFilterMatchedWithIndex(dileptons[0]->At(0), objs27, "hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07", 0.5).first;
+      event->Add("trg_singlemuon27", passed_singlemuon27);
+    }
+
     if(!do_filter_){
       return 0;    
     }

@@ -157,7 +157,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     tau_eta = 2.3;
   } 
   if (channel_str == "mt"){
-   muon_eta = 2.1;
+   muon_eta = 2.1; 
    tau_pt = 20;
    tau_eta = 2.3;
    min_taus = 1;
@@ -184,7 +184,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(channel_str == "zmm"){
     if(era_type == era::data_2017 || era_type == era::data_2017UL  || era_type == era::data_2018 || era_type == era::data_2018UL) muon_pt = 25.;
     else muon_pt = 23.;
-    muon_eta = 2.1;
+    muon_eta = 2.1; 
   }
   if(channel_str == "tpzmm"){
     muon_pt = 10;
@@ -239,6 +239,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  fakeE_tau_shift_1pi_endcap = 1.0;
  fakeMu_tau_shift_0pi = 1.0;
  fakeMu_tau_shift_1pi = 1.0;
+ fakeJ_tau_shift =1.;
 
  muon_res_shift = 0.;
  elec_res_shift = 0.;
@@ -267,6 +268,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  if(strategy_type == strategy::smsummer16 || strategy_type == strategy::cpsummer16 || strategy_type == strategy::legacy16 || strategy_type == strategy::cpdecays16 || strategy_type == strategy::cpsummer17 || strategy_type == strategy::cpdecays17 || strategy_type == strategy::cpdecays18){
    fakeMu_tau_shift_0pi = json["baseline"]["mufaketau_0pi_es_shift"].asDouble();
    fakeMu_tau_shift_1pi = json["baseline"]["mufaketau_1pi_es_shift"].asDouble();
+
+   if(json["baseline"]["fakeJ_tau_shift"].asString()!="") fakeJ_tau_shift = json["baseline"]["fakeJ_tau_shift"].asDouble();
  }
 
 tau_shift_func_1prong0pi0 = "";
@@ -1019,18 +1022,35 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if (jes_mode_ > 0 && !is_data ){
     std::string jes_input_file  = "";
     std::string jes_input_set  = "";
-    if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
+    if (era_type == era::data_2016) {
       jes_input_file = "input/jec/RegroupedV2_Summer16_07Aug2017_V11_MC_UncertaintySources_AK4PFchs.txt"; 
       jes_input_set  = "Total";
     }
-    if (era_type == era::data_2017 || era_type == era::data_2017UL) {
+    if (era_type == era::data_2017) {
       jes_input_file = "input/jec/RegroupedV2_Fall17_17Nov2017_V32_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
-    if (era_type == era::data_2018 || era_type == era::data_2018UL) {
+    if (era_type == era::data_2018) {
       jes_input_file = "input/jec/RegroupedV2_Autumn18_V19_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
+    if (era_type == era::data_2016UL_preVFP) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL16APV_V7_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2016UL_postVFP) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL16_V7_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2017UL) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL17_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+    if (era_type == era::data_2018UL) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }
+
     
     if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
    
@@ -2286,7 +2306,7 @@ void HTTSequence::BuildZMMPairs() {
                   fabs(t->eta())              <  2.3        &&
                   fabs(t->lead_dz_vertex())   <  0.2        &&
                   fabs(t->charge())           == 1          &&
-                  t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9);
+                  t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<3 || t->decay_mode()>9);
     
         }));  
     BuildModule(OverlapFilter<Tau,CompositeCandidate>("TauMuonOverlapFilter")
@@ -2361,9 +2381,9 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->eta())              <  tau_eta    &&
                fabs(t->lead_dz_vertex())   <  tau_dz     &&
                fabs(t->charge())           == 1          &&
-               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
-               t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5;
-
+               t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<3 || t->decay_mode()>9) &&
+               ((t->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") && t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5) || 
+               (t->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && t->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5));
      }));
  
  if (tau_scale_mode > 0 && !is_data){
@@ -2455,37 +2475,37 @@ void HTTSequence::BuildTauSelection(){
      .set_output_vec_label("fakeE_genmatched_taus")
      .set_gen_match(mcorigin::promptE));
    
-   BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+   BuildModule(CopyCollection<Tau>("CopyTo1Prong0PiFakeE",
      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi"));
    
-   BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+   BuildModule(CopyCollection<Tau>("CopyTo1Prong1PiFakeE",
      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi"));
 
-   BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+   BuildModule(CopyCollection<Tau>("CopyTo1Prong0PiFakeE_EC",
      "fakeE_genmatched_taus", "fakeE_genmatched_taus_0pi_endcap"));
 
-   BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+   BuildModule(CopyCollection<Tau>("CopyTo1Prong1PiFakeE_EC",
      "fakeE_genmatched_taus", "fakeE_genmatched_taus_1pi_endcap"));
    
-   BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+   BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilterFakeE")
      .set_input_label("fakeE_genmatched_taus_0pi")
      .set_predicate([=](Tau const* t) {
        return  t->decay_mode() == 0 && fabs(t->eta()) < 1.5;
      }));
    
-   BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+   BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilterFakeE")
      .set_input_label("fakeE_genmatched_taus_1pi")
      .set_predicate([=](Tau const* t) {
        return  t->decay_mode() == 1 && fabs(t->eta()) < 1.5;
      }));
     
-   BuildModule(SimpleFilter<Tau>("1Prong0PiEndCapTauFilter")
+   BuildModule(SimpleFilter<Tau>("1Prong0PiEndCapTauFilterFakeE")
      .set_input_label("fakeE_genmatched_taus_0pi_endcap")
      .set_predicate([=](Tau const* t) {
        return  t->decay_mode() == 0 && fabs(t->eta()) >= 1.5;
      }));
 
-   BuildModule(SimpleFilter<Tau>("1Prong1PiEndCapTauFilter")
+   BuildModule(SimpleFilter<Tau>("1Prong1PiEndCapTauFilterFakeE")
      .set_input_label("fakeE_genmatched_taus_1pi_endcap")
      .set_predicate([=](Tau const* t) {
        return  t->decay_mode() == 1 && fabs(t->eta()) >= 1.5;
@@ -2519,20 +2539,25 @@ void HTTSequence::BuildTauSelection(){
      .set_input_vec_label(js["taus"].asString())
      .set_output_vec_label("fakeMu_genmatched_taus")
      .set_gen_match(mcorigin::promptMu));
-   
-   BuildModule(CopyCollection<Tau>("CopyTo1Prong0Pi",
+  
+   BuildModule(HTTGenMatchSelector<Tau>("FakeJGenMatchSelector")
+     .set_input_vec_label(js["taus"].asString())
+     .set_output_vec_label("fakeJ_genmatched_taus")
+     .set_gen_match(mcorigin::fake));
+ 
+   BuildModule(CopyCollection<Tau>("CopyTo1Prong0PiFakeMu",
      "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_0pi"));
    
-   BuildModule(CopyCollection<Tau>("CopyTo1Prong1Pi",
+   BuildModule(CopyCollection<Tau>("CopyTo1Prong1PiFakeMu",
      "fakeMu_genmatched_taus", "fakeMu_genmatched_taus_1pi"));
    
-   BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilter")
+   BuildModule(SimpleFilter<Tau>("1Prong0PiTauFilterFakeMu")
      .set_input_label("fakeMu_genmatched_taus_0pi")
      .set_predicate([=](Tau const* t) {
        return  t->decay_mode() == 0;
      }));
    
-   BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilter")
+   BuildModule(SimpleFilter<Tau>("1Prong1PiTauFilterFakeMu")
      .set_input_label("fakeMu_genmatched_taus_1pi")
      .set_predicate([=](Tau const* t) {
        return  t->decay_mode() == 1;
@@ -2552,6 +2577,15 @@ void HTTSequence::BuildTauSelection(){
 
  }
 
+ if(fakeJ_tau_shift!=1.) {
+   //fakeJ_genmatched_taus
+   BuildModule(EnergyShifter<Tau>("FakeJEnergyShifter")
+   .set_input_label("fakeJ_genmatched_taus")
+   .set_save_shifts(true)
+   .set_shift_label("scales_jfaketaues")
+   .set_shift(fakeJ_tau_shift));
+ } 
+
  BuildModule(SimpleFilter<Tau>("TauFilterNewDM")
     .set_input_label(js["taus"].asString()).set_min(min_taus)
     .set_predicate([=](Tau const* t) {
@@ -2559,8 +2593,9 @@ void HTTSequence::BuildTauSelection(){
               fabs(t->eta())              <  tau_eta    &&
               fabs(t->lead_dz_vertex())   <  tau_dz     &&
               fabs(t->charge())           == 1          &&
-              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) &&
-              t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5; 
+              t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<3 || t->decay_mode()>9) &&
+               ((t->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") && t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5) || 
+               (t->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && t->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5));
 
     }));
 
@@ -2632,6 +2667,8 @@ void HTTSequence::BuildTauSelection(){
 
   HTTFilter<CompositeCandidate> vetoMuonPairFilter = HTTFilter<CompositeCandidate>("VetoMuonPairFilter")
       .set_input_label("muon_veto_pairs").set_min(0).set_max(0)
+      .set_veto_name("dimuon_veto")
+      .set_no_filter(true)
       .set_predicate([=](CompositeCandidate const* c){
         return c->DeltaR("muon1", "muon2") > 0.15 &&
 	       c->charge() == 0;

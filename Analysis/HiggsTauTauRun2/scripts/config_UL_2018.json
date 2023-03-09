@@ -1,10 +1,11 @@
 {
   "job": {
-    "filelist" : "filelists/Feb27_MC_102X_DYJetsToLL.dat",
+    "filelist" : "filelists/Nov30_2018_MC_102X_DYJetsToLL.dat",
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-   "channels":     ["et","mt","tt","zmm"],
+   //"channels":     ["mt","et","tt","zmm"],
+   "channels":     ["et","tt"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -20,7 +21,7 @@
   "sequence": {
     // "do_mssm_higgspt" : true,
     // "mssm_higgspt_file" : "/vols/build/cms/gu18/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau2/input/mssm_higgspt/higgs_pt_v2_mssm_mode.root",
-    "usePFMET" : false,
+    "usePFMET" : true,
     "do_gen_analysis" : false,
     "mc"            : "mc2018",
     "era"           : "data_2018UL",
@@ -64,7 +65,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_vs_preUL_UL2018/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018_PFMet_muoneta2p3/",
+//    "output_folder" : "/vols/cms/dw515/outputs/MSSM/Gen_DY_2018/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -118,6 +120,7 @@
       "muon_res_shift": 0.0,
       "elec_res_shift": 0.0,
       "tau_res_shift": 0.0,
+      "fakeJ_tau_shift": 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
       "metcl_mode"        : 0,
@@ -241,6 +244,18 @@
         "elec_es_shift_endcap": 1.025,
         "tau_es_shift": 1.03,
         "muon_es_shift": 1.002
+      }
+    },
+    "scale_jfake_lo": {
+      "baseline": {
+        "addit_output_folder" : "JFAKE_DOWN",
+        "fakeJ_tau_shift": 0.97
+      }
+    },
+    "scale_jfake_hi": {
+      "baseline": {
+        "addit_output_folder": "JFAKE_UP",
+        "fakeJ_tau_shift": 1.03
       }
     },
     "scale_t_0pi_hi": {

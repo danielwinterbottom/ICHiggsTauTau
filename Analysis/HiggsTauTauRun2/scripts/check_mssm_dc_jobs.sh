@@ -12,7 +12,7 @@ for i in $(ls $folder/*output.log); do
     new_out=${i//_output.log/"_output.log"}
     #echo $job 
     if [[ $2 != "" ]]; then
-      qsub -e $new_err -o $new_out -V -q hep.q -l h_rt=$2:0:0 -l h_vmem=24G -cwd $job
+      qsub -e $new_err -o $new_out -V -q hep.q -l h_rt=$2:0:0 -l h_vmem=24G -cwd ${job}
     fi
     (( COUNT++ ))
   fi

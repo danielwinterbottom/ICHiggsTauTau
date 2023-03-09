@@ -1,5 +1,6 @@
 COUNT=0
 TOTAL=0
+voms-proxy-init --voms cms --valid 192:00 --out ~/cms.proxy
 for i in $(ls jobs/*.sh | grep -v svfit); do 
   if [[ $i = *"parajob_"* ]]; then continue; fi
   if [[ $i = *"hadd_"* ]]; then continue; fi 

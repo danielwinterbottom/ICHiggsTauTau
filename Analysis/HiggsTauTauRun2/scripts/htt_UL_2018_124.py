@@ -71,7 +71,7 @@ parser.add_option("--scales", dest="scales", type='string', default='default',
 parser.add_option("--parajobs", dest="parajobs", action='store_true', default=False,
                   help="Submit jobs parametrically")
 
-parser.add_option("--config", dest="config", type='string', default='scripts/config_UL_2018.json',
+parser.add_option("--config", dest="config", type='string', default='scripts/config_UL_2018_124.json',
                   help="Config file")
 
 parser.add_option("--list_backup", dest="slbackupname", type='string', default='prevlist',
@@ -121,7 +121,7 @@ for scale in scale_list:
         flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars())
         flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars())
 
-CONFIG='scripts/config_UL_2018.json'
+CONFIG='scripts/config_UL_2018_124.json'
 if options.config != '': CONFIG = options.config
 
 n_channels=1
@@ -172,7 +172,7 @@ for i in range(0,scale):
    flatjsons.append(temp)
 
 
-FILELIST='filelists/Nov30_2018_MC_106X'
+FILELIST='filelists/Jan08_2018_MC_124X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -221,14 +221,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         data_samples+=['Tau'+era]
 
 
-    DATAFILELIST="./filelists/Nov30_2018_Data_106X"
+    DATAFILELIST="./filelists/Jan08_2018_Data_124X"
 
     if options.calc_lumi:
         for sa in data_samples:
-            DATAFILELIST="./filelists/Nov30_2018_Data_106X"
+            DATAFILELIST="./filelists/Jan08_2018_Data_124X"
             JOB='%s_2018' % (sa)
-            user='guttley'
-            prefix='Nov30_Data_106X_2018'
+            user='dwinterb'
+            prefix='Jan08_Data_124X_2018'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 500 
@@ -246,10 +246,10 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     else:
         for sa in data_samples:
-            DATAFILELIST="./filelists/Nov30_2018_Data_106X"
+            DATAFILELIST="./filelists/Jan08_2018_Data_124X"
             JOB='%s_2018' % (sa)
-            user='guttley'
-            prefix='Nov30_Data_106X_2018'
+            user='dwinterb'
+            prefix='Jan08_Data_124X_2018'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 30
@@ -296,11 +296,11 @@ if options.proc_bkg or options.proc_all:
     'DY3JetsToLL_M-10to50-LO',
     'DY4JetsToLL_M-10to50-LO',
  
-    ## Drell-Yan NLO
-    'DYJetsToLL-NLO',
-    'DYJetsToLL_0J-NLO',
-    'DYJetsToLL_1J-NLO',
-    'DYJetsToLL_2J-NLO',
+    ### Drell-Yan NLO
+    #'DYJetsToLL-NLO',
+    #'DYJetsToLL_0J-NLO',
+    #'DYJetsToLL_1J-NLO',
+    #'DYJetsToLL_2J-NLO',
    
     # Electroweak W and Z
     'EWKWMinus2Jets_WToLNu',
@@ -369,9 +369,9 @@ if options.proc_bkg or options.proc_all:
 
     for sa in central_samples:
         JOB='%s_2018' % (sa)
-        FILELIST='filelists/Nov30_2018_MC_106X'
-        user='guttley'
-        PREFIX='Nov30_MC_106X_2018'
+        FILELIST='filelists/Jan08_2018_MC_124X'
+        user='dwinterb'
+        PREFIX='Jan08_MC_124X_2018'
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         
         job_num=0
