@@ -30,7 +30,7 @@ options, remaining_argv = conf_parser.parse_known_args()
 
 defaults = {
     "channel":"tpzmm" , 
-    "outputfolder":"tagandprobe_3108/UL18/tpzmm/single",
+    "outputfolder":"tagandprobe_1702/UL18/tpzmm/single",
     "folder":"/vols/cms/ks1021/ditau/trees/2018_2908",
     "era":"UL_18", 
     "embedded":False, 
@@ -1282,12 +1282,12 @@ for i in sf_types:
         x_title = 'P_{T}^{e} (GeV)'
         if 'trg' in i: ratio_range="0.1,2.0"
     label = '%s, %.1f < |#eta| < %.1f' % (i, ymin,ymax)
+    if options.channel == "tpzmm": label = 'Muon Trigger, 2018, %.1f < |#eta| < %.1f' % (ymin,ymax)
+    if options.channel == "tpzee": label = 'Electron Trigger, 2018, %.1f < |#eta| < %.1f' % (ymin,ymax)
     if options.charge_flip: 
       label=''
       ratio_range="0.1,2.0"
     plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='UL_18',ratio_range,True,100,10,False,0,1.5,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
-
-
 
 outfile.Close()  
 wsfile.Close()
