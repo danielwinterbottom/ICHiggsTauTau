@@ -651,8 +651,17 @@ cats['threeprong'] = '(tau_decay_mode_2>9)'
 cats['dm0'] = '(tau_decay_mode_2==0)'
 cats['dm1'] = '(tau_decay_mode_2==1)'
 cats['dm1_ptLt40'] = '(tau_decay_mode_2==1&&pt_2<40)'
+cats['inclusive_ptLt40'] = '(pt_2<40)'
 cats['dm10'] = '(tau_decay_mode_2==10)'
 cats['dm11'] = '(tau_decay_mode_2==11)'
+cats['pt20to30'] = '(pt_2>20&&pt_2<30)'
+cats['pt30to40'] = '(pt_2>30&&pt_2<40)'
+cats['pt40to60'] = '(pt_2>40&&pt_2<60)'
+cats['ptGt60'] = '(pt_2>60)'
+
+for x in ['pt20to30','pt30to40','pt40to60','ptGt60']:
+  cats['inclusive_'+x] = cats[x] 
+  for dm in [0,1,10,11]: cats['dm%i_%s' % (dm,x) ] = cats['dm%i' % dm] + '&&' + cats[x] 
 
 cats['baseline'] = cats['baseline'].replace('pt_2>30','pt_2>20') # delete me!!! - this is to select pT down to 20 for SF measurments!!!!!
 #cats['baseline'] = cats['baseline'].replace('leptonveto','(extramuon_veto||extraelec_veto)') # delete me!!! - this is to select pT down to 20 for SF measurments!!!!!
