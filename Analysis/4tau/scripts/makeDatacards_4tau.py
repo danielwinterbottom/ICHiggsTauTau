@@ -282,11 +282,11 @@ for channel in channels:
 # Job loop
 for channel in channels:
   systs = copy.deepcopy(common_shape_systematics)
-  #if "e" not in channel: 
-  #  systs.remove("--syst_electron_scale")
-  #  systs.remove("--syst_electron_id")
-  #elif "m" not in channel:
-  #  systs.remove("--syst_muon_id")
+  if "e" not in channel: 
+    systs.remove("--syst_electron_scale")
+    systs.remove("--syst_electron_id")
+  elif "m" not in channel:
+    systs.remove("--syst_muon_id")
 
   #if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
 
@@ -299,16 +299,16 @@ for channel in channels:
 
       for var in variables:
 
-        if channel == "ttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 30.0, 80.0, 100.0, 110.0, 125.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 600.0]"
-        if channel == "tttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 600.0]"
-        if channel == "eett" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 600.0]"
-        if channel == "eett" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 600.0]"
-        if channel == "mmtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 90.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600.0]"
-        if channel == "mmtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 600.0]"
-        if channel == "emtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 100.0, 200.0, 240.0, 300.0, 600.0]"
-        if channel == "emtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 220.0, 600.0]"
-        if channel == "ettt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 600.0]"
-        if channel == "mttt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 600.0]"
+        if channel == "ttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 30.0, 80.0, 100.0, 110.0, 125.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 6000.0]"
+        if channel == "tttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+        if channel == "eett" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 6000.0]"
+        if channel == "eett" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+        if channel == "mmtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 90.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 500.0, 6000.0]"
+        if channel == "mmtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+        if channel == "emtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 100.0, 200.0, 240.0, 300.0, 6000.0]"
+        if channel == "emtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 220.0, 6000.0]"
+        if channel == "ettt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+        if channel == "mttt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
 
 
         if '[' in var: var_string = var.split('[')[0]
