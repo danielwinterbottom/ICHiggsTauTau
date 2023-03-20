@@ -23,9 +23,9 @@ try_weights = {"qcd_scale": [
                    "wt_mur1_muf0p5",
                    "wt_mur2_muf1",
                    "wt_mur2_muf2",
-                   "wt_mur2_muf0p5",
+                   #"wt_mur2_muf0p5",
                    "wt_mur0p5_muf1",
-                   "wt_mur0p5_muf2",
+                   #"wt_mur0p5_muf2",
                    "wt_mur0p5_muf0p5",
                    ], 
                 "alpha_s": [
@@ -49,6 +49,7 @@ for name in sig_samples:
     for k, v in try_weights.items():
       for ind, i in enumerate(v): 
         sum_dict[k][ind] += getattr(e ,i)
+
  
   for k,v in try_weights.items(): 
     dump_dict[name][k] = {}

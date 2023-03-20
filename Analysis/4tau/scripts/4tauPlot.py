@@ -760,7 +760,7 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
         total_ff_wt = " * ".join(["wt_ff_ml_{}{}".format(i,wt_ext) for i in aiso_tau_numbers])
         total_gen_match_sel = " * ".join(["(gen_match_{}!=6)".format(i) for i in aiso_tau_numbers])
         total_fail = " * ".join(["({}_{}<0.5 && deepTauVsJets_iso_{}>0.1)".format(vj,i,i) for i in aiso_tau_numbers])
-        total_pass = " * ".join(["({}_{}>0.5)".format(vj,i) for i in iso_tau_numbers])
+        total_pass = " * ".join(["({}_{}>0.5)".format(vj,i) for i in iso_tau_numbers if (str(i) not in options.aiso and str(i) not in options.aiso_and_iso and not options.no_sig_sel)])
    
         # remove empty selections
         ff_data_wt_list = [sign,total_ff_wt,total_fail,total_pass]
@@ -969,6 +969,22 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
     if not first_hist:        
       total_bkg.SetName('total_bkg'+add_name)
       total_bkg.Write()
+   
+   # first_hist = True
+   # for node in nodes:
+   #   if add_name not in node.name: continue
+   #   if node.name == "data_obs": continue
+   #   if node.name.endswith("Up"): continue
+   #   if node.name.endswith("Down"): continue
+   #   if node.name not in list(chain.from_iterable(signal_samples)): continue
+   #   if first_hist:
+   #     total_sig = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
+   #     first_hist=False
+   #   else: total_sig.Add(ana.nodes[nodename].nodes[node.name].shape.hist.Clone())
+   # if not first_hist:
+   #   total_sig.SetName('total_sig'+add_name)
+   #   total_sig.Write()
+
     outfile.cd()
 
 
@@ -1242,7 +1258,7 @@ if options.syst_tau_scale:
     systematics['syst_tau_scale_down'] = ('TSCALE_DOWN' , '_syst_tau_scale'+'Down', 'wt', ['jetFakes'], False)
 
 if options.syst_tau_scale_group:
-    names = ["1prong","1prong1pizero","3prong","3prong1pizero"]
+    names = ["syst_1prong","syst_1prong1pizero","syst_3prong","syst_3prong1pizero"]
     folders = ["TSCALE0PI","TSCALE1PI","TSCALE3PRONG","TSCALE3PRONG1PI0"]
     syst_dict = dict(zip(names, folders))
     for name, folder in syst_dict.iteritems():
@@ -1251,9 +1267,9 @@ if options.syst_tau_scale_group:
 
 if options.syst_jet_scale_group:
     # need dict of syst names and folders of where the shifted trees are found
-    names = ["Absolute", "Absolute_year", "BBEC1", "BBEC1_year",
-            "EC2", "EC2_year", "FlavorQCD", "HF", "HF_year",
-            "RelativeBal", "RelativeSample_year"]
+    names = ["syst_Absolute", "syst_Absolute_year", "syst_BBEC1", "syst_BBEC1_year",
+            "syst_EC2", "syst_EC2_year", "syst_FlavorQCD", "syst_HF", "syst_HF_year",
+            "syst_RelativeBal", "syst_RelativeSample_year"]
     folders = ["JESABS", "JESABS_YEAR", "JESBBEC1", "JESBBEC1_YEAR",
             "JESEC2", "JESEC2_YEAR", "JESFLAV", "JESHF", "JESHF_YEAR",
             "JESRBAL", "JESRELSAMP_YEAR"]
@@ -1405,7 +1421,6 @@ if options.plot_from_dc == "":
         add_names.append(add_name)
         syst_add_name=add_folder_name
         
-
         mc_input_folder_name = options.folder
         if add_folder_name != '': mc_input_folder_name += '/'+add_folder_name
        
@@ -1790,6 +1805,7 @@ if not options.no_plot:
 
 #norm signal yields on datacards to 1pb AFTER plotting    
 if not options.no_signal and not options.plot_from_dc:
+  print "norm signal yields"
   outfile =  ROOT.TFile(output_name, 'UPDATE')
   for add_name in add_names:
       NormSignals(outfile,add_name)

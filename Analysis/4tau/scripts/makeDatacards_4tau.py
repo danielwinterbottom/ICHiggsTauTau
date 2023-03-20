@@ -94,7 +94,7 @@ all_ch_variables = [
 #                    GetBinning('mvis_23',0,400,100,round=1),
 #                    GetBinning('mvis_24',0,400,100,round=1),
 #                    GetBinning('mvis_34',0,400,100,round=1),
-#                    GetBinning('mvis_1234',0,600,100,round=1),
+#                    GetBinning('mvis_1234',80,600,100,round=1),
 #                    GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
 #                    GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
 #                    GetBinning('mvis_min_sum_dphi_1',0,500,100,round=1),
@@ -158,6 +158,9 @@ ch_dep_var = {"mttt":[
 #                      GetBinning('mvis_os',0,400,100,round=1),
 #                      GetBinning('pt_tt_os',0,300,60,round=1),
                       ],
+	            "mmmm":[
+                      GetBinning('mvis_1234',80,600,100,round=1),
+	                    ],
               }
 
 categories = {
@@ -168,6 +171,7 @@ categories = {
               "emtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "eett": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
               "mmtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
+       	      "mmmm": ["inclusive"],
               }
 
 
@@ -230,6 +234,9 @@ add_options = {
                         ["ff_4","--no_signal --ff_from=4 --no_sig_sel --under_legend='FF_{2}'"],
                         #["ff_34","--no_signal --charges_non_zero --ff_from=34 --under_legend='FF_{1} x FF_{2}'"],
                         ],                    
+	       "mmmm":[
+		       ["signal",""],
+		      ],
                }
 
 ### Systematics ###
@@ -312,7 +319,7 @@ for channel in channels:
         if "ff" in name: run_cmd += " --rebin_with_data"
         job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
         CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        #SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
            
     
 

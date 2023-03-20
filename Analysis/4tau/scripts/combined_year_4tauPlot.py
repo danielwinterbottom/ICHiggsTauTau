@@ -142,10 +142,12 @@ def RebinHist(hist,binning):
   return hout
 
 def ZeroNegativeBins(hist):
+  neg_bins = False
   for i in range(0,hist.GetNbinsX()+1):
     if hist.GetBinContent(i) < 0:
+      neg_bins = True
       hist.SetBinContent(i,0)
-  return hist
+  return hist, neg_bins
 
 ###
 
@@ -219,6 +221,7 @@ if args.auto_rebinning:
   for i in  cf.Get(dir_name).GetListOfKeys():
       if i.GetName() not in hists_done:
         if ".subnodes" not in i.GetName():
+          print i.GetName()
           new_hist = RebinHist(copy.deepcopy(cf.Get(dir_name+'/'+i.GetName())),binning)
           hists_done.append(i.GetName())
           directory.Delete(i.GetName()+';1')
@@ -233,15 +236,17 @@ if args.zero_negative_bins:
   cf.cd(dir_name)
   for i in keys:
     if ".subnodes" not in i:
+      print i
       hist = cf.Get(dir_name+'/'+i)
       scale = False
       if hist.Integral() < 0:  
         scale = True
         hist.Scale(-1)
-      new_hist = ZeroNegativeBins(copy.deepcopy(hist))
+      new_hist, neg_bins = ZeroNegativeBins(copy.deepcopy(hist))
       if scale: new_hist.Scale(-1)
-      directory.Delete(i+';1')
-      new_hist.Write()
+      if neg_bins:
+        directory.Delete(i+';1')
+        new_hist.Write()
 
 #recalculate total
 proc_names = ["VVR","VVLF","jetFakes","MC_jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes234","jetFakes1234"]
