@@ -115,9 +115,9 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   }
 
   if(do_prefire_weights_) {
-    prefweight_token_ = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"));
-    prefweightup_token_ = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
-    prefweightdown_token_ = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
+    prefweight_token_ = consumes< float >(edm::InputTag("prefiringweight:nonPrefiringProb"));
+    prefweightup_token_ = consumes< float >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+    prefweightdown_token_ = consumes< float >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
   }
 
   info_ = new ic::EventInfo();
@@ -349,17 +349,18 @@ void ICEventInfoProducer::produce(edm::Event& event,
    }
 
    if(do_prefire_weights_) {
-     edm::Handle< double > theprefweight;
+     edm::Handle< float > theprefweight;
      event.getByToken(prefweight_token_, theprefweight ) ;
-     double _prefiringweight =(*theprefweight);
+     float _prefiringweight =(*theprefweight);
      
-     edm::Handle< double > theprefweightup;
+     edm::Handle< float > theprefweightup;
      event.getByToken(prefweightup_token_, theprefweightup ) ;
-     double _prefiringweightup =(*theprefweightup);
+     float _prefiringweightup =(*theprefweightup);
      
-     edm::Handle< double > theprefweightdown;
+     edm::Handle< float > theprefweightdown;
      event.getByToken(prefweightdown_token_, theprefweightdown ) ;
-     double _prefiringweightdown =(*theprefweightdown);
+     float _prefiringweightdown =(*theprefweightdown);
+
 
      info_->set_weight("wt_prefire",
                           _prefiringweight, false);

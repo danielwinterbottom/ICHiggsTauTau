@@ -4,7 +4,7 @@ import os
 #python3 crab_4tau_12_4.py --data --mc --output_folder Dec22 --year 2018
 #cmsRun test/higgstautau_cfg_124X_Dec22_2018.py isData=0 globalTag=106X_upgrade2018_realistic_v15_L1v1 isEmbed=0
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Nov22')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Mar24')
 parser.add_argument('--year','-y', help= 'Name of input year', choices=["2016-preVFP","2016-postVFP","2017","2018","all"], default='all')
 parser.add_argument('--data', help= 'Run data samples',  action='store_true')
 parser.add_argument('--mc', help= 'Run mc samples',  action='store_true')
@@ -22,9 +22,9 @@ if args.year == "all": yl = ["2016-preVFP","2016-postVFP","2017","2018"]
 else: yl = [args.year]
 
 cfg = {
-       "2016-preVFP":"higgstautau_cfg_106X_Nov21_2016_preVFP.py",
-       "2016-postVFP":"higgstautau_cfg_106X_Nov21_2016_postVFP.py",
-       "2017":"higgstautau_cfg_106X_Nov21_2017.py",
+       "2016-preVFP":"higgstautau_cfg_124X_Mar24_2016_preVFP.py",
+       "2016-postVFP":"higgstautau_cfg_124X_Mar24_2016_postVFP.py",
+       "2017":"higgstautau_cfg_124X_Feb18_2017.py",
        "2018":"higgstautau_cfg_124X_Dec22_2018.py"
        }
 
@@ -218,7 +218,7 @@ for dm in dml:
 
             # EGamma
             tasks.append(('EGammaA', '/EGamma/Run2018A-UL2018_MiniAODv2-v1/MINIAOD'))
-            tasks.append(('EGammaB', '/EGamma/Run2018B-12Nov2019_UL2018-v2/MINIAOD'))
+            tasks.append(('EGammaB', '/EGamma/Run2018B-UL2018_MiniAODv2-v1/MINIAOD'))
             tasks.append(('EGammaC', '/EGamma/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
             tasks.append(('EGammaD', '/EGamma/Run2018D-UL2018_MiniAODv2-v2/MINIAOD'))
 
@@ -228,17 +228,17 @@ for dm in dml:
             tasks.append(('TauC', '/Tau/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
             tasks.append(('TauD', '/Tau/Run2018D-UL2018_MiniAODv2-v1/MINIAOD'))
 
-           # # MuonEG
-           # tasks.append(('MuonEGA', '/MuonEG/Run2018A-UL2018_MiniAODv2-v1/MINIAOD'))
-           # tasks.append(('MuonEGB', '/MuonEG/Run2018B-UL2018_MiniAODv2-v1/MINIAOD'))
-           # tasks.append(('MuonEGC', '/MuonEG/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
-           # tasks.append(('MuonEGD', '/MuonEG/Run2018D-UL2018_MiniAODv2-v1/MINIAOD'))
+            # MuonEG
+            tasks.append(('MuonEGA', '/MuonEG/Run2018A-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('MuonEGB', '/MuonEG/Run2018B-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('MuonEGC', '/MuonEG/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('MuonEGD', '/MuonEG/Run2018D-UL2018_MiniAODv2-v1/MINIAOD'))
 
-           # # DoubleMuon
-           # tasks.append(('DoubleMuonA', '/DoubleMuon/Run2018A-UL2018_MiniAODv2-v1/MINIAOD'))
-           # tasks.append(('DoubleMuonB', '/DoubleMuon/Run2018B-UL2018_MiniAODv2-v1/MINIAOD'))
-           # tasks.append(('DoubleMuonC', '/DoubleMuon/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
-           # tasks.append(('DoubleMuonD', '/DoubleMuon/Run2018D-UL2018_MiniAODv2-v1/MINIAOD'))
+            # DoubleMuon
+            tasks.append(('DoubleMuonA', '/DoubleMuon/Run2018A-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonB', '/DoubleMuon/Run2018B-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonC', '/DoubleMuon/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonD', '/DoubleMuon/Run2018D-UL2018_MiniAODv2-v1/MINIAOD'))
 
         if dm == "MC":
           if yr == "2016-preVFP":
