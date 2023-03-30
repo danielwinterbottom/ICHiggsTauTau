@@ -47,6 +47,8 @@ namespace ic {
     bool passed_doubletau_34 = false;
     bool passed_singlemuon_1 = false;
     bool passed_singlemuon_2 = false;
+    bool passed_singlemuon_3 = false;
+    bool passed_singlemuon_4 = false;
     bool passed_singleelectron_1 = false;
     bool passed_singleelectron_2 = false;
     bool passed_doublemuon_12 = false;
@@ -62,6 +64,11 @@ namespace ic {
     bool passed_etaucross_23 = false;
     bool passed_etaucross_24 = false;
     bool passed_emucross_12 = false;
+
+    bool passed_doubletau_leg_1 = false;
+    bool passed_doubletau_leg_2 = false;
+    bool passed_doubletau_leg_3 = false;
+    bool passed_doubletau_leg_4 = false;
 
     std::vector<std::string> trg_obj_label_doubletau;
     std::vector<std::string> trg_obj_label_doubleelectron; 
@@ -153,7 +160,7 @@ namespace ic {
       leg_singleelectron = {"hltEle25erWPTightGsfTrackIsoFilter"};
     } else if (era_ == era::data_2017 || era_ == era::data_2017UL) {
       trg_obj_label_singleelectron = {"triggerObjectsEle32L1DoubleEG","triggerObjectsEle35","triggerObjectsEle27"};
-      leg_singleelectron = {"triggerObjectsEle32L1DoubleEG","triggerObjectsEle35","triggerObjectsEle27"};
+      leg_singleelectron = {"hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEle35noerWPTightGsfTrackIsoFilter","hltEle27WPTightGsfTrackIsoFilter"};
     } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       trg_obj_label_singleelectron = {"triggerObjectsEle32","triggerObjectsEle35"};
       leg_singleelectron = {"hltEle32WPTightGsfTrackIsoFilter","hltEle35noerWPTightGsfTrackIsoFilter"};
@@ -255,20 +262,27 @@ namespace ic {
         passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_14 =  passed_doubletau_14 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_1 = passed_doubletau_leg_1 || IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first;
       }
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt) {
         passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_24 =  passed_doubletau_24 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_2 = passed_doubletau_leg_2 || IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first;
       }
       if (channel_ == channel::tttt || channel_ == channel::ettt || channel_ == channel::mttt ||  channel_ == channel::eett || channel_ == channel::mmtt || channel_ == channel::emtt) {
         passed_doubletau_34 =  passed_doubletau_34 || ((IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_3 = passed_doubletau_leg_3 || IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first;
+        passed_doubletau_leg_4 = passed_doubletau_leg_4 || IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_doubletau_1[i], 0.5).first;
       }
       if (channel_ == channel::ttt){
         passed_doubletau_12 =  passed_doubletau_12 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_13 =  passed_doubletau_13 || ((IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
         passed_doubletau_23 =  passed_doubletau_23 || ((IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first) && (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_2[i], 0.5).first));
+        passed_doubletau_leg_1 = passed_doubletau_leg_1 || IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_doubletau_1[i], 0.5).first;
+        passed_doubletau_leg_2 = passed_doubletau_leg_2 || IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_doubletau_1[i], 0.5).first;
+        passed_doubletau_leg_3 = passed_doubletau_leg_3 || IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_doubletau_1[i], 0.5).first;
+
       }
-     // std::cout << passed_doubletau_12 << " " << passed_doubletau_13 << " " << passed_doubletau_14 << " " << passed_doubletau_23 << " " << passed_doubletau_24 << " " << passed_doubletau_34 << std::endl;
     }
 
     ////doubleelectron
@@ -303,11 +317,15 @@ namespace ic {
     //singlemuon
     for (unsigned i = 0; i < trg_obj_label_singlemuon.size(); ++i) {
       std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trg_obj_label_singlemuon[i]);
-      if (channel_ == channel::mmtt || channel_ == channel::mttt) {
+      if (channel_ == channel::mmtt || channel_ == channel::mttt || channel_ == channel::mmmm) {
         passed_singlemuon_1 =  passed_singlemuon_1 || (IsFilterMatchedWithIndex(multileptons[0]->At(0), objs, leg_singlemuon[i], 0.5).first);
       }
-      if (channel_ == channel::mmtt || channel_ == channel::emtt) {
+      if (channel_ == channel::mmtt || channel_ == channel::emtt || channel_ == channel::mmmm) {
         passed_singlemuon_2 =  passed_singlemuon_2 || (IsFilterMatchedWithIndex(multileptons[0]->At(1), objs, leg_singlemuon[i], 0.5).first);
+      }
+      if (channel_ == channel::mmmm) {
+        passed_singlemuon_3 =  passed_singlemuon_3 || (IsFilterMatchedWithIndex(multileptons[0]->At(2), objs, leg_singlemuon[i], 0.5).first);
+        passed_singlemuon_4 =  passed_singlemuon_4 || (IsFilterMatchedWithIndex(multileptons[0]->At(3), objs, leg_singlemuon[i], 0.5).first);
       }
     }
 
@@ -361,6 +379,8 @@ namespace ic {
     event->Add("trg_doublemuon_12", passed_doublemuon_12);
     event->Add("trg_singlemuon_1", passed_singlemuon_1);
     event->Add("trg_singlemuon_2", passed_singlemuon_2);
+    event->Add("trg_singlemuon_3", passed_singlemuon_3);
+    event->Add("trg_singlemuon_4", passed_singlemuon_4);
     event->Add("trg_singleelectron_1", passed_singleelectron_1);
     event->Add("trg_singleelectron_2", passed_singleelectron_2);
     event->Add("trg_mutaucross_12", passed_mutaucross_12);
@@ -375,6 +395,10 @@ namespace ic {
     event->Add("trg_etaucross_24", passed_etaucross_24);
     event->Add("trg_emucross_12", passed_emucross_12);
 
+    event->Add("trg_doubletau_leg_1", passed_doubletau_leg_1);
+    event->Add("trg_doubletau_leg_2", passed_doubletau_leg_2);
+    event->Add("trg_doubletau_leg_3", passed_doubletau_leg_3);
+    event->Add("trg_doubletau_leg_4", passed_doubletau_leg_4);
 
     return 0;
   }

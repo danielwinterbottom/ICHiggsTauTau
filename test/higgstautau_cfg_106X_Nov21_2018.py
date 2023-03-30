@@ -110,7 +110,7 @@ tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
                     updatedTauName = updatedTauName,
                     toKeep = [
                             "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
-                            "deepTau2017v2p1",
+                            "deepTau2017v2p1","MVADM_2017_v1",
                             ])
 
 tauIdEmbedder.runTauID()
@@ -1608,11 +1608,13 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
     inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
     includeFiltersFromTrig = cms.bool(True),
     inputfiltersfromtrig = cms.InputTag("TriggerResults","",data_type),
+    filters             = cms.PSet(
+        Flag_BadPFMuonDzFilter          = cms.InputTag("BadPFMuonFilterUpdateDz"),
+        ),
     filtersfromtrig     = cms.vstring(
         "Flag_goodVertices","Flag_globalSuperTightHalo2016Filter",
         "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
         "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter",
-        "Flag_BadPFMuonDzFilter",
         "Flag_eeBadScFilter","Flag_ecalBadCalibFilter",
         )
 )

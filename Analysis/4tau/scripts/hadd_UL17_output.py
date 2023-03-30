@@ -107,6 +107,7 @@ sample_list = [
 	'TTToSemiLeptonic',
 	 # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
 	'WZTo3LNu',
+        'WZTo1L3Nu','WZTo2Q2L','WZTo1L1Nu2Q','WWTo1L1Nu2Q',
 	'WWTo2L2Nu',
 	'ZZTo2L2Nu',
 	'ZZTo4L',
@@ -136,8 +137,26 @@ sample_list = [
   'WplusHToTauTau_M125',
   'ZHToTauTau_M125',
   'ttHToTauTau_M125',
+  'VBF_HToZZTo4L_M125',
+  'GluGlu_HToZZTo4L_M125',
+  'GluGluToContinToZZTo2e2mu',
+  'GluGluToContinToZZTo2e2nu',
+  'GluGluToContinToZZTo2e2tau',
+  'GluGluToContinToZZTo2mu2nu',
+  'GluGluToContinToZZTo2mu2tau',
+  'GluGluToContinToZZTo4e',
+  'GluGluToContinToZZTo4mu',
+  'GluGluToContinToZZTo4tau',
+
 
 	]
+
+grid_phi = ["100","110","125","140","160","180","200","250","300"]
+grid_A = ["60","70","80","90","100","125","140","160"]
+
+for mp in grid_phi:
+  for mA in grid_A:
+     sample_list.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
 
 
 sample_list = list(set(sample_list))
@@ -145,7 +164,7 @@ sample_list = list(set(sample_list))
 out=''
 for s in sorted(sample_list): out+='    - %s\n' %s
 
-channel = ["tttt","mttt","ettt","emtt","eett","mmtt"]
+channel = ["ttt","tttt","mttt","ettt","emtt","eett","mmtt","mmmm"]
 
 with open("%(samplelist)s"%vars(),"r") as inf:
   lines = inf.readlines()
@@ -158,8 +177,6 @@ for d in subdirs:
   infi=os.listdir('%(outputf)s/%(d)s' % vars())
   if infi: new_subdirs.append((d,infi))
 subdirs=new_subdirs
-
-print subdirs
 
 
 nfiles={}
@@ -183,17 +200,18 @@ def FindMissingFiles(outf, d, samp, chan, infiles):
 for ind in range(0,len(lines)):
   nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
 for sa in sample_list:
-  remove=True
-  to_remove=[]
-  hadd_dirs=[]
-  command=''
-  if batch:
-    JOB='jobs/hadd_%s.sh' % sa
-    os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
+    remove=True
+    to_remove=[]
+    hadd_dirs=[]
+    command=''
+    if batch:
+      JOB='jobs/hadd_%(sa)s_%(ch)s_2017.sh' % vars()
+      os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
+      #print '%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0.root'%vars(), os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0.root'%vars())
       if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_0.root'%vars()):
         if "%(sa)s_2017"%vars() in nfiles or ignore==True:
 #          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*.root'%vars())
@@ -212,30 +230,32 @@ for sa in sample_list:
               else :
                 to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*' %vars())
             else:
-              haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
+              haddout='haddout_%s_%s_%s_2017.txt' % (sa,ch,sdir)  
               hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_*' %vars())) 
               command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2017.root %(outputf)s/%(sdir)s/%(sa)s_2017_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
           else :
             print "Incorrect number of files for sample %(sa)s_2017_%(ch)s! in %(sdir)s"%vars()
             remove=False
 
-  if not batch and remove:
-    # if all channels and systematics were hadded sucsessfully then remove the input files
-    for x in to_remove: 
-      os.system(x)
+    if not batch and remove:
+      # if all channels and systematics were hadded sucsessfully then remove the input files
+      for x in to_remove: 
+        os.system(x)
 
-  if batch and command:
-    with open(JOB, "a") as file: 
-      file.write("\n%s" % command)
-      rm_command = 'y=1\n' % vars()
-      for i in hadd_dirs:
-        hadd_file  = i[0]
-        rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
-      rm_command+='if [ $y == 1 ]; then\n'
-      for i in hadd_dirs:
-        input_file = i[1]
-        rm_command+=input_file+'\n'
-      rm_command+='fi'
-      if remove: file.write("\n%s" % rm_command)
-      file.write('\nEnd of job')
-    os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+    if batch and command:
+      with open(JOB, "a") as file: 
+        file.write("\n%s" % command)
+        rm_command = 'y=1\n' % vars()
+        for i in hadd_dirs:
+          hadd_file  = i[0]
+          rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
+        rm_command+='if [ $y == 1 ]; then\n'
+        for i in hadd_dirs:
+          input_file = i[1]
+          rm_command+=input_file+'\n'
+        rm_command+='fi'
+        if remove: file.write("\n%s" % rm_command)
+        file.write('\necho \"End of job\"')
+      job_err = JOB.replace(".sh","_error.log")
+      job_out = JOB.replace(".sh","_output.log")
+      os.system('%(JOBSUBMIT)s %(JOB)s %(job_err)s %(job_out)s' % vars())

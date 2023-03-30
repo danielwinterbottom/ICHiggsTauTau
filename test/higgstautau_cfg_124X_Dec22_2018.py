@@ -109,6 +109,7 @@ import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, 
                     updatedTauName = updatedTauName,
                     toKeep = [
+                            "MVADM_2017_v1",
                             "deepTau2017v2p1", "deepTau2018v2p5",
                             ])
 
@@ -275,21 +276,6 @@ electronLabel = cms.InputTag("slimmedElectrons")
 
 process.icElectronSequence = cms.Sequence()
 
-#process.icBasicElectronProducer = producers.icCandidateProducer.clone(
-#  branch  = cms.string("slimmedElectrons"),
-#  input   = cms.InputTag("slimmedElectrons")
-#)
-
-#process.icBasicSelElectronProducer = producers.icCandidateProducer.clone(
-#  branch  = cms.string("selectedElectrons"),
-#  input   = cms.InputTag("selectedElectrons")
-#)
-
-#process.icElectronSequence += cms.Sequence(
-#  process.icBasicElectronProducer+
-#  process.icBasicSelElectronProducer
-#)
-
 # electron smear and scale
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
@@ -406,10 +392,6 @@ process.electronPFIsolationValuesSequence +=cms.Sequence(
     process.elHcalPFClusterIso
 )
 
-#process.icBasicSelElectronProducerAfter = producers.icCandidateProducer.clone(
-#  branch  = cms.string("selectedElectronsAfter"),
-#  input   = cms.InputTag("selectedElectrons")
-#)
 
 
 process.icElectronProducer = producers.icElectronProducer.clone(
@@ -444,7 +426,6 @@ process.icElectronProducer = producers.icElectronProducer.clone(
 
 process.icElectronSequence += cms.Sequence(
     process.icElectronConversionCalculator+
-    #process.icBasicSelElectronProducerAfter+
     process.icElectronProducer
 )
 
@@ -814,7 +795,6 @@ process.icPFJetSequence += cms.Sequence(
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
-#from RecoMET.METProducers.PFMET_cfi import pfMet
 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 
@@ -1610,7 +1590,18 @@ if isData: data_type = "RECO"
 elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
+## add prefiring weights
+from PhysicsTools.PatUtils.l1PrefiringWeightProducer_cfi import l1PrefiringWeightProducer
+process.prefiringweight = l1PrefiringWeightProducer.clone(
+    DataEraECAL = cms.string("UL2018"), # no jet/gamma prefiring in 2018 so this file should not exist and prefiring weight should not be added 
+    DataEraMuon = cms.string("20172018"), #Use 2016preVFP or 2016postVFP for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUnctyECAL = cms.double(0.2),
+    PrefiringRateSystematicUnctyMuon = cms.double(0.2)
+)
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+    includePrefireWeights = cms.bool(not bool(isData) and not bool(isEmbed)),
     includeJetRho       = cms.bool(True),
     includeLHEWeights   = cms.bool(doLHEWeights),
     includeGenWeights   = cms.bool(doLHEWeights),
@@ -1639,6 +1630,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 
 process.icEventInfoSequence = cms.Sequence(
     process.BadPFMuonFilterUpdateDz+
+    process.prefiringweight+
     process.icEventInfoProducer
 )
 

@@ -3,8 +3,8 @@ import sys
 import os
 
 file_names = {}
-channels = ['mmtt']
-years = ['2016','2017','2018']
+channels = ['tttt']
+years = ['2016_postVFP','2016_preVFP','2017','2018']
 for file_name in os.listdir(sys.argv[1]):
     if '.root' not in file_name:
         continue
@@ -15,7 +15,6 @@ for file_name in os.listdir(sys.argv[1]):
                 file_names[key] = file_name
 
 for f in file_names:
-    print f
     if ("SingleMuon" in f or "SingleElectron" in f or "EGamma" in f or f in "MuonEG" or\
             "\bTau" in f): 
         continue

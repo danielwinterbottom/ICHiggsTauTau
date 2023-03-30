@@ -73,9 +73,9 @@ class ICEventInfoProducer : public edm::one::EDProducer<> {
   edm::EDGetTokenT<HTXS::HiggsClassification> htxsSrc_;
   #endif
 
-  edm::EDGetTokenT< double > prefweight_token_;
-  edm::EDGetTokenT< double > prefweightup_token_;
-  edm::EDGetTokenT< double > prefweightdown_token_;
+  edm::EDGetTokenT< float > prefweight_token_;
+  edm::EDGetTokenT< float > prefweightup_token_;
+  edm::EDGetTokenT< float > prefweightdown_token_;
 };
 
 #endif

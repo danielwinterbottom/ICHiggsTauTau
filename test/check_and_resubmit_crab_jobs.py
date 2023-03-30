@@ -42,6 +42,8 @@ def get_status(folder,status_dict,directory):
     elif "Cannot find .requestcache file" in line:
       status_dict[folder]["Warnings"] = "Not found"
       tmp_files = False
+    elif "TAPERECALL" in line:
+      status_dict[folder]["Warnings"] = "Tape recall"
     elif line == "\n":
       nnl = False
     if "jobs failed with exit code" in line:

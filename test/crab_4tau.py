@@ -72,7 +72,9 @@ for dm in dml:
       cfgParams.append('isData=1')
     else: 
       cfgParams.append('isData=0')
-    if dm == "Signal": config.Data.inputDBS = 'phys03'
+    if dm == "Signal": 
+      config.Data.inputDBS = 'phys03'
+      cfgParams.append("LHEWeights=1")
 
     config.JobType.allowUndistributedCMSSW = True
     config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
@@ -218,7 +220,7 @@ for dm in dml:
 
             # EGamma
             tasks.append(('EGammaA', '/EGamma/Run2018A-UL2018_MiniAODv2-v1/MINIAOD'))
-            tasks.append(('EGammaB', '/EGamma/Run2018B-12Nov2019_UL2018-v2/MINIAOD'))
+            tasks.append(('EGammaB', '/EGamma/Run2018B-UL2018_MiniAODv2-v1/MINIAOD'))
             tasks.append(('EGammaC', '/EGamma/Run2018C-UL2018_MiniAODv2-v1/MINIAOD'))
             tasks.append(('EGammaD', '/EGamma/Run2018D-UL2018_MiniAODv2-v2/MINIAOD'))
 

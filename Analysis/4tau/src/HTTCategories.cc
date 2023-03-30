@@ -86,6 +86,8 @@ namespace ic {
       outtree_->Branch("trg_doublemuon_12",     &trg_doublemuon_12_);
       outtree_->Branch("trg_singlemuon_1",      &trg_singlemuon_1_);
       outtree_->Branch("trg_singlemuon_2",      &trg_singlemuon_2_);
+      outtree_->Branch("trg_singlemuon_3",      &trg_singlemuon_3_);
+      outtree_->Branch("trg_singlemuon_4",      &trg_singlemuon_4_);
       outtree_->Branch("trg_singleelectron_1",  &trg_singleelectron_1_);
       outtree_->Branch("trg_singleelectron_2",  &trg_singleelectron_2_);
       outtree_->Branch("trg_mutaucross_12",     &trg_mutaucross_12_);
@@ -100,11 +102,26 @@ namespace ic {
       outtree_->Branch("trg_etaucross_24",      &trg_etaucross_24_);
       outtree_->Branch("trg_emucross_12",       &trg_emucross_12_);
 
+      outtree_->Branch("trg_doubletau_leg_1",      &trg_doubletau_leg_1_);
+      outtree_->Branch("trg_doubletau_leg_2",      &trg_doubletau_leg_2_);
+      outtree_->Branch("trg_doubletau_leg_3",      &trg_doubletau_leg_3_);
+      outtree_->Branch("trg_doubletau_leg_4",      &trg_doubletau_leg_4_);
+
       // idiso weights
       outtree_->Branch("idisoweight_1", &idisoweight_1_);
       outtree_->Branch("idisoweight_2", &idisoweight_2_);
       outtree_->Branch("idisoweight_3", &idisoweight_3_);
       outtree_->Branch("idisoweight_4", &idisoweight_4_);
+
+      outtree_->Branch("idisoweight_ratio_1_up", &idisoweight_ratio_1_up_);
+      outtree_->Branch("idisoweight_ratio_2_up", &idisoweight_ratio_2_up_);
+      outtree_->Branch("idisoweight_ratio_3_up", &idisoweight_ratio_3_up_);
+      outtree_->Branch("idisoweight_ratio_4_up", &idisoweight_ratio_4_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_down", &idisoweight_ratio_1_down_);
+      outtree_->Branch("idisoweight_ratio_2_down", &idisoweight_ratio_2_down_);
+      outtree_->Branch("idisoweight_ratio_3_down", &idisoweight_ratio_3_down_);
+      outtree_->Branch("idisoweight_ratio_4_down", &idisoweight_ratio_4_down_);
 
       outtree_->Branch("idisoweight_vvvloose_1", &idisoweight_vvvloose_1_);
       outtree_->Branch("idisoweight_vvvloose_2", &idisoweight_vvvloose_2_);
@@ -142,6 +159,16 @@ namespace ic {
       outtree_->Branch("etau_fakerate_3", &etau_fakerate_3_);
       outtree_->Branch("etau_fakerate_4", &etau_fakerate_4_);
 
+      outtree_->Branch("etau_fakerate_ratio_1_up", &etau_fakerate_ratio_1_up_);
+      outtree_->Branch("etau_fakerate_ratio_2_up", &etau_fakerate_ratio_2_up_);
+      outtree_->Branch("etau_fakerate_ratio_3_up", &etau_fakerate_ratio_3_up_);
+      outtree_->Branch("etau_fakerate_ratio_4_up", &etau_fakerate_ratio_4_up_);
+
+      outtree_->Branch("etau_fakerate_ratio_1_down", &etau_fakerate_ratio_1_down_);
+      outtree_->Branch("etau_fakerate_ratio_2_down", &etau_fakerate_ratio_2_down_);
+      outtree_->Branch("etau_fakerate_ratio_3_down", &etau_fakerate_ratio_3_down_);
+      outtree_->Branch("etau_fakerate_ratio_4_down", &etau_fakerate_ratio_4_down_);
+
       outtree_->Branch("etau_fakerate_vvloose_1", &etau_fakerate_vvloose_1_);
       outtree_->Branch("etau_fakerate_vvloose_2", &etau_fakerate_vvloose_2_);
       outtree_->Branch("etau_fakerate_vvloose_3", &etau_fakerate_vvloose_3_);
@@ -177,6 +204,16 @@ namespace ic {
       outtree_->Branch("mtau_fakerate_2", &mtau_fakerate_2_);
       outtree_->Branch("mtau_fakerate_3", &mtau_fakerate_3_);
       outtree_->Branch("mtau_fakerate_4", &mtau_fakerate_4_);
+
+      outtree_->Branch("mtau_fakerate_ratio_1_up", &mtau_fakerate_ratio_1_up_);
+      outtree_->Branch("mtau_fakerate_ratio_2_up", &mtau_fakerate_ratio_2_up_);
+      outtree_->Branch("mtau_fakerate_ratio_3_up", &mtau_fakerate_ratio_3_up_);
+      outtree_->Branch("mtau_fakerate_ratio_4_up", &mtau_fakerate_ratio_4_up_);
+
+      outtree_->Branch("mtau_fakerate_ratio_1_down", &mtau_fakerate_ratio_1_down_);
+      outtree_->Branch("mtau_fakerate_ratio_2_down", &mtau_fakerate_ratio_2_down_);
+      outtree_->Branch("mtau_fakerate_ratio_3_down", &mtau_fakerate_ratio_3_down_);
+      outtree_->Branch("mtau_fakerate_ratio_4_down", &mtau_fakerate_ratio_4_down_);
 
       outtree_->Branch("mtau_fakerate_vloose_1", &mtau_fakerate_vloose_1_);
       outtree_->Branch("mtau_fakerate_vloose_2", &mtau_fakerate_vloose_2_);
@@ -247,6 +284,15 @@ namespace ic {
       outtree_->Branch("trigeff_emucross_low_mc_1",  &trigeff_emucross_low_mc_1_);
       outtree_->Branch("trigeff_emucross_low_mc_2",  &trigeff_emucross_low_mc_2_);
 
+      outtree_->Branch("total_trg",  &total_trg_);
+
+      outtree_->Branch("total_trg_ratio_doubletau_up",    &total_trg_ratio_doubletau_up_);
+      outtree_->Branch("total_trg_ratio_doubletau_down",  &total_trg_ratio_doubletau_down_);
+      outtree_->Branch("total_trg_ratio_singlem_up",      &total_trg_ratio_singlem_up_);
+      outtree_->Branch("total_trg_ratio_singlem_down",    &total_trg_ratio_singlem_down_);
+      outtree_->Branch("total_trg_ratio_singlee_up",      &total_trg_ratio_singlee_up_);
+      outtree_->Branch("total_trg_ratio_singlee_down",    &total_trg_ratio_singlee_down_);
+
       // dxy and dz
       outtree_->Branch("d0_1", &d0_1_.var_float, "d0_1/F");
       outtree_->Branch("dZ_1", &dz_1_.var_float, "dz_1/F");
@@ -260,6 +306,8 @@ namespace ic {
       // lepton isolations
       outtree_->Branch("iso_1",             &iso_1_.var_double);
       outtree_->Branch("iso_2",             &iso_2_.var_double);
+      outtree_->Branch("iso_3",             &iso_3_.var_double);
+      outtree_->Branch("iso_4",             &iso_4_.var_double);
 
       // transverse momentums
       outtree_->Branch("pt_1",              &pt_1_.var_double);
@@ -306,21 +354,23 @@ namespace ic {
       outtree_->Branch("dR_23",              &dR_23_.var_double);
       outtree_->Branch("dR_24",              &dR_24_.var_double);
       outtree_->Branch("dR_34",              &dR_34_.var_double);
+      outtree_->Branch("dR_min_sum_dR_1",    &dR_min_sum_dR_1_.var_double);
+      outtree_->Branch("dR_min_sum_dR_2",    &dR_min_sum_dR_2_.var_double);
 
       // pair properties
       outtree_->Branch("mt_1",              &mt_1_.var_double);
       outtree_->Branch("mt_2",              &mt_2_.var_double);
       outtree_->Branch("mt_3",              &mt_3_.var_double);
       outtree_->Branch("mt_4",              &mt_4_.var_double);
-
       outtree_->Branch("mt_lep_12",              &mt_lep_12_.var_double);
       outtree_->Branch("mt_lep_13",              &mt_lep_13_.var_double);
       outtree_->Branch("mt_lep_14",              &mt_lep_14_.var_double);
       outtree_->Branch("mt_lep_23",              &mt_lep_23_.var_double);
       outtree_->Branch("mt_lep_24",              &mt_lep_24_.var_double);
       outtree_->Branch("mt_lep_34",              &mt_lep_34_.var_double);
+      outtree_->Branch("mt_tot",                 &mt_tot_.var_double);
 
-
+      outtree_->Branch("mvis_1234",            &mvis_1234_.var_double);
       outtree_->Branch("mvis_12",              &mvis_12_.var_double);
       outtree_->Branch("mvis_13",              &mvis_13_.var_double);
       outtree_->Branch("mvis_14",              &mvis_14_.var_double);
@@ -351,6 +401,7 @@ namespace ic {
       outtree_->Branch("pt_tt_23",             &pt_tt_23_.var_double);
       outtree_->Branch("pt_tt_24",             &pt_tt_24_.var_double);
       outtree_->Branch("pt_tt_34",             &pt_tt_34_.var_double);
+      outtree_->Branch("pt_tttt",             &pt_tttt_.var_double);
       outtree_->Branch("pt_phi",               &pt_phi_.var_double);
       outtree_->Branch("pt_A",                 &pt_A_.var_double);
       outtree_->Branch("st",                   &st_.var_double);
@@ -551,6 +602,35 @@ namespace ic {
       outtree_->Branch("jet_probg_2",          &jet_probg_2_);
       outtree_->Branch("jet_probg_3",          &jet_probg_3_);
       outtree_->Branch("jet_probg_4",          &jet_probg_4_);
+
+      outtree_->Branch("wt_ggZZ_k_factor",         &wt_ggZZ_);
+      outtree_->Branch("wt_qqZZ_k_factor",         &wt_qqZZ_);
+      outtree_->Branch("wt_ggZZ_PDFScaleUp",       &wt_ggZZ_PDFScaleUp_);
+      outtree_->Branch("wt_ggZZ_PDFScaleDn",       &wt_ggZZ_PDFScaleDn_);
+      outtree_->Branch("wt_ggZZ_QCDScaleUp",       &wt_ggZZ_QCDScaleUp_);
+      outtree_->Branch("wt_ggZZ_QCDScaleDn",       &wt_ggZZ_QCDScaleDn_);
+      outtree_->Branch("wt_ggZZ_AsUp",             &wt_ggZZ_AsUp_);
+      outtree_->Branch("wt_ggZZ_AsDn",             &wt_ggZZ_AsDn_);
+      outtree_->Branch("wt_ggZZ_PDFReplicaUp",&wt_ggZZ_PDFReplicaUp_);
+      outtree_->Branch("wt_ggZZ_PDFReplicaDn",&wt_ggZZ_PDFReplicaDn_);
+
+      outtree_->Branch("wt_mc_1001",&scale_1_);
+      outtree_->Branch("wt_mc_1002",&scale_2_);
+      outtree_->Branch("wt_mc_1003",&scale_3_);
+      outtree_->Branch("wt_mc_1004",&scale_4_);
+      outtree_->Branch("wt_mc_1005",&scale_5_);
+      outtree_->Branch("wt_mc_1006",&scale_6_);
+      outtree_->Branch("wt_mc_1007",&scale_7_);
+      outtree_->Branch("wt_mc_1008",&scale_8_);
+      outtree_->Branch("wt_mc_1009",&scale_9_);
+      outtree_->Branch("wt_mc_1111",&scale_111_);
+      outtree_->Branch("wt_mc_1112",&scale_112_);
+      outtree_->Branch("wt_mc_pdf",&scale_pdf_);
+
+      outtree_->Branch("wt_prefire",      &wt_prefire_);
+      outtree_->Branch("wt_prefire_up",   &wt_prefire_up_);
+      outtree_->Branch("wt_prefire_down", &wt_prefire_down_);
+
     }
 
     return 0;
@@ -561,6 +641,11 @@ namespace ic {
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     wt_mc_sign_ = eventInfo->weight_defined("wt_mc_sign") ? eventInfo->weight("wt_mc_sign") : 1.0;
+
+    wt_prefire_ = eventInfo->weight_defined("wt_prefire") ? eventInfo->weight("wt_prefire") : 1.0;
+    wt_prefire_up_ = eventInfo->weight_defined("wt_prefire_up") ? eventInfo->weight("wt_prefire_up") : 1.0;
+    wt_prefire_down_ = eventInfo->weight_defined("wt_prefire_down") ? eventInfo->weight("wt_prefire_down") : 1.0;
+
     std::vector<CompositeCandidate *> const& fourtau_vec = event->GetPtrVec<CompositeCandidate>(fourtau_label_);
     CompositeCandidate const* fourtau = fourtau_vec.at(0);
 
@@ -570,12 +655,6 @@ namespace ic {
     Candidate const* lep4 = 0;
     if (channel_ != channel::ttt) lep4 = fourtau->GetCandidate("lepton4");
     
-
-
-    //std::cout << "lep 1 :" << " px " << lep1->px() << " py " << lep1->py() << " pz " << lep1->pz() << "energy : " << lep1->energy()  << std::endl;
-    //std::cout << "lep 2 :" << " px " << lep2->px() << " py " << lep2->py() << " pz " << lep2->pz() << "energy : " << lep2->energy()  << std::endl;
-    //std::cout << "lep 3 :" << " px " << lep3->px() << " py " << lep3->py() << " pz " << lep3->pz() << "energy : " << lep3->energy()  << std::endl;
-
 
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
@@ -602,6 +681,9 @@ namespace ic {
     }
     if (channel_ == channel::ttt) {
       n_jetfakes_ = (gen_match_1_==6) + (gen_match_2_==6) + (gen_match_3_==6);
+    }
+    if (channel_ == channel::mmmm){
+      n_jetfakes_ = 0;
     }
 
     pdgid_mother_1_ = event->Exists("pdgid_mother_1") ? event->Get<int>("pdgid_mother_1") : 0;
@@ -639,6 +721,8 @@ namespace ic {
     trg_doublemuon_12_ = event->Exists("trg_doublemuon_12") ? event->Get<bool>("trg_doublemuon_12") : false;
     trg_singlemuon_1_ = event->Exists("trg_singlemuon_1") ? event->Get<bool>("trg_singlemuon_1") : false;
     trg_singlemuon_2_ = event->Exists("trg_singlemuon_2") ? event->Get<bool>("trg_singlemuon_2") : false;
+    trg_singlemuon_3_ = event->Exists("trg_singlemuon_3") ? event->Get<bool>("trg_singlemuon_3") : false;
+    trg_singlemuon_4_ = event->Exists("trg_singlemuon_4") ? event->Get<bool>("trg_singlemuon_4") : false;
     trg_singleelectron_1_ = event->Exists("trg_singleelectron_1") ? event->Get<bool>("trg_singleelectron_1") : false;
     trg_singleelectron_2_ = event->Exists("trg_singleelectron_2") ? event->Get<bool>("trg_singleelectron_2") : false;
     trg_mutaucross_12_ = event->Exists("trg_mutaucross_12") ? event->Get<bool>("trg_mutaucross_12") : false;
@@ -653,11 +737,25 @@ namespace ic {
     trg_etaucross_24_ = event->Exists("trg_etaucross_24") ? event->Get<bool>("trg_etaucross_24") : false;
     trg_emucross_12_ = event->Exists("trg_emucross_12") ? event->Get<bool>("trg_emucross_12") : false;
 
+    trg_doubletau_leg_1_ = event->Exists("trg_doubletau_leg_1") ? event->Get<bool>("trg_doubletau_leg_1") : false;
+    trg_doubletau_leg_2_ = event->Exists("trg_doubletau_leg_2") ? event->Get<bool>("trg_doubletau_leg_2") : false;
+    trg_doubletau_leg_3_ = event->Exists("trg_doubletau_leg_3") ? event->Get<bool>("trg_doubletau_leg_3") : false;
+    trg_doubletau_leg_4_ = event->Exists("trg_doubletau_leg_4") ? event->Get<bool>("trg_doubletau_leg_4") : false;
 
     idisoweight_1_ = event->Exists("idisoweight_1") ? event->Get<double>("idisoweight_1") : 1.0;
     idisoweight_2_ = event->Exists("idisoweight_2") ? event->Get<double>("idisoweight_2") : 1.0;
     idisoweight_3_ = event->Exists("idisoweight_3") ? event->Get<double>("idisoweight_3") : 1.0;
     idisoweight_4_ = event->Exists("idisoweight_4") ? event->Get<double>("idisoweight_4") : 1.0;
+
+    idisoweight_ratio_1_up_ = event->Exists("idisoweight_ratio_1_up") ? event->Get<double>("idisoweight_ratio_1_up") : 1.0;
+    idisoweight_ratio_2_up_ = event->Exists("idisoweight_ratio_2_up") ? event->Get<double>("idisoweight_ratio_2_up") : 1.0;
+    idisoweight_ratio_3_up_ = event->Exists("idisoweight_ratio_3_up") ? event->Get<double>("idisoweight_ratio_3_up") : 1.0;
+    idisoweight_ratio_4_up_ = event->Exists("idisoweight_ratio_4_up") ? event->Get<double>("idisoweight_ratio_4_up") : 1.0;
+
+    idisoweight_ratio_1_down_ = event->Exists("idisoweight_ratio_1_down") ? event->Get<double>("idisoweight_ratio_1_down") : 1.0;
+    idisoweight_ratio_2_down_ = event->Exists("idisoweight_ratio_2_down") ? event->Get<double>("idisoweight_ratio_2_down") : 1.0;
+    idisoweight_ratio_3_down_ = event->Exists("idisoweight_ratio_3_down") ? event->Get<double>("idisoweight_ratio_3_down") : 1.0;
+    idisoweight_ratio_4_down_ = event->Exists("idisoweight_ratio_4_down") ? event->Get<double>("idisoweight_ratio_4_down") : 1.0;
 
     idisoweight_vvvloose_1_ = event->Exists("idisoweight_vvvloose_1") ? event->Get<double>("idisoweight_vvvloose_1") : 1.0;
     idisoweight_vvvloose_2_ = event->Exists("idisoweight_vvvloose_2") ? event->Get<double>("idisoweight_vvvloose_2") : 1.0;
@@ -694,6 +792,16 @@ namespace ic {
     etau_fakerate_3_ = event->Exists("etau_fakerate_3") ? event->Get<double>("etau_fakerate_3") : 1.0;
     etau_fakerate_4_ = event->Exists("etau_fakerate_4") ? event->Get<double>("etau_fakerate_4") : 1.0;
 
+    etau_fakerate_ratio_1_up_ = event->Exists("etau_fakerate_ratio_1_up") ? event->Get<double>("etau_fakerate_ratio_1_up") : 1.0;
+    etau_fakerate_ratio_2_up_ = event->Exists("etau_fakerate_ratio_2_up") ? event->Get<double>("etau_fakerate_ratio_2_up") : 1.0;
+    etau_fakerate_ratio_3_up_ = event->Exists("etau_fakerate_ratio_3_up") ? event->Get<double>("etau_fakerate_ratio_3_up") : 1.0;
+    etau_fakerate_ratio_4_up_ = event->Exists("etau_fakerate_ratio_4_up") ? event->Get<double>("etau_fakerate_ratio_4_up") : 1.0;
+
+    etau_fakerate_ratio_1_down_ = event->Exists("etau_fakerate_ratio_1_down") ? event->Get<double>("etau_fakerate_ratio_1_down") : 1.0;
+    etau_fakerate_ratio_2_down_ = event->Exists("etau_fakerate_ratio_2_down") ? event->Get<double>("etau_fakerate_ratio_2_down") : 1.0;
+    etau_fakerate_ratio_3_down_ = event->Exists("etau_fakerate_ratio_3_down") ? event->Get<double>("etau_fakerate_ratio_3_down") : 1.0;
+    etau_fakerate_ratio_4_down_ = event->Exists("etau_fakerate_ratio_4_down") ? event->Get<double>("etau_fakerate_ratio_4_down") : 1.0;
+
     etau_fakerate_vvloose_1_ = event->Exists("etau_fakerate_vvloose_1") ? event->Get<double>("etau_fakerate_vvloose_1") : 1.0;
     etau_fakerate_vvloose_2_ = event->Exists("etau_fakerate_vvloose_2") ? event->Get<double>("etau_fakerate_vvloose_2") : 1.0;
     etau_fakerate_vvloose_3_ = event->Exists("etau_fakerate_vvloose_3") ? event->Get<double>("etau_fakerate_vvloose_3") : 1.0;
@@ -728,7 +836,17 @@ namespace ic {
     mtau_fakerate_2_ = event->Exists("mtau_fakerate_2") ? event->Get<double>("mtau_fakerate_2") : 1.0;
     mtau_fakerate_3_ = event->Exists("mtau_fakerate_3") ? event->Get<double>("mtau_fakerate_3") : 1.0;
     mtau_fakerate_4_ = event->Exists("mtau_fakerate_4") ? event->Get<double>("mtau_fakerate_4") : 1.0;
-    
+   
+    mtau_fakerate_ratio_1_up_ = event->Exists("mtau_fakerate_ratio_1_up") ? event->Get<double>("mtau_fakerate_ratio_1_up") : 1.0;
+    mtau_fakerate_ratio_2_up_ = event->Exists("mtau_fakerate_ratio_2_up") ? event->Get<double>("mtau_fakerate_ratio_2_up") : 1.0;
+    mtau_fakerate_ratio_3_up_ = event->Exists("mtau_fakerate_ratio_3_up") ? event->Get<double>("mtau_fakerate_ratio_3_up") : 1.0;
+    mtau_fakerate_ratio_4_up_ = event->Exists("mtau_fakerate_ratio_4_up") ? event->Get<double>("mtau_fakerate_ratio_4_up") : 1.0;
+
+    mtau_fakerate_ratio_1_down_ = event->Exists("mtau_fakerate_ratio_1_down") ? event->Get<double>("mtau_fakerate_ratio_1_down") : 1.0;
+    mtau_fakerate_ratio_2_down_ = event->Exists("mtau_fakerate_ratio_2_down") ? event->Get<double>("mtau_fakerate_ratio_2_down") : 1.0;
+    mtau_fakerate_ratio_3_down_ = event->Exists("mtau_fakerate_ratio_3_down") ? event->Get<double>("mtau_fakerate_ratio_3_down") : 1.0;
+    mtau_fakerate_ratio_4_down_ = event->Exists("mtau_fakerate_ratio_4_down") ? event->Get<double>("mtau_fakerate_ratio_4_down") : 1.0;
+ 
     mtau_fakerate_vloose_1_ = event->Exists("mtau_fakerate_vloose_1") ? event->Get<double>("mtau_fakerate_vloose_1") : 1.0;
     mtau_fakerate_vloose_2_ = event->Exists("mtau_fakerate_vloose_2") ? event->Get<double>("mtau_fakerate_vloose_2") : 1.0;
     mtau_fakerate_vloose_3_ = event->Exists("mtau_fakerate_vloose_3") ? event->Get<double>("mtau_fakerate_vloose_3") : 1.0;
@@ -828,20 +946,28 @@ namespace ic {
     trigeff_emucross_low_mc_1_ = event->Exists("trigeff_e_emucross_low_mc_1") ? event->Get<double>("trigeff_e_emucross_low_mc_1") : 1.0;
     trigeff_emucross_low_mc_2_ = event->Exists("trigeff_e_emucross_low_mc_2") ? event->Get<double>("trigeff_e_emucross_low_mc_2") : 1.0;
 
-    
+    total_trg_ = event->Exists("wt_total_trg") ? event->Get<double>("wt_total_trg") : 1.0;
+
+    total_trg_ratio_doubletau_up_ = event->Exists("wt_total_trg_ratio_t_up") ? event->Get<double>("wt_total_trg_ratio_t_up") : 1.0;
+    total_trg_ratio_doubletau_down_ = event->Exists("wt_total_trg_ratio_t_down") ? event->Get<double>("wt_total_trg_ratio_t_down") : 1.0;
+    total_trg_ratio_singlem_up_ = event->Exists("wt_total_trg_ratio_m_up") ? event->Get<double>("wt_total_trg_ratio_m_up") : 1.0;
+    total_trg_ratio_singlem_down_ = event->Exists("wt_total_trg_ratio_m_down") ? event->Get<double>("wt_total_trg_ratio_m_down") : 1.0;
+    total_trg_ratio_singlee_up_ = event->Exists("wt_total_trg_ratio_e_up") ? event->Get<double>("wt_total_trg_ratio_e_up") : 1.0;
+    total_trg_ratio_singlee_down_ = event->Exists("wt_total_trg_ratio_e_down") ? event->Get<double>("wt_total_trg_ratio_e_down") : 1.0;
+
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
     pt_3_ = lep3->pt();
 	
-	jet_pt_1_ = 0;
+    jet_pt_1_ = 0;
     jet_pt_2_ = 0;
     jet_pt_3_ = 0;
 	
-	jet_probb_1_ = 0;
-	jet_probb_2_ = 0;
+    jet_probb_1_ = 0;
+    jet_probb_2_ = 0;
     jet_probb_3_ = 0;
 	
-	jet_probbb_1_ = 0;    
+    jet_probbb_1_ = 0;    
     jet_probbb_2_ = 0;
     jet_probbb_3_ = 0;
 	
@@ -849,7 +975,7 @@ namespace ic {
     jet_problepb_2_ = 0;
     jet_problepb_3_ = 0;
 	
-	jet_probc_1_ = 0;    
+    jet_probc_1_ = 0;    
     jet_probc_2_ = 0;
     jet_probc_3_ = 0;
 	
@@ -861,16 +987,16 @@ namespace ic {
     jet_probg_2_ = 0;
     jet_probg_3_ = 0;    
 	
-	std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
+    std::vector<PFJet*> uncleaned_jets = event->GetPtrVec<PFJet>("ak4PFJetsCHSUnFiltered");
     std::vector<Candidate *> lepvec1;
     std::vector<Candidate *> lepvec2;
     std::vector<Candidate *> lepvec3;    
 	
-	lepvec1.push_back(fourtau->GetCandidate("lepton1"));
+    lepvec1.push_back(fourtau->GetCandidate("lepton1"));
     lepvec2.push_back(fourtau->GetCandidate("lepton2"));
     lepvec3.push_back(fourtau->GetCandidate("lepton3"));    
 	
-	std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
+    std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_1 = MatchByDR(uncleaned_jets, lepvec1, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_2 = MatchByDR(uncleaned_jets, lepvec2, 0.5, true, true);
     std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_3 = MatchByDR(uncleaned_jets, lepvec3, 0.5, true, true);
 
@@ -949,7 +1075,23 @@ namespace ic {
    
     q_sum_ = lep1->charge()+lep2->charge()+lep3->charge();
     st_ = lep1->pt()+lep2->pt()+lep3->pt()+mets->vector().pt();
-	 
+	
+    CompositeCandidate *total_product = new CompositeCandidate();
+    total_product->AddCandidate("lepton1",fourtau->GetCandidate("lepton1"));
+    total_product->AddCandidate("lepton2",fourtau->GetCandidate("lepton2"));
+    total_product->AddCandidate("lepton3",fourtau->GetCandidate("lepton3"));
+    if (channel_ != channel::ttt) {
+      total_product->AddCandidate("lepton4",fourtau->GetCandidate("lepton4"));
+    }
+   
+    mvis_1234_ = total_product->M();
+    pt_tttt_ = total_product->pt();
+    if (channel_ != channel::ttt) { 
+      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_14_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_lep_24_.var_double,2)+pow(mt_lep_34_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2)+pow(mt_4_.var_double,2));
+    } else {
+      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2));
+    }
+
     // get ditau mass of all combinations:
     CompositeCandidate *pair12 = new CompositeCandidate();
     CompositeCandidate *pair13 = new CompositeCandidate();
@@ -976,15 +1118,53 @@ namespace ic {
     pt_tt_13_ = pair13->pt();
     pt_tt_23_ = pair23->pt();
 
+//    if (channel_ == channel::ttt) {
+//      if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton2")->charge()) {
+//        mvis_os_ = pair12->M();
+//        pt_tt_os_ = pair12->pt();
+//      } else if (fourtau->GetCandidate("lepton1")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+//        mvis_os_ = pair13->M();
+//        pt_tt_os_ = pair13->pt();
+//      } else if (fourtau->GetCandidate("lepton2")->charge() == -fourtau->GetCandidate("lepton3")->charge()) {
+//        mvis_os_ = pair23->M();
+//        pt_tt_os_ = pair23->pt();
+//      }
+//    }
+
+    double min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
+    p_min_dR_1_ = 1;
+    p_min_dR_2_ = 2;
+    if (channel_ == channel::ttt) {
+      for(int i = 1; i < 4; i++){
+        for(int j = 1; j < 4; j++){
+          if (i < j) {  
+            if (fourtau->GetCandidate("lepton"+std::to_string(i))->charge() == -fourtau->GetCandidate("lepton"+std::to_string(j))->charge()) {
+              if (std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector())) < min_dR_) {
+                min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(i))->vector(),fourtau->GetCandidate("lepton"+std::to_string(j))->vector()));
+                p_min_dR_1_ = i;
+                p_min_dR_2_ = j;
+              }
+            } 
+          }
+        }
+      }
+      CompositeCandidate *pair_min_dR = new CompositeCandidate();
+      pair_min_dR->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_1_)));
+      pair_min_dR->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_2_)));
+      mvis_min_sum_dR_1_ = pair_min_dR->M();
+      pt_min_sum_dR_1_ = pair_min_dR->pt();
+      dR_min_sum_dR_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_1_))->vector(),fourtau->GetCandidate("lepton"+std::to_string(p_min_dR_2_))->vector()));
+    }
+
     mvis_phi_ = 0.0;
     mvis_A_ = 0.0;
     pt_phi_ = 0.0;
     pt_A_ = 0.0;
- 
+
     if (channel_ != channel::ttt) {
       pt_4_= lep4->pt();
 	  
-	  jet_pt_4_ = 0;
+      jet_pt_4_ = 0;
       jet_probb_4_ = 0;
       jet_probbb_4_ = 0;    
       jet_problepb_4_ = 0;
@@ -994,16 +1174,16 @@ namespace ic {
       std::vector<Candidate *> lepvec4;
       lepvec4.push_back(fourtau->GetCandidate("lepton4"));
       std::vector<std::pair<ic::PFJet *, ic::Candidate *>> tau_matches_4 = MatchByDR(uncleaned_jets, lepvec4, 0.5, true, true);
-	  
-	  if(tau_matches_4.size() > 0) {
-		jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
-		jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
-		jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
-		jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
-		jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
-		jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
-		jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
-	  }
+	    
+	    if(tau_matches_4.size() > 0) {
+		  jet_pt_4_ = (tau_matches_4.at(0)).first->pt();
+		  jet_probb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probb");
+		  jet_probbb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probbb");
+		  jet_problepb_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:problepb");
+		  jet_probc_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probc");
+		  jet_probuds_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probuds");
+		  jet_probg_4_ = (tau_matches_4.at(0)).first->GetBDiscriminator("pfDeepFlavourJetTags:probg");
+	    }
 	  
       eta_4_ = lep4->eta();
       phi_4_ = lep4->phi();
@@ -1088,7 +1268,6 @@ namespace ic {
        p_min_sum_dR_2_ = 2;
 
        double min_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
-       double min_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector()));
        double min_sum_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaPhi(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
        double min_sum_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton1")->vector(),fourtau->GetCandidate("lepton2")->vector())) +std::fabs( ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton3")->vector(),fourtau->GetCandidate("lepton4")->vector()));
 
@@ -1165,11 +1344,13 @@ namespace ic {
 
        pair_min_sum_dR_1->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_1_)));
        pair_min_sum_dR_1->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(p_min_sum_dR_2_)));
+       dR_min_sum_dR_1_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_1_))->vector(),fourtau->GetCandidate("lepton"+std::to_string(p_min_dphi_2_))->vector()));
        vector<int> v4 {1,2,3,4};
        v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_1_), v4.end());
        v4.erase(std::remove(v4.begin(), v4.end(), p_min_sum_dR_2_), v4.end());
        pair_min_sum_dR_2->AddCandidate("lepton1",fourtau->GetCandidate("lepton"+std::to_string(v4[0])));
        pair_min_sum_dR_2->AddCandidate("lepton2",fourtau->GetCandidate("lepton"+std::to_string(v4[1])));
+       dR_min_sum_dR_2_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(fourtau->GetCandidate("lepton"+std::to_string(v4[0]))->vector(),fourtau->GetCandidate("lepton"+std::to_string(v4[1]))->vector()));
 
        if (pair_min_dphi_1->M()>pair_min_dphi_2->M()) {
          mvis_min_dphi_1_ = pair_min_dphi_1->M();
@@ -1893,7 +2074,6 @@ namespace ic {
       tau_decay_mode_4_ = tau2->decay_mode();
 
 
-      // Raw DNN Scores
       deepTauVsJets_iso_3_      = tau1->HasTauID("byDeepTau2017v2p1VSjetraw")      ? tau1->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
       deepTauVsEle_iso_3_       = tau1->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau1->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
       deepTauVsMu_iso_3_        = tau1->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau1->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
@@ -1902,7 +2082,6 @@ namespace ic {
       deepTauVsEle_iso_4_       = tau2->HasTauID("byDeepTau2017v2p1VSeraw")        ? tau2->GetTauID("byDeepTau2017v2p1VSeraw"):        0.;
       deepTauVsMu_iso_4_        = tau2->HasTauID("byDeepTau2017v2p1VSmuraw")       ? tau2->GetTauID("byDeepTau2017v2p1VSmuraw"):        0.;
 
-      // Existing working points
       deepTauVsJets_vvvloose_3_ = tau1->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") ? tau1->GetTauID("byVVVLooseDeepTau2017v2p1VSjet"): 0.;
       deepTauVsJets_vvloose_3_  = tau1->HasTauID("byVVLooseDeepTau2017v2p1VSjet")  ? tau1->GetTauID("byVVLooseDeepTau2017v2p1VSjet"):  0.;
       deepTauVsJets_vloose_3_   = tau1->HasTauID("byVLooseDeepTau2017v2p1VSjet")   ? tau1->GetTauID("byVLooseDeepTau2017v2p1VSjet"):   0.;
@@ -1958,6 +2137,26 @@ namespace ic {
       deepTauVsMu_vvtight_4_   = tau2->HasTauID("byVVTightDeepTau2017v2p1VSmu")    ? tau2->GetTauID("byVVTightDeepTau2017v2p1VSmu"):    0.;
 
     }
+
+    if (channel_ == channel::mmmm) {
+      Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
+      Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+      Muon const* muon3 = dynamic_cast<Muon const*>(lep3);
+      Muon const* muon4 = dynamic_cast<Muon const*>(lep4);
+      d0_1_ = muon1->dxy_vertex();
+      dz_1_ = muon1->dz_vertex();
+      d0_2_ = muon2->dxy_vertex();
+      dz_2_ = muon2->dz_vertex();
+      d0_3_ = muon3->dxy_vertex();
+      dz_3_ = muon3->dz_vertex();
+      d0_4_ = muon4->dxy_vertex();
+      dz_4_ = muon4->dz_vertex();
+      iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
+      iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
+      iso_3_ = PF04IsolationVal(muon3, 0.5, 0);
+      iso_4_ = PF04IsolationVal(muon4, 0.5, 0);
+    }
+
 
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
@@ -2023,6 +2222,38 @@ namespace ic {
         isMuonEG_ = true;
       }
     }
+
+    wt_ggZZ_ = event->Exists("wt_ggZZ") ? event->Get<double>("wt_ggZZ") : 1.0;
+    wt_qqZZ_ = event->Exists("wt_qqZZ") ? event->Get<float>("wt_qqZZ") : 1.0;
+    wt_ggZZ_PDFScaleUp_ = event->Exists("wt_ggZZ_PDFScaleUp") ? event->Get<double>("wt_ggZZ_PDFScaleUp") : 1.0;
+    wt_ggZZ_PDFScaleDn_ = event->Exists("wt_ggZZ_PDFScaleDn") ? event->Get<double>("wt_ggZZ_PDFScaleDn") : 1.0;
+    wt_ggZZ_QCDScaleUp_ = event->Exists("wt_ggZZ_QCDScaleUp") ? event->Get<double>("wt_ggZZ_QCDScaleUp") : 1.0;
+    wt_ggZZ_QCDScaleDn_ = event->Exists("wt_ggZZ_QCDScaleDn") ? event->Get<double>("wt_ggZZ_QCDScaleDn") : 1.0;
+    wt_ggZZ_AsUp_ = event->Exists("wt_ggZZ_AsUp") ? event->Get<double>("wt_ggZZ_AsUp") : 1.0;
+    wt_ggZZ_AsDn_ = event->Exists("wt_ggZZ_AsDn") ? event->Get<double>("wt_ggZZ_AsDn") : 1.0;
+    wt_ggZZ_PDFReplicaUp_ = event->Exists("wt_ggZZ_PDFReplicaUp") ? event->Get<double>("wt_ggZZ_PDFReplicaUp") : 1.0;
+    wt_ggZZ_PDFReplicaDn_ = event->Exists("wt_ggZZ_PDFReplicaUp") ? event->Get<double>("wt_ggZZ_PDFReplicaUp") : 1.0;
+
+   if(eventInfo->weight_defined("1001")) scale_1_ = eventInfo->weight("1001"); else scale_1_=1.0;
+   if(eventInfo->weight_defined("1002")) scale_2_ = eventInfo->weight("1002"); else scale_2_=1.0;
+   if(eventInfo->weight_defined("1003")) scale_3_ = eventInfo->weight("1003"); else scale_3_=1.0;
+   if(eventInfo->weight_defined("1004")) scale_4_ = eventInfo->weight("1004"); else scale_4_=1.0;
+   if(eventInfo->weight_defined("1005")) scale_5_ = eventInfo->weight("1005"); else scale_5_=1.0;
+   if(eventInfo->weight_defined("1006")) scale_6_ = eventInfo->weight("1006"); else scale_6_=1.0;
+   if(eventInfo->weight_defined("1007")) scale_7_ = eventInfo->weight("1007"); else scale_7_=1.0;
+   if(eventInfo->weight_defined("1008")) scale_8_ = eventInfo->weight("1008"); else scale_8_=1.0;
+   if(eventInfo->weight_defined("1009")) scale_9_ = eventInfo->weight("1009"); else scale_9_=1.0;
+   if(eventInfo->weight_defined("1111")) scale_111_ = eventInfo->weight("1111"); else scale_111_=1.0;
+   if(eventInfo->weight_defined("1112")) scale_112_ = eventInfo->weight("1112"); else scale_112_=1.0;
+
+   scale_pdf_ = 0.0;
+   for (int i = 1010; i < 1111; i++) {
+     if(eventInfo->weight_defined(std::to_string(i))) {
+       scale_pdf_ = scale_pdf_ + pow((1-eventInfo->weight(std::to_string(i))),2);
+     }
+   }
+   scale_pdf_ = 1+pow(scale_pdf_,0.5);
+
 
     if (write_tree_ && fs_) outtree_->Fill();
     return 0;

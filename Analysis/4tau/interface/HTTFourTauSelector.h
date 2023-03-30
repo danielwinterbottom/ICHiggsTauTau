@@ -22,6 +22,7 @@ namespace ic {
   bool SortByIsoEETT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo, std::string tau_idiso_name);
   bool SortByIsoMTTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, std::string tau_idiso_name);
   bool SortByIsoMMTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, std::string tau_idiso_name);
+  bool SortByIsoMMMM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy);
   bool SortByIsoTTTT(CompositeCandidate const* c1, CompositeCandidate const* c2, std::string tau_idiso_name);
   bool SortByIsoEMTT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo,  std::string tau_idiso_name);
 
