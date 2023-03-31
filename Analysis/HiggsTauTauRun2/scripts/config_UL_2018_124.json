@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
 //   "channels":     ["et","mt","tt","zmm"],
-   "channels":     ["mt"],
+   "channels":     ["mt","zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -28,7 +28,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
-    "make_sync_ntuple" : false,
+    "make_sync_ntuple" : true,
     "do_jetmet_uncerts": false,
     "lumi_mask_only" : false,
     "iso_study" : false,
@@ -64,7 +64,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018_PFMet_DeepTauV2p5/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_sync_2018_124/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -118,6 +118,7 @@
       "muon_res_shift": 0.0,
       "elec_res_shift": 0.0,
       "tau_res_shift": 0.0,
+      "fakeJ_tau_shift": 1.0,
       "metscale_mode"     : 0,
       "metres_mode"       : 0,
       "metcl_mode"        : 0,
@@ -241,6 +242,18 @@
         "elec_es_shift_endcap": 1.025,
         "tau_es_shift": 1.03,
         "muon_es_shift": 1.002
+      }
+    },
+    "scale_jfake_lo": {
+      "baseline": {
+        "addit_output_folder" : "JFAKE_DOWN",
+        "fakeJ_tau_shift": 0.97
+      }
+    },
+    "scale_jfake_hi": {
+      "baseline": {
+        "addit_output_folder": "JFAKE_UP",
+        "fakeJ_tau_shift": 1.03
       }
     },
     "scale_t_0pi_hi": {

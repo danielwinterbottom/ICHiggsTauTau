@@ -1435,6 +1435,35 @@ namespace ic {
       synctree_->Branch("tVVTightDeepTau2017v2p1VSmu_1",    &deepTauVsMu_vvtight_1_);
       synctree_->Branch("tVVTightDeepTau2017v2p1VSmu_2",    &deepTauVsMu_vvtight_2_);
 
+      // DeepTau v2p5
+      synctree_->Branch("tVVVLooseDeepTau2018v2p5VSjet_1", &deepTauVsJetsV2p5_vvvloose_1_);
+      synctree_->Branch("tVVVLooseDeepTau2018v2p5VSjet_2", &deepTauVsJetsV2p5_vvvloose_2_);
+      synctree_->Branch("tVVLooseDeepTau2018v2p5VSjet_1",  &deepTauVsJetsV2p5_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2018v2p5VSjet_2",  &deepTauVsJetsV2p5_vvloose_2_);
+      synctree_->Branch("tVLooseDeepTau2018v2p5VSjet_1",   &deepTauVsJetsV2p5_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2018v2p5VSjet_2",   &deepTauVsJetsV2p5_vloose_2_);
+      synctree_->Branch("tLooseDeepTau2018v2p5VSjet_1",    &deepTauVsJetsV2p5_loose_1_);
+      synctree_->Branch("tLooseDeepTau2018v2p5VSjet_2",    &deepTauVsJetsV2p5_loose_2_);
+      synctree_->Branch("tMediumDeepTau2018v2p5VSjet_1",   &deepTauVsJetsV2p5_medium_1_);
+      synctree_->Branch("tMediumDeepTau2018v2p5VSjet_2",   &deepTauVsJetsV2p5_medium_2_);
+      synctree_->Branch("tTightDeepTau2018v2p5VSjet_1",    &deepTauVsJetsV2p5_tight_1_);
+      synctree_->Branch("tTightDeepTau2018v2p5VSjet_2",    &deepTauVsJetsV2p5_tight_2_);
+      synctree_->Branch("tVTightDeepTau2018v2p5VSjet_1",   &deepTauVsJetsV2p5_vtight_1_);
+      synctree_->Branch("tVTightDeepTau2018v2p5VSjet_2",   &deepTauVsJetsV2p5_vtight_2_);
+      synctree_->Branch("tVVTightDeepTau2018v2p5VSjet_1",  &deepTauVsJetsV2p5_vvtight_1_);
+      synctree_->Branch("tVVTightDeepTau2018v2p5VSjet_2",  &deepTauVsJetsV2p5_vvtight_2_);
+      synctree_->Branch("tVVLooseDeepTau2018v2p5VSe_1",   &deepTauVsEleV2p5_vvloose_1_);
+      synctree_->Branch("tVVLooseDeepTau2018v2p5VSe_2",   &deepTauVsEleV2p5_vvloose_2_);
+      synctree_->Branch("tTightDeepTau2018v2p5VSe_1",     &deepTauVsEleV2p5_tight_1_);
+      synctree_->Branch("tTightDeepTau2018v2p5VSe_2",     &deepTauVsEleV2p5_tight_2_);
+      synctree_->Branch("tTightDeepTau2018v2p5VSmu_1",      &deepTauVsMuV2p5_tight_1_);
+      synctree_->Branch("tTightDeepTau2018v2p5VSmu_2",      &deepTauVsMuV2p5_tight_2_);
+      synctree_->Branch("tVLooseDeepTau2018v2p5VSmu_1",     &deepTauVsMuV2p5_vloose_1_);
+      synctree_->Branch("tVLooseDeepTau2018v2p5VSmu_2",     &deepTauVsMuV2p5_vloose_2_);
+      synctree_->Branch("tDeepTau2018v2p5VSjetraw_1",    &iso_1_V2p5_);
+      synctree_->Branch("tDeepTau2018v2p5VSjetraw_2",    &iso_2_V2p5_);
+
+
       synctree_->Branch("pt_2", &pt_2_.var_float, "pt_2/F");
       synctree_->Branch("phi_2", &phi_2_.var_float, "phi_2/F");
       synctree_->Branch("eta_2", &eta_2_.var_float, "eta_2/F");

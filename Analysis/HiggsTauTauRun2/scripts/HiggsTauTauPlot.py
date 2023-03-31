@@ -29,7 +29,7 @@ defaults = {
     "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "embed_folder":"",
     "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016",
     "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)",
-    "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
+    "method":8 , "do_ss":False, "do_aiso":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
     "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"",
     "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
     "syst_e_res":"", "syst_mu_res":"", "syst_tau_res":"", 
@@ -106,6 +106,8 @@ parser.add_argument("--var", dest="var", type=str,
     help="Variable to plot")
 parser.add_argument("--method", dest="method", type=int,
     help="Method.  Supported options: %(METHODS)s" % vars())
+parser.add_argument("--do_aiso", dest="do_aiso", action='store_true',
+    help="Anti-isolate electron / muon")
 parser.add_argument("--do_ss", dest="do_ss", action='store_true',
     help="Do same-sign.")
 parser.add_argument("--sm_masses", dest="sm_masses", type=str,
@@ -1126,6 +1128,10 @@ for i in options.set_alias:
         options.sel = overwrite_with
     else:
         cats[cat_to_overwrite] = overwrite_with
+
+if options.do_aiso:
+  # overwrite electron/muon isolation cut in baseline
+  cats['baseline'] = cats['baseline'].replace('iso_1<0.15','iso_1>0.15&&iso_1<0.5')
 
 # Additional selections to seperate MC samples by gen flags
 z_sels = {}

@@ -456,7 +456,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(98357936, 65810202, 29068773, 20436016, 9105126);
+      httStitching.SetDYInputYields(98433266, 65828807, 28979228, 20386860, 9155994);
     }
 
 
@@ -852,7 +852,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL){
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(82943459,47420631,28072865,18020893,9036122);
+      httStitching.SetWInputYields(82959375, 47429123, 27947927, 17971598, 8846225);
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -883,7 +883,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(98357936, 65810202, 29068773, 20436016, 9105126);
+      httStitching.SetDYInputYields(98433266, 65828807, 28979228, 20386860, 9155994);
     }
   }
 

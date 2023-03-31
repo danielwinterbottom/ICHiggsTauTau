@@ -149,33 +149,72 @@ for year in years:
 
     sf='1.'
 
-    # pT-dependent binned SF
+    if year == '2016_preVFP':
+      #pT-binned SFs for era 2016_preVFP:
+      sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(1.043)+(pt_2>=25&&pt_2<30)*(1.042)+(pt_2>=30&&pt_2<35)*(1.043)+(pt_2>=35&&pt_2<40)*(1.021)+(pt_2>=40&&pt_2<50)*(1.019)+(pt_2>=50&&pt_2<60)*(1.028)+(pt_2>=60&&pt_2<80)*(0.939)+(pt_2>=80&&pt_2<100)*(0.920)+(pt_2>=100)*(0.929)))'
 
-   # if year == '2016_preVFP':
-   #   #pT-binned SFs for era 2016_preVFP:
-   #   sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(1.043)+(pt_2>=25&&pt_2<30)*(1.042)+(pt_2>=30&&pt_2<35)*(1.043)+(pt_2>=35&&pt_2<40)*(1.021)+(pt_2>=40&&pt_2<50)*(1.019)+(pt_2>=50&&pt_2<60)*(1.028)+(pt_2>=60&&pt_2<80)*(0.939)+(pt_2>=80&&pt_2<100)*(0.920)+(pt_2>=100)*(0.929)))'
-   # if year == '2016_postVFP':
-   #   #pT-binned SFs for era 2016_postVFP:
-   #   sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.813)+(pt_2>=25&&pt_2<30)*(0.823)+(pt_2>=30&&pt_2<35)*(0.869)+(pt_2>=35&&pt_2<40)*(0.909)+(pt_2>=40&&pt_2<50)*(0.907)+(pt_2>=50&&pt_2<60)*(0.870)+(pt_2>=60&&pt_2<80)*(0.975)+(pt_2>=80&&pt_2<100)*(0.918)+(pt_2>=100)*(0.916)))'
-   # if year == '2017':
-   #   #pT-binned SFs for era 2017:
-   #   sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.773)+(pt_2>=25&&pt_2<30)*(0.831)+(pt_2>=30&&pt_2<35)*(0.854)+(pt_2>=35&&pt_2<40)*(0.884)+(pt_2>=40&&pt_2<50)*(0.902)+(pt_2>=50&&pt_2<60)*(0.905)+(pt_2>=60&&pt_2<80)*(0.951)+(pt_2>=80&&pt_2<100)*(0.923)+(pt_2>=100)*(0.947)))'
-   # if year == '2018':
-   #   #pT-binned SFs for era 2018:
-   #   sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.783)+(pt_2>=25&&pt_2<30)*(0.824)+(pt_2>=30&&pt_2<35)*(0.859)+(pt_2>=35&&pt_2<40)*(0.871)+(pt_2>=40&&pt_2<50)*(0.924)+(pt_2>=50&&pt_2<60)*(0.890)+(pt_2>=60&&pt_2<80)*(0.926)+(pt_2>=80&&pt_2<100)*(0.957)+(pt_2>=100)*(0.968)))'
+      if ch=='et':
+        sf='((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(1.038)+(pt_2>=25&&pt_2<30)*(1.043)+(pt_2>=30&&pt_2<35)*(1.024)+(pt_2>=35&&pt_2<40)*(1.007)+(pt_2>=40&&pt_2<50)*(0.997)+(pt_2>=50&&pt_2<60)*(1.015)+(pt_2>=60&&pt_2<80)*(0.917)+(pt_2>=80&&pt_2<100)*(0.916)+(pt_2>=100)*(0.898)))'
 
-    # DM-binned pT-dependent SF
-    #DM-binned SFs for era 2016_preVFP:
-    sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((1.03397+0.000407969*min(pt_2,125.)))+(tau_decay_mode_2==1)*((1.15107+-0.00211504*min(pt_2,125.)))+(tau_decay_mode_2==10)*((1.03783+-0.0011254*min(pt_2,125.)))+(tau_decay_mode_2==11)*((0.975761+-0.00305113*min(pt_2,125.)))))'
-    #DM-binned SFs for era 2016_postVFP:
-    sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((0.978417+5.72368e-05*min(pt_2,125.)))+(tau_decay_mode_2==1)*(1.04437*TMath::Erf((min(pt_2,125.)--10.8845)/46.7379))+(tau_decay_mode_2==10)*((0.927759+-0.000719045*min(pt_2,125.)))+(tau_decay_mode_2==11)*(0.766739*TMath::Erf((min(pt_2,125.)-16.5928)/11.2111))))'
-    #DM-binned SFs for era 2017:
-    sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((1.04266+-0.00158397*min(pt_2,125.)))+(tau_decay_mode_2==1)*(1.01061*TMath::Erf((min(pt_2,125.)--13.518)/48.5772))+(tau_decay_mode_2==10)*(0.934699*TMath::Erf((min(pt_2,125.)-6.19958)/14.8044))+(tau_decay_mode_2==11)*(0.939418*TMath::Erf((min(pt_2,125.)--2.64469)/40.9824))))'
-    #DM-binned SFs for era 2018:
-    sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((1.00465+-8.36161e-05*min(pt_2,125.)))+(tau_decay_mode_2==1)*(0.93569*TMath::Erf((min(pt_2,125.)-1.11787)/28.7657))+(tau_decay_mode_2==10)*(0.932986*TMath::Erf((min(pt_2,125.)--13.0774)/36.7303))+(tau_decay_mode_2==11)*((0.72108+0.00110556*min(pt_2,125.)))))'
+    if year == '2016_postVFP':
+      #pT-binned SFs for era 2016_postVFP:
+      sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.813)+(pt_2>=25&&pt_2<30)*(0.823)+(pt_2>=30&&pt_2<35)*(0.869)+(pt_2>=35&&pt_2<40)*(0.909)+(pt_2>=40&&pt_2<50)*(0.907)+(pt_2>=50&&pt_2<60)*(0.870)+(pt_2>=60&&pt_2<80)*(0.975)+(pt_2>=80&&pt_2<100)*(0.918)+(pt_2>=100)*(0.916)))'
 
-    if 'pt_2' in sf:
+      if ch=='et':
+        sf=' ((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.780)+(pt_2>=25&&pt_2<30)*(0.786)+(pt_2>=30&&pt_2<35)*(0.831)+(pt_2>=35&&pt_2<40)*(0.887)+(pt_2>=40&&pt_2<50)*(0.893)+(pt_2>=50&&pt_2<60)*(0.854)+(pt_2>=60&&pt_2<80)*(0.961)+(pt_2>=80&&pt_2<100)*(0.890)+(pt_2>=100)*(0.912)))'
+    if year == '2017':
+      #pT-binned SFs for era 2017:
+      sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.773)+(pt_2>=25&&pt_2<30)*(0.831)+(pt_2>=30&&pt_2<35)*(0.854)+(pt_2>=35&&pt_2<40)*(0.884)+(pt_2>=40&&pt_2<50)*(0.902)+(pt_2>=50&&pt_2<60)*(0.905)+(pt_2>=60&&pt_2<80)*(0.951)+(pt_2>=80&&pt_2<100)*(0.923)+(pt_2>=100)*(0.947)))'
+      
+      if ch=='et':
+        sf='((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.706)+(pt_2>=25&&pt_2<30)*(0.786)+(pt_2>=30&&pt_2<35)*(0.818)+(pt_2>=35&&pt_2<40)*(0.846)+(pt_2>=40&&pt_2<50)*(0.860)+(pt_2>=50&&pt_2<60)*(0.877)+(pt_2>=60&&pt_2<80)*(0.902)+(pt_2>=80&&pt_2<100)*(0.919)+(pt_2>=100)*(0.877)))'
+
+    if year == '2018':
+      #pT-binned SFs for era 2018:
+      sf = '((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.783)+(pt_2>=25&&pt_2<30)*(0.824)+(pt_2>=30&&pt_2<35)*(0.859)+(pt_2>=35&&pt_2<40)*(0.871)+(pt_2>=40&&pt_2<50)*(0.924)+(pt_2>=50&&pt_2<60)*(0.890)+(pt_2>=60&&pt_2<80)*(0.926)+(pt_2>=80&&pt_2<100)*(0.957)+(pt_2>=100)*(0.968)))'
+      
+      if ch=='et':
+        sf='((gen_match_2!=5) + (gen_match_2==5)*((pt_2>=20&&pt_2<25)*(0.734)+(pt_2>=25&&pt_2<30)*(0.773)+(pt_2>=30&&pt_2<35)*(0.818)+(pt_2>=35&&pt_2<40)*(0.832)+(pt_2>=40&&pt_2<50)*(0.891)+(pt_2>=50&&pt_2<60)*(0.846)+(pt_2>=60&&pt_2<80)*(0.887)+(pt_2>=80&&pt_2<100)*(0.928)+(pt_2>=100)*(0.924)))'
+
+
+#    # DM-binned pT-dependent SF
+#    if year == '2016_preVFP':
+#      #DM-binned SFs for era 2016_preVFP:
+#      sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((1.03397+0.000407969*min(pt_2,140.)))+(tau_decay_mode_2==1)*((1.15107+-0.00211504*min(pt_2,140.)))+(tau_decay_mode_2==10)*((1.03783+-0.0011254*min(pt_2,140.)))+(tau_decay_mode_2==11)*((0.975761+-0.00305113*min(pt_2,140.)))))'
+#
+#    if year == '2016_postVFP':
+#      #DM-binned SFs for era 2016_postVFP:
+#      sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((0.978417+5.72368e-05*min(pt_2,140.)))+(tau_decay_mode_2==1)*(1.04437*TMath::Erf((min(pt_2,140.)--10.8845)/46.7379))+(tau_decay_mode_2==10)*((0.927759+-0.000719045*min(pt_2,140.)))+(tau_decay_mode_2==11)*(0.766739*TMath::Erf((min(pt_2,140.)-16.5928)/11.2111))))'
+#
+#    if year == '2017':
+#      #DM-binned SFs for era 2017:
+#      sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((1.04266+-0.00158397*min(pt_2,140.)))+(tau_decay_mode_2==1)*(1.01061*TMath::Erf((min(pt_2,140.)--13.518)/48.5772))+(tau_decay_mode_2==10)*(0.934699*TMath::Erf((min(pt_2,140.)-6.19958)/14.8044))+(tau_decay_mode_2==11)*(0.939418*TMath::Erf((min(pt_2,140.)--2.64469)/40.9824))))'
+#    if year == '2018':
+#      #DM-binned SFs for era 2018:
+#      sf = '((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*((1.00465+-8.36161e-05*min(pt_2,140.)))+(tau_decay_mode_2==1)*(0.93569*TMath::Erf((min(pt_2,140.)-1.11787)/28.7657))+(tau_decay_mode_2==10)*(0.932986*TMath::Erf((min(pt_2,140.)--13.0774)/36.7303))+(tau_decay_mode_2==11)*((0.72108+0.00110556*min(pt_2,140.)))))'
+
+
+    if 'pt_2' in sf and ch =='tt':
       sf+='*%s' % sf.replace('_2','_1')
+
+    trg_sf='1'
+
+#    # to use custom version of the tau trigger SFs
+#    if year == '2016_preVFP':
+#      # tau trigger SFs for 2016_preVFP:
+#       trg_sf='((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*(1.0033*TMath::Erf((pt_2--49.4465)/62.883))+(tau_decay_mode_2==1)*((1.00949+0.000112014*pt_2))+(tau_decay_mode_2==10)*(0.987114*TMath::Erf((pt_2-32.7557)/10.8365))+(tau_decay_mode_2==11)*((1.17167+-0.00197224*pt_2))))/trigweight_2'
+#    if year == '2016_postVFP':
+#      # tau trigger SFs for 2016_postVFP:
+#       trg_sf='((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*(0.956487*TMath::Erf((pt_2-34.3803)/6.10968))+(tau_decay_mode_2==1)*(1.01958*TMath::Erf((pt_2--59.3484)/81.5503))+(tau_decay_mode_2==10)*((0.945871+-5.95614e-05*pt_2))+(tau_decay_mode_2==11)*(0.959784*TMath::Erf((pt_2--20.3296)/17.715))))/trigweight_2'
+#    if year == '2017':
+#      # tau trigger SFs for 2017:
+#      trg_sf='((gen_match_2!=5) + (gen_match_2==5)*((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*(0.98691*TMath::Erf((pt_2-35.7351)/5.21995))+(tau_decay_mode_2==1)*(0.980758*TMath::Erf((pt_2-23.7837)/13.2419))+(tau_decay_mode_2==10)*(1.00071*TMath::Erf((pt_2-11.3233)/28.0316))+(tau_decay_mode_2==11)*(0.983683*TMath::Erf((pt_2--12.7755)/41.616)))))/trigweight_2'
+#    if year == '2018':
+#      # tau trigger SFs for 2018:
+#       trg_sf='((gen_match_2!=5) + (gen_match_2==5)*((tau_decay_mode_2==0)*(0.976893*TMath::Erf((pt_2-17.0085)/26.0666))+(tau_decay_mode_2==1)*(1.00134*TMath::Erf((pt_2--10.9267)/47.6903))+(tau_decay_mode_2==10)*(1.07537*TMath::Erf((pt_2--10.8779)/54.6612))+(tau_decay_mode_2==11)*(1.00233*TMath::Erf((pt_2-16.6691)/17.0901))))/trigweight_2'
+#
+#    if 'pt_2' in trg_sf:
+#      trg_sf+='*%s' % trg_sf.replace('_2','_1')
 
 #older prefit numbers
 
@@ -203,8 +242,10 @@ for year in years:
 
 
     if ch=='tt': 
-      add_cond = '--add_wt=\'wt_prefire*%(sf)s/wt_tau_id_dm\'' % vars()
-    else: add_cond = '--add_wt=\'wt_prefire*%(sf)s/wt_tau_id_pt\'' % vars()
+      add_cond = '--add_wt=\'wt_prefire*%(sf)s/wt_tau_id_dm*%(trg_sf)s\'' % vars()
+    else: add_cond = '--add_wt=\'wt_prefire*%(sf)s/wt_tau_id_pt*%(trg_sf)s\'' % vars()
+
+  
 
     #uncomment if you want to apply the old corrections
     #if ch=='tt':
@@ -247,4 +288,4 @@ for year in years:
              if 'mt_1' in var_used:
                os.system('sed -i \'s/mt_1<30/1/g\' %(job_file)s ' % vars())
              SubmitBatchJob(job_file,time=180,memory=24,cores=1)
-#
+
