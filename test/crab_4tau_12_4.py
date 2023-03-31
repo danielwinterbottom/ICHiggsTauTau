@@ -278,8 +278,8 @@ for dm in dml:
             tasks.append(('W4JetsToLNu-LO', '/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
 
             # W + Jets NLO
-            tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
-            tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPV2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_0J-NLO', '/WJetsToLNu_0J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+            tasks.append(('WJetsToLNu_1J-NLO', '/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
             tasks.append(('WJetsToLNu_2J-NLO', '/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
 
             # ttbar
