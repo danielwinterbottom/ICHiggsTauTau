@@ -65,6 +65,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
+    //"output_folder" : "/vols/cms/ks1021/test/",
     "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018_PFMet_muoneta2p3/",
 //    "output_folder" : "/vols/cms/dw515/outputs/MSSM/Gen_DY_2018/",
     "svfit_from_grid" : true,
