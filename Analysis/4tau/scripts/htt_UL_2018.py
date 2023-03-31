@@ -408,7 +408,7 @@ if options.proc_bkg or options.proc_all:
         job_num=0
         for FLATJSONPATCH in flatjsons:
             nperjob = 100
-            if "TTToSemiLeptonic" in sa or "TTToHadronic" in sa:
+            if "TTToSemiLeptonic" in sa or "TTToHadronic" in sa or 'GluGluToContinToZZTo4mu' in sa:
               nperjob=20
             #if 'DY' not in sa and 'EWKZ' not in sa:
             #    FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')
