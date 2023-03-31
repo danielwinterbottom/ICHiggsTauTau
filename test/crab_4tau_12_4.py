@@ -112,7 +112,7 @@ for dm in dml:
             # Single Muon
 
             tasks.append(('SingleMuonB-ver1','/SingleMuon/Run2016B-ver1_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
-            tasks.append(('SingleMuonB-ver2','/SingleMuon/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
+            tasks.append(('SingleMuonB','/SingleMuon/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleMuonC', '/SingleMuon/Run2016C-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleMuonD', '/SingleMuon/Run2016D-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleMuonE', '/SingleMuon/Run2016E-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
@@ -120,7 +120,7 @@ for dm in dml:
 
             ## SingleElectron
             tasks.append(('SingleElectronB-ver1', '/SingleElectron/Run2016B-ver1_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
-            tasks.append(('SingleElectronB-ver2', '/SingleElectron/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
+            tasks.append(('SingleElectronB', '/SingleElectron/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronC', '/SingleElectron/Run2016C-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronD', '/SingleElectron/Run2016D-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('SingleElectronE', '/SingleElectron/Run2016E-HIPM_UL2016_MiniAODv2-v5/MINIAOD'))
@@ -128,7 +128,7 @@ for dm in dml:
 
             # Tau
             tasks.append(('TauB-ver1', '/Tau/Run2016B-ver1_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
-            tasks.append(('TauB-ver2', '/Tau/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('TauB', '/Tau/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('TauC', '/Tau/Run2016C-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('TauD', '/Tau/Run2016D-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('TauE', '/Tau/Run2016E-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
@@ -136,7 +136,7 @@ for dm in dml:
 
             # MuonEG
             tasks.append(('MuonEGB-ver1', '/MuonEG/Run2016B-ver1_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
-            tasks.append(('MuonEGB-ver2', '/MuonEG/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
+            tasks.append(('MuonEGB', '/MuonEG/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('MuonEGC', '/MuonEG/Run2016C-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('MuonEGD', '/MuonEG/Run2016D-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
             tasks.append(('MuonEGE', '/MuonEG/Run2016E-HIPM_UL2016_MiniAODv2-v2/MINIAOD'))
@@ -144,7 +144,7 @@ for dm in dml:
           
             # DoubleMuon
             tasks.append(('DoubleMuonB-ver1', '/DoubleMuon/Run2016B-ver1_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
-            tasks.append(('DoubleMuonB-ver2', '/DoubleMuon/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
+            tasks.append(('DoubleMuonB', '/DoubleMuon/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('DoubleMuonC', '/DoubleMuon/Run2016C-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('DoubleMuonD', '/DoubleMuon/Run2016D-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
             tasks.append(('DoubleMuonE', '/DoubleMuon/Run2016E-HIPM_UL2016_MiniAODv2-v1/MINIAOD'))
