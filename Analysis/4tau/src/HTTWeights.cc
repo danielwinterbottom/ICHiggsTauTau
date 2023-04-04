@@ -72,6 +72,7 @@ int HTTWeights::PreAnalysis() {
         w_->function("m_trk_ratio")->functor(w_->argSet("m_eta")));
 
     // electron id/iso
+    //  world!
     fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(
         w_->function("e_idiso_binned_ic_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso"))); 
 
@@ -80,6 +81,7 @@ int HTTWeights::PreAnalysis() {
       w_->function("m_idiso_binned_ic_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
 
     // tau id
+    /* Older, 0404 --> Switch to new id,pt tau id scalefactors
     fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_dm_vvvloose")->functor(w_->argSet("t_dm")));
     fns_["t_deeptauid_dm_vvloose"] = std::shared_ptr<RooFunctor>(
@@ -97,7 +99,45 @@ int HTTWeights::PreAnalysis() {
         w_->function("t_deeptauid_dm_loose_up")->functor(w_->argSet("t_dm")));
     fns_["t_deeptauid_dm_loose_down"] = std::shared_ptr<RooFunctor>(
         w_->function("t_deeptauid_dm_loose_down")->functor(w_->argSet("t_dm")));
+    */
+    std::string year = "";
+    if (era_ == era::data_2016UL_preVFP){
+       year = "2016preVFP";
+    } else if (era_ == era::data_2016UL_postVFP){
+       year = "2016postVFP";
+    } else if (era_ == era::data_2017UL){
+       year = "2017";
+    } else if (era_ == era::data_2018UL){
+       year = "2018";
+    }
+    fns_["t_deeptauid_dm_pt_loose"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
 
+    fns_["t_deeptauid_dm_pt_loose_uncert0_up"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_fit_uncert0_up").c_str())->functor(w_->argSet("t_dm,t_pt")));
+    fns_["t_deeptauid_dm_pt_loose_uncert0_down"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_fit_uncert0_down").c_str())->functor(w_->argSet("t_dm,t_pt")));
+
+    fns_["t_deeptauid_dm_pt_loose_uncert1_up"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_fit_uncert1_up").c_str())->functor(w_->argSet("t_dm,t_pt")));
+    fns_["t_deeptauid_dm_pt_loose_uncert1_down"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_fit_uncert1_down").c_str())->functor(w_->argSet("t_dm,t_pt")));
+
+    fns_["t_deeptauid_dm_pt_loose_syst_alleras_up"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_syst_alleras_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+    fns_["t_deeptauid_dm_pt_loose_syst_alleras_down"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_syst_alleras_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+
+    fns_["t_deeptauid_dm_pt_loose_syst_year_up"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_syst_"+year+"_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+    fns_["t_deeptauid_dm_pt_loose_syst_year_down"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_syst_"+year+"_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+
+    fns_["t_deeptauid_dm_pt_loose_syst_dm_year_up"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_syst_dm_"+year+"_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+    fns_["t_deeptauid_dm_pt_loose_syst_dm_year_down"] = std::shared_ptr<RooFunctor>(
+        w_->function(("DM_"+year+"_syst_dm_"+year+"_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+    
     // lepton fake rates
     fns_["t_id_vs_mu_eta_vloose"] = std::shared_ptr<RooFunctor>(
         w_->function("t_id_vs_mu_eta_vloose")->functor(w_->argSet("t_eta")));
@@ -294,6 +334,17 @@ int HTTWeights::Execute(TreeEvent *event) {
       double id_sf_loose_up = 1.0;
       double id_sf_loose_down = 1.0;
 
+      double  id_sf_loose_uncert0_up = 1.0;
+      double  id_sf_loose_uncert0_down = 1.0;
+      double  id_sf_loose_uncert1_up = 1.0;
+      double  id_sf_loose_uncert1_down =  1.0;
+      double  id_sf_loose_syst_all_eras_up = 1.0;
+      double  id_sf_loose_syst_all_eras_down = 1.0;
+      double  id_sf_loose_syst_year_up = 1.0;
+      double  id_sf_loose_syst_year_down = 1.0;
+      double  id_sf_loose_syst_dm_year_up = 1.0;
+      double  id_sf_loose_syst_dm_year_down = 1.0;
+
       double etau_fakerate = 1.0;
       double etau_fakerate_vvloose = 1.0;
       double etau_fakerate_vloose = 1.0;
@@ -330,6 +381,10 @@ int HTTWeights::Execute(TreeEvent *event) {
         unsigned gen_match = MCOrigin2UInt(event->Get<ic::mcorigin>("gen_match_"+std::to_string(pn)));
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_id_sf = std::vector<double>{static_cast<double>(tau->decay_mode())};
+
+        auto args_id_sf_dm_pt = std::vector<double>{static_cast<double>(tau->decay_mode()),tau->pt()};
+
+        /* Swapping to new ID corrections after TauPOG recommendation 
         id_sf = (gen_match==5) ? fns_["t_deeptauid_dm_loose"]->eval(args_id_sf.data()) : 1.0;
         id_sf_vvvloose = (gen_match==5) ? fns_["t_deeptauid_dm_vvvloose"]->eval(args_id_sf.data()) : 1.0;
         id_sf_vvloose = (gen_match==5) ? fns_["t_deeptauid_dm_vvloose"]->eval(args_id_sf.data()) : 1.0;
@@ -340,6 +395,23 @@ int HTTWeights::Execute(TreeEvent *event) {
 
         id_sf_loose_up = (gen_match==5) ? fns_["t_deeptauid_dm_loose_up"]->eval(args_id_sf.data()) : 1.0;
         id_sf_loose_down = (gen_match==5) ? fns_["t_deeptauid_dm_loose_down"]->eval(args_id_sf.data()) : 1.0;
+
+        */
+ 
+        id_sf = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+
+
+        id_sf_loose_uncert0_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_uncert0_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_uncert0_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_uncert0_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_uncert1_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_uncert1_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_uncert1_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_uncert1_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_all_eras_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_alleras_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_all_eras_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_alleras_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_year_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_2018_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_year_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_2018_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_dm_year_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_2018_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_dm_year_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_2018_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
 
         if(do_etau_fakerate_) {
           auto args_etau_fakerate = std::vector<double>{fabs(tau->eta())};
@@ -377,6 +449,17 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       event->Add("idisoweight_ratio_"+std::to_string(pn)+"_up", id_sf_loose_up/id_sf_loose);
       event->Add("idisoweight_ratio_"+std::to_string(pn)+"_down", id_sf_loose_down/id_sf_loose);
+
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_uncert0_up",id_sf_loose_uncert0_up/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_uncert0_down",id_sf_loose_uncert0_down/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_uncert1_up",id_sf_loose_uncert1_up/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_uncert1_down",id_sf_loose_uncert1_down/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_all_eras_up",id_sf_loose_syst_all_eras_up/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_all_eras_down",id_sf_loose_syst_all_eras_down/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_year_up",id_sf_loose_syst_year_up/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_year_down",id_sf_loose_syst_year_down/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_dm_year_up",id_sf_loose_syst_dm_year_up/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_dm_year_down",id_sf_loose_syst_dm_year_down/id_sf_loose);
  
       event->Add("etau_fakerate_"+std::to_string(pn), etau_fakerate);
       event->Add("etau_fakerate_vvloose_"+std::to_string(pn), etau_fakerate_vvloose);
