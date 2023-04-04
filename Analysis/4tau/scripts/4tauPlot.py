@@ -218,6 +218,8 @@ parser.add_argument("--rebin_with_data", dest="rebin_with_data", action='store_t
     help="Use data in the rebinning algorithm")
 parser.add_argument("--symmetrise_uncertainty", dest="symmetrise_uncertainty", action='store_true',
     help="Symmetrise uncertainties in dictionary defined in code.")
+parser.add_argument("--shrink_final_bin", dest="shrink_final_bin", action='store_true',
+    help="Shrink the size of the final bin.")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -753,6 +755,9 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
       if options.ff_from == "all" or options.ff_from == name:
 
         sign = "1.0" if ((ind % 2) == 0 or options.ff_from != "all") else "-1.0"
+        if options.channel == "tttt":
+          sign = str(float(sign) * -1)
+          if len(name) == 1: continue
 
         iso_tau_numbers = [i for i in tau_numbers if i not in aiso_tau_numbers] # get isolated taus
         
@@ -764,31 +769,40 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
    
         # remove empty selections
         ff_data_wt_list = [sign,total_ff_wt,total_fail,total_pass]
+        #ff_data_wt_list = [sign,total_fail,total_pass]
         if "" in ff_data_wt_list: ff_data_wt_list.remove("")
         ff_mc_wt_list = [sign,"wt",total_ff_wt,total_gen_match_sel,total_fail,total_pass]
+        #ff_mc_wt_list = [sign,"wt",total_gen_match_sel,total_fail,total_pass]
         if "" in ff_mc_wt_list: ff_mc_wt_list.remove("")
   
         # make full selections
         ff_data_wt = " * ".join(ff_data_wt_list)
         ff_mc_wt = " * ".join(ff_mc_wt_list)
 
-        # decorrelate between channels
-        if add_name != "":
-          add_name_channel = "_" + options.channel + add_name
-        else:
-          add_name_channel = ""
+        # add factorisation uncertainty
+        add_name_dict = {add_name:"1"}
+        if add_name == "" and options.do_ff_systs:
+          num = 1.1
+          if len(name) > 1:
+            add_name_dict["_fact_{}Up".format(len(name))] = str(num**(len(name)-1))
+            add_name_dict["_fact_{}Down".format(len(name))] = str(1.0/num**(len(name)-1))
 
-        if data_veto == None:
-          ff_data = GetNode(ana, 'jetFakes{}'.format(name), add_name_channel, data_samples, plot, ff_data_wt, sel, ff_sel)
-          ff_mc = GetNode(ana, 'jetFakes{}_subtract'.format(name), add_name_channel, mc_samples, plot, ff_mc_wt, sel, ff_sel)
-        else:
-          ff_data = GetNode(ana, 'jetFakes{}'.format(name), add_name_channel, data_samples, plot, ff_data_wt, sel, "("+ff_sel+")&&("+data_veto+")")
-          ff_mc = GetNode(ana, 'jetFakes{}_subtract'.format(name), add_name_channel, mc_samples, plot, ff_mc_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+        #print add_name_dict
+        for an, scale in add_name_dict.items():
+          # decorrelate between channels
+          if an != "":
+            add_name_channel = "_" + options.channel + an
+          else:
+            add_name_channel = ""
 
-        ana.nodes[nodename].AddNode(SubtractNode('jetFakes{}'.format(name)+add_name_channel, ff_data, ff_mc))  
+          if data_veto == None:
+            ff_data = GetNode(ana, 'jetFakes{}'.format(name), add_name_channel, data_samples, plot, "("+scale+")*("+ff_data_wt+")", sel, ff_sel)
+            ff_mc = GetNode(ana, 'jetFakes{}_subtract'.format(name), add_name_channel, mc_samples, plot, "("+scale+")*("+ff_mc_wt+")", sel, ff_sel)
+          else:
+            ff_data = GetNode(ana, 'jetFakes{}'.format(name), add_name_channel, data_samples, plot, "("+scale+")*("+ff_data_wt+")", sel, "("+ff_sel+")&&("+data_veto+")")
+            ff_mc = GetNode(ana, 'jetFakes{}_subtract'.format(name), add_name_channel, mc_samples, plot, "("+scale+")*("+ff_mc_wt+")", sel, "("+ff_sel+")&&("+data_veto+")")
 
-
-
+          ana.nodes[nodename].AddNode(SubtractNode('jetFakes{}'.format(name)+add_name_channel, ff_data, ff_mc))  
 
 #def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
 #  vj = "deepTauVsJets_" + VsJets_wp
@@ -1030,19 +1044,15 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'jetFakes' not in samples_to_skip:
 
         if options.do_ff_systs and not options.no_sig_sel:
-          wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
+          wt_exts = ["_iso_0f_down","_iso_0f_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
           #wt_exts = ["_non_closure_down","_non_closure_up"]
         elif options.do_ff_systs and options.no_sig_sel:
-          wt_exts = ["_non_closure_down","_non_closure_up"]
+          wt_exts = ["_non_closure_down","_non_closure_up","_iso_0f_down","_iso_0f_up"]
         else:
           wt_exts = []
 
         type_exts = []
         if options.do_ff_systs and options.ff_from == "all":
-          #if options.channel.count("t") >= 1: type_exts.append("single")
-          #if options.channel.count("t") >= 2: type_exts.append("double")
-          #if options.channel.count("t") >= 3: type_exts.append("triple")
-          #if options.channel.count("t") >= 4: type_exts.append("quadruple")
           type_exts = ["all"]
         elif options.do_ff_systs and not options.ff_from == "all":
           type_exts.append("")
@@ -1074,6 +1084,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
       if 'VV' not in samples_to_skip:
           GenerateVV(ana, add_name, vv_samples+ggzz_samples+qqzz_samples, plot, wt, sel, cat, vv_sels)
+          GenerateHZZ(ana, add_name, hzz_samples, plot, wt, sel, cat) 
       if 'VVV' not in samples_to_skip:
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
       if 'W' not in samples_to_skip:
@@ -1276,15 +1287,24 @@ if options.syst_jet_scale_group:
 
     syst_dict = dict(zip(names, folders))
 
-    replaceYear = ""
-    if (options.year == '2016_preVFP'): replaceYear = "2016preVFP"
-    elif (options.year == '2016_postVFP'): replaceYear = "2016postVFP"
-    elif (options.year == '2017'): replaceYear = "2017"
-    elif (options.year == '2018'): replaceYear = "2018"
-    else: assert ValueError("Regrouped JES only works for full RunII analyses")
+    #replaceYear = ""
+    #if (options.year == '2016_preVFP'): replaceYear = "2016preVFP"
+    #elif (options.year == '2016_postVFP'): replaceYear = "2016postVFP"
+    #elif (options.year == '2017'): replaceYear = "2017"
+    #elif (options.year == '2018'): replaceYear = "2018"
+    #else: assert ValueError("Regrouped JES only works for full RunII analyses")
 
+    #for name, folder in syst_dict.iteritems():
+    #    if "year" in name: name=name.replace("year", replaceYear)
+    #    systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder), "_{}Up".format(name),"wt", ['jetFakes'], False)
+    #    systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder), "_{}Down".format(name),"wt", ['jetFakes'], False)
     for name, folder in syst_dict.iteritems():
-        if "year" in name: name=name.replace("year", replaceYear)
+      if "year" in name:
+        for yr in ["2016_preVFP","2016_postVFP","2017","2018"]:
+          year_name = name.replace("year",yr)
+          systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder) if yr == options.year else "", "_{}Up".format(year_name),"wt", ['jetFakes'], False)
+          systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder) if yr == options.year else "", "_{}Down".format(year_name),"wt", ['jetFakes'], False)
+      else:
         systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder), "_{}Up".format(name),"wt", ['jetFakes'], False)
         systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder), "_{}Down".format(name),"wt", ['jetFakes'], False)
 
@@ -1335,8 +1355,8 @@ if options.syst_electron_id:
 
 if options.syst_muon_id:
     if options.channel == "mmtt":
-      systematics['syst_muon_id_up'] = ('', '_syst_electron_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
-      systematics['syst_muon_id_down'] = ('', '_syst_electron_id'+'Up', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.0/1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+      systematics['syst_muon_id_up'] = ('', '_syst_muon_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+      systematics['syst_muon_id_down'] = ('', '_syst_muon_id'+'Down', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.0/1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
     elif options.channel == "mttt":
       systematics['syst_muon_id_up'] = ('', '_syst_muon_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))', ['jetFakes'], False)
       systematics['syst_muon_id_down'] = ('', '_syst_muon_id'+'Down', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))', ['jetFakes'], False)
@@ -1386,7 +1406,7 @@ if options.syst_k_factor:
 
 
 if options.plot_from_dc == "":
-  max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
+  max_systs_per_pass = 500 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
   while len(systematics) > 0:
     ana = Analysis()
     ana.remaps = {}
@@ -1761,7 +1781,7 @@ if not options.no_plot:
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
     if options.replace_name != None: plot_name = options.outputfolder+'/'+options.replace_name
-    titles = plotting.SetAxisTitles(options.var,options.channel)
+    titles = plotting.SetAxisTitles(options.var,options.channel,options.norm_bins)
     if options.x_title == "": 
       x_title = titles[0]
     else: x_title = options.x_title
@@ -1800,7 +1820,8 @@ if not options.no_plot:
       draw_data=(not options.no_data),
       under_legend=options.under_legend,
       add_stat_to_syst=options.add_stat_to_syst,
-      do_custom_uncerts=options.add_stat_to_syst
+      do_custom_uncerts=options.add_stat_to_syst,
+      shrink_final_bin=options.shrink_final_bin
       )
 
 #norm signal yields on datacards to 1pb AFTER plotting    

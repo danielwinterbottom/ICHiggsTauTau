@@ -60,7 +60,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/ks1021/4tau/trees/2017_0912",
-    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/2301",
+    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/1502_full",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2017_tres1_v2_svfit/",

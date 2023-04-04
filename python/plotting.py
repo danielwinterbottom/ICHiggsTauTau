@@ -14,7 +14,7 @@ COL_STORE = []
 ## and colour palettes
 ##@{
 
-def SetAxisTitles(plot, channel):
+def SetAxisTitles(plot, channel, norm_bins):
   if '[' in plot: 
       isVarBins = True
       var = plot.split('[')[0]
@@ -182,7 +182,8 @@ def SetAxisTitles(plot, channel):
     if not isVarBins: return [var,'Events']
     else: return [var, 'dN/d'+var]
   else:
-    if not isVarBins: return [titles[var][0],titles[var][1]]
+    if not norm_bins: return [titles[var][0],"Events"]
+    elif not isVarBins: return [titles[var][0],titles[var][1]]
     else: return [titles[var][0], titles[var][2]]
 
 
@@ -2171,6 +2172,17 @@ def NonZeroMinimum(h):
       min_value = h.GetBinContent(i)
   return min_value
 
+def ShrinkFinalBin(h):
+  bins = [h.GetBinLowEdge(b) for b in range(1,h.GetNbinsX()+2)]
+  if len(bins) < 3: return h
+  new_bins = array('f',bins[:-1] + [2*bins[-2]-bins[-3]])
+  new_h = R.TH1D(h.GetName(),'',len(new_bins)-1, new_bins)
+  for b in range(1,h.GetNbinsX()+1):
+    new_h.SetBinContent(b,h.GetBinContent(b))
+    new_h.SetBinError(b,h.GetBinError(b))
+  return new_h
+
+
 def HTTPlot(nodename, 
             infile=None, 
             signal_scale=1, 
@@ -2204,7 +2216,8 @@ def HTTPlot(nodename,
             cat="",
             plot_signals=[""],
             draw_data=True,
-            under_legend=""
+            under_legend="",
+            shrink_final_bin=False
             ):
     R.gROOT.SetBatch(R.kTRUE)
     R.TH1.AddDirectory(False)
@@ -2467,37 +2480,37 @@ def HTTPlot(nodename,
 
     background_schemes = {
       'mttt': [
-        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes2","jetFakes3","jetFakes4","jetFakes23","jetFakes23","jetFakes34","jetFakes234","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'ettt': [
-        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes2","jetFakes3","jetFakes4","jetFakes23","jetFakes23","jetFakes34","jetFakes234","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'tttt': [
-        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes234","jetFakes1234","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'ttt': [
-        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes12","jetFakes13","jetFakes23","jetFakes123","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'eett': [
-        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes3","jetFakes4","jetFakes34","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'mmtt': [
-        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes3","jetFakes4","jetFakes34","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'emtt': [
-        backgroundComp("Other",["ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
+        backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
         backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes3","jetFakes4","jetFakes34","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
@@ -2517,6 +2530,11 @@ def HTTPlot(nodename,
       blind_datahist.SetMarkerStyle(20)
       blind_datahist.SetLineColor(1)
 #      total_datahist.Print("all")
+
+    if shrink_final_bin: 
+      total_datahist = ShrinkFinalBin(total_datahist)
+      blind_datahist = ShrinkFinalBin(blind_datahist)
+
 
     #Blinding by hand using requested range, set to 200-4000 by default:
     if blind and draw_data:
@@ -2545,13 +2563,17 @@ def HTTPlot(nodename,
                 h.Add(infile.Get(nodename+'/'+k).Clone())
         if remove:
           del background_schemes[channel][i]
+        if shrink_final_bin:
+          h = ShrinkFinalBin(h)
         h.SetFillColor(t['colour'])
         h.SetLineColor(R.kBlack)
         h.SetMarkerSize(0)
-    
+   
+
         if norm_bins:
             print "Normalising bins to bin width"
             h.Scale(1.0,"width")
+
         if h.GetName() == '': continue     
         bkg_histos.append(h)
         
@@ -2639,6 +2661,8 @@ def HTTPlot(nodename,
           h.append(infile.Get(nodename+'/'+rf_plot_signals_dict[plot_signals[i]]).Clone())
         if norm_bins:
           h[i].Scale(1.0,"width")
+        if shrink_final_bin:
+          h[i] = ShrinkFinalBin(h[i])
         h[i].SetLineColor(colours[i])
         h[i].SetLineWidth(3)
         h[i].Scale(signal_scale)
@@ -2657,6 +2681,9 @@ def HTTPlot(nodename,
       if norm_bins:
         bkg_uncert_up.Scale(1.0,"width")
         bkg_uncert_down.Scale(1.0,"width")
+      if shrink_final_bin:
+        bkg_uncert_up = ShrinkFinalBin(bkg_uncert_up)
+        bkg_uncert_down = ShrinkFinalBin(bkg_uncert_down)
 
       for i in range(1,bkg_uncert_up.GetNbinsX()+1): 
           stat_error=error_hist.GetBinError(i)
@@ -2777,6 +2804,8 @@ def HTTPlot(nodename,
             bkg_uncert_down.SetLineWidth(0)
             bkg_uncert_up = MakeRatioHist(bkg_uncert_up,bkghist.Clone(),True,False)
             bkg_uncert_down = MakeRatioHist(bkg_uncert_down,bkghist.Clone(),True,False)
+            bkg_uncert_up.Print("all")
+            bkg_uncert_down.Print("all")
             bkg_uncert_up.Draw('histsame')
             bkg_uncert_down.Draw('histsame')
 

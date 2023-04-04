@@ -5,22 +5,10 @@ import os
 from array import array
 
 folder = "/vols/cms/gu18/Offline/output/4tau/1502_full"
-channel = "emtt"
-#channel = "mmtt"
-#channel = "eett"
+channel = "ttt"
 
 data_files = {}
 data_files["2016_preVFP"] = [
-     "SingleElectronB",
-     "SingleElectronC",
-     "SingleElectronD",
-     "SingleElectronE",
-     "SingleElectronF",
-     "SingleMuonB",
-     "SingleMuonC",
-     "SingleMuonD",
-     "SingleMuonE",
-     "SingleMuonF",
      "TauB",
      "TauC",
      "TauD",
@@ -28,27 +16,11 @@ data_files["2016_preVFP"] = [
      "TauF",
 ]
 data_files["2016_postVFP"] = [
-     "SingleElectronF",
-     "SingleElectronG",
-     "SingleElectronH",
-     "SingleMuonF",
-     "SingleMuonG",
-     "SingleMuonH",
      "TauF",
      "TauG",
      "TauH",
 ]
 data_files["2017"] = [
-     "SingleElectronB",
-     "SingleElectronC",
-     "SingleElectronD",
-     "SingleElectronE",
-     "SingleElectronF",
-     "SingleMuonB",
-     "SingleMuonC",
-     "SingleMuonD",
-     "SingleMuonE",
-     "SingleMuonF",
      "TauB",
      "TauC",
      "TauD",
@@ -56,14 +28,6 @@ data_files["2017"] = [
      "TauF",
 ]
 data_files["2018"] = [
-     "EGammaA",
-     "EGammaB",
-     "EGammaC",
-     "EGammaD",
-     "SingleMuonA",
-     "SingleMuonB",
-     "SingleMuonC",
-     "SingleMuonD",
      "TauA",
      "TauB",
      "TauC",
@@ -249,41 +213,61 @@ lumis["2016_postVFP"] = 16810.0
 lumis["2017"] = 41530.0
 lumis["2018"] = 59830.0
 
-sel = "((((((n_bjets==0 && iso_1<0.15 && iso_2<0.15 && 1 && deepTauVsMu_vloose_3>0.5 && deepTauVsEle_vvloose_3>0.5 && 1 && deepTauVsMu_vloose_4>0.5 && deepTauVsEle_vvloose_4>0.5)*(!((q_1+q_2+q_3+q_4)==0))) && ((pt_1>33 && trg_singleelectron_1) || (pt_2>25 && trg_singlemuon_2) || (pt_3>40 && pt_4>40 && trg_doubletau_34)))))&&((!(isTau && (pt_2>25 && trg_singlemuon_2))) && (!(isSingleElectron && ((pt_1>25 && trg_singlemuon_1) || (pt_3>40 && pt_4>40 && trg_doubletau_34))))))"
-#sel = "((((((n_bjets==0 && iso_1<0.15 && iso_2<0.15 && 1 && deepTauVsMu_vloose_3>0.5 && deepTauVsEle_vvloose_3>0.5 && 1 && deepTauVsMu_vloose_4>0.5 && deepTauVsEle_vvloose_4>0.5)*(!((q_1+q_2+q_3+q_4)==0))) && ((pt_1>25 && trg_singlemuon_1) || (pt_2>25 && trg_singlemuon_2) || (pt_3>40 && pt_4>40 && trg_doubletau_34)))))&&((pt_1>25 && trg_singlemuon_1) || (pt_2>25 && trg_singlemuon_2) || (pt_3>40 && pt_4>40 && trg_doubletau_34)))"
-#sel = "((((((n_bjets==0 && iso_1<0.15 && iso_2<0.15 && 1 && deepTauVsMu_vloose_3>0.5 && deepTauVsEle_vvloose_3>0.5 && 1 && deepTauVsMu_vloose_4>0.5 && deepTauVsEle_vvloose_4>0.5)*(!((q_1+q_2+q_3+q_4)==0))) && ((pt_1>33 && trg_singleelectron_1) || (pt_2>33 && trg_singleelectron_2) || (pt_3>40 && pt_4>40 && trg_doubletau_34)))))&&((pt_1>25 && trg_singleelectron_1) || (pt_2>25 && trg_singleelectron_2) || (pt_3>40 && pt_4>40 && trg_doubletau_34)))"
+sel = "(fabs(q_sum)!=1 && deepTauVsJets_iso_1>0.1 && deepTauVsJets_iso_2>0.1 && deepTauVsJets_iso_3>0.1 && deepTauVsMu_vloose_1>0.5 && deepTauVsEle_vvloose_1>0.5 && deepTauVsMu_vloose_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_vloose_3>0.5 && deepTauVsEle_vvloose_3>0.5 && ((pt_1>40 && pt_2>40 && trg_doubletau_12==1) || (pt_1>40 && pt_3>40 && trg_doubletau_13==1) || (pt_2>40 && pt_3>40 && trg_doubletau_23==1)))"
+
+f = "(deepTauVsJets_loose_X<0.5 && deepTauVsJets_iso_X>0.1)"
+p = "(deepTauVsJets_loose_X>0.5)"
+o = "(deepTauVsJets_iso_X>0.1)"
+
+f1 = f.replace("X","1")
+f2 = f.replace("X","2")
+f3 = f.replace("X","3")
+p1 = p.replace("X","1")
+p2 = p.replace("X","2")
+p3 = p.replace("X","3")
+o1 = o.replace("X","1")
+o2 = o.replace("X","2")
+o3 = o.replace("X","3")
+
 
 get_sels = {}
-get_sels["double_fail"] = "((deepTauVsJets_loose_3<0.5 && deepTauVsJets_iso_3>0.1) * (deepTauVsJets_loose_4<0.5 && deepTauVsJets_iso_4>0.1))"
-get_sels["double_pass"] = " ((deepTauVsJets_loose_3>0.5) * (deepTauVsJets_loose_4>0.5))"
 
-#get_sels["single_fail_1"] = "((deepTauVsJets_loose_3>0.5) * (deepTauVsJets_loose_4<0.5 && deepTauVsJets_iso_4>0.1))"
-#get_sels["single_fail_2"] = "((deepTauVsJets_loose_3<0.5 && deepTauVsJets_iso_3>0.1) * (deepTauVsJets_loose_4>0.5))"
+get_sels["fail_123"] = "({f1} * {f2} * {f3})"
+get_sels["pass_123"] = "({p1} * {p2} * {p3})"
 
-#get_sels["single_pass_1"] = "((deepTauVsJets_loose_3>0.5) * (deepTauVsJets_loose_4>0.5))"
-#get_sels["single_pass_2"] = "((deepTauVsJets_loose_3>0.5) * (deepTauVsJets_loose_4>0.5))"
+get_sels["fail_12"] = "({f1} * {f2} * {o3})"
+get_sels["pass_12"] = "({p1} * {p2} * {o3})"
 
-get_sels["single_fail_1"] = "((deepTauVsJets_iso_3>0.1) * (deepTauVsJets_loose_4<0.5 && deepTauVsJets_iso_4>0.1))"
-get_sels["single_fail_2"] = "((deepTauVsJets_loose_3<0.5 && deepTauVsJets_iso_3>0.1) * (deepTauVsJets_iso_4>0.1))"
+get_sels["fail_13"] = "({f1} * {o2} * {f3})"
+get_sels["pass_13"] = "({p1} * {o2} * {p3})"
 
-get_sels["single_pass_1"] = "((deepTauVsJets_iso_3>0.1) * (deepTauVsJets_loose_4>0.5))"
-get_sels["single_pass_2"] = "((deepTauVsJets_loose_3>0.5) * (deepTauVsJets_iso_4>0.1))"
+get_sels["fail_23"] = "({o1} * {f2} * {f3})"
+get_sels["pass_23"] = "({o1} * {p2} * {p3})"
 
+get_sels["fail_1"] = "({f1} * {o2} * {o3})"
+get_sels["pass_1"] = "({p1} * {o2} * {o3})"
+
+get_sels["fail_2"] = "({o1} * {f2} * {o3})"
+get_sels["pass_2"] = "({o1} * {p2} * {o3})"
+
+get_sels["fail_3"] = "({o1} * {o2} * {f3})"
+get_sels["pass_3"] = "({o1} * {o2} * {p3})"
+
+for k,v in get_sels.items(): get_sels[k] = get_sels[k].format(f1=f1,f2=f2,f3=f3,p1=p1,p2=p2,p3=p3,o1=o1,o2=o2,o3=o3)
 
 mc_sels = {}
-mc_sels["double_fail"] = "((gen_match_3 != 6) * (gen_match_4 != 6))"
-mc_sels["single_fail_1"] = "(gen_match_4 != 6)"
-mc_sels["single_fail_2"] = " (gen_match_3 != 6)"
-mc_sels["double_pass"] = "((gen_match_3 != 6) * (gen_match_4 != 6))"
-mc_sels["single_pass_1"] = "(gen_match_4 != 6)"
-mc_sels["single_pass_2"] = " (gen_match_3 != 6)"
+for k,v in get_sels.items():
+  mc_sels[k] = "("
+  for ind, num in enumerate(k.split("_")[1]):
+    if ind != 0: mc_sels[k] += "*"
+    mc_sels[k] += "(gen_match_{} != 6)".format(num)
+  mc_sels[k] += ")"
 
 var_input = "mt_tot[0,5000]"
 
 var = var_input.split('[')[0]
 bins = array('f', map(float,var_input.split('[')[1].split(']')[0].split(',')))
 hout = ROOT.TH1D('hout','',len(bins)-1, bins)
-
 
 yields = {}
 
@@ -328,21 +312,8 @@ for sel_type, sel_iso in get_sels.items():
 ratio = {}
 for k, v in yields.items():
   if "pass" in k:
-    ratio[k.replace("_pass","")] = v.Clone()
-    ratio[k.replace("_pass","")].Divide(yields[k.replace("pass","fail")])
+    ratio[k.replace("pass","")] = v.Clone()
+    ratio[k.replace("pass","")].Divide(yields[k.replace("pass","fail")])
+    print k.replace("pass","fail")
+    print ratio[k.replace("pass","")].Print("all")
 
-single = ratio["single_1"].Clone()
-single.Multiply(ratio["single_2"].Clone())
-
-print "single"
-single.Print("all")
-
-print "double"
-ratio["double"].Print("all")
-
-
-uncert = ratio["double"].Clone()
-uncert.Divide(single)
-
-print "Uncert"
-uncert.Print("all")

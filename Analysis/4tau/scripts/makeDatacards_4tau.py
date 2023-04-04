@@ -14,6 +14,8 @@ parser.add_argument('--output', help= 'Name of output folder to create', default
 parser.add_argument('--only_var', help= 'Only run for this variable', default='')
 parser.add_argument('--only_option', help= 'Only run for this option', default='')
 parser.add_argument("--no_syst",dest="no_syst", action='store_true', default=False,help="Run without systematics")
+parser.add_argument("--collect",dest="collect", action='store_true', default=False,help="Collect years")
+parser.add_argument("--split_years",dest="split_years", action='store_true', default=False,help="Run each year on the batch")
 args = parser.parse_args()
       
 # Things to loop over
@@ -72,7 +74,7 @@ def SubmitBatchJob(name,time=180,memory=24,cores=1):
   else: os.system('qsub -e %(error_log)s -o %(output_log)s -V -q hep.q -l h_rt=0:%(time)s:0 -l h_vmem=%(memory)sG -cwd %(name)s' % vars())
 
 all_ch_variables = [
-                    GetBinning('mt_tot',0,600,60,round=1),
+                    "mt_tot[0,10,20,30,40,50,60,70,80,90,100,110,125,140,160,180,200,220,240,270,300,350,400,450,500,600]",
 #                    GetBinning('st',0,600,100,round=1),
                     GetBinning('pt_1',0,250,25,round=1),
                     GetBinning('pt_2',0,250,25,round=1),
@@ -299,6 +301,23 @@ for channel in channels:
       if (channel == "eett" or channel == "mmtt") and "z_control" in cat: changed_option = changed_option.replace("--blind","")
 
       for var in variables:
+
+        add_cond = ""
+
+        if "signal" in name or "ff_full" in name:
+          if channel == "ttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 30.0, 80.0, 100.0, 110.0, 125.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 6000.0]"
+          if channel == "tttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "eett" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 6000.0]"
+          if channel == "eett" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "mmtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 90.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 500.0, 6000.0]"
+          if channel == "mmtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "emtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 100.0, 200.0, 240.0, 300.0, 6000.0]"
+          if channel == "emtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 220.0, 6000.0]"
+          if channel == "ettt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "mttt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          add_cond += "--shrink_final_bin "
+
+
         if '[' in var: var_string = var.split('[')[0]
         elif '(' in var: var_string = var.split('(')[0]
         if args.only_var != "" and args.only_var != var_string: continue
@@ -307,19 +326,26 @@ for channel in channels:
         if var_string[-1] == "4" and channel == "ttt": continue
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
-        add_cond = ""
         if not (args.no_syst or "ff" in name):
            print "Adding Systematics"
            for syst in systs:
               add_cond += (syst + " ")
         if "ff" in name:
-          add_cond += "--do_ff_systs"
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1502_full %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
-        #run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
-        if "ff" in name: run_cmd += " --rebin_with_data"
-        job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
-        CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+          add_cond += "--do_ff_systs "
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1502_full %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --zero_negative_bins" % vars()
+        if not args.collect: run_cmd += " --run_datacards"
+        if "ff" in name and "full" not in name: 
+          run_cmd += " --rebin_with_data --auto_rebinning --bin_uncert_fraction=0.25"
+
+        if not args.split_years:
+          job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
+          CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
+          SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        else:
+          run_cmd += " --batch"
+          run_cmd = run_cmd.replace("\\\"","\"")
+          #print run_cmd
+          os.system(run_cmd)
            
     
 

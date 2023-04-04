@@ -4,8 +4,8 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/guttley/Sep18_MC_102X_2018/",
     "max_events":   -1,
     "timings":      true,
-    "channels":      ["tttt","mttt","ettt","emtt","mmtt","eett","ttt","mmmm"],
-//    "channels":      ["mmtt"], 
+//    "channels":      ["tttt","mttt","ettt","emtt","mmtt","eett","ttt","mmmm"],
+    "channels":      ["tttt"], 
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -64,8 +64,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": true,
-    //"output_folder" : "output/",
-    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/2301",
+    "output_folder" : "output/",
+    //"output_folder" : "/vols/cms/gu18/Offline/output/4tau/1502_full",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",

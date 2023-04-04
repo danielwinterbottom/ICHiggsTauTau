@@ -1,19 +1,29 @@
 import ROOT
 from collections import OrderedDict
+import argparse
 
-#folder = "2302_v4/CHANNEL/mt_tot_ff_full_CAT_all.root"
-#show_data = True
-#show_other = []
-#replace_show_other = []
+parser = argparse.ArgumentParser()
+parser.add_argument('--folder', help= 'Name of folder datacards are in', default='')
+parser.add_argument('--cnz', help= 'Run charges non zero', action='store_true')
+args = parser.parse_args()
 
-folder = "2302_v4/CHANNEL/mt_tot_signal_CAT_all.root"
-show_data = False
-show_other = ["A160phi300"]
-replace_show_other = ["$(m_{A},m_{\\phi}) = (160,300)$ GeV"]
+
+if args.cnz:
+  folder = args.folder+"/CHANNEL/mt_tot_ff_full_CAT_all.root"
+  show_data = True
+  unblind = []
+  show_other = []
+  replace_show_other = []
+else:
+  folder = args.folder+"/CHANNEL/mt_tot_signal_CAT_all.root"
+  show_data = False
+  unblind = ["mmtt_z_control_nobtag","eett_z_control_nobtag"]
+  show_other = ["A160phi300"]
+  replace_show_other = ["$(m_{A},m_{\\phi}) = (160,300)$ GeV"]
 
 files = OrderedDict()
 
-files['$\\tau_{h}\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'tttt_inclusive'
+#files['$\\tau_{h}\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'tttt_inclusive'
 files['$\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'ttt_inclusive'
 files['$e\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'ettt_nobtag'
 files['$\\mu\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'mttt_nobtag'
@@ -35,8 +45,9 @@ def GetIntegralOfVariation(hist):
  
 
 print "\\begin{table}[]"
+print "\\centering"
 table_align = "|l||c|c|"
-if show_data:
+if show_data or unblind != []:
   table_align += "c|"
 for i in show_other:
   table_align += "c|"
@@ -45,7 +56,7 @@ print "\\begin{tabular}{"+table_align+"}"
 print "\\hline"
 header = "  Category & $N_{\\text{bins}}$ & Total Background"
 empty = " & &"
-if show_data:
+if show_data or unblind != []:
   header += " & Data Observed"
   empty += " &"
 for i in replace_show_other:
@@ -71,9 +82,11 @@ for k, v in files.iteritems():
   tbupi = tbup.Integral()
   tbdown = f.Get(v+"/total_bkg_custom_uncerts_down")
   tbdowni = tbdown.Integral()
-  if show_data:
+  if show_data or v in unblind:
     do = f.Get(v+"/data_obs")
-    doi = do.Integral()
+    doi = str(int(do.Integral()))
+  else:
+    doi = "-"
   other = []
   otheri = []
   for ind, i in enumerate(show_other):
@@ -94,9 +107,9 @@ for k, v in files.iteritems():
   row += str(tb.GetNbinsX())
   row += " & "
   row += "$" + str(round(tbi,1))  + "$ $\\pm$ $" + str(round(stat,1)) + "$ (stat) "  + "$^{+" + str(round(tbupi-tbi,1)) +  "}_{-" + str(round(tbi-tbdowni,1)) + "}$ (syst)"
-  if show_data:
+  if show_data or unblind != []:
     row += " & "
-    row += "$" + str(int(doi)) + "$"
+    row += "$" + doi + "$"
   for ind, i in enumerate(show_other):
     row += " & "
     row += "$" + str(round(otheri[ind],1)) + "$"
