@@ -1129,6 +1129,7 @@ cats_unmodified = copy.deepcopy(cats)
 
 systematics = OrderedDict()
 systematics['default'] = ('','', 'wt', [], False)
+
 if options.syst_tau_id:
   dm_bins=["0","1","10"]
   for i,dm in enumerate(dm_bins):
