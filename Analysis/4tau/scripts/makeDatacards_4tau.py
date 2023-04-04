@@ -14,6 +14,8 @@ parser.add_argument('--output', help= 'Name of output folder to create', default
 parser.add_argument('--only_var', help= 'Only run for this variable', default='')
 parser.add_argument('--only_option', help= 'Only run for this option', default='')
 parser.add_argument("--no_syst",dest="no_syst", action='store_true', default=False,help="Run without systematics")
+parser.add_argument("--collect",dest="collect", action='store_true', default=False,help="Collect years")
+parser.add_argument("--split_years",dest="split_years", action='store_true', default=False,help="Run each year on the batch")
 args = parser.parse_args()
       
 # Things to loop over
@@ -94,7 +96,7 @@ all_ch_variables = [
 #                    GetBinning('mvis_23',0,400,100,round=1),
 #                    GetBinning('mvis_24',0,400,100,round=1),
 #                    GetBinning('mvis_34',0,400,100,round=1),
-                    GetBinning('mvis_1234',80,600,100,round=1),
+#                    GetBinning('mvis_1234',80,600,100,round=1),
 #                    GetBinning('mvis_min_sum_dR_1',0,500,100,round=1),
 #                    GetBinning('mvis_min_sum_dR_2',0,300,60,round=1),
 #                    GetBinning('mvis_min_sum_dphi_1',0,500,100,round=1),
@@ -158,19 +160,20 @@ ch_dep_var = {"mttt":[
 #                      GetBinning('mvis_os',0,400,100,round=1),
 #                      GetBinning('pt_tt_os',0,300,60,round=1),
                       ],
-	      "mmmm":[
-	              ],
+	            "mmmm":[
+                      GetBinning('mvis_1234',80,600,100,round=1),
+	                    ],
               }
 
 categories = {
               "ttt" : ["inclusive"],
               "tttt": ["inclusive"],
-              "ettt": ["nobtag"],
-              "mttt": ["nobtag"],
-              "emtt": ["z_control_nobtag","2l2t_sig_nobtag"],
-              "eett": ["z_control_nobtag","2l2t_sig_nobtag"],
-              "mmtt": ["z_control_nobtag","2l2t_sig_nobtag"],
-	      "mmmm": ["inclusive"],
+              "ettt": ["inclusive","nobtag"],
+              "mttt": ["inclusive","nobtag"],
+              "emtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
+              "eett": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
+              "mmtt": ["inclusive","z_control_nobtag","2l2t_sig_nobtag"],
+       	      "mmmm": ["inclusive"],
               }
 
 
@@ -240,20 +243,20 @@ add_options = {
 
 ### Systematics ###
 common_shape_systematics = [
-	'--syst_tau_id', # Tau ID Efficiency
-	'--syst_doubletau_trg', # Double Tau Trigger Effieciency
-#       '--syst_tau_scale_group', #Tau Energy Scale
-#       '--syst_jet_res', # Jet Energy Resolution
-#       '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
-#      '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
-#      '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
-#       '--syst_jet_scale_group', # Jet Energy Scale Grouped
+ 	      '--syst_tau_id', # Tau ID Efficiency
+	      '--syst_doubletau_trg', # Double Tau Trigger Effieciency
+        '--syst_tau_scale_group', #Tau Energy Scale
+        '--syst_jet_res', # Jet Energy Resolution
+        '--syst_met_unclustered', # MET Unclustered Energy Uncertainty
+##        '--syst_met_scale', # MET Recoil Scale Correction Uncertainty
+##        '--syst_met_res', # MET Recoil Resolution Correction Uncertainty
+        '--syst_jet_scale_group', # Jet Energy Scale Grouped
         '--syst_electron_scale', # Electron Energy Scale
-#      '--syst_efake_scale_0pi', # l to tau h fake energy scale
-#      '--syst_efake_scale_1pi', # l to tau h fake energy scale
-#      '--syst_muon_scale', # Muon Energy Scale
-#      '--syst_mufake_scale_0pi', # l to tau h fake energy scale
-#       '--syst_mufake_scale_1pi', # l to tau h fake energy scale
+##        '--syst_efake_scale_0pi', # l to tau h fake energy scale
+##        '--syst_efake_scale_1pi', # l to tau h fake energy scale
+##        '--syst_muon_scale', # Muon Energy Scale
+##        '--syst_mufake_scale_0pi', # l to tau h fake energy scale
+##        '--syst_mufake_scale_1pi', # l to tau h fake energy scale
         '--syst_electron_id', # Electron ID
         '--syst_muon_id', # Muon ID
         '--syst_electron_trg', # SingleElectron trigger
@@ -283,10 +286,10 @@ for channel in channels:
 for channel in channels:
   systs = copy.deepcopy(common_shape_systematics)
   if "e" not in channel: 
-    systs.remove("--syst_electron_scale")
-    systs.remove("--syst_electron_id")
+    if "--syst_electron_scale" in systs: systs.remove("--syst_electron_scale")
+    if "--syst_electron_id" in systs: systs.remove("--syst_electron_id")
   elif "m" not in channel:
-    systs.remove("--syst_muon_id")
+    if "--syst_muon_id" in systs: systs.remove("--syst_muon_id")
 
   #if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
 
@@ -299,16 +302,20 @@ for channel in channels:
 
       for var in variables:
 
-        if channel == "ttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 30.0, 80.0, 100.0, 110.0, 125.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 6000.0]"
-        if channel == "tttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
-        if channel == "eett" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 6000.0]"
-        if channel == "eett" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
-        if channel == "mmtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 90.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 500.0, 6000.0]"
-        if channel == "mmtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
-        if channel == "emtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 100.0, 200.0, 240.0, 300.0, 6000.0]"
-        if channel == "emtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 220.0, 6000.0]"
-        if channel == "ettt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
-        if channel == "mttt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+        add_cond = ""
+
+        if "signal" in name or "ff_full" in name:
+          if channel == "ttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 30.0, 80.0, 100.0, 110.0, 125.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 6000.0]"
+          if channel == "tttt" and cat == "inclusive" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "eett" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 6000.0]"
+          if channel == "eett" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "mmtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 90.0, 140.0, 160.0, 180.0, 200.0, 220.0, 240.0, 270.0, 300.0, 350.0, 400.0, 450.0, 500.0, 6000.0]"
+          if channel == "mmtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "emtt" and cat == "z_control_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 100.0, 200.0, 240.0, 300.0, 6000.0]"
+          if channel == "emtt" and cat == "2l2t_sig_nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 110.0, 220.0, 6000.0]"
+          if channel == "ettt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          if channel == "mttt" and cat == "nobtag" and var.split('[')[0] == "mt_tot": var = "mt_tot[0.0, 6000.0]"
+          add_cond += "--shrink_final_bin "
 
 
         if '[' in var: var_string = var.split('[')[0]
@@ -319,19 +326,26 @@ for channel in channels:
         if var_string[-1] == "4" and channel == "ttt": continue
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
-        add_cond = ""
         if not (args.no_syst or "ff" in name):
            print "Adding Systematics"
            for syst in systs:
               add_cond += (syst + " ")
         if "ff" in name:
-          add_cond += "--do_ff_systs"
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --run_datacards --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
-        #run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/2301 %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --auto_rebinning --bin_uncert_fraction=0.25 --zero_negative_bins" % vars()
-        if "ff" in name: run_cmd += " --rebin_with_data"
-        job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
-        CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
-        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+          add_cond += "--do_ff_systs "
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1502_full %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --zero_negative_bins" % vars()
+        if not args.collect: run_cmd += " --run_datacards"
+        if "ff" in name and "full" not in name: 
+          run_cmd += " --rebin_with_data --auto_rebinning --bin_uncert_fraction=0.25"
+
+        if not args.split_years:
+          job_file = "%(cmssw_base)s/%(output)s/jobs/%(var_string)s_%(channel)s_%(cat)s_%(name)s.sh" % vars()
+          CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[run_cmd])
+          SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+        else:
+          run_cmd += " --batch"
+          run_cmd = run_cmd.replace("\\\"","\"")
+          #print run_cmd
+          os.system(run_cmd)
            
     
 

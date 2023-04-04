@@ -61,7 +61,7 @@
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/gu18/Offline/output/4tau/2016postVFP_0912",
     //"output_folder" : "/vols/cms/ks1021/4tau/trees/2016postVFP_2911",
-    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/2301",
+    "output_folder" : "/vols/cms/gu18/Offline/output/4tau/1502_full",
     //"output_folder" : "/vols/cms/ks1021/4tau/trees/2016_postVFP_2508/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

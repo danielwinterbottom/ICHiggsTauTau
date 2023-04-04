@@ -4,6 +4,7 @@ import re
 import os
 import glob
 import json
+import itertools
 from UserCode.ICHiggsTauTau.analysis import *
 from UserCode.ICHiggsTauTau.uncertainties import ufloat
 from optparse import OptionParser
@@ -217,6 +218,8 @@ parser.add_argument("--rebin_with_data", dest="rebin_with_data", action='store_t
     help="Use data in the rebinning algorithm")
 parser.add_argument("--symmetrise_uncertainty", dest="symmetrise_uncertainty", action='store_true',
     help="Symmetrise uncertainties in dictionary defined in code.")
+parser.add_argument("--shrink_final_bin", dest="shrink_final_bin", action='store_true',
+    help="Shrink the size of the final bin.")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -731,120 +734,190 @@ def GenerateMCFakeTaus(ana, ff_from, add_name='', samples=[], plot='', wt='', se
     ana.nodes[nodename].AddNode(mc_jetfakes_node)
 
 
-def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
+def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None, wt_ext="", type_ext="", intermediate_shift=[]):
+
   vj = "deepTauVsJets_" + VsJets_wp
-  if VsJets_wp_fail == None:
-    vjf = "1"
-  else:
-    vjf = "deepTauVsJets_" + VsJets_wp_fail
- 
   ff_sel = copy.deepcopy(cat)
   replace = "1234"
   if options.ff_from != "all": replace = options.ff_from
-  pass_sel = {}
-  fail_sel = {}
-
-   
-  s_wt_ext = ""
-  d_wt_ext = ""
-  t_wt_ext = ""
-  q_wt_ext = ""
-  
-  if type_ext == "single":
-    s_wt_ext = wt_ext
-  elif type_ext == "double":
-    d_wt_ext = wt_ext
-  elif type_ext == "triple":
-    t_wt_ext = wt_ext
-  elif type_ext == "quadruple":
-    q_wt_ext = wt_ext
-  elif type_ext == "all":
-    s_wt_ext = wt_ext
-    d_wt_ext = wt_ext
-    t_wt_ext = wt_ext
-    q_wt_ext = wt_ext
-
   for i in replace:
     ff_sel = ff_sel.replace("%(vj)s_%(i)s>0.5" % vars(),"1")
-    pass_sel[i] = "({vjn}_{ind}>0.5)".format(vjn=vj,ind=i)
-    fail_sel[i] = "({vjn}_{ind}<0.5 && deepTauVsJets_iso_{ind}>0.1)".format(vjn=vj,ind=i)
+
+  pass_sel = "({vjn}_X>0.5)".format(vjn=vj,ind=i)
+  fail_sel = "({vjn}_X<0.5 && deepTauVsJets_iso_X>0.1)".format(vjn=vj)
+
+  tau_numbers = [i+1 for i in range(0,len(options.channel)) if options.channel[i] == "t"] # get position of hadronic taus in channel i.e emtt = [3,4]
+  for ind, n_ff in enumerate(range(1,options.channel.count("t")+1)): # loop through number of hadronic taus in the channel
+    for aiso_tau_numbers in list(itertools.combinations(tau_numbers, n_ff)): # loop through different combinations of taus to anti-isolate
+
+      name = "".join([str(i) for i in aiso_tau_numbers])
+
+      if options.ff_from == "all" or options.ff_from == name:
+
+        sign = "1.0" if ((ind % 2) == 0 or options.ff_from != "all") else "-1.0"
+        if options.channel == "tttt":
+          sign = str(float(sign) * -1)
+          if len(name) == 1: continue
+
+        iso_tau_numbers = [i for i in tau_numbers if i not in aiso_tau_numbers] # get isolated taus
+        
+        # get selections     
+        total_ff_wt = " * ".join(["wt_ff_ml_{}{}".format(i,wt_ext) for i in aiso_tau_numbers])
+        total_gen_match_sel = " * ".join(["(gen_match_{}!=6)".format(i) for i in aiso_tau_numbers])
+        total_fail = " * ".join(["({}_{}<0.5 && deepTauVsJets_iso_{}>0.1)".format(vj,i,i) for i in aiso_tau_numbers])
+        total_pass = " * ".join(["({}_{}>0.5)".format(vj,i) for i in iso_tau_numbers if (str(i) not in options.aiso and str(i) not in options.aiso_and_iso and not options.no_sig_sel)])
    
-  if options.ff_from == "all":
-    if options.channel in ["emtt","eett","mmtt"]:
-      ff_wt = ("((wt_ff_ml_3{s_ext} * GM3 * {fail_3} * {pass_4})" 
-              "+ (wt_ff_ml_4{s_ext} * GM4 * {pass_3} * {fail_4})"  
-              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * GM3 * GM4 * {fail_3} * {fail_4}))").format(fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext)
-    elif options.channel in ["ettt","mttt"]:
-      ff_wt = ("((wt_ff_ml_2{s_ext} * GM2 * {fail_2} * {pass_3} * {pass_4})"
-              "+ (wt_ff_ml_3{s_ext} * GM3 * {pass_2} * {fail_3} * {pass_4})" 
-              "+ (wt_ff_ml_4{s_ext} * GM4 * {pass_2} * {pass_3} * {fail_4})" 
-              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * GM2 * GM3 * {fail_2} * {fail_3} * {pass_4})"
-              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_4{d_ext} * GM2 * GM4 * {fail_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * GM3 * GM4 * {pass_2} * {fail_3} * {fail_4})"
-              "+ (wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * GM2 * GM3 * GM4 * {fail_2} * {fail_3} * {fail_4}))").format(fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext)
-    elif options.channel in ["ttt"]:
-      ff_wt = ("((wt_ff_ml_1{s_ext} * GM1 * {fail_1} * {pass_2} * {pass_3})"
-              "+ (wt_ff_ml_2{s_ext} * GM2 * {pass_1} * {fail_2} * {pass_3})"
-              "+ (wt_ff_ml_3{s_ext} * GM3 * {pass_1} * {pass_2} * {fail_3})"
-              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_2{d_ext} * GM1 * GM2 * {fail_1} * {fail_2} * {pass_3})"
-              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_3{d_ext} * GM1 * GM3 * {fail_1} * {pass_2} * {fail_3})"
-              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * GM2 * GM3 * {pass_1} * {fail_2} * {fail_3})"
-              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * GM1 * GM2 * GM3 * {fail_1} * {fail_2} * {fail_3}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext)
-    elif options.channel in ["tttt"]:
-      ff_wt = ("((wt_ff_ml_1{s_ext} * GM1 * {fail_1} * {pass_2} * {pass_3} * {pass_4})" 
-              "+ (wt_ff_ml_2{s_ext} * GM2 * {pass_1} * {fail_2} * {pass_3} * {pass_4})"
-              "+ (wt_ff_ml_3{s_ext} * GM3 * {pass_1} * {pass_2} * {fail_3} * {pass_4})"
-              "+ (wt_ff_ml_4{s_ext} * GM4 * {pass_1} * {pass_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_2{d_ext} * GM1 * GM2 * {fail_1} * {fail_2} * {pass_3} * {pass_4})"
-              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_3{d_ext} * GM1 * GM3 * {fail_1} * {pass_2} * {fail_3} * {pass_4})"
-              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_4{d_ext} * GM1 * GM4 * {fail_1} * {pass_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * GM2 * GM3 * {pass_1} * {fail_2} * {fail_3} * {pass_4})"
-              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_4{d_ext} * GM2 * GM4 * {pass_1} * {fail_2} * {pass_3} * {fail_4})"
-              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * GM3 * GM4 * {pass_1} * {pass_2} * {fail_3} * {fail_4})"
-              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * GM1 * GM2 * GM3 * {fail_1} * {fail_2} * {fail_3} * {pass_4})"
-              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_4{t_ext} * GM1 * GM2 * GM4 * {fail_1} * {fail_2} * {pass_3} * {fail_4})"
-              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * GM1 * GM3 * GM4 * {fail_1} * {pass_2} * {fail_3} * {fail_4})"
-              "+ (wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * GM2 * GM3 * GM4 * {pass_1} * {fail_2} * {fail_3} * {fail_4})"
-              "- (wt_ff_ml_1{q_ext} * wt_ff_ml_2{q_ext} * wt_ff_ml_3{q_ext} * wt_ff_ml_4{q_ext} * GM1 * GM2 * GM3 * GM4 * {fail_1} * {fail_2} * {fail_3} * {fail_4}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext,q_ext=q_wt_ext)
-  elif len(options.ff_from) == 1:
-    ff_wt = "(wt_ff_ml_{} * GM{} * {})".format(options.ff_from+wt_ext,options.ff_from,fail_sel[options.ff_from])
-  elif len(options.ff_from) == 2:
-    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * GM{} * GM{} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[0],options.ff_from[1],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]])
-  elif len(options.ff_from) == 3:
-    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * GM{} * GM{} * GM{} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,options.ff_from[0],options.ff_from[1],options.ff_from[2],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]])
-  elif len(options.ff_from) == 4:
-    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * GM{} * GM{} * GM{} * GM{} * {} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,options.ff_from[3]+wt_ext,options.ff_from[0],options.ff_from[1],options.ff_from[2],options.ff_from[3],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]],fail_sel[options.ff_from[3]])
+        # remove empty selections
+        ff_data_wt_list = [sign,total_ff_wt,total_fail,total_pass]
+        #ff_data_wt_list = [sign,total_fail,total_pass]
+        if "" in ff_data_wt_list: ff_data_wt_list.remove("")
+        ff_mc_wt_list = [sign,"wt",total_ff_wt,total_gen_match_sel,total_fail,total_pass]
+        #ff_mc_wt_list = [sign,"wt",total_gen_match_sel,total_fail,total_pass]
+        if "" in ff_mc_wt_list: ff_mc_wt_list.remove("")
+  
+        # make full selections
+        ff_data_wt = " * ".join(ff_data_wt_list)
+        ff_mc_wt = " * ".join(ff_mc_wt_list)
 
-  ff_data_wt = ff_wt.replace("GM1","(1)").replace("GM2","(1)").replace("GM3","(1)").replace("GM4","(1)")
-  ff_mc_wt = "wt*(" + ff_wt.replace("GM1","(gen_match_1!=6)").replace("GM2","(gen_match_2!=6)").replace("GM3","(gen_match_3!=6)").replace("GM4","(gen_match_4!=6)") + ")"
+        # add factorisation uncertainty
+        add_name_dict = {add_name:"1"}
+        if add_name == "" and options.do_ff_systs:
+          num = 1.1
+          if len(name) > 1:
+            add_name_dict["_fact_{}Up".format(len(name))] = str(num**(len(name)-1))
+            add_name_dict["_fact_{}Down".format(len(name))] = str(1.0/num**(len(name)-1))
 
-  ff_data_wt_init = copy.deepcopy(ff_wt)
-  ff_mc_wt_init = copy.deepcopy(ff_wt)
-  if wt_ext != "" and intermediate_shift != []:
-    for shift in intermediate_shift:
-      for n in ["1","2","3","4"]:  
-        for t in list(set([s_wt_ext,d_wt_ext,t_wt_ext,q_wt_ext])):
-          ff_data_wt = ff_data_wt_init.replace("wt_ff_ml_{}{}".format(n,t),"(wt_ff_ml_{} + {}*(wt_ff_ml_{}{} - wt_ff_ml_{}))".format(n,shift,n,t,n))
-          ff_mc_wt = ff_mc_wt_init.replace("wt_ff_ml_{}{}".format(n,t),"(wt_ff_ml_{} + {}*(wt_ff_ml_{}{} - wt_ff_ml_{}))".format(n,shift,n,t,n))
+        #print add_name_dict
+        for an, scale in add_name_dict.items():
+          # decorrelate between channels
+          if an != "":
+            add_name_channel = "_" + options.channel + an
+          else:
+            add_name_channel = ""
 
-      if data_veto == None:
-        ff_data = GetNode(ana, 'jetFakes', "_int_shift_"+shift.replace(".","p")+add_name, data_samples, plot, ff_data_wt, sel, ff_sel)
-      else:
-        ff_data = GetNode(ana, 'jetFakes', "_int_shift_"+shift.replace(".","p")+add_name, data_samples, plot, ff_data_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+          if data_veto == None:
+            ff_data = GetNode(ana, 'jetFakes{}'.format(name), add_name_channel, data_samples, plot, "("+scale+")*("+ff_data_wt+")", sel, ff_sel)
+            ff_mc = GetNode(ana, 'jetFakes{}_subtract'.format(name), add_name_channel, mc_samples, plot, "("+scale+")*("+ff_mc_wt+")", sel, ff_sel)
+          else:
+            ff_data = GetNode(ana, 'jetFakes{}'.format(name), add_name_channel, data_samples, plot, "("+scale+")*("+ff_data_wt+")", sel, "("+ff_sel+")&&("+data_veto+")")
+            ff_mc = GetNode(ana, 'jetFakes{}_subtract'.format(name), add_name_channel, mc_samples, plot, "("+scale+")*("+ff_mc_wt+")", sel, "("+ff_sel+")&&("+data_veto+")")
 
-      #ana.nodes[nodename].AddNode(ff_data)
-      ana.nodes[nodename].AddNode(SubtractNode("jetFakes_int_shift_"+shift.replace(".","p")+add_name, ff_data, ff_mc))
-  else:
+          ana.nodes[nodename].AddNode(SubtractNode('jetFakes{}'.format(name)+add_name_channel, ff_data, ff_mc))  
 
-    if data_veto == None:
-      ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_data_wt, sel, ff_sel)
-      ff_mc = GetNode(ana, 'jetFakes_subtract', add_name, mc_samples, plot, ff_mc_wt, sel, ff_sel)
-    else:
-      ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_data_wt, sel, "("+ff_sel+")&&("+data_veto+")")
-      ff_mc = GetNode(ana, 'jetFakes_subtract', add_name, mc_samples, plot, ff_mc_wt, sel, "("+ff_sel+")&&("+data_veto+")")
-
-    ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, ff_data, ff_mc))
-    #ana.nodes[nodename].AddNode(ff_data)
+#def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
+#  vj = "deepTauVsJets_" + VsJets_wp
+#  if VsJets_wp_fail == None:
+#    vjf = "1"
+#  else:
+#    vjf = "deepTauVsJets_" + VsJets_wp_fail
+# 
+#  ff_sel = copy.deepcopy(cat)
+#  replace = "1234"
+#  if options.ff_from != "all": replace = options.ff_from
+#  pass_sel = {}
+#  fail_sel = {}
+#
+#   
+#  s_wt_ext = ""
+#  d_wt_ext = ""
+#  t_wt_ext = ""
+#  q_wt_ext = ""
+#  
+#  if type_ext == "single":
+#    s_wt_ext = wt_ext
+#  elif type_ext == "double":
+#    d_wt_ext = wt_ext
+#  elif type_ext == "triple":
+#    t_wt_ext = wt_ext
+#  elif type_ext == "quadruple":
+#    q_wt_ext = wt_ext
+#  elif type_ext == "all":
+#    s_wt_ext = wt_ext
+#    d_wt_ext = wt_ext
+#    t_wt_ext = wt_ext
+#    q_wt_ext = wt_ext
+#
+#  for i in replace:
+#    ff_sel = ff_sel.replace("%(vj)s_%(i)s>0.5" % vars(),"1")
+#    pass_sel[i] = "({vjn}_{ind}>0.5)".format(vjn=vj,ind=i)
+#    fail_sel[i] = "({vjn}_{ind}<0.5 && deepTauVsJets_iso_{ind}>0.1)".format(vjn=vj,ind=i)
+#   
+#  if options.ff_from == "all":
+#    if options.channel in ["emtt","eett","mmtt"]:
+#      ff_wt = ("((wt_ff_ml_3{s_ext} * GM3 * {fail_3} * {pass_4})" 
+#              "+ (wt_ff_ml_4{s_ext} * GM4 * {pass_3} * {fail_4})"  
+#              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * GM3 * GM4 * {fail_3} * {fail_4}))").format(fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext)
+#    elif options.channel in ["ettt","mttt"]:
+#      ff_wt = ("((wt_ff_ml_2{s_ext} * GM2 * {fail_2} * {pass_3} * {pass_4})"
+#              "+ (wt_ff_ml_3{s_ext} * GM3 * {pass_2} * {fail_3} * {pass_4})" 
+#              "+ (wt_ff_ml_4{s_ext} * GM4 * {pass_2} * {pass_3} * {fail_4})" 
+#              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * GM2 * GM3 * {fail_2} * {fail_3} * {pass_4})"
+#              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_4{d_ext} * GM2 * GM4 * {fail_2} * {pass_3} * {fail_4})"
+#              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * GM3 * GM4 * {pass_2} * {fail_3} * {fail_4})"
+#              "+ (wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * GM2 * GM3 * GM4 * {fail_2} * {fail_3} * {fail_4}))").format(fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext)
+#    elif options.channel in ["ttt"]:
+#      ff_wt = ("((wt_ff_ml_1{s_ext} * GM1 * {fail_1} * {pass_2} * {pass_3})"
+#              "+ (wt_ff_ml_2{s_ext} * GM2 * {pass_1} * {fail_2} * {pass_3})"
+#              "+ (wt_ff_ml_3{s_ext} * GM3 * {pass_1} * {pass_2} * {fail_3})"
+#              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_2{d_ext} * GM1 * GM2 * {fail_1} * {fail_2} * {pass_3})"
+#              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_3{d_ext} * GM1 * GM3 * {fail_1} * {pass_2} * {fail_3})"
+#              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * GM2 * GM3 * {pass_1} * {fail_2} * {fail_3})"
+#              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * GM1 * GM2 * GM3 * {fail_1} * {fail_2} * {fail_3}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext)
+#    elif options.channel in ["tttt"]:
+#      ff_wt = ("((wt_ff_ml_1{s_ext} * GM1 * {fail_1} * {pass_2} * {pass_3} * {pass_4})" 
+#              "+ (wt_ff_ml_2{s_ext} * GM2 * {pass_1} * {fail_2} * {pass_3} * {pass_4})"
+#              "+ (wt_ff_ml_3{s_ext} * GM3 * {pass_1} * {pass_2} * {fail_3} * {pass_4})"
+#              "+ (wt_ff_ml_4{s_ext} * GM4 * {pass_1} * {pass_2} * {pass_3} * {fail_4})"
+#              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_2{d_ext} * GM1 * GM2 * {fail_1} * {fail_2} * {pass_3} * {pass_4})"
+#              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_3{d_ext} * GM1 * GM3 * {fail_1} * {pass_2} * {fail_3} * {pass_4})"
+#              "- (wt_ff_ml_1{d_ext} * wt_ff_ml_4{d_ext} * GM1 * GM4 * {fail_1} * {pass_2} * {pass_3} * {fail_4})"
+#              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_3{d_ext} * GM2 * GM3 * {pass_1} * {fail_2} * {fail_3} * {pass_4})"
+#              "- (wt_ff_ml_2{d_ext} * wt_ff_ml_4{d_ext} * GM2 * GM4 * {pass_1} * {fail_2} * {pass_3} * {fail_4})"
+#              "- (wt_ff_ml_3{d_ext} * wt_ff_ml_4{d_ext} * GM3 * GM4 * {pass_1} * {pass_2} * {fail_3} * {fail_4})"
+#              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * GM1 * GM2 * GM3 * {fail_1} * {fail_2} * {fail_3} * {pass_4})"
+#              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_2{t_ext} * wt_ff_ml_4{t_ext} * GM1 * GM2 * GM4 * {fail_1} * {fail_2} * {pass_3} * {fail_4})"
+#              "+ (wt_ff_ml_1{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * GM1 * GM3 * GM4 * {fail_1} * {pass_2} * {fail_3} * {fail_4})"
+#              "+ (wt_ff_ml_2{t_ext} * wt_ff_ml_3{t_ext} * wt_ff_ml_4{t_ext} * GM2 * GM3 * GM4 * {pass_1} * {fail_2} * {fail_3} * {fail_4})"
+#              "- (wt_ff_ml_1{q_ext} * wt_ff_ml_2{q_ext} * wt_ff_ml_3{q_ext} * wt_ff_ml_4{q_ext} * GM1 * GM2 * GM3 * GM4 * {fail_1} * {fail_2} * {fail_3} * {fail_4}))").format(fail_1=fail_sel["1"],fail_2=fail_sel["2"],fail_3=fail_sel["3"],fail_4=fail_sel["4"],pass_1=pass_sel["1"],pass_2=pass_sel["2"],pass_3=pass_sel["3"],pass_4=pass_sel["4"],s_ext=s_wt_ext,d_ext=d_wt_ext,t_ext=t_wt_ext,q_ext=q_wt_ext)
+#  elif len(options.ff_from) == 1:
+#    ff_wt = "(wt_ff_ml_{} * GM{} * {})".format(options.ff_from+wt_ext,options.ff_from,fail_sel[options.ff_from])
+#  elif len(options.ff_from) == 2:
+#    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * GM{} * GM{} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[0],options.ff_from[1],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]])
+#  elif len(options.ff_from) == 3:
+#    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * GM{} * GM{} * GM{} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,options.ff_from[0],options.ff_from[1],options.ff_from[2],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]])
+#  elif len(options.ff_from) == 4:
+#    ff_wt = "(wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * wt_ff_ml_{} * GM{} * GM{} * GM{} * GM{} * {} * {} * {} * {})".format(options.ff_from[0]+wt_ext,options.ff_from[1]+wt_ext,options.ff_from[2]+wt_ext,options.ff_from[3]+wt_ext,options.ff_from[0],options.ff_from[1],options.ff_from[2],options.ff_from[3],fail_sel[options.ff_from[0]],fail_sel[options.ff_from[1]],fail_sel[options.ff_from[2]],fail_sel[options.ff_from[3]])
+#
+#  ff_data_wt = ff_wt.replace("GM1","(1)").replace("GM2","(1)").replace("GM3","(1)").replace("GM4","(1)")
+#  ff_mc_wt = "wt*(" + ff_wt.replace("GM1","(gen_match_1!=6)").replace("GM2","(gen_match_2!=6)").replace("GM3","(gen_match_3!=6)").replace("GM4","(gen_match_4!=6)") + ")"
+#
+#  ff_data_wt_init = copy.deepcopy(ff_wt)
+#  ff_mc_wt_init = copy.deepcopy(ff_wt)
+#  if wt_ext != "" and intermediate_shift != []:
+#    for shift in intermediate_shift:
+#      for n in ["1","2","3","4"]:  
+#        for t in list(set([s_wt_ext,d_wt_ext,t_wt_ext,q_wt_ext])):
+#          ff_data_wt = ff_data_wt_init.replace("wt_ff_ml_{}{}".format(n,t),"(wt_ff_ml_{} + {}*(wt_ff_ml_{}{} - wt_ff_ml_{}))".format(n,shift,n,t,n))
+#          ff_mc_wt = ff_mc_wt_init.replace("wt_ff_ml_{}{}".format(n,t),"(wt_ff_ml_{} + {}*(wt_ff_ml_{}{} - wt_ff_ml_{}))".format(n,shift,n,t,n))
+#
+#      if data_veto == None:
+#        ff_data = GetNode(ana, 'jetFakes', "_int_shift_"+shift.replace(".","p")+add_name, data_samples, plot, ff_data_wt, sel, ff_sel)
+#      else:
+#        ff_data = GetNode(ana, 'jetFakes', "_int_shift_"+shift.replace(".","p")+add_name, data_samples, plot, ff_data_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+#
+#      #ana.nodes[nodename].AddNode(ff_data)
+#      ana.nodes[nodename].AddNode(SubtractNode("jetFakes_int_shift_"+shift.replace(".","p")+add_name, ff_data, ff_mc))
+#  else:
+#
+#    if data_veto == None:
+#      ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_data_wt, sel, ff_sel)
+#      ff_mc = GetNode(ana, 'jetFakes_subtract', add_name, mc_samples, plot, ff_mc_wt, sel, ff_sel)
+#    else:
+#      ff_data = GetNode(ana, 'jetFakes', add_name, data_samples, plot, ff_data_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+#      ff_mc = GetNode(ana, 'jetFakes_subtract', add_name, mc_samples, plot, ff_mc_wt, sel, "("+ff_sel+")&&("+data_veto+")")
+#
+#    ana.nodes[nodename].AddNode(SubtractNode('jetFakes'+add_name, ff_data, ff_mc))
+#    #ana.nodes[nodename].AddNode(ff_data)
 
 def GenerateSignal(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     for i in samples:
@@ -971,19 +1044,15 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       if 'jetFakes' not in samples_to_skip:
 
         if options.do_ff_systs and not options.no_sig_sel:
-          #wt_exts = ["_iso_down","_iso_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
-          wt_exts = ["_non_closure_down","_non_closure_up"]
+          wt_exts = ["_iso_0f_down","_iso_0f_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
+          #wt_exts = ["_non_closure_down","_non_closure_up"]
         elif options.do_ff_systs and options.no_sig_sel:
-          wt_exts = ["_non_closure_down","_non_closure_up"]
+          wt_exts = ["_non_closure_down","_non_closure_up","_iso_0f_down","_iso_0f_up"]
         else:
           wt_exts = []
 
         type_exts = []
         if options.do_ff_systs and options.ff_from == "all":
-          #if options.channel.count("t") >= 1: type_exts.append("single")
-          #if options.channel.count("t") >= 2: type_exts.append("double")
-          #if options.channel.count("t") >= 3: type_exts.append("triple")
-          #if options.channel.count("t") >= 4: type_exts.append("quadruple")
           type_exts = ["all"]
         elif options.do_ff_systs and not options.ff_from == "all":
           type_exts.append("")
@@ -1009,16 +1078,17 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       elif options.channel in ["eett","mmtt","emtt"]:
         cat = "("+cat+")&&(gen_match_3<6 && gen_match_4<6)"
 
-      #if 'ZTT' not in samples_to_skip:
-      #    GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
-      #if 'TT' not in samples_to_skip:
-      #    GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
+      if 'ZTT' not in samples_to_skip:
+          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
+      if 'TT' not in samples_to_skip:
+          GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
       if 'VV' not in samples_to_skip:
           GenerateVV(ana, add_name, vv_samples+ggzz_samples+qqzz_samples, plot, wt, sel, cat, vv_sels)
+          GenerateHZZ(ana, add_name, hzz_samples, plot, wt, sel, cat) 
       if 'VVV' not in samples_to_skip:
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
-      #if 'W' not in samples_to_skip:
-      #    GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
+      if 'W' not in samples_to_skip:
+          GenerateW(ana, add_name, wjets_samples, plot, wt, sel, cat, w_sels)
       if 'signal' not in samples_to_skip and not options.no_signal:
           #GenerateSignal(ana, add_name, signal_samples, plot, wt, sel, cat)
           run_signal_samples = copy.deepcopy(signal_samples)
@@ -1218,15 +1288,24 @@ if options.syst_jet_scale_group:
 
     syst_dict = dict(zip(names, folders))
 
-    replaceYear = ""
-    if (options.year == '2016_preVFP'): replaceYear = "2016preVFP"
-    elif (options.year == '2016_postVFP'): replaceYear = "2016postVFP"
-    elif (options.year == '2017'): replaceYear = "2017"
-    elif (options.year == '2018'): replaceYear = "2018"
-    else: assert ValueError("Regrouped JES only works for full RunII analyses")
+    #replaceYear = ""
+    #if (options.year == '2016_preVFP'): replaceYear = "2016preVFP"
+    #elif (options.year == '2016_postVFP'): replaceYear = "2016postVFP"
+    #elif (options.year == '2017'): replaceYear = "2017"
+    #elif (options.year == '2018'): replaceYear = "2018"
+    #else: assert ValueError("Regrouped JES only works for full RunII analyses")
 
+    #for name, folder in syst_dict.iteritems():
+    #    if "year" in name: name=name.replace("year", replaceYear)
+    #    systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder), "_{}Up".format(name),"wt", ['jetFakes'], False)
+    #    systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder), "_{}Down".format(name),"wt", ['jetFakes'], False)
     for name, folder in syst_dict.iteritems():
-        if "year" in name: name=name.replace("year", replaceYear)
+      if "year" in name:
+        for yr in ["2016_preVFP","2016_postVFP","2017","2018"]:
+          year_name = name.replace("year",yr)
+          systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder) if yr == options.year else "", "_{}Up".format(year_name),"wt", ['jetFakes'], False)
+          systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder) if yr == options.year else "", "_{}Down".format(year_name),"wt", ['jetFakes'], False)
+      else:
         systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder), "_{}Up".format(name),"wt", ['jetFakes'], False)
         systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder), "_{}Down".format(name),"wt", ['jetFakes'], False)
 
@@ -1277,8 +1356,8 @@ if options.syst_electron_id:
 
 if options.syst_muon_id:
     if options.channel == "mmtt":
-      systematics['syst_muon_id_up'] = ('', '_syst_electron_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
-      systematics['syst_muon_id_down'] = ('', '_syst_electron_id'+'Up', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.0/1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+      systematics['syst_muon_id_up'] = ('', '_syst_muon_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
+      systematics['syst_muon_id_down'] = ('', '_syst_muon_id'+'Down', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))*((1.0/1.02)*(gen_match_2==2 || gen_match_2==4) + (!(gen_match_2==2 || gen_match_2==4)))', ['jetFakes'], False)
     elif options.channel == "mttt":
       systematics['syst_muon_id_up'] = ('', '_syst_muon_id'+'Up', 'wt*((1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))', ['jetFakes'], False)
       systematics['syst_muon_id_down'] = ('', '_syst_muon_id'+'Down', 'wt*((1.0/1.02)*(gen_match_1==2 || gen_match_1==4) + (!(gen_match_1==2 || gen_match_1==4)))', ['jetFakes'], False)
@@ -1328,7 +1407,7 @@ if options.syst_k_factor:
 
 
 if options.plot_from_dc == "":
-  max_systs_per_pass = 30 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
+  max_systs_per_pass = 500 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
   while len(systematics) > 0:
     ana = Analysis()
     ana.remaps = {}
@@ -1375,7 +1454,6 @@ if options.plot_from_dc == "":
          
         # Add all data files
         for sample_name in data_samples:
-            print sample_name
             ana.AddSamples(data_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         
         # Add all MC background files
@@ -1704,7 +1782,7 @@ if not options.no_plot:
     if options.log_x: plot_name += "_logx" 
     if options.log_y: plot_name += "_logy"
     if options.replace_name != None: plot_name = options.outputfolder+'/'+options.replace_name
-    titles = plotting.SetAxisTitles(options.var,options.channel)
+    titles = plotting.SetAxisTitles(options.var,options.channel,options.norm_bins)
     if options.x_title == "": 
       x_title = titles[0]
     else: x_title = options.x_title
@@ -1743,7 +1821,8 @@ if not options.no_plot:
       draw_data=(not options.no_data),
       under_legend=options.under_legend,
       add_stat_to_syst=options.add_stat_to_syst,
-      do_custom_uncerts=options.add_stat_to_syst
+      do_custom_uncerts=options.add_stat_to_syst,
+      shrink_final_bin=options.shrink_final_bin
       )
 
 #norm signal yields on datacards to 1pb AFTER plotting    
