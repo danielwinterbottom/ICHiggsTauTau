@@ -168,6 +168,8 @@ parser.add_argument("--add_stat_to_syst", dest="add_stat_to_syst", action='store
     help="Add custom uncertainty band to statistical uncertainty.")
 parser.add_argument("--syst_tau_id", dest="syst_tau_id", action='store_true',
     help="Run tau id systematic uncertainty")
+parser.add_argument("--syst_tau_id_new", dest="syst_tau_id_new", action='store_true',
+    help="Run tau id systematic uncertainty")
 parser.add_argument("--syst_etau_fakerate", dest="syst_etau_fakerate", action='store_true',
     help="Run etau fakerate systematic uncertainty")
 parser.add_argument("--syst_mtau_fakerate", dest="syst_mtau_fakerate", action='store_true',
@@ -1217,6 +1219,59 @@ if options.syst_tau_id:
     bin_name = "syst_tau_id_DM"+dm 
     systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
     systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+
+if options.syst_tau_id_new:
+  # uncert0, uncert1, syst_dm$DM_$ERA should be uncorrelated across DMs and eras
+  dm_bins=["0","1","10","11"]
+  for j in ["uncert0","uncert1","syst_dm_year"]:
+     for k in ["2016_preVFP","2016_postVFP","2017","2018"]:
+        for i,dm in enumerate(dm_bins):
+           up_wts = []
+           down_wts = []
+           for ind, ch in enumerate(options.channel):
+              if options.year == k: 
+                 if ch == "t":
+                    up_wts.append("((idisoweight_ratio_{0}_{2}_up*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
+                    down_wts.append("((idisoweight_ratio_{0}_{2}_down*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
+             else:
+                 if ch == "t":
+                    up_wts.append("(((1)*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
+                    down_wts.append("(((1)*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
+
+        bin_name = "syst_tau_id_{}_DM".format(j)+dm+k
+        if j == "syst_dm_year": bin_name = "syst_tau_id_{}_DM".format(j.replace("_year","")+dm+k
+        systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+        systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+
+  # syst_$ERA should be correlated across DMs but uncorrelated by eras
+  for k in ["2016_preVFP","2016_postVFP","2017","2018"]:
+     up_wts = []
+     down_wts = []
+     for ind, ch in enumerate(options.channel):
+        if options.year == k:
+           if ch == "t":
+              up_wts.append("(idisoweight_ratio_{0}_syst_year_up)".format(ind+1))
+              down_wts.append("(idisoweight_ratio_{0}_syst_year_down)".format(ind+1))
+        else:
+           if ch == "t":
+              up_wts.append("(1)".format(ind+1))
+              down_wts.append("(1)".format(ind+1))
+
+     bin_name = "syst_tau_id_syst_"+k
+     systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+     systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+
+  # syst_alleras should correlated across DMs and eras
+  up_wts =[]
+  down_wts = []
+  for ind, ch in enumerate(options.channel):
+     if ch == "t":
+        up_wts.append("(idisoweight_ratio_{0}_syst_all_eras_up)".format(ind+1))
+        down_wts.append("(idisoweight_ratio_{0}_syst_all_eras_down)".format(ind+1))
+  bin_name = "syst_tau_id_alleras"
+  systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+  systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+
 
 if options.syst_etau_fakerate:
   eta_bins = ["0","1.5","2.3"]
