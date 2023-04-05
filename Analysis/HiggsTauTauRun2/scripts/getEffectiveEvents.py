@@ -3,7 +3,7 @@ import sys
 import os
 
 file_names = {}
-channels = ['tt']
+channels = ['mt']
 years = ['2016','2017','2018']
 for file_name in os.listdir(sys.argv[1]):
     if '.root' not in file_name:
