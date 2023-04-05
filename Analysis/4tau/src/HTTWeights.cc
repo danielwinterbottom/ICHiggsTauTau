@@ -111,32 +111,32 @@ int HTTWeights::PreAnalysis() {
        year = "2018";
     }
     fns_["t_deeptauid_dm_pt_loose"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
 
     fns_["t_deeptauid_dm_pt_loose_uncert0_up"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_fit_uncert0_up").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_fit_uncert0_up").c_str())->functor(w_->argSet("t_dm,t_pt")));
     fns_["t_deeptauid_dm_pt_loose_uncert0_down"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_fit_uncert0_down").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_fit_uncert0_down").c_str())->functor(w_->argSet("t_dm,t_pt")));
 
     fns_["t_deeptauid_dm_pt_loose_uncert1_up"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_fit_uncert1_up").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_fit_uncert1_up").c_str())->functor(w_->argSet("t_dm,t_pt")));
     fns_["t_deeptauid_dm_pt_loose_uncert1_down"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_fit_uncert1_down").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_fit_uncert1_down").c_str())->functor(w_->argSet("t_dm,t_pt")));
 
     fns_["t_deeptauid_dm_pt_loose_syst_alleras_up"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_syst_alleras_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_syst_alleras_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
     fns_["t_deeptauid_dm_pt_loose_syst_alleras_down"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_syst_alleras_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_syst_alleras_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
 
     fns_["t_deeptauid_dm_pt_loose_syst_year_up"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_syst_"+year+"_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_syst_"+year+"_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
     fns_["t_deeptauid_dm_pt_loose_syst_year_down"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_syst_"+year+"_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_syst_"+year+"_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
 
     fns_["t_deeptauid_dm_pt_loose_syst_dm_year_up"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_syst_dm_"+year+"_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_syst_dm_"+year+"_up_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
     fns_["t_deeptauid_dm_pt_loose_syst_dm_year_down"] = std::shared_ptr<RooFunctor>(
-        w_->function(("DM_"+year+"_syst_dm_"+year+"_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
+        w_->function(("tauID_VsJetsLoose_VsEleVVLoose_DM_"+year+"_syst_dm_"+year+"_down_fit").c_str())->functor(w_->argSet("t_dm,t_pt")));
     
     // lepton fake rates
     fns_["t_id_vs_mu_eta_vloose"] = std::shared_ptr<RooFunctor>(
