@@ -1262,15 +1262,16 @@ if options.syst_tau_id_new:
      systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
   # syst_alleras should correlated across DMs and eras
-  up_wts =[]
-  down_wts = []
-  for ind, ch in enumerate(options.channel):
-     if ch == "t":
-        up_wts.append("(idisoweight_ratio_{0}_syst_all_eras_up)".format(ind+1))
-        down_wts.append("(idisoweight_ratio_{0}_syst_all_eras_down)".format(ind+1))
-  bin_name = "syst_tau_id_alleras"
-  systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
-  systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+  for k in ["syst_all_eras","high_pt"]:
+     up_wts =[]
+     down_wts = []
+     for ind, ch in enumerate(options.channel):
+        if ch == "t":
+           up_wts.append("(idisoweight_ratio_{0}_{1}_up)".format(ind+1,k))
+           down_wts.append("(idisoweight_ratio_{0}_{1}_down)".format(ind+1,k))
+     bin_name = "syst_tau_id_{}".format(k)
+     systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+     systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
 
 if options.syst_etau_fakerate:
