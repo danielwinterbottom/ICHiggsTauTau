@@ -78,6 +78,7 @@ sample_list = [
         'DY3JetsToLL-LO',
         'DY4JetsToLL-LO',
         'DYJetsToLL-LO',
+        'DYJetsToLL-LO-ext1',
 	 # Low mass Drell Yan LO
         'DYJetsToLL_M-10to50-LO',
 	'DY1JetsToLL_M-10to50-LO',
