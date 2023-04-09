@@ -7,11 +7,11 @@ import os
 import numpy as np
 
 config_files = {'2016_preVFP':'scripts/plot_UL_2016_preVFP.cfg',
-		        '2016_postVFP':'scripts/plot_UL_2016_postVFP.cfg',
+                '2016_postVFP':'scripts/plot_UL_2016_postVFP.cfg',
                 '2017':'scripts/plot_UL_2017.cfg',
                 '2018':'scripts/plot_UL_2018.cfg'}
 param_files = {'2016_preVFP':'scripts/params_UL_2016_preVFP.json',
-	           '2016_postVFP':'scripts/params_UL_2016_postVFP.json',
+               '2016_postVFP':'scripts/params_UL_2016_postVFP.json',
                '2017':'scripts/params_UL_2017.json',
                '2018':'scripts/params_UL_2018.json'}
                
@@ -109,13 +109,17 @@ var_et = [
 
 var_zmm = [
           ['pt_tt', '[0,10,20,30,40,60,80,100,120,160,200,280,320,400,600]'],
-          ['m_vis', BINS(0,300,10,1)],
+          ['m_vis', '[0,50,60,70,80,90,100,120,140,160,180,200,220,240,260,280,300]'],
+          ['pt_1' , '[0,5,10,15,20,25,30,35,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]'],
+          ['pt_2' , '[0,5,10,15,20,25,30,35,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200]'],
+	  ['fabs(eta_1)', '[0,1.0,1.479,1.653,2.1,2.5]'],
+          ['fabs(eta_2)', '[0,1.0,1.479,1.653,2.1,2.5]'],
           ]
 
 var_schemes = {'et' : var_et,
                'mt' : var_mt,
                'tt' : var_tt,
-	           'zmm': var_zmm}
+	       'zmm': var_zmm}
 
 for year in years:
   if not os.path.isdir('%(output_folder)s/%(year)s' % vars()):
@@ -124,23 +128,21 @@ for year in years:
   for ch in channels:
     if not os.path.isdir('%(output_folder)s/%(year)s/%(ch)s' % vars()):
       os.system("mkdir %(output_folder)s/%(year)s/%(ch)s" % vars())
-      method='12'
-      add_cond = '--add_wt=\'wt_prefire\''
+    method='8'
+    add_cond = '--add_wt=\'wt_prefire\''
  
-    if year == "2016_preVFP" or year == "2016_postVFP":
-      pt1_cut = 23
-    else:
-      pt1_cut = 25   
-
     categories = cat_schemes[ch]
     variables = var_schemes[ch]
     for cat in categories:
       for item in variables:
            var_used = item[0]
+           #if var_used not in ["pt_tt","fabs(eta_1)","fabs(eta_2)"]: continue
            bin_used = item[1]
-           run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<30) &&(m_vis>40) && (m_vis<80) && (pt_1>%(pt1_cut)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var="%(var_used)s%(bin_used)s" %(add_cond)s' % vars()
+           var_name = item[0]
+           if var_used in ["fabs(eta_1)","fabs(eta_2)"]: var_name = var_name[5:10]
+           run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(m_vis>50)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --norm_bins --extra_name=%(var_name)s' % vars()
            commands = [run_cmd]
-           job_file = '%(output_folder)s/jobs/%(var_used)s_%(cat)s_%(ch)s_%(year)s.sh' % vars()
+           job_file = '%(output_folder)s/jobs/%(var_name)s_%(cat)s_%(ch)s_%(year)s.sh' % vars()
            CreateBatchJob(job_file,cmssw_base,[run_cmd])
            SubmitBatchJob(job_file,time=180,memory=24,cores=1)
 #
