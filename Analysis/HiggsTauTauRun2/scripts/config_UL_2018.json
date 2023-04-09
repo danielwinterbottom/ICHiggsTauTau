@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
    //"channels":     ["mt","et","tt","zmm"],
-   "channels":     ["et","tt"],
+   "channels":     ["tpzee"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -65,8 +65,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "/vols/cms/ks1021/test/",
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018_PFMet_muoneta2p3/",
+    "output_folder" : "/vols/cms/ks1021/offline/ditau/trees/TnP/2018/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018_PFMet_muoneta2p3/",
 //    "output_folder" : "/vols/cms/dw515/outputs/MSSM/Gen_DY_2018/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,

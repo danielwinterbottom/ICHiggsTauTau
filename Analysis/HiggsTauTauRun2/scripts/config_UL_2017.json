@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Sep18_MC_102X_2017/",
     "max_events":   -1,
     "timings":      true,
-   "channels":     ["mt"],
+   "channels":     ["tpzmm","tpzee"],
    //"channels":     ["et","mt","tt","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -60,7 +60,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2017_PFMet_muoneta2p3/",
+    "output_folder" : "/vols/cms/ks1021/offline/ditau/trees/TnP/2017/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2017_PFMet_muoneta2p3/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2017_tres1_v2_svfit/",
