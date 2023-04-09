@@ -29,9 +29,9 @@ conf_parser.add_argument("--cfg",
 options, remaining_argv = conf_parser.parse_known_args()
 
 defaults = {
-    "channel":"tpzmm" , 
-    "outputfolder":"tagandprobe_1702/UL18/tpzmm/single",
-    "folder":"/vols/cms/ks1021/ditau/trees/2018_2908",
+    "channel":"tpzee" , 
+    "outputfolder":"plots/TnP/2018/tpzee/",
+    "folder":"/vols/cms/ks1021/offline/ditau/trees/TnP/2018/",
     "era":"UL_18", 
     "embedded":False, 
     "em_iso":False, 
@@ -1277,7 +1277,7 @@ for i in sf_types:
       graphs.append(sffile.Get(('gr_embed_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')))  
       leg_labels.append('Embedded')
     x_title = 'P_{T}^{#mu} (GeV)'
-    ratio_range="0.1,2.0"
+    ratio_range="0.7,1.3"
     if options.channel == 'tpzee': 
         x_title = 'P_{T}^{e} (GeV)'
         if 'trg' in i: ratio_range="0.1,2.0"
