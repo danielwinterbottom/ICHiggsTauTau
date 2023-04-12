@@ -76,6 +76,13 @@ int HTTWeights::PreAnalysis() {
     fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(
         w_->function("e_idiso_binned_ic_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso"))); 
 
+    // new electron id from Egamma
+    //fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("e_id_ratio")->functor(w_->argSet("e_eta,e_pt")));
+    //fns_["e_iso_ratio"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("e_iso_binned_ic_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+
+
     // muon id/iso
      fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
       w_->function("m_idiso_binned_ic_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
@@ -373,6 +380,12 @@ int HTTWeights::Execute(TreeEvent *event) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
         auto args_id_sf = std::vector<double>{elec->pt(),elec->sc_eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
         id_sf = fns_["e_idiso_ratio"]->eval(args_id_sf.data());
+        // change to new id 
+        //auto args_id_sf = std::vector<double>{elec->sc_eta(),elec->pt()};
+        //auto args_iso_sf = std::vector<double>{elec->pt(),elec->sc_eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
+        //id_sf = fns_["e_id_ratio"]->eval(args_id_sf.data());
+        //id_sf *= fns_["e_iso_ratio"]->eval(args_iso_sf.data());
+      
       }
       if ( m_string == po[i] ) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
