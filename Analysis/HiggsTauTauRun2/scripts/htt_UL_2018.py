@@ -346,14 +346,14 @@ if options.proc_bkg or options.proc_all:
     'T-t',
     'T-tW',
  
-    # SM Higgs
-    'GluGluHToTauTau_M125',
-    'VBFHToTauTau_M125',
-    'WminusHToTauTau_M125',
-    'WplusHToTauTau_M125',
-    'ZHToTauTau_M125',
-    'ZHToTauTau_M125-ext1',
-    'ttHToTauTau_M125'
+   # # SM Higgs
+   # 'GluGluHToTauTau_M125',
+   # 'VBFHToTauTau_M125',
+   # 'WminusHToTauTau_M125',
+   # 'WplusHToTauTau_M125',
+   # 'ZHToTauTau_M125',
+   # 'ZHToTauTau_M125-ext1',
+   # 'ttHToTauTau_M125'
     ]
 
 

@@ -168,7 +168,8 @@ for i in range(0,scale):
    flatjsons.append(temp)
 
 
-FILELIST='filelists/Nov30_2017_MC_106X'
+FILELIST="filelists/Mar31_2017_MC_124X"
+
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -217,14 +218,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         
   data_samples = list(set(data_samples))
 
-  DATAFILELIST="./filelists/Nov30_2017_Data_106X"
-#  DATAPREFIX = DATAFILELIST.split("/")[2]
-  DATAPREFIX = 'Nov30_Data_106X_2017'
+  DATAFILELIST="./filelists/Mar31_2017_Data_124X"
+  DATAPREFIX = 'Mar31_Data_124X_2017'
 
   if options.calc_lumi:
     for sa in data_samples:
         JOB='%s_2017' % (sa)
-        user='guttley'
+        user='dwinterb'
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 500 
@@ -240,7 +240,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
   else:
     for sa in data_samples:
         JOB='%s_2017' % (sa)
-        user='guttley'
+        user='dwinterb'
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(DATAPREFIX)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
         nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
         nperjob = 40
@@ -276,19 +276,16 @@ if options.proc_bkg or options.proc_all:
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
     'DYJetsToLL-LO',
+    'DYJetsToLL-LO-ext1',
 
     # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
-    'DY1JetsToLL_M-10to50-LO',
-    'DY2JetsToLL_M-10to50-LO',
-    'DY3JetsToLL_M-10to50-LO',
-    'DY4JetsToLL_M-10to50-LO',
 
     # Drell-Yan NLO
-    #'DYJetsToLL_0J-NLO',
-    #'DYJetsToLL_1J-NLO',
-    #'DYJetsToLL_2J-NLO',
-    #'DYJetsToLL-NLO',
+    'DYJetsToLL_0J-NLO',
+    'DYJetsToLL_1J-NLO',
+    'DYJetsToLL_2J-NLO',
+    'DYJetsToLL-NLO',
 
     # Electroweak W and Z
     'EWKWMinus2Jets_WToLNu',
@@ -321,21 +318,16 @@ if options.proc_bkg or options.proc_all:
     'WZTo2Q2L',
     'WZTo1L1Nu2Q',
     'WWTo1L1Nu2Q',
- 
-#    # Inclusive
-#    'WW',
-#    'WZ',
-#    'ZZ',
-#
-#    # Triboson
-#    'WWZ',
-#    'WWZ-ext1',
-#    'WZZ',
-#    'WZZ-ext1',
-#    'WWW',
-#    'WWW-ext1',
-#    'ZZZ',
-#    'ZZZ-ext1',
+
+    # Triboson
+    'WWZ',
+    'WWZ-ext1',
+    'WZZ',
+    'WZZ-ext1',
+    'WWW',
+    'WWW-ext1',
+    'ZZZ',
+    'ZZZ-ext1',
 
     # Other backgrounds
     'WGToLNuG',
@@ -344,22 +336,21 @@ if options.proc_bkg or options.proc_all:
     'T-t',
     'T-tW',
 
-#    # SM Higgs
-#    'GluGluHToTauTau_M125',
-#    'VBFHToTauTau_M125',
-#    'WminusHToTauTau_M125',
-#    'WplusHToTauTau_M125',
-#    'ZHToTauTau_M125',
-#    'ttHToTauTau_M125',    
+    # SM Higgs
+    'GluGluHToTauTau_M125',
+    'VBFHToTauTau_M125',
+    'WminusHToTauTau_M125',
+    'WplusHToTauTau_M125',
+    'ZHToTauTau_M125',
+    'ttHToTauTau_M125',    
  	]
 
 #  Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu","WZTo2Q2L"]
 
   for sa in central_samples:
       JOB='%s_2017' % (sa)
-      FILELIST='filelists/Nov30_2017_MC_106X'
-      user='guttley'
-      PREFIX='Nov30_MC_106X_2017'
+      user='dwinterb'
+      PREFIX='Mar31_MC_124X_2017'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
       job_num=0

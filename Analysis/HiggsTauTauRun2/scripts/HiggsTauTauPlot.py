@@ -1446,7 +1446,7 @@ if options.era in ['cpsummer17','tauid2017']:
 
 if options.era in ['UL_17']:
     if (options.DY_NLO==False):
-        ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
     else:
         ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
 
@@ -1524,7 +1524,7 @@ if options.era in ['cp18']:
 
 if options.era in ['UL_18']:
     if (options.DY_NLO==False):
-        ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
         #ztt_samples = ['DYJetsToLL-LO']
     else:
         ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
@@ -1656,7 +1656,7 @@ if options.analysis in ['cpprod']:
          'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125-ext1',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-         'ZH_htt*': 'ZHToTauTau_M-125',
+         'ZH_htt*': ['ZHToTauTau_M-125','ZHToTauTau_M125-ext1'],
         # "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
          'qqH_mm_htt*' : 'VBFHiggs0Mf05ph0ToTauTau',
          'qqH_ps_htt*' : 'VBFHiggs0MToTauTau',

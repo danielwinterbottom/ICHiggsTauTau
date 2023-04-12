@@ -7,6 +7,7 @@ lumi=$3
 
 # set the inclusive sample names for DY and W - the event numbers and xs for the N jets samples will be set to the values for these samples
 DY_inclusive_name_1="DYJetsToLL-LO"
+DY_inclusive_name_2="DYJetsToLL-LO-ext1"
 W_inclusive_name_1="WJetsToLNu-LO"
 DY_NLO_inclusive_name_1="DYJetsToLL-NLO"
 
@@ -28,6 +29,8 @@ while read i; do
     sample_name=$(echo $i | cut -d" " -f1)
     evt=$(echo $i | cut -d" " -f2)
     if [ "$sample_name" == "$DY_inclusive_name_1" ]; then
+      dy_evt=$(bc -l <<<$dy_evt+$evt)
+    elif [ "$sample_name" == "$DY_inclusive_name_2" ]; then
       dy_evt=$(bc -l <<<$dy_evt+$evt)
     elif [ "$sample_name" == "$W_inclusive_name_1" ]; then
       w_evt=$(bc -l <<<$w_evt+$evt)

@@ -167,7 +167,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
  
-FILELIST='filelists/Nov29_2016-postVFP_MC_106X'
+FILELIST="filelists/Mar31_2016-postVFP_MC_124X"
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -212,13 +212,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       for era in data_eras:
         data_samples+=['Tau'+era]        
 
-  DATAFILELIST="./filelists/Nov29_2016-postVFP_Data_106X"
+  DATAFILELIST="./filelists/Mar31_2016-postVFP_Data_124X"
 
   for sa in data_samples:
       JOB='%s_2016_postVFP' % (sa)
       DATAFILELIST_ = DATAFILELIST
-      user='ksavva'
-      prefix='Nov29_Data_106X_2016-postVFP'
+      user='dwinterb'
+      prefix='Mar31_Data_124X_2016-postVFP'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST_)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST_)s_%(sa)s.dat' % vars()))
       nperjob = 40
@@ -256,16 +256,12 @@ if options.proc_bkg or options.proc_all:
 
     # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
-    'DY1JetsToLL_M-10to50-LO',
-    'DY2JetsToLL_M-10to50-LO',
-    'DY3JetsToLL_M-10to50-LO',
-    'DY4JetsToLL_M-10to50-LO',
 
     # Drell-Yan NLO
-    #'DYJetsToLL_0J-NLO',
-    #'DYJetsToLL_1J-NLO',
-    #'DYJetsToLL_2J-NLO',
-    #'DYJetstoLL-NLO',
+    'DYJetsToLL_0J-NLO',
+    'DYJetsToLL_1J-NLO',
+    'DYJetsToLL_2J-NLO',
+    'DYJetsToLL-NLO',
 
     # Electroweak W and Z
     'EWKWMinus2Jets_WToLNu',
@@ -300,20 +296,15 @@ if options.proc_bkg or options.proc_all:
     'WZTo1L1Nu2Q',
     'WWTo1L1Nu2Q',
 
- #   # Inclusive
- #   'WW',
- #   'WZ',
- #   'ZZ',
-
- #   # Triboson
- #   'WWZ',
- #   'WWZ-ext1',
- #   'WZZ',
- #   'WZZ-ext1',
- #   'WWW',
- #   'WWW-ext1',
- #   'ZZZ',
- #   'ZZZ-ext1',
+    # Triboson
+    'WWZ',
+    'WWZ-ext1',
+    'WZZ',
+    'WZZ-ext1',
+    'WWW',
+    'WWW-ext1',
+    'ZZZ',
+    'ZZZ-ext1',
 
     # Other backgrounds
     'WGToLNuG',
@@ -330,12 +321,10 @@ if options.proc_bkg or options.proc_all:
 #    'ZHToTauTau_M125',
 #    'ttHToTauTau_M125',
   ] 
-  #Sep28_samples = ["DYJetstoLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu"]
   for sa in central_samples:
       JOB='%s_2016_postVFP' % (sa)
-      FILELIST='filelists/Nov29_2016-postVFP_MC_106X'
-      user='ksavva'
-      PREFIX='Nov29_MC_106X_2016-postVFP'
+      user='dwinterb'
+      PREFIX='Mar31_MC_124X_2016-postVFP'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
       job_num=0
