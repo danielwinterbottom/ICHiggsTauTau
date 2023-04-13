@@ -103,7 +103,7 @@ def SetAxisTitles(plot, channel, norm_bins):
 
   bin_width=''
   if not isVarBins:
-      binning = plot.split('(')[1].split(')')[0].split(',')
+      binning = plot.split('(')[-1].split(')')[-2].split(',')
       binning = map(float,binning)
       bin_width = str(round((binning[2]-binning[1])/binning[0],1))
       
@@ -118,6 +118,7 @@ def SetAxisTitles(plot, channel, norm_bins):
   titles['eta_1'] = ['#eta_{'+lep1_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep1_label+'}']
   titles['eta_2'] = ['#eta_{'+lep2_label+'}','Events / '+bin_width, 'dN/d#eta_{'+lep2_label+'}']
   titles['mt_tot'] = ['m_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{tot} (1/GeV)']
+  titles['(mt_1**2 + mt_2**2 + mt_3**2 + mt_4**2 + mt_lep_12**2 + mt_lep_13**2 + mt_lep_14**2 + mt_lep_23**2 + mt_lep_24**2 + mt_lep_34**2)**0.5'] = ['m_{T}^{tot} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T}^{tot} (1/GeV)']
   titles['mt_1'] = ['m_{T} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{T} (1/GeV)']
   titles['m_vis'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
   titles['mvis_1234'] = ['m_{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dm_{'+chan_label+'} (1/GeV)']
@@ -2492,7 +2493,7 @@ def HTTPlot(nodename,
       'tttt': [
         backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
         backgroundComp("Genuine #tau_{h}",["ZR","TTR","VVR","WR"],R.TColor.GetColor(136,65,157)),
-        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes234","jetFakes1234","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
+        backgroundComp("#geq 1 jet#rightarrow#tau_{h}",["jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes134","jetFakes234","jetFakes1234","ZJF","TTJF","VVJF","WJF"],R.TColor.GetColor(192,232,100)),
         backgroundComp("Remaining MC jet#rightarrow#tau_{h}",["MC_jetFakes"],R.TColor.GetColor(250,202,255))],
       'ttt': [
         backgroundComp("Other",["VVV","ZLF","TTLF","VVLF","WLF"],R.TColor.GetColor(217,71,1)),
@@ -2776,6 +2777,11 @@ def HTTPlot(nodename,
         axish[1].Draw("axis")
         if ratio_range == "0,2":
             ratio_range = "0.01,1.99"
+
+
+        for i in range(0,ratio_bkghist.GetNbinsX()+1):
+          if ratio_bkghist.GetBinContent(i) > float(ratio_range.split(',')[1]):
+            ratio_bkghist.SetBinContent(i,1.0)
         axish[1].SetMinimum(float(ratio_range.split(',')[0]))
         axish[1].SetMaximum(float(ratio_range.split(',')[1]))
         if plot_signals != [""]:
@@ -2791,6 +2797,7 @@ def HTTPlot(nodename,
             h_ratio[i].SetLineWidth(2)
             h_ratio[i].Draw("hist same")
         ratio_bkghist.SetMarkerSize(0)
+        ratio_bkghist.Print("all")
         ratio_bkghist.Draw("e2same")
         if draw_data: blind_ratio.DrawCopy("e0same")
 
@@ -2804,11 +2811,17 @@ def HTTPlot(nodename,
             bkg_uncert_down.SetLineWidth(0)
             bkg_uncert_up = MakeRatioHist(bkg_uncert_up,bkghist.Clone(),True,False)
             bkg_uncert_down = MakeRatioHist(bkg_uncert_down,bkghist.Clone(),True,False)
-            bkg_uncert_up.Print("all")
-            bkg_uncert_down.Print("all")
+            #for i in range(0,bkg_uncert_down.GetNbinsX()+1):
+            #  if bkg_uncert_down.GetBinContent(i) > float(ratio_range.split(',')[1]):
+            #    bkg_uncert_down.SetBinContent(i,float(ratio_range.split(',')[1]))
+            #  if bkg_uncert_down.GetBinContent(i) < float(ratio_range.split(',')[0]):
+            #    bkg_uncert_down.SetBinContent(i,float(ratio_range.split(',')[0]))
+            #  if bkg_uncert_up.GetBinContent(i) > float(ratio_range.split(',')[1]):
+            #    bkg_uncert_up.SetBinContent(i,float(ratio_range.split(',')[1]))
+            #  if bkg_uncert_up.GetBinContent(i) < float(ratio_range.split(',')[0]):
+            #    bkg_uncert_up.SetBinContent(i,float(ratio_range.split(',')[0]))
             bkg_uncert_up.Draw('histsame')
             bkg_uncert_down.Draw('histsame')
-
         pads[1].RedrawAxis("G")
 
         #Draw uncertainty band

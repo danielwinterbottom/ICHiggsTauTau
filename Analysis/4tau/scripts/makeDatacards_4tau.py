@@ -291,8 +291,6 @@ for channel in channels:
   elif "m" not in channel:
     if "--syst_muon_id" in systs: systs.remove("--syst_muon_id")
 
-  #if channel == "emtt": systs.remove("--syst_tau_scale_group") # temporary
-
   for name, option in add_options[channel]:
     for cat in categories[channel]:
 
@@ -330,6 +328,10 @@ for channel in channels:
            print "Adding Systematics"
            for syst in systs:
               add_cond += (syst + " ")
+        if "mt_tot" in var and channel != "ttt": 
+          var = var.replace("mt_tot","(mt_1**2 + mt_2**2 + mt_3**2 + mt_4**2 + mt_lep_12**2 + mt_lep_13**2 + mt_lep_14**2 + mt_lep_23**2 + mt_lep_24**2 + mt_lep_34**2)**0.5")
+        elif "mt_tot" in var and channel == "ttt":
+          var = var.replace("mt_tot","(mt_1**2 + mt_2**2 + mt_3**2 + mt_lep_12**2 + mt_lep_13**2 + mt_lep_23**2)**0.5")
         if "ff" in name:
           add_cond += "--do_ff_systs "
         run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"--folder=/vols/cms/gu18/Offline/output/4tau/1502_full %(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --zero_negative_bins" % vars()

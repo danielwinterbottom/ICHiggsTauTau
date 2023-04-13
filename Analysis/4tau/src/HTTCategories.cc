@@ -1086,11 +1086,6 @@ namespace ic {
    
     mvis_1234_ = total_product->M();
     pt_tttt_ = total_product->pt();
-    if (channel_ != channel::ttt) { 
-      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_14_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_lep_24_.var_double,2)+pow(mt_lep_34_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2)+pow(mt_4_.var_double,2));
-    } else {
-      mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2));
-    }
 
     // get ditau mass of all combinations:
     CompositeCandidate *pair12 = new CompositeCandidate();
@@ -1400,6 +1395,12 @@ namespace ic {
          pt_min_sum_dR_2_ = pair_min_sum_dR_1->pt();
        }
    }
+   if (channel_ != channel::ttt) { 
+     mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_14_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_lep_24_.var_double,2)+pow(mt_lep_34_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2)+pow(mt_4_.var_double,2));
+   } else {
+     mt_tot_ = sqrt(pow(mt_lep_12_.var_double,2)+pow(mt_lep_13_.var_double,2)+pow(mt_lep_23_.var_double,2)+pow(mt_1_.var_double,2)+pow(mt_2_.var_double,2)+pow(mt_3_.var_double,2));
+   }
+
 
     if (channel_ == channel::ettt) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);

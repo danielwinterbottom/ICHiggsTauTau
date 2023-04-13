@@ -547,6 +547,7 @@ if options.year == "2017":
     wgam_samples = ['WGToLNuG']
     ewkz_samples = ['EWKZ2Jets_ZToLL']
     qqzz_samples = ['ZZTo4L']
+    #hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125','ZHToTauTau_M125']
     hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
     ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
     signal_samples = sig_samples
@@ -646,7 +647,8 @@ summed_jfake_gen_matches += ")"
 other_sels = {
               "R" :"({sgm} == {len_channel})".format(sgm=summed_gen_matches,len_channel=len(options.channel)),
               "JF":"({jfgm} > 0)".format(jfgm=summed_jfake_gen_matches),
-              "LF":"({lfgm} > 0) && ({jfgm} == 0)".format(lfgm=summed_jfake_gen_matches,jfgm=summed_jfake_gen_matches),
+              "LF":"({lfgm} > 0) && ({jfgm} == 0)".format(lfgm=summed_lfake_gen_matches,jfgm=summed_jfake_gen_matches),
+              #"inclusive": "(1)",
               }
 
 if options.channel.count("t") == 0: 
@@ -697,6 +699,7 @@ def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', to
 
 def GenerateVV(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}):
     for key, val in vv_sels.items():
+      print key, val
       vv_node = GetNode(ana, key, add_name, samples, plot, wt, "("+val+"&&"+sel+")", cat)
       ana.nodes[nodename].AddNode(vv_node)
 
@@ -734,7 +737,7 @@ def GenerateMCFakeTaus(ana, ff_from, add_name='', samples=[], plot='', wt='', se
     ana.nodes[nodename].AddNode(mc_jetfakes_node)
 
 
-def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None, wt_ext="", type_ext="", intermediate_shift=[]):
+def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None, wt_ext="", type_ext="", intermediate_shift=[], spec_wt_ext=None):
 
   vj = "deepTauVsJets_" + VsJets_wp
   ff_sel = copy.deepcopy(cat)
@@ -757,41 +760,67 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
         sign = "1.0" if ((ind % 2) == 0 or options.ff_from != "all") else "-1.0"
         if options.channel == "tttt":
           sign = str(float(sign) * -1)
-          if len(name) == 1: continue
+          if len(name) == 1: 
+            continue
+          elif len(name) == 2:
+            sign = "1.0"
+          elif len(name) == 3:
+            sign = "-2.0"
+          elif len(name) == 4:
+            sign = "3.0"
+
 
         iso_tau_numbers = [i for i in tau_numbers if i not in aiso_tau_numbers] # get isolated taus
         
         # get selections     
-        total_ff_wt = " * ".join(["wt_ff_ml_{}{}".format(i,wt_ext) for i in aiso_tau_numbers])
+        ff_wt_list = []
+        run = True
+        for i in aiso_tau_numbers:
+
+          if spec_wt_ext == None:
+            ff_wt_list.append("wt_ff_ml_{}{}".format(i,wt_ext))
+          elif spec_wt_ext[0] == name:
+            if spec_wt_ext[1] == "wt_ff_ml_{}".format(i):
+              ff_wt_list.append("wt_ff_ml_{}{}".format(i,wt_ext))
+            else:
+              ff_wt_list.append("wt_ff_ml_{}".format(i))
+          else:
+            run = False
+
+        if not run: continue
+
+        total_ff_wt = " * ".join(ff_wt_list)
         total_gen_match_sel = " * ".join(["(gen_match_{}!=6)".format(i) for i in aiso_tau_numbers])
         total_fail = " * ".join(["({}_{}<0.5 && deepTauVsJets_iso_{}>0.1)".format(vj,i,i) for i in aiso_tau_numbers])
         total_pass = " * ".join(["({}_{}>0.5)".format(vj,i) for i in iso_tau_numbers if (str(i) not in options.aiso and str(i) not in options.aiso_and_iso and not options.no_sig_sel)])
    
         # remove empty selections
         ff_data_wt_list = [sign,total_ff_wt,total_fail,total_pass]
+        #ff_data_wt_list = ["0.08824675003743619",sign,total_fail,total_pass]
         #ff_data_wt_list = [sign,total_fail,total_pass]
         if "" in ff_data_wt_list: ff_data_wt_list.remove("")
         ff_mc_wt_list = [sign,"wt",total_ff_wt,total_gen_match_sel,total_fail,total_pass]
+        #ff_mc_wt_list = ["0.08824675003743619",sign,"wt",total_gen_match_sel,total_fail,total_pass]
+        #ff_mc_wt_list = [sign,"0",total_gen_match_sel,total_fail,total_pass]
         #ff_mc_wt_list = [sign,"wt",total_gen_match_sel,total_fail,total_pass]
+
         if "" in ff_mc_wt_list: ff_mc_wt_list.remove("")
   
         # make full selections
         ff_data_wt = " * ".join(ff_data_wt_list)
         ff_mc_wt = " * ".join(ff_mc_wt_list)
 
-        # add factorisation uncertainty
+        # add constant uncerts
         add_name_dict = {add_name:"1"}
-        if add_name == "" and options.do_ff_systs:
-          num = 1.1
-          if len(name) > 1:
-            add_name_dict["_fact_{}Up".format(len(name))] = str(num**(len(name)-1))
-            add_name_dict["_fact_{}Down".format(len(name))] = str(1.0/num**(len(name)-1))
 
         #print add_name_dict
         for an, scale in add_name_dict.items():
           # decorrelate between channels
           if an != "":
-            add_name_channel = "_" + options.channel + an
+            if options.channel != "tttt":
+              add_name_channel = "_" + options.channel + an
+            else:
+              add_name_channel = "_ttt" + an
           else:
             add_name_channel = ""
 
@@ -1043,27 +1072,95 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
       mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + ggzz_samples + qqzz_samples
       if 'jetFakes' not in samples_to_skip:
 
-        if options.do_ff_systs and not options.no_sig_sel:
-          wt_exts = ["_iso_0f_down","_iso_0f_up","_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up"]
-          #wt_exts = ["_non_closure_down","_non_closure_up"]
-        elif options.do_ff_systs and options.no_sig_sel:
-          wt_exts = ["_non_closure_down","_non_closure_up","_iso_0f_down","_iso_0f_up"]
+        if options.do_ff_systs:
+          #wt_exts = ["_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up","_subtract_pass_non_closure_down","_subtract_pass_non_closure_up","_subtract_fail_non_closure_down","_subtract_fail_non_closure_up","_subtraction_up","_subtraction_down"]
+          wt_exts = ["_non_closure_down","_non_closure_up","_subtract_pass_non_closure_down","_subtract_pass_non_closure_up","_subtract_fail_non_closure_down","_subtract_fail_non_closure_up","_subtraction_up","_subtraction_down"]
+          if options.channel == "ttt":
+            spec_wt_exts = {
+                            "1":{"wt_ff_ml_1":["_iso_0f_up","_iso_0f_down"]},
+                            "2":{"wt_ff_ml_2":["_iso_0f_up","_iso_0f_down"]},
+                            "3":{"wt_ff_ml_3":["_iso_0f_up","_iso_0f_down"]},
+                            "12":{"wt_ff_ml_1":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_2":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "13":{"wt_ff_ml_1":["_iso_1p1f_up","_iso_1p1f_down"],
+                                  "wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"]},
+                            "23":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_3":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "123":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"]}
+                            }
+          elif options.channel == "tttt":
+            spec_wt_exts = {
+                            "12":{"wt_ff_ml_1":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_2":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "13":{"wt_ff_ml_1":["_iso_1p1f_up","_iso_1p1f_down"],
+                                  "wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"]},
+                            "14":{"wt_ff_ml_1":["_iso_1p1f_up","_iso_1p1f_down"],
+                                  "wt_ff_ml_4":["_iso_1f1p_up","_iso_1f1p_down"]},
+                            "23":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_3":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "24":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_4":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "34":{"wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_4":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "123":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"]},
+                            "124":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
+                            "134":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
+                            "234":{"wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
+                            "1234":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
+                                    "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
+                                    "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
+                                    "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
+                            }
+          elif options.channel in ["ettt","mttt"]:
+            spec_wt_exts = {
+                            "2":{"wt_ff_ml_2":["_iso_0f_up","_iso_0f_down"]},
+                            "3":{"wt_ff_ml_3":["_iso_0f_up","_iso_0f_down"]},
+                            "4":{"wt_ff_ml_4":["_iso_0f_up","_iso_0f_down"]},
+                            "23":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_3":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "24":{"wt_ff_ml_2":["_iso_1p1f_up","_iso_1p1f_down"],
+                                  "wt_ff_ml_4":["_iso_1f1p_up","_iso_1f1p_down"]},
+                            "34":{"wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"],
+                                  "wt_ff_ml_4":["_iso_1p1f_up","_iso_1p1f_down"]},
+                            "234":{"wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
+                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]}
+                            }
+
+          elif options.channel in ["eett","mmtt","emtt"]:
+            spec_wt_exts = {
+                            "3":{"wt_ff_ml_3":["_iso_0f_up","_iso_0f_down"]},
+                            "4":{"wt_ff_ml_4":["_iso_0f_up","_iso_0f_down"]},
+                            "34":{"wt_ff_ml_3":["_iso_1f_up","_iso_1f_down"],
+                                  "wt_ff_ml_4":["_iso_1f_up","_iso_1f_down"]},
+                            }
+
+
+
         else:
+          spec_wt_exts = {}
           wt_exts = []
 
-        type_exts = []
-        if options.do_ff_systs and options.ff_from == "all":
-          type_exts = ["all"]
-        elif options.do_ff_systs and not options.ff_from == "all":
-          type_exts.append("")
 
         GenerateFakeTaus(ana, add_name, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"])
         for wt_ext in wt_exts: 
-          for type_ext in type_exts:
-            if type_ext == "": type_ext_name = ""
-            else: type_ext_name = "_"+type_ext
-            #GenerateFakeTaus(ana, type_ext_name+wt_ext, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext,intermediate_shift=["0.01","0.02","0.05","0.1","0.2","0.4","0.6","0.8","1.0"]) 
-            GenerateFakeTaus(ana, type_ext_name+wt_ext.replace("_up","Up").replace("_down","Down"), data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext,type_ext=type_ext)
+          GenerateFakeTaus(ana, wt_ext.replace("_up","Up").replace("_down","Down"), data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext, spec_wt_ext=None)
+        for num, val in spec_wt_exts.items():
+          for wt_name, ext in val.items():
+            for wt_ext in ext:
+              GenerateFakeTaus(ana, wt_ext.replace("_up","Up").replace("_down","Down"), data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"],wt_ext=wt_ext, spec_wt_ext=[num,wt_name])
+
+          
 
       # if use ff_from need to add the rest back with MC
       if "MC_jetFakes" not in samples_to_skip and options.ff_from != "all":

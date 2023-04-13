@@ -23,7 +23,7 @@ else:
 
 files = OrderedDict()
 
-#files['$\\tau_{h}\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'tttt_inclusive'
+files['$\\tau_{h}\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'tttt_inclusive'
 files['$\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'ttt_inclusive'
 files['$e\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'ettt_nobtag'
 files['$\\mu\\tau_{h}\\tau_{h}\\tau_{h}$'] = 'mttt_nobtag'
