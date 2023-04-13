@@ -78,6 +78,7 @@ def SetAxisTitles(plot, channel):
   titles['dphi'] = ['#Delta#phi('+lep1_label+','+lep2_label+')','Events / '+bin_width, 'dN/d#Delta#phi','']
   titles['met_dphi_1'] = ['#Delta#phi('+lep1_label+',E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
   titles['met_dphi_2'] = ['#Delta#phi('+lep2_label+',E_{T}^{miss})','Events / '+bin_width, 'dN/d#Delta#phi']
+  titles['pt_1+pt_2+jpt_1+met'] = ['S_{T}^{MET} (GeV)','Events / '+bin_width+' GeV', 'dN/dS_{T}^{MET} (1/GeV)'] #Excess 
   if channel in ['zee','zmm']: titles['pt_tt'] = ['p_{T}^{'+chan_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+chan_label+'} (1/GeV)']
   else:  titles['pt_tt'] = ['p_{T}^{#tau#tau} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{#tau#tau}^{tot} (1/GeV)']
   titles['n_jets'] = ['N_{jets}','Events', 'dN/dN_{jets}']
@@ -2709,15 +2710,19 @@ def HTTPlot(nodename,
               axish[0].GetXaxis().SetNoExponent()
         if custom_x_range:
           axish[0].GetXaxis().SetRangeUser(x_axis_min,x_axis_max-0.01)
-        if custom_y_range:                                                                
+        if custom_y_range:                                                        
           axish[0].GetYaxis().SetRangeUser(y_axis_min,y_axis_max)
     axish[0].GetYaxis().SetTitle(y_title)
     axish[0].GetYaxis().SetTitleOffset(1.6)
     axish[0].GetYaxis().SetTitleSize(0.04)
     axish[0].GetYaxis().SetLabelSize(0.03)
     if not ratio: axish[0].GetXaxis().SetLabelSize(0.03)
+    if custom_y_range and log_y:
+       axish[0].SetMinimum(0.1)
+       axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
+
     if not custom_y_range:
-        if(log_y): 
+        if(log_y):
             axish[0].SetMinimum(0.1)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
         else: 
@@ -2746,7 +2751,8 @@ def HTTPlot(nodename,
         if not split_sm_scheme:
             if sig_scheme[2]: 
                 stack.Add(sighist.Clone())
-                if not custom_y_range: axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
+                if not custom_y_range:
+                   axish[0].SetMaximum(1.1*(1+extra_pad)*stack.GetMaximum())
             stack.Draw("histsame")
             if not sig_scheme[2]: sighist.Draw("histsame")
     elif not split_sm_scheme:
@@ -2949,7 +2955,8 @@ def HTTPlot(nodename,
     latex2.DrawLatex(0.145,0.955,channel_label)
     
     #CMS and lumi labels
-    if not custom_y_range: FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
+    if not custom_y_range: 
+       FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad if extra_pad>0 else 0.30)
     DrawCMSLogo(pads[0], 'CMS', 'Preliminary', 11, 0.045, 0.05, 1.0, '', 1.0)
     #DrawCMSLogo(pads[0], 'CMS', '', 11, 0.045, 0.05, 1.0, '', 1.0)
     DrawTitle(pads[0], lumi, 3)
