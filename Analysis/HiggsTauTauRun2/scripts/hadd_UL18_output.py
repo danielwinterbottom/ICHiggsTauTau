@@ -41,8 +41,7 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=3:0:0"'
 
 
 sample_list = [
-          # Data
-          # Single Muon
+
          'SingleMuonA',
          'SingleMuonB',
          'SingleMuonC',
@@ -80,6 +79,7 @@ sample_list = [
          'DY3JetsToLL-LO',
          'DY4JetsToLL-LO',
          'DYJetsToLL-LO',
+         'DYJetsToLL-LO-ext1',
 	  # Low mass Drell Yan LO
          'DYJetsToLL_M-10to50-LO',
 	 'DY1JetsToLL_M-10to50-LO',
@@ -143,6 +143,8 @@ sample_list = [
          'VBFHToTauTau_M125',
          'WminusHToTauTau_M125',
          'WplusHToTauTau_M125',
+         'ZHToTauTau_M125',
+         'ZHToTauTau_M125-ext1',
          'ttHToTauTau_M125',
 	]
 

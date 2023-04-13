@@ -29,7 +29,7 @@ defaults = {
     "folder":"/vols/cms/dw515/Offline/output/MSSM/Jan11/" , "signal_folder":"", "embed_folder":"",
     "paramfile":"scripts/Params_2016_spring16.json", "cat":"inclusive", "year":"2016",
     "era":"mssmsummer16", "sel":"(1)", "set_alias":[], "analysis":"mssm", "var":"m_vis(7,0,140)",
-    "method":8 , "do_ss":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
+    "method":8 , "do_ss":False, "do_aiso":False, "sm_masses":"125", "ggh_masses":"", "bbh_masses":"",
     "bbh_nlo_masses":"", "nlo_qsh":False, "qcd_os_ss_ratio":-1, "add_sm_background":"",
     "syst_e_scale":"", "syst_mu_scale":"", "syst_tau_scale":"", "syst_tau_scale_0pi":"",
     "syst_e_res":"", "syst_mu_res":"", "syst_tau_res":"", 
@@ -106,6 +106,8 @@ parser.add_argument("--var", dest="var", type=str,
     help="Variable to plot")
 parser.add_argument("--method", dest="method", type=int,
     help="Method.  Supported options: %(METHODS)s" % vars())
+parser.add_argument("--do_aiso", dest="do_aiso", action='store_true',
+    help="Anti-isolate electron / muon")
 parser.add_argument("--do_ss", dest="do_ss", action='store_true',
     help="Do same-sign.")
 parser.add_argument("--sm_masses", dest="sm_masses", type=str,
@@ -1131,6 +1133,10 @@ if options.v2p5 == True:
    for key in cats:
       cats[key] = cats[key].replace('deepTauVsJets','deepTauVsJetsV2p5').replace('deepTauVsEle','deepTauVsEleV2p5').replace('deepTauVsMu','deepTauVsMuV2p5').replace('iso_2','iso_2_V2p5')
 
+if options.do_aiso:
+  # overwrite electron/muon isolation cut in baseline
+  cats['baseline'] = cats['baseline'].replace('iso_1<0.15','iso_1>0.15&&iso_1<0.5')
+
 # Additional selections to seperate MC samples by gen flags
 z_sels = {}
 if options.channel == 'et':
@@ -1444,7 +1450,7 @@ if options.era in ['cpsummer17','tauid2017']:
 
 if options.era in ['UL_17']:
     if (options.DY_NLO==False):
-        ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
     else:
         ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
 
@@ -1522,7 +1528,7 @@ if options.era in ['cp18']:
 
 if options.era in ['UL_18']:
     if (options.DY_NLO==False):
-        ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+        ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
         #ztt_samples = ['DYJetsToLL-LO']
     else:
         ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
@@ -1654,7 +1660,7 @@ if options.analysis in ['cpprod']:
          'ggH_ps_htt*' : ['JJH0MToTauTauPlusZeroJets_Filtered','JJH0MToTauTauPlusOneJets_Filtered','JJH0MToTauTauPlusTwoJets_Filtered'],
          'qqH_htt*' : 'VBFHToTauTau_M-125-ext1',
          'WH_htt*': ['WplusHToTauTau_M-125','WminusHToTauTau_M-125'],
-         'ZH_htt*': 'ZHToTauTau_M-125',
+         'ZH_htt*': ['ZHToTauTau_M-125','ZHToTauTau_M125-ext1'],
         # "ggH_cpdecay_htt*": "GluGluHToTauTauUncorrelatedDecay_Filtered",
          'qqH_mm_htt*' : 'VBFHiggs0Mf05ph0ToTauTau',
          'qqH_ps_htt*' : 'VBFHiggs0MToTauTau',

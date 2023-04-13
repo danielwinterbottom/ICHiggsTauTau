@@ -8,7 +8,7 @@ lumi=$3
 # set the inclusive sample names for DY and W - the event numbers and xs for the N jets samples will be set to the values for these samples
 DY_inclusive_name_1="DYJetsToLL-LO"
 W_inclusive_name_1="WJetsToLNu-LO"
-DY_NLO_inclusive_name_1="DYJetstoLL-NLO"
+DY_NLO_inclusive_name_1="DYJetsToLL-NLO"
 
 while read i; do 
     sample_name=$(echo $i | cut -d" " -f1)
