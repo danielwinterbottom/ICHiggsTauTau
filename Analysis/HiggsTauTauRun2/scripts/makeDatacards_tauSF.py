@@ -13,7 +13,7 @@ config_files = {'2016_preVFP':'scripts/plot_UL_2016_preVFP.cfg',
 		'2016preUL':'scripts/plot_mssm_2016.cfg',
                 '2017preUL':'scripts/plot_mssm_2017.cfg',
                 '2017':'scripts/plot_UL_2017.cfg',
-                '2018':'scripts/plot_UL_2018.cfg',
+                '2018':'scripts/plot_UL_2018.cfg', #changed for v2p5:scripts/plot_UL_2018_124.cfg
                 '2018preUL':'scripts/plot_mssm_2018.cfg'}
                
 def split_callback(option, opt, value, parser):
@@ -57,6 +57,7 @@ parser.add_option('--wp', help= 'Name of VsJet WP to use', default='medium')
 parser.add_option("--batch", dest="batch", action='store_true', default=False, help="Submit on batch.")
 parser.add_option("--systs", dest="systs", action='store_true', default=False, help="Add systematic variations.")
 parser.add_option("--tightVsE", dest="tightVsE", action='store_true', default=False, help="Use tight WP for Vs electron ID")
+parser.add_option("--v2p5", dest="v2p5", action='store_true', default=False, help="Use DeepTau v2p5")
 (options, args) = parser.parse_args()
 
 # initialising variables
@@ -172,20 +173,40 @@ for year in years:
  
                cuts='m_vis>40&&fabs(eta_1)<2.1&&trg_singlemuon'
                if options.tightVsE: cuts+='&&deepTauVsEle_tight_2>0.5'
-  
-               run_cmd_3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt65" --wp=%(wp)s ' % vars()
-               run_cmd_4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s&&deepTauVsEle_tight_2>0.5)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt65_tightVsEle" --wp=%(wp)s ' % vars() 
-   
+               if options.v2p5:
+                  run_cmd_3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt65" --wp=%(wp)s --v2p5' % vars()
+                  run_cmd_4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s&&deepTauVsEle_tight_2>0.5)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt65_tightVsEle" --wp=%(wp)s --v2p5' % vars()
+
+               else:
+                  run_cmd_3 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt65" --wp=%(wp)s ' % vars()
+                  run_cmd_4 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&%(cuts)s&&deepTauVsEle_tight_2>0.5)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra_mt)s --datacard="%(cat)s_mTLt65_tightVsEle" --wp=%(wp)s ' % vars()
+
+               commands = [run_cmd_3, run_cmd_4]
+               if ',' in var_used: var_name=var_used.replace(',','_vs_')
+
+               for i in range(0,len(commands)):
+                 if commands[i] is '': continue
+                 job_file = '%(output_folder)s/jobs/%(var_name)s_%(cat)s_%(ch)s_%(year)s%(s_name)s_%(i)i.sh' % vars()
+                 CreateBatchJob(job_file,cmssw_base,[commands[i]])
+                 if 'syst_scale_j_regrouped' in s_name: SubmitBatchJob(job_file,time=500,memory=24,cores=1)
+                 else: SubmitBatchJob(job_file,time=180,memory=24,cores=1)   
              elif ch == 'zmm':
-              run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>50&&pt_1>25&&fabs(eta_1)<2.1&&trg_singlemuon)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra)s --wp=%(wp)s ' % vars()
+                if options.v2p5:
+                   run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>50&&pt_1>25&&fabs(eta_1)<2.1&&trg_singlemuon)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra)s --wp=%(wp)s --v2p5' % vars()
+                else:
+                   run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>50&&pt_1>25&&fabs(eta_1)<2.1&&trg_singlemuon)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra)s --wp=%(wp)s ' % vars()
   
-             commands = [run_cmd_3, run_cmd_4]
-             if ',' in var_used: var_name=var_used.replace(',','_vs_')
+                commands = [run_cmd]
+                print(var_used)
+                if ',' in var_used: var_name=var_used.replace(',','_vs_')
+                else: var_name=var_used
   
-             for i in range(0,len(commands)):
-               if commands[i] is '': continue
-               job_file = '%(output_folder)s/jobs/%(var_name)s_%(cat)s_%(ch)s_%(year)s%(s_name)s_%(i)i.sh' % vars()
-               CreateBatchJob(job_file,cmssw_base,[commands[i]])
-               if 'syst_scale_j_regrouped' in s_name: SubmitBatchJob(job_file,time=500,memory=24,cores=1)
-               else: SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+                
+                print(var_name)
+                for i in range(0,len(commands)):
+                  if commands[i] is '': continue
+                  job_file = '%(output_folder)s/jobs/%(var_name)s_%(cat)s_%(ch)s_%(year)s%(s_name)s_%(i)i.sh' % vars()
+                  CreateBatchJob(job_file,cmssw_base,[commands[i]])
+                  if 'syst_scale_j_regrouped' in s_name: SubmitBatchJob(job_file,time=500,memory=24,cores=1)
+                  else: SubmitBatchJob(job_file,time=180,memory=24,cores=1)
   
