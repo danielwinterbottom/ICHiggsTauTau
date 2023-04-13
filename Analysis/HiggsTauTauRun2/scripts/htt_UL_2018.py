@@ -290,7 +290,7 @@ if options.proc_bkg or options.proc_all:
     # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
  
-    ## Drell-Yan NLO
+    # Drell-Yan NLO
     'DYJetsToLL-NLO',
     'DYJetsToLL_0J-NLO',
     'DYJetsToLL_1J-NLO',

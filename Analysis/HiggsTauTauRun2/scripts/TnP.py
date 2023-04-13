@@ -33,15 +33,12 @@ defaults = {
     "outputfolder":"plots/TnP/2018/tpzee/",
     "folder":"/vols/cms/ks1021/offline/ditau/trees/TnP/2018/",
     "era":"UL_18", 
-    "embedded":False, 
-    "em_iso":False, 
-    "aiso1":False, 
-    "aiso2":False, 
-    "embed_sel":False, 
     "draw_hists":1,
     "veto_FSR":False,
     "trg_only":False,
     "tree_name":"tagandprobe",
+    "mode": "",
+    "tight_tag":False,
     }
 
 if options.cfg:
@@ -61,22 +58,6 @@ parser.add_argument("--folder", dest="folder", type=str,
     help="Name of input folder")
 parser.add_argument("--era", dest="era", type=str,
     help="Era")
-parser.add_argument("--embedded", dest="embedded", action='store_true',
-    help="Produce scale-factors for embedded samples.")
-parser.add_argument("--em_iso", dest="em_iso", action='store_true',
-    help="Use iso-cuts defined for emu channel.")
-parser.add_argument("--aiso1", dest="aiso1", action='store_true',
-    help="Compute scale-factors or anti-isolated region 1.")
-parser.add_argument("--aiso2", dest="aiso2", action='store_true',
-    help="Compute scale-factors or anti-isolated region 2.")
-parser.add_argument("--embed_sel", dest="embed_sel", action='store_true',
-    help="Do scale-factors for embedding trgger selection")
-parser.add_argument("--embed_dz", dest="embed_dz", action='store_true',
-    help="Measure DZ filter efficiency for di-muon trigger")
-parser.add_argument("--charge_flip", dest="charge_flip", action='store_true',
-    help="Measure charge flip efficiency")
-parser.add_argument("--mutoele", dest="mutoele", action='store_true',
-    help="Measure mu->e fake rate")
 parser.add_argument("--draw_hists", dest="draw_hists", type=int,
     help="If set to 0 then will not re-make the 3D histograms instead will use the histograms on the existing root file")
 parser.add_argument("--veto_FSR", dest='veto_FSR', action='store_true', 
@@ -85,6 +66,8 @@ parser.add_argument("--trg_only", dest='trg_only', action='store_true',
     help="If true only the trigger SFs are computed")
 parser.add_argument("--tree_name", dest="tree_name", type=str,
     help="If set then uses a custom name for the input tree used to produce the SFs. If not set this will be tagandprobe by default")
+parser.add_argument("--mode", dest="mode",type=str)
+parser.add_argument("--tight_tag", dest="tight_tag", action='store_true')
 
 options = parser.parse_args(remaining_argv)   
 
@@ -94,15 +77,11 @@ print 'channel           = ' + options.channel
 print 'outputfolder      = ' + options.outputfolder
 print 'folder            = ' + options.folder
 print 'era               = ' + options.era
-print 'embedded          =', options.embedded
-print 'em_iso            =', options.em_iso
-print 'aiso1             =', options.aiso1
-print 'aiso2             =', options.aiso2
 print 'draw_hists        =', options.draw_hists
-print 'embed_sel         =', options.embed_sel
-print 'embed_dz          =', options.embed_dz
 print 'veto_FSR          =', options.veto_FSR
 print 'tree              =', options.tree_name
+print 'mode              =', options.mode
+print 'tight tag         =', options.tight_tag
 print '###############################################'
 print ''
 
@@ -156,124 +135,72 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       iso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
-      if options.embed_sel:
-        trg_eta_bins   = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
-        idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
-#        trg_eta_bins   = '[0,0.1,0.15,0.2,0.3,0.8,0.9,1.0,1.1,1.2,1.6,1.7,1.8,2.1,2.4]' #mu8 # finer binning that might be needed for cp in decay
-#        idiso_eta_bins = '[0,0.1,0.15,0.2,0.3,0.8,0.9,1.0,1.1,1.2,1.6,1.7,1.8,2.1,2.4]' #mu8
-        #trg_pt_bins = '[10,12,14,16,18,20,22,24,26,28,31,34,37,40,45,50,60,70,100,1000]' #mu8
-        trg_pt_bins = '[10,12,14,15,17,19,21,22,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000]' # mu17
-      if  options.embed_dz:
-        trg_eta_bins='[0,2.4]'
-        if options.era in ['smsummer17','summer18','sm18']:
-          trg_pt_bins='[28,1000]'
-        else: trg_pt_bins='[23,1000]'
-      if options.charge_flip:
-        trg_eta_bins='[0,2.4]'
-        trg_pt_bins='[10,50,200]'
-      if options.mutoele:
-        trg_eta_bins='[0,2.4]'
-        trg_pt_bins='[10,200]'
-      if options.em_iso: 
-        trg_pt_bins = '[10,12,14,16,18,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
-        #trg_pt_bins = '[20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # high pt leg
+
     if options.channel == 'tpzee':
       gen_cuts='gen_match_1==1&&gen_match_2==1'  
-      idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
-      #idiso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
+      #idiso_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
+      idiso_eta_bins = '[0, 0.8,1.444,1.566,2.0,2.5]'
+
       iso_pt_bins   = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]' 
       idiso_pt_bins = '[10,15,20,25,30,35,40,50,100,200]'
-      trg_eta_bins = '[0, 1.0, 1.479, 1.653, 2.1, 2.5]'
-      trg_pt_bins = '[20,22,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]'
-      if options.em_iso: 
-          #idiso_pt_bins = '[13,15,17.5,20,22.5,25,27.5,30,35,40,45,50,70,100,200]'
-          trg_pt_bins = '[10,12,14,16,18,20,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #low pt leg
-          # trg_pt_bins = '[20,22,24,26,27,28,29,30,31,32,33,34,35,36,37,38,40,42,44,46,48,50,55,60,70,80,100,200]' #high pt leg
-      if options.charge_flip:
-        trg_eta_bins = '[0, 2.5]'
-        trg_pt_bins='[10,200]'
+
+      trg_eta_bins = '[0, 0.8, 1.444, 1.566, 2.0, 2.5]'
+      #trg_pt_bins = '[27,32,35,40,45,50,55,60,70,80,100,200]'
+      trg_pt_bins = '[20,24,26,28,33,36,40,44,48,50,55,60,70,80,100,200]'
+
+
           
     trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
     trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
     idiso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
     idiso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+idiso_pt_bins+','+mass_bins
-
     iso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+iso_pt_bins+','+mass_bins
     iso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+iso_pt_bins+','+mass_bins
 
-    if options.charge_flip:
 
-      trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
-      trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
-
-    if options.mutoele:
-      trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
-      trg_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
-
-    if not options.embed_sel:
-      GenerateZLL(ana, '_trg_tag1_fail', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
-      GenerateZLL(ana, '_trg_tag2_fail', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
-      GenerateZLL(ana, '_trg_tag1_pass', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
-      GenerateZLL(ana, '_trg_tag2_pass', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, trg_probe_1)    
+    GenerateZLL(ana, '_trg_tag1_fail', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
+    GenerateZLL(ana, '_trg_tag2_fail', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
+    GenerateZLL(ana, '_trg_tag1_pass', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
+    GenerateZLL(ana, '_trg_tag2_pass', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, trg_probe_1)    
     GenerateData(ana, '_trg_tag1_fail', data_samples, trg_plot_probe_2, wt, trg_tag_1, '!%s' % trg_probe_2)
     GenerateData(ana, '_trg_tag2_fail', data_samples, trg_plot_probe_1, wt, trg_tag_2, '!%s' % trg_probe_1)
     GenerateData(ana, '_trg_tag1_pass', data_samples, trg_plot_probe_2, wt, trg_tag_1, trg_probe_2)
     GenerateData(ana, '_trg_tag2_pass', data_samples, trg_plot_probe_1, wt, trg_tag_2, trg_probe_1)
    
+
     if not options.trg_only: 
-      if not options.embed_sel:
-        GenerateZLL(ana, '_id_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
-        GenerateZLL(ana, '_id_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
-        GenerateZLL(ana, '_id_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
-        GenerateZLL(ana, '_id_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)    
+      GenerateZLL(ana, '_id_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
+      GenerateZLL(ana, '_id_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
+      GenerateZLL(ana, '_id_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
+      GenerateZLL(ana, '_id_tag2_pass', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)    
       GenerateData(ana, '_id_tag1_fail', data_samples, idiso_plot_probe_2, wt, id_tag_1, '!%s' % id_probe_2)
       GenerateData(ana, '_id_tag2_fail', data_samples, idiso_plot_probe_1, wt, id_tag_2, '!%s' % id_probe_1)
       GenerateData(ana, '_id_tag1_pass', data_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
       GenerateData(ana, '_id_tag2_pass', data_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
-   
-    if not options.trg_only: 
-      if not options.embed_sel:
-        GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-        GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-        GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-        GenerateZLL(ana, '_iso_tag2_pass', ztt_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)   
+
+      GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
+      GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
+      GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
+      GenerateZLL(ana, '_iso_tag2_pass', ztt_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, iso_probe_1)   
       GenerateData(ana, '_iso_tag1_fail', data_samples, iso_plot_probe_2, wt, iso_tag_1, '!%s' % iso_probe_2)
       GenerateData(ana, '_iso_tag2_fail', data_samples, iso_plot_probe_1, wt, iso_tag_2, '!%s' % iso_probe_1)
       GenerateData(ana, '_iso_tag1_pass', data_samples, iso_plot_probe_2, wt, iso_tag_1, iso_probe_2)
-      GenerateData(ana, '_iso_tag2_pass', data_samples, iso_plot_probe_1, wt, iso_tag_2, iso_probe_1)    
+      GenerateData(ana, '_iso_tag2_pass', data_samples, iso_plot_probe_1, wt, iso_tag_2, iso_probe_1)
     
-    if options.embedded:
-       
-      GenerateEmbedded(ana, '_trg_tag1_fail', embed_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
-      GenerateEmbedded(ana, '_trg_tag2_fail', embed_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
-      GenerateEmbedded(ana, '_trg_tag1_pass', embed_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
-      GenerateEmbedded(ana, '_trg_tag2_pass', embed_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, trg_probe_1)
-   
-      if not options.trg_only:      
-        GenerateEmbedded(ana, '_id_tag1_fail', embed_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
-        GenerateEmbedded(ana, '_id_tag2_fail', embed_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
-        GenerateEmbedded(ana, '_id_tag1_pass', embed_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
-        GenerateEmbedded(ana, '_id_tag2_pass', embed_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, id_probe_1)
-         
-        GenerateEmbedded(ana, '_iso_tag1_fail', embed_samples, iso_plot_probe_2, wt, fix_iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
-        GenerateEmbedded(ana, '_iso_tag2_fail', embed_samples, iso_plot_probe_1, wt, fix_iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
-        GenerateEmbedded(ana, '_iso_tag1_pass', embed_samples, iso_plot_probe_2, wt, fix_iso_tag_1+'&&'+gen_cuts, iso_probe_2)
-        GenerateEmbedded(ana, '_iso_tag2_pass', embed_samples, iso_plot_probe_1, wt, fix_iso_tag_2+'&&'+gen_cuts, iso_probe_1)
-    
+
     ana.Run()
     ana.nodes.Output(outfile)
     
     outfile.cd()
     
-    if not options.embed_sel:
-      zll_trg_fail = outfile.Get(nodename+'/ZLL_trg_tag1_fail').Clone()
-      zll_trg_fail.Add(outfile.Get(nodename+'/ZLL_trg_tag2_fail'))
-      zll_trg_pass = outfile.Get(nodename+'/ZLL_trg_tag1_pass').Clone()
-      zll_trg_pass.Add(outfile.Get(nodename+'/ZLL_trg_tag2_pass'))
-      zll_trg_fail.SetName('ZLL_trg_fail')
-      zll_trg_pass.SetName('ZLL_trg_pass')
-      zll_trg_fail.Write('ZLL_trg_fail')
-      zll_trg_pass.Write('ZLL_trg_pass')
+    zll_trg_fail = outfile.Get(nodename+'/ZLL_trg_tag1_fail').Clone()
+    zll_trg_fail.Add(outfile.Get(nodename+'/ZLL_trg_tag2_fail'))
+    zll_trg_pass = outfile.Get(nodename+'/ZLL_trg_tag1_pass').Clone()
+    zll_trg_pass.Add(outfile.Get(nodename+'/ZLL_trg_tag2_pass'))
+    zll_trg_fail.SetName('ZLL_trg_fail')
+    zll_trg_pass.SetName('ZLL_trg_pass')
+    zll_trg_fail.Write('ZLL_trg_fail')
+    zll_trg_pass.Write('ZLL_trg_pass')
     
     data_trg_fail = outfile.Get(nodename+'/data_trg_tag1_fail').Clone()
     data_trg_fail.Add(outfile.Get(nodename+'/data_trg_tag2_fail'))
@@ -285,15 +212,14 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     data_trg_pass.Write('data_trg_pass')
 
     if not options.trg_only:    
-      if not options.embed_sel:
-        zll_id_fail = outfile.Get(nodename+'/ZLL_id_tag1_fail').Clone()
-        zll_id_fail.Add(outfile.Get(nodename+'/ZLL_id_tag2_fail'))
-        zll_id_pass = outfile.Get(nodename+'/ZLL_id_tag1_pass').Clone()
-        zll_id_pass.Add(outfile.Get(nodename+'/ZLL_id_tag2_pass'))
-        zll_id_fail.SetName('ZLL_id_fail')
-        zll_id_pass.SetName('ZLL_id_pass')
-        zll_id_fail.Write('ZLL_id_fail')
-        zll_id_pass.Write('ZLL_id_pass')
+      zll_id_fail = outfile.Get(nodename+'/ZLL_id_tag1_fail').Clone()
+      zll_id_fail.Add(outfile.Get(nodename+'/ZLL_id_tag2_fail'))
+      zll_id_pass = outfile.Get(nodename+'/ZLL_id_tag1_pass').Clone()
+      zll_id_pass.Add(outfile.Get(nodename+'/ZLL_id_tag2_pass'))
+      zll_id_fail.SetName('ZLL_id_fail')
+      zll_id_pass.SetName('ZLL_id_pass')
+      zll_id_fail.Write('ZLL_id_fail')
+      zll_id_pass.Write('ZLL_id_pass')
       
       data_id_fail = outfile.Get(nodename+'/data_id_tag1_fail').Clone()
       data_id_fail.Add(outfile.Get(nodename+'/data_id_tag2_fail'))
@@ -304,15 +230,14 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       data_id_fail.Write('data_id_fail')
       data_id_pass.Write('data_id_pass')
       
-      if not options.embed_sel:
-        zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
-        zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
-        zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
-        zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
-        zll_iso_fail.SetName('ZLL_iso_fail')
-        zll_iso_pass.SetName('ZLL_iso_pass')
-        zll_iso_fail.Write('ZLL_iso_fail')
-        zll_iso_pass.Write('ZLL_iso_pass')
+      zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
+      zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
+      zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
+      zll_iso_pass.Add(outfile.Get(nodename+'/ZLL_iso_tag2_pass'))
+      zll_iso_fail.SetName('ZLL_iso_fail')
+      zll_iso_pass.SetName('ZLL_iso_pass')
+      zll_iso_fail.Write('ZLL_iso_fail')
+      zll_iso_pass.Write('ZLL_iso_pass')
       
       data_iso_fail = outfile.Get(nodename+'/data_iso_tag1_fail').Clone()
       data_iso_fail.Add(outfile.Get(nodename+'/data_iso_tag2_fail'))
@@ -323,38 +248,6 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       data_iso_fail.Write('data_iso_fail')
       data_iso_pass.Write('data_iso_pass')
     
-    
-    if options.embedded:
-      
-      embed_trg_fail = outfile.Get(nodename+'/EmbedZLL_trg_tag1_fail').Clone()
-      embed_trg_fail.Add(outfile.Get(nodename+'/EmbedZLL_trg_tag2_fail'))
-      embed_trg_pass = outfile.Get(nodename+'/EmbedZLL_trg_tag1_pass').Clone()
-      embed_trg_pass.Add(outfile.Get(nodename+'/EmbedZLL_trg_tag2_pass'))
-      embed_trg_fail.SetName('embed_trg_fail')
-      embed_trg_pass.SetName('embed_trg_pass')
-      embed_trg_fail.Write('embed_trg_fail')
-      embed_trg_pass.Write('embed_trg_pass')
-     
-      if not options.trg_only:
- 
-        embed_id_fail = outfile.Get(nodename+'/EmbedZLL_id_tag1_fail').Clone()
-        embed_id_fail.Add(outfile.Get(nodename+'/EmbedZLL_id_tag2_fail'))
-        embed_id_pass = outfile.Get(nodename+'/EmbedZLL_id_tag1_pass').Clone()
-        embed_id_pass.Add(outfile.Get(nodename+'/EmbedZLL_id_tag2_pass'))
-        embed_id_fail.SetName('embed_id_fail')
-        embed_id_pass.SetName('embed_id_pass')
-        embed_id_fail.Write('embed_id_fail')
-        embed_id_pass.Write('embed_id_pass')
-        
-        embed_iso_fail = outfile.Get(nodename+'/EmbedZLL_iso_tag1_fail').Clone()
-        embed_iso_fail.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_fail'))
-        embed_iso_pass = outfile.Get(nodename+'/EmbedZLL_iso_tag1_pass').Clone()
-        embed_iso_pass.Add(outfile.Get(nodename+'/EmbedZLL_iso_tag2_pass'))
-        embed_iso_fail.SetName('embed_iso_fail')
-        embed_iso_pass.SetName('embed_iso_pass')
-        embed_iso_fail.Write('embed_iso_fail')
-        embed_iso_pass.Write('embed_iso_pass')
-
 def Get1DHistsFrom3D(passhist3d,failhist3d):
   # z = eta, y = pt, x = mass
   hists = []
@@ -399,7 +292,7 @@ def CreateWorkspace(name,infile,outfile):
   hist2d.Write()
   wsp.Delete()
   
-def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponential',doFit=True):
+def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponential',scenario="nominal",doFit=True):
   wsp = infile.Get(name+'/wsp_'+name)
   pdf_args = [ ]
   nparams = 1
@@ -735,6 +628,12 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
   
   for i in range(1,hist2d.GetNbinsX()+1):
     for j in range(1,hist2d.GetNbinsY()+1):
+      bin_low_edge = str(round(hist2d.GetYaxis().GetBinLowEdge(j),1)).replace(".","p")
+      bin_up_edge  = str(round(hist2d.GetYaxis().GetBinUpEdge(j),1)).replace(".","p")
+      path = options.outputfolder + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
+      if not os.path.exists(path):
+         os.makedirs(path)
+
       xmin = hist2d.GetXaxis().GetBinLowEdge(i)    
       xmax = hist2d.GetXaxis().GetBinUpEdge(i)
       ymin = hist2d.GetYaxis().GetBinLowEdge(j)
@@ -742,18 +641,11 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       
       ForceEventCount = False
       # for summer17 force event count (no fit) for isolated trigger and isolation SFs with pT > 30 GeV (needs checking what the threshold should be for aiso1 and aiso2)
-      if options.era in ['UL_17','UL_18','summer17','sm18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
+      if options.era in ['UL_17','UL_18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee': 
           if xmin >= 50: ForceEventCount = True
-      if options.era in ['summer18'] and ('_trg' in name or '_iso' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
-          if xmin >= 50: ForceEventCount = True
-      if options.era in ['summer18'] and ('_id' in name) and options.channel == 'tpzee' and not options.aiso1 and not options.aiso2: 
-          if xmin >= 30: ForceEventCount = True
-      if options.era in ['UL_18','sm18'] and ('_iso' in name) and options.channel == 'tpzmm' and not options.aiso1 and not options.aiso2:
+      if options.era in ['UL_18'] and ('_iso' in name) and options.channel == 'tpzmm':
           if xmin >= 50: ForceEventCount = True
 
-      if options.charge_flip or options.mutoele: ForceEventCount=False
- 
-    
       dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
       yield_tot = wsp.data(dat).sumEntries()
       yield_pass = wsp.data(dat).sumEntries("cat==cat::pass")
@@ -766,7 +658,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         wsp.var("efficiency").setError(0.) 
         ForceEventCount = True # dont do fit if yield is 0 anyway
     
-      if options.channel=='tpzee' and 'id' in name and (options.era == 'summer17' or options.era == 'UL_17'):
+      if options.channel=='tpzee' and 'id' in name and options.era == 'UL_17' and scenario == "nominal":
         if xmin>=100: 
           print 'changing sigma2f parameter'
           wsp.var('sigma1f').setRange(0.2,4)
@@ -785,11 +677,6 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
           wsp.var('sigma1f').setRange(0.2,4)
           wsp.var('sigma2f').setRange(2,10)
           wsp.var('sigma2p').setRange(2,10)
-      if options.channel=='tpzee' and 'id' in name and options.era in ['summer18']:
-        print("changing range of betaFail for bkg")
-        wsp.var('betaFail').setRange(0,0.1)
-
-
 
       if doFit and not ForceEventCount:
         wsp.pdf("model").fitTo(wsp.data(dat),
@@ -913,8 +800,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         else: legend2.AddEntry(xframe2.findObject("AllFail"), "Z #rightarrow #mu#mu + BG", "l")
         legend2.AddEntry(xframe2.findObject("BkgFail"), "BG", "l")
         legend2.Draw()
-        
-        canv.Print(options.outputfolder +'/'+dat+'_'+options.channel+'.pdf')
+         
+        canv.Print(options.outputfolder + name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+        del canv
         
       res.append((dat, wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
       hist2d.SetBinContent(i,j,wsp.var('efficiency').getVal())
@@ -934,15 +822,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
     
 # Add data sample names
 if options.channel == 'tpzmm': 
-    if options.era == 'summer17':
-        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-        #data_samples = ['SingleMuonB']
-        #data_samples = ['SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
-    elif options.era in ['summer18','sm18']:
-        data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-    elif options.era == 'legacy16':
-        data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonH']
-    elif options.era == 'UL_16preVFP':
+    if options.era == 'UL_16preVFP':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'UL_16postVFP':
         data_samples = ['SingleMuonF','SingleMuonG','SingleMuonH']
@@ -950,131 +830,61 @@ if options.channel == 'tpzmm':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'UL_18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
-    else: data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF','SingleMuonG','SingleMuonHv2','SingleMuonHv3']
     
 if  options.channel == 'tpzee': 
-    if options.era in ['summer18','sm18']: data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
-    elif options.era == 'summer17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-    elif options.era == 'legacy16': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronH']
-    elif options.era == 'UL_16preVFP': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
+    if options.era == 'UL_16preVFP': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'UL_16postVFP': data_samples = ['SingleElectronF','SingleElectronG','SingleElectronH']    
     elif options.era == 'UL_17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'UL_18': data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
-    #if options.era == 'summer17': data_samples = ['SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
-    #if options.era == 'summer17': data_samples = ['SingleElectronB']
-    else: data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF','SingleElectronG','SingleElectronHv2','SingleElectronHv3']
 
 # Add MC sample names   
-if options.era == 'summer17': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
-elif options.era in ['summer18','sm18']: ztt_samples = ['DYJetsToLL-LO']
-elif options.era == 'legacy16': ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
-elif options.era == 'UL_16preVFP':  ztt_samples = ['DYJetsToLL-LO']
+if options.era == 'UL_16preVFP':  ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_16postVFP': ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO']
-else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 
-embed_samples = []
-if options.era == 'summer17':
-  if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
-  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
-  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
-  #if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
-  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
-  #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
-  #if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB']
-elif options.era in ['summer18','sm18']:
-  if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauA']
-  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElA']
-  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuA']
-  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElA']
-else:
-  if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF','EmbeddingMuTauG','EmbeddingMuTauH']
-  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF','EmbeddingMuMuG','EmbeddingMuMuH']
-  if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF','EmbeddingElElG','EmbeddingElElH']
-  if options.channel == 'tpem': embed_samples = ['EmbeddingElMuB','EmbeddingElMuC','EmbeddingElMuD','EmbeddingElMuE','EmbeddingElMuF','EmbeddingElMuG','EmbeddingElMuH']
 #Formula:  abs(eta_2),pt_2,m_vis[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4],[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000],(40,70,110) (wt)*((m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)*(1&&id_probe_1))*(os)*(1)*(!(trg_probe_2))
 ROOT.TH1.SetDefaultSumw2(True)
 
 trg_probe_1 = '(trg_probe_1)'
 trg_probe_2 = '(trg_probe_2)'
-if options.embed_sel:
-  trg_probe_1 = '(trg_probe_1)'
-  trg_probe_2 = '(trg_probe_2)'
-if options.embed_dz:
-  trg_probe_1 = '(pass_dz)'
-  trg_probe_2 = '(pass_dz)'
 id_probe_1 = '(id_probe_1)'
 id_probe_2 = '(id_probe_2)'
+
 if options.channel == 'tpzmm':
   iso_cut_1='iso_1<0.15'
   iso_cut_2='iso_2<0.15'
-  if options.aiso1:
-    iso_cut_1='iso_1>=0.15&&iso_1<0.25'  
-    iso_cut_2='iso_2>=0.15&&iso_2<0.25'
-  if options.aiso2:
-    iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
-    iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
-  if options.em_iso:
-    iso_cut_1='iso_1<0.2'    
-    iso_cut_2='iso_2<0.2'
-    if options.aiso1:
-      iso_cut_1='iso_1>0.2&&iso_1<0.5'  
-      iso_cut_2='iso_2>0.2&&iso_2<0.5'
-    if options.aiso2:
-      iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
-      iso_cut_2='iso_2>=0.3&&iso_2<0.5' 
   
-  if options.era in ['UL_17','UL_18','summer17','summer18','sm18']:
+  if options.era in ['UL_17','UL_18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
   else:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
      
-  if options.embed_sel:
-    iso_cut_1="1"
-    iso_cut_2="1"
-  
 if options.channel == 'tpzee':
-  if options.era in ['UL_16preVFP','UL_16postVFP','UL_17','UL_18','summer17','summer18','legacy16','sm18']:
+  if options.era in ['UL_16preVFP','UL_16postVFP','UL_17','UL_18']:
     iso_cut_1='iso_1<0.15'
     iso_cut_2='iso_2<0.15'
-    if options.aiso1:
-      iso_cut_1='iso_1>=0.15&&iso_1<0.25'
-      iso_cut_2='iso_2>=0.15&&iso_2<0.25'
-    if options.aiso2:
-      iso_cut_1='iso_1>=0.25&&iso_1<0.5'
-      iso_cut_2='iso_2>=0.25&&iso_2<0.5'
-  else: 
-    iso_cut_1='iso_1<0.1'
-    iso_cut_2='iso_2<0.1'
-    if options.aiso1:
-      iso_cut_1='iso_1>=0.1&&iso_1<0.25'  
-      iso_cut_2='iso_2>=0.1&&iso_2<0.25'
-    if options.aiso2:
-      iso_cut_1='iso_1>=0.25&&iso_1<0.5'  
-      iso_cut_2='iso_2>=0.25&&iso_2<0.5'  
-  if options.em_iso or options.era in ['UL_17','UL_18','summer17','summer18','sm18']:
-    iso_cut_1='iso_1<0.15'    
-    iso_cut_2='iso_2<0.15'
-    if options.aiso1:
-      iso_cut_1='iso_1>0.15&&iso_1<0.5'  
-      iso_cut_2='iso_2>0.15&&iso_2<0.5'
-    if options.aiso2:
-      iso_cut_1='iso_1>=0.3&&iso_1<0.5'  
-      iso_cut_2='iso_2>=0.3&&iso_2<0.5'  
   
-  if options.era in ['UL_17','UL_18','summer18','sm18','summer17']:
+  if options.era in ['UL_17','UL_18']:
     if options.tree_name == 'tagandprobe_ET':
       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&trg_tag_extra_1&&os)'
       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&trg_tag_extra_2&&os)'
     else:
-      baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
-      baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
+      if options.tight_tag:
+         baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>40&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
+         baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>40&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
+      else:
+         baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
+         baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
   else:    
-    baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
-    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
+    if options.tight_tag:
+       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>40&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
+       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>40&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
+    else:
+       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&os)'
+       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&os)'
 
 iso_probe_1 = '(%s)' % iso_cut_1
 iso_probe_2 = '(%s)' % iso_cut_2
@@ -1097,56 +907,13 @@ if (options.veto_FSR==True):
     else:
         iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
         iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_muons>80 && m_gamma_muons<100))'
-    # for embedded change this to m_gamma_leptons because updated trees
-    if options.embedded:
-        fix_iso_tag_1+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
-        fix_iso_tag_2+='*(!(pass_FSR_condition==1 && m_gamma_leptons>80 && m_gamma_leptons<100))'
+
 trg_tag_1 = baseline_tag1+'*(%s&&id_probe_2)' % iso_cut_2
 trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
-if options.embed_dz:
-  trg_tag_1= 'm_vis>50&&m_vis<150&&pt_1>28&&pt_2>28&&abs(eta_1)<2.4&&abs(eta_2)<2.4&&id_tag_1&&id_tag_2&&trg_tag_1&&os&&pass_dimu'
-  trg_tag_2='0'
-
-if options.charge_flip:
-
-  trg_probe_1= '(os==0)'
-  trg_probe_2= '(os==0)'
-  baseline_tag2='(1)'
-  if options.channel == 'tpzee':
-    if options.era in ['UL_17','UL_18','summer17','summer18','sm18']:
-      baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<1.4&&iso_1<0.15&&id_tag_1&&trg_tag_1&&iso_2<0.15&&id_probe_2)'
-      baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<1.4&&iso_2<0.15&&id_tag_2&&trg_tag_2&&iso_1<0.15&&id_probe_1)'
-    else:
-      baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<1.4&&iso_1<0.15&&id_tag_1&&trg_tag_1&&iso_2<0.15&&id_probe_2)'
-      baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<1.4&&iso_2<0.15&&id_tag_2&&trg_tag_2&&iso_1<0.15&&id_probe_1)'
-  else:
-    if options.era in ['UL_17','UL_18','summer18','sm18','summer17']:
-      baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&iso_2<0.1&&id_probe_1)'
-      baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&iso_1<0.1&&id_probe_1)'
-    else:
-      baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&iso_2<0.1&&id_probe_2)'
-      baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&iso_1<0.1&&id_probe_1)'
-
-  trg_tag_1= baseline_tag1 + '&&(abs(E_over_p_1-1)<0.2&&abs(dphi_sc_tk_at_vtx_1)<0.01)' #+ '&& abs(E_over_p_1-1)<abs(E_over_p_2-1)'
-  trg_tag_2= baseline_tag2 + '&&(abs(E_over_p_2-1)<0.2&&abs(dphi_sc_tk_at_vtx_2)<0.01)' #+ '&& abs(E_over_p_1-1)>abs(E_over_p_2-1)'
-
-if options.mutoele:
-
-  trg_probe_1= '(elec_id_1)*((abs(elec_id_M_1-90)>5) || elec_id_1==0)'
-  trg_probe_2= '(elec_id_2)*((abs(elec_id_M_2-90)>5) || elec_id_1==0)'
-  if options.era in ['UL_17','UL_18','summer18','sm18','summer17']:
-    baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1)&&os)'
-    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2)&&os)'
-  else:
-    baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1)&&os)'
-    baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2)&&os)'
-
-  trg_tag_1= baseline_tag1 
-  trg_tag_2= baseline_tag2 
 
 # Create output file
-
 output_name = options.outputfolder+'/tagandprobe_'+options.channel+'.root'
+if options.tight_tag: output_name = options.outputfolder+'/tagandprobe_'+options.channel+'_tightTag.root'
 
 nodename = options.channel
 if options.draw_hists == 1:
@@ -1157,7 +924,7 @@ if options.draw_hists == 1:
     ana.remaps = {}
     if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'tpzee':
-        if options.era in ['UL_18','summer18','sm18']: ana.remaps['EGamma'] = 'data_obs'
+        if options.era in ['UL_18']: ana.remaps['EGamma'] = 'data_obs'
         else: ana.remaps['SingleElectron'] = 'data_obs'
     
     # Add all data files
@@ -1165,130 +932,106 @@ if options.draw_hists == 1:
         ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
     
     # Add all MC background files
-    if not options.embed_sel:
-      for sample_name in ztt_samples:
-          ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
+    for sample_name in ztt_samples:
+    	ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
     
-    if options.embedded:
-      # Add all embedded files
-      for sample_name in embed_samples:
-          ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
-
     Produce3DHistograms(ana, 'wt', outfile)
 else:
     outfile = ROOT.TFile(output_name)
-  
+
+
 wsfilename = output_name.replace('.root','_ws.root')
+wsfilename_sig = output_name.replace('.root','_ws_sig.root')
+wsfilename_bkg = output_name.replace('.root','_ws_bkg.root')
+
 wsfile = ROOT.TFile(wsfilename, 'RECREATE')
+wsfile_sig = ROOT.TFile(wsfilename_sig, 'RECREATE')
+wsfile_bkg = ROOT.TFile(wsfilename_bkg, 'RECREATE')
 
-if not options.embed_sel:
-  wsnames = ['data_id', 'ZLL_id', 'data_iso', 'ZLL_iso', 'data_trg', 'ZLL_trg']
-  if options.trg_only: wsnames = ['data_trg', 'ZLL_trg']
-else: 
-  wsnames = ['data_id', 'data_trg', 'data_iso']
-  if options.trg_only: wsnames = ['data_trg']
-if options.embedded: 
-  if options.trg_only: wsnames += ['embed_trg']
-  else: wsnames += ['embed_id', 'embed_iso', 'embed_trg']
-  
-print(wsnames)
+if options.tight_tag:
+   wsfilename_tightTag = output_name.replace('.root','_ws_tightTag.root')
+   wsfile_tightTag = ROOT.TFile(wsfilename_tightTag, 'RECREATE')
 
-for name in wsnames: CreateWorkspace(name, outfile, wsfile)  
+wsnames = ['data_id', 'ZLL_id', 'data_iso', 'ZLL_iso', 'data_trg', 'ZLL_trg']
+if options.trg_only: wsnames = ['data_trg', 'ZLL_trg']
+
+for name in wsnames: CreateWorkspace(name, outfile, wsfile)
+for name in wsnames: CreateWorkspace(name, outfile, wsfile_sig)
+for name in wsnames: CreateWorkspace(name, outfile, wsfile_bkg)
+
+if options.tight_tag:
+   for name in wsnames: CreateWorkspace(name, outfile, wsfile_tightTag)
 
 sffile_name = options.outputfolder+'/muon_SFs.root'
 if options.channel == 'tpzee': sffile_name = options.outputfolder+'/electron_SFs.root'
 
-sffile = ROOT.TFile(sffile_name, 'RECREATE')
-for name in wsnames:
-  sig_model = 'DoubleVUncorr'  
-  if options.channel == 'tpzmm' and 'trg' in name: sig_model = 'DoubleVCorr'
-  if options.channel == 'tpzee': sig_model = 'DoubleVUncorr'
-  if 'id' in name: bkg_model = 'CMSShape'
-  else: bkg_model = 'Exponential'
-  if options.channel == 'tpzmm': sig_model = 'BWCBGausConvCorr'
-  else: sig_model='BWCBGausConvUncorr'
-  #sig_model = 'DoubleVUncorr'
-  if options.channel =='tpzmm' and 'iso' in name: sig_model = 'BWDoubleCBConvCorr_TwoPeaks'
-  else: sig_model = 'BWDoubleCBConvCorr'
+variations = ["nominal","signal","bkg"]
+if options.tight_tag: variations = ["tightTag"]
 
-# ---------------
-  if options.era in ['UL_17','UL_18','summer17','sm18']:
-    if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
-    elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
-    elif options.channel =='tpzmm': 
-      sig_model = 'DoubleVPartcorr' #'BWDoubleCBConvCorr'
-      #sig_model = 'BWDoubleCBConvCorr' # use this one for mt cross trigger
-    if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
-    if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
-    if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
+for i in variations:
+   object_name = "electron" if options.channel=="tpzee" else "muon"
+   if i == "nominal": sffile_name = options.outputfolder+'/{}_nom.root'.format(object_name) 
+   if i == "signal" : sffile_name = options.outputfolder+'/{}_sig.root'.format(object_name)
+   if i == "bkg"    : sffile_name = options.outputfolder+'/{}_bkg.root'.format(object_name)
+   if i == "tightTag": sffile_name = options.outputfolder+'/{}_tightTag.root'.format(object_name)
 
-  if options.era in ['UL_18','sm18']:
-    if options.channel =='tpzmm' and 'iso' in name: sig_model = 'DoubleVPartcorr_TwoPeaks'
-    elif options.channel =='tpzmm' and 'id' in name: sig_model = 'DoubleVUncorr' #'DoubleVPartcorr'
-    elif options.channel =='tpzmm':
-      sig_model = 'BWDoubleCBConvCorr' #'BWDoubleCBConvCorr'
-      #sig_model = 'BWDoubleCBConvCorr' # use this one for mt cross trigger
-    if options.channel == 'tpzee' and 'id' in name : sig_model = 'DoubleVUncorr'
-    if options.channel == 'tpzee' and 'trg' in name : sig_model = 'DoubleVUncorr_elec'
-    if options.channel =='tpzee' and 'iso' in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
+   sffile = ROOT.TFile(sffile_name, 'RECREATE')
+   
+   for name in wsnames:
+      if channel == "tpzee"
+         sig_model = 'BWDoubleCBConvCorr'
+         if i == "signal": sig_model = "DoubleVUncorr"
+         bkg_model = 'CMSShape'
 
-  if options.era == 'summer18' or options.era == 'UL_18':
-    if options.channel =='tpzmm':
-        if "iso" in name: sig_model = 'DoubleVPartcorr_TwoPeaks_18'
-        elif "id" in name: sig_model = 'DoubleVUncorr_18'
-        elif "trg" in name: 
-            sig_model = 'DoubleVPartcorr_18'
-            # sig_model = 'DoubleVPartcorr_TwoPeaks_18' # consider using this one for mt cross trigger aiso1
-            bkg_model = 'CMSShape'
-    if options.channel =='tpzee':
-        if "iso" in name: sig_model = 'DoubleVUncorr_elec_TwoPeaks'
-        elif "id" in name: 
-            sig_model = 'DoubleVUncorr_elec_18'
-            # bkg_model = 'Exponential'
-        elif "trg" in name: sig_model = 'DoubleVUncorr_elec'
+         if options.era in ["UL_17"]:
+            if i == "signal": sig_model = "BWCBConvCorr"
+            else:
+               if "id" in name: sig_model = "DoubleVUncorr"
+               if "iso" in name: sig_model = "DoubleVUncorr_elec_TwoPeaks"
+               if "trg" in name: sig_model = "DoubleVUncorr_elec"
+            
+         if options.era in ["UL_18"]:
+            if i == "signal": sig_model = "BWCBConvCorr"
+            else:
+               if "id" in name: sig_model = "DoubleVUncorr_elec_18"
+               if "iso" in name: sig_model = "DoubleVUncorr_elec_TwoPeaks"
+               if "trg" in name: sig_model = "DoubleVUncorr_elec"
 
-  #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
-  if options.mutoele:  
-    sig_model='DoubleVUncorr'
+         if (i == "nominal" or i == "tightTag" or i =="signal") and "id" not in name: bkg_model = "Exponential"
+         print(i,name,sig_model,bkg_model)
+      
+      elif channel == "tpzmm":
+         sig_model = 'BWDoubleCBConvCorr'
+         if "iso" in name: sig_model = "BWDoubleCBConvCorr_TwoPeaks"
+         bkg_model = 'CMSShape'
+         if i == "signal": sig_model = "DoubleVPartcorr_TwoPeaks"
   
-  #sig_model='BWCBConvUncorr'
-  if (not (options.embed_dz or options.charge_flip) or 'trg' in name or not options.trg_only):
-    FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,True)#'data' in name)
+         if options.era in ["UL_17"]:
+            if "id" in name: sig_model = "DoubleVPartcorr_TwoPeaks"
+            if "iso" in name: sig_model = "DoubleVPartcorr_TwoPeaks"
+            if "trg" in name: sig_model = "DoubleVPartcorr"            
+            if i == "signal": sig_model = "BWDoubleCBConvCorr"
 
-if options.channel == 'tpzmm': plot_name = 'muon_efficiency_'
-if options.channel == 'tpzee': plot_name = 'electron_efficiency_'
+         if options.era in ["UL_17"]:
+            if "id" in name: sig_model = "DoubleVUncorr_18"
+            if "iso" in name: sig_model = "DoubleVPartcorr_TwoPeaks_18"
+            if "trg" in name: sig_model = "DoubleVPartcorr_18"
+            if i == "signal": sig_model = "BWDoubleCBConvCorr"
 
-sf_types = ['id','iso','trg']
-if options.trg_only: sf_types = ['trg']
+         if (i == "nominal" or i == "tightTag" or i =="signal") and "id" not in name: bkg_model = "Exponential"
 
-for i in sf_types:
-  hist2d = sffile.Get('data_%s_eff' % i)
-  for j in range(1,hist2d.GetNbinsY()+1):
-    
-    ymin = hist2d.GetYaxis().GetBinLowEdge(j)    
-    ymax = hist2d.GetYaxis().GetBinUpEdge(j)
-    if not options.embed_sel:
-      leg_labels=['data','MC']
-    else: leg_labels=['data'] 
-    if not options.embed_sel:
-      graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')),sffile.Get(('gr_ZLL_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
-    else: graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p'))]
-    if options.embedded: 
-      graphs.append(sffile.Get(('gr_embed_%s_eff_eta_%.1f_to_%.1f' % (i,ymin,ymax)).replace('.','p')))  
-      leg_labels.append('Embedded')
-    x_title = 'P_{T}^{#mu} (GeV)'
-    ratio_range="0.7,1.3"
-    if options.channel == 'tpzee': 
-        x_title = 'P_{T}^{e} (GeV)'
-        if 'trg' in i: ratio_range="0.1,2.0"
-    label = '%s, %.1f < |#eta| < %.1f' % (i, ymin,ymax)
-    if options.channel == "tpzmm": label = 'Muon Trigger, 2018, %.1f < |#eta| < %.1f' % (ymin,ymax)
-    if options.channel == "tpzee": label = 'Electron Trigger, 2018, %.1f < |#eta| < %.1f' % (ymin,ymax)
-    if options.charge_flip: 
-      label=''
-      ratio_range="0.1,2.0"
-    plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='UL_18',ratio_range,True,100,10,False,0,1.5,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+i+'_eta_%.1f_to_%.1f'%(ymin,ymax),label) 
+      if ('trg' in name or not options.trg_only):
+         if i == "nominal": FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,i,True)#'data' in name)
+         if i == "signal": FitWorkspace(name,wsfile_sig,sffile,sig_model,bkg_model,i,True)#'data' in name)
+         if i == "bkg": FitWorkspace(name,wsfile_bkg,sffile,sig_model,bkg_model,i,True)#'data' in name)
+         if i == "tightTag": FitWorkspace(name,wsfile_tightTag,sffile,sig_model,bkg_model,i,True)#'data' in name)
+
+   sffile.Close()
 
 outfile.Close()  
 wsfile.Close()
-sffile.Close()
+
+
+
+
+

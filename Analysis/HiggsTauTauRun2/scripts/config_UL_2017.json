@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar31_MC_124X_2017/",
     "max_events":   -1,
     "timings":      true,
-   "channels":     ["mt"],
+    "channels":     ["mt"],
    //"channels":     ["et","mt","tt","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]

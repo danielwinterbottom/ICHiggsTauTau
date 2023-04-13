@@ -336,13 +336,13 @@ if options.proc_bkg or options.proc_all:
     'T-t',
     'T-tW',
 
-    # SM Higgs
-    'GluGluHToTauTau_M125',
-    'VBFHToTauTau_M125',
-    'WminusHToTauTau_M125',
-    'WplusHToTauTau_M125',
-    'ZHToTauTau_M125',
-    'ttHToTauTau_M125',    
+#    # SM Higgs
+#    'GluGluHToTauTau_M125',
+#    'VBFHToTauTau_M125',
+#    'WminusHToTauTau_M125',
+#    'WplusHToTauTau_M125',
+#    'ZHToTauTau_M125',
+#    'ttHToTauTau_M125',    
  	]
 
 #  Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu","WZTo2Q2L"]
