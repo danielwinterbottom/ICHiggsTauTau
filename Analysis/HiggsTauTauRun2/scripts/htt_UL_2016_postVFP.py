@@ -332,6 +332,20 @@ if options.proc_bkg or options.proc_all:
     'ZHToTauTau_M125',
     'ttHToTauTau_M125',
   ] 
+
+  if options.effective_events: # this is just used for the effective events case
+    central_samples += [
+                        'VBF_HToZZTo4L_M125',
+                        'GluGlu_HToZZTo4L_M125',
+                        'GluGluToContinToZZTo2e2mu',
+                        'GluGluToContinToZZTo2e2tau',
+                        'GluGluToContinToZZTo2mu2tau',
+                        'GluGluToContinToZZTo4e',
+                        'GluGluToContinToZZTo4mu',
+                        'GluGluToContinToZZTo4tau',
+                        ]
+
+
   for sa in central_samples:
       JOB='%s_2016_postVFP' % (sa)
       user='dwinterb'

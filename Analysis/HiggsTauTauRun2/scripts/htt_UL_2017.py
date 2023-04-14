@@ -356,6 +356,20 @@ if options.proc_bkg or options.proc_all:
     'ttHToTauTau_M125',    
  	]
 
+
+  if options.effective_events: # this is just used for the effective events case
+      central_samples += [
+                          'VBF_HToZZTo4L_M125',
+                          'GluGlu_HToZZTo4L_M125',
+                          'GluGluToContinToZZTo2e2mu',
+                          'GluGluToContinToZZTo2e2tau',
+                          'GluGluToContinToZZTo2mu2tau',
+                          'GluGluToContinToZZTo4e',
+                          'GluGluToContinToZZTo4mu',
+                          'GluGluToContinToZZTo4tau',
+                          ]
+
+
 #  Sep28_samples = ["DYJetsToLL-NLO","DYJetsToLL_0J-NLO","DYJetsToLL_1J-NLO","DYJetsToLL_2J-NLO","WWTo1L1Nu2Q","WZTo1L1Nu2Q","WZTo1L3Nu","WZTo2Q2L"]
 
   for sa in central_samples:
