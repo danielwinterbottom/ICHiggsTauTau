@@ -190,7 +190,7 @@ for sa in sample_list:
   hadd_dirs=[]
   command=''
   if batch:
-    JOB='jobs/jobs16post/hadd_%s_2016postVFP.sh' % sa
+    JOB='jobs/hadd_%s_2016postVFP.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:

@@ -63,7 +63,7 @@ defaults = {
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
-    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"", "DY_NLO":False
+    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"", "DY_NLO":False, "v2p5":False
 
 }
 
@@ -396,7 +396,8 @@ parser.add_argument("--DY_NLO", dest="DY_NLO", action='store_true',
     help="Use DY NLO samples")
 parser.add_argument("--plot_from_dc", default="", type=str,
       help="If not empty will draw plot straight from datacard")
-
+parser.add_argument("--v2p5", dest="v2p5", action='store_true',
+      help="Get version of DeepTau v2p5")
 options = parser.parse_args(remaining_argv)   
 
 print 'do_unrolling = %s' % options.do_unrolling 
@@ -1104,9 +1105,9 @@ if options.era == "mssmsummer16":
     if options.channel == "em": cats['baseline']+=" && trg_muonelectron"
     if options.channel == "et" or options.channel == 'zee': cats['baseline']+=" && trg_singleelectron"
     if options.channel in ['mt','zmm','mj']: cats['baseline']+=" && trg_singlemuon"
-    if options.channel == "tt": cats['baseline']+=" && trg_doubletau"
+    if options.channel == "tt": cats['baseline']+=" && trg_doubletau" 
 
-# Overwrite any category selections if the --set_alias option is used
+#Overwrite any category selections if the --set_alias option is used
 for i in options.set_alias:
     cat_to_overwrite = i.split(':')[0]
     cat_to_overwrite=cat_to_overwrite.replace("\"","")
@@ -1128,6 +1129,9 @@ for i in options.set_alias:
         options.sel = overwrite_with
     else:
         cats[cat_to_overwrite] = overwrite_with
+if options.v2p5 == True:
+   for key in cats:
+      cats[key] = cats[key].replace('deepTauVsJets','deepTauVsJetsV2p5').replace('deepTauVsEle','deepTauVsEleV2p5').replace('deepTauVsMu','deepTauVsMuV2p5').replace('iso_2','iso_2_V2p5')
 
 if options.do_aiso:
   # overwrite electron/muon isolation cut in baseline
@@ -5608,7 +5612,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVF
   for hist in hists_to_add: hist.Write()
 
 
-if options.analysis in ['mssmrun2','vlq'] and options.era not in ['UL_16_preVFP','UL_16_postVFP','UL_17','UL_18']:
+if options.analysis in ['mssmrun2','vlq']: #and options.era not in ['UL_16_preVFP','UL_16_postVFP','UL_17','UL_18']: //was failing before
    RenameMSSMrun2Datacards(outfile)
 
 
