@@ -212,6 +212,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       for era in data_eras:
         data_samples+=['Tau'+era]        
 
+    if options.effective_events: # this is just used for the effective events case
+        for era in data_eras:
+          if 'SingleMuon'+era not in data_samples: data_samples+=['SingleMuon'+era]
+          if 'EGamma'+era not in data_samples: data_samples+=['EGamma'+era]
+          if 'Tau'+era not in data_samples: data_samples+=['Tau'+era]
+          if 'MuonEG'+era not in data_samples: data_samples+=['MuonEG'+era]
+          if 'DoubleMuon'+era not in data_samples: data_samples+=['DoubleMuon'+era]
+
   DATAFILELIST="./filelists/Mar31_2016-postVFP_Data_124X"
 
   for sa in data_samples:
@@ -276,10 +284,10 @@ if options.proc_bkg or options.proc_all:
     'W4JetsToLNu-LO',
 
     # W + Jets NLO
-    #'WJetsToLNu_0J-NLO',
-    #'WJetsToLNu_1J-NLO',
-    #'WJetsToLNu_2J-NLO',
-    #'WJetsToLNu-NLO',
+    'WJetsToLNu_0J-NLO',
+    'WJetsToLNu_1J-NLO',
+    'WJetsToLNu_2J-NLO',
+    'WJetsToLNu-NLO',
 
     # ttbar
     'TTTo2L2Nu',
@@ -313,13 +321,13 @@ if options.proc_bkg or options.proc_all:
     'T-t',
     'T-tW',
 
-#    # SM Higgs
-#    'GluGluHToTauTau_M125',
-#    'VBFHToTauTau_M125',
-#    'WminusHToTauTau_M125',
-#    'WplusHToTauTau_M125',
-#    'ZHToTauTau_M125',
-#    'ttHToTauTau_M125',
+    # SM Higgs
+    'GluGluHToTauTau_M125',
+    'VBFHToTauTau_M125',
+    'WminusHToTauTau_M125',
+    'WplusHToTauTau_M125',
+    'ZHToTauTau_M125',
+    'ttHToTauTau_M125',
   ] 
   for sa in central_samples:
       JOB='%s_2016_postVFP' % (sa)

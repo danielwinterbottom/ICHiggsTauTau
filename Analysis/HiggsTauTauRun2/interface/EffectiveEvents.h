@@ -39,6 +39,10 @@ class EffectiveEvents : public ModuleBase {
   double scale8_;
   double scale9_;
 
+  int run_;
+  unsigned long long event_;
+  int lumi_;
+
  public:
   EffectiveEvents(std::string const& name);
   virtual ~EffectiveEvents();

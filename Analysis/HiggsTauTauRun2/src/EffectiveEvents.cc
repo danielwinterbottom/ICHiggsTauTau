@@ -13,15 +13,19 @@ EffectiveEvents::~EffectiveEvents(){
 int EffectiveEvents::PreAnalysis(){
 outtree_ = fs_->make<TTree>("effective","effective");
 outtree_->Branch("wt",&mcsign_);
-outtree_->Branch("wt_cp_sm",&wt_cp_sm_);
-outtree_->Branch("wt_cp_ps",&wt_cp_ps_);
-outtree_->Branch("wt_cp_mm",&wt_cp_mm_);
-outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
-outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
-outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
-outtree_->Branch("gen_ht",&gen_ht_);
-outtree_->Branch("wt_mur2_muf2",    &scale5_);
-outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
+//outtree_->Branch("wt_cp_sm",&wt_cp_sm_);
+//outtree_->Branch("wt_cp_ps",&wt_cp_ps_);
+//outtree_->Branch("wt_cp_mm",&wt_cp_mm_);
+//outtree_->Branch("wt_cp_prod_sm",&wt_cp_prod_sm_);
+//outtree_->Branch("wt_cp_prod_ps",&wt_cp_prod_ps_);
+//outtree_->Branch("wt_cp_prod_mm",&wt_cp_prod_mm_);
+//outtree_->Branch("gen_ht",&gen_ht_);
+//outtree_->Branch("wt_mur2_muf2",    &scale5_);
+//outtree_->Branch("wt_mur0p5_muf0p5",&scale9_);
+
+outtree_->Branch("event",             &event_);
+outtree_->Branch("run",               &run_);
+outtree_->Branch("lumi",               &lumi_);
 //if(do_qcd_scale_wts_){
 //  outtree_->Branch("wt_mur1_muf1",    &scale1_);
 //  outtree_->Branch("wt_mur1_muf2",    &scale2_);
@@ -90,6 +94,10 @@ int EffectiveEvents::Execute(TreeEvent *event){
 //   if(eventInfo->weight_defined("8")) scale8_ = eventInfo->weight("8")*mcsign_; else scale8_=mcsign_;
 //   if(eventInfo->weight_defined("9")) scale9_ = eventInfo->weight("9")*mcsign_; else scale9_=mcsign_;
 // }
+
+ run_ = eventInfo->run();
+ event_ = (unsigned long long) eventInfo->event();
+ lumi_ = eventInfo->lumi_block();
  
  outtree_->Fill();
  return 0;
