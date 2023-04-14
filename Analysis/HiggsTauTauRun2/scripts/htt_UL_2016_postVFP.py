@@ -76,6 +76,9 @@ parser.add_option("--list_backup", dest="slbackupname", type='string', default='
 parser.add_option("--condor", action='store_true', default=False,
                   help="Submit jobs to condor (for lxplus)")
 
+parser.add_option("--effective_events", action='store_true', default=False,
+                  help="Generating effective event numbers for processing all samples")
+
 parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
                   help="Do JES, JER, and MET uncertainties")
 # ----------------------------------------
