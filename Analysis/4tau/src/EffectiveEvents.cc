@@ -12,6 +12,9 @@ EffectiveEvents::~EffectiveEvents(){
 
 int EffectiveEvents::PreAnalysis(){
 outtree_ = fs_->make<TTree>("effective","effective");
+outtree_->Branch("event",             &event_);
+outtree_->Branch("run",               &run_);
+outtree_->Branch("lumi",               &lumi_);
 outtree_->Branch("wt",&mcsign_);
 outtree_->Branch("wt_cp_sm",&wt_cp_sm_);
 outtree_->Branch("wt_cp_ps",&wt_cp_ps_);
@@ -41,6 +44,17 @@ return 0;
 
 int EffectiveEvents::Execute(TreeEvent *event){
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
+  run_ = eventInfo->run();
+  event_ = (unsigned long long) eventInfo->event();
+  lumi_ = eventInfo->lumi_block();
+
+  if (run_==prev_run_ && event_==prev_event_ && lumi_==prev_lumi_) {
+    return 1;
+  }
+  prev_run_ = run_;
+  prev_event_ = event_;
+  prev_lumi_ = lumi_;
 
   if (eventInfo->weight_defined("wt_mc_sign")) mcsign_ = eventInfo->weight("wt_mc_sign"); else mcsign_= 1;
   wt_cp_sm_=0.;

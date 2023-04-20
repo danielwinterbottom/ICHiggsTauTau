@@ -17,6 +17,7 @@ class EffectiveEvents : public ModuleBase {
   CLASS_MEMBER(EffectiveEvents, fwlite::TFileService*, fs)
   CLASS_MEMBER(EffectiveEvents, bool, do_qcd_scale_wts)
   TTree *outtree_;
+  
   int mcsign_;
   double gen_ht_;
 
@@ -28,6 +29,13 @@ class EffectiveEvents : public ModuleBase {
   double wt_cp_prod_ps_;
   double wt_cp_prod_mm_; 
 
+  int run_;
+  unsigned long long event_;
+  int lumi_;
+
+  int prev_run_;
+  unsigned long long prev_event_;
+  int prev_lumi_;
  
   double scale1_;
   double scale2_;

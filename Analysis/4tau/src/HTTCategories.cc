@@ -640,6 +640,18 @@ namespace ic {
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
+    run_ = eventInfo->run();
+    event_ = (unsigned long long) eventInfo->event();
+    lumi_ = eventInfo->lumi_block();
+
+    if (run_==prev_run_ && event_==prev_event_ && lumi_==prev_lumi_) {
+      return 1;
+    }
+    prev_run_ = run_;
+    prev_event_ = event_;
+    prev_lumi_ = lumi_;
+
     wt_mc_sign_ = eventInfo->weight_defined("wt_mc_sign") ? eventInfo->weight("wt_mc_sign") : 1.0;
 
     wt_prefire_ = eventInfo->weight_defined("wt_prefire") ? eventInfo->weight("wt_prefire") : 1.0;
