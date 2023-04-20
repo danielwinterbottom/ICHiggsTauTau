@@ -91,6 +91,7 @@ sample_list = [
 	 'DYJetsToLL_0J-NLO',
 	 'DYJetsToLL_1J-NLO',
 	 'DYJetsToLL_2J-NLO',
+   'DYJetsToLL-NLO',
 	  # Electroweak W and Z
 	 'EWKWMinus2Jets_WToLNu',
 	 'EWKWPlus2Jets_WToLNu',

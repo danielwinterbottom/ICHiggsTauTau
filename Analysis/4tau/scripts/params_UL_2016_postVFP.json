@@ -1,87 +1,87 @@
 {
   "DY1JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 103681490
+    "evt": 82444586
   },
   "DY2JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 103681490
+    "evt": 82444586
   },
   "DY3JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 103681490
+    "evt": 82444586
   },
   "DY4JetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 103681490
+    "evt": 82444586
   },
   "DYJetsToLL-LO": {
     "xs": 6077.22,
-    "evt": 103681490
+    "evt": 82444586
   },
   "DYJetsToLL_M-10to50-LO": {
     "xs": 18610,
-    "evt": 29356425
+    "evt": 23706672
   },
   "DYJetsToLL_0J-NLO": {
-    "xs": 0,
-    "evt": 0
+    "xs": 6077.22,
+    "evt": 49693903
   },
   "DYJetsToLL_1J-NLO": {
-    "xs": 0,
-    "evt": 0
+    "xs": 6077.22,
+    "evt": 49693903
   },
   "DYJetsToLL_2J-NLO": {
-    "xs": 0,
-    "evt": 0
+    "xs": 6077.22,
+    "evt": 49693903
   },
-  "DYJetstoLL-NLO": {
-    "xs": 0,
-    "evt": 0
+  "DYJetsToLL-NLO": {
+    "xs": 6077.22,
+    "evt": 49693903
   },
   "EWKWMinus2Jets_WToLNu": {
     "xs": 20.25,
-    "evt": 2222300
+    "evt": 2202000
   },
   "EWKWPlus2Jets_WToLNu": {
     "xs": 25.62,
-    "evt": 2250000
+    "evt": 2033000
   },
   "EWKZ2Jets_ZToLL": {
     "xs": 3.987,
-    "evt": 500000
+    "evt": 453000
   },
   "W1JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 88449177
+    "evt": 82742220
   },
   "W2JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 88449177
+    "evt": 82742220
   },
   "W3JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 88449177
+    "evt": 82742220
   },
   "W4JetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 88449177
+    "evt": 82742220
   },
   "WJetsToLNu-LO": {
     "xs": 61526.7,
-    "evt": 88449177
+    "evt": 82742220
   },
   "TTTo2L2Nu": {
     "xs": 88.29,
-    "evt": 47826856
+    "evt": 43277246
   },
   "TTToHadronic": {
     "xs": 377.96,
-    "evt": 111675486
+    "evt": 108494782
   },
   "TTToSemiLeptonic": {
     "xs": 365.34,
-    "evt": 157548137
+    "evt": 143702488
   },
   "WZTo1L3Nu": {
     "xs": 3.416,
@@ -93,15 +93,15 @@
   },
   "WZTo2Q2L": {
     "xs": 6.419,
-    "evt": 8432744
+    "evt": 8434516
   },
   "WZTo3LNu": {
     "xs": 5.213,
-    "evt": 6943334
+    "evt": 6890010
   },
   "WWTo1L1Nu2Q": {
     "xs": 49.997,
-    "evt": 12015596
+    "evt": 12023490
   },
   "WWTo2L2Nu": {
     "xs": 11.09,
@@ -109,39 +109,39 @@
   },
   "ZZTo2L2Nu": {
     "xs": 0.9738,
-    "evt": 15875017
+    "evt": 15894442
   },
   "ZZTo4L": {
     "xs": 1.256,
-    "evt": 49463648
+    "evt": 49463558
   },
   "WW": {
     "xs": 75.95,
-    "evt": 15991000
+    "evt": 49463558
   },
   "WZ": {
     "xs": 27.59,
-    "evt": 7768000
+    "evt": 49463558
   },
   "ZZ": {
     "xs": 12.17,
-    "evt": 1200000
+    "evt": 49463558
   },
   "WWZ": {
     "xs": 0.1707,
-    "evt": 65636
+    "evt": 61060
   },
   "WWZ-ext1": {
     "xs": 0.1707,
-    "evt": 4121754
+    "evt": 4168038
   },
   "WZZ": {
     "xs": 0.05709,
-    "evt": 125302
+    "evt": 124388
   },
   "WZZ-ext1": {
     "xs": 0.05709,
-    "evt": 4175396
+    "evt": 4133684
   },
   "WWW": {
     "xs": 0.2158,
@@ -149,7 +149,7 @@
   },
   "WWW-ext1": {
     "xs": 0.2158,
-    "evt": 3963084
+    "evt": 3847078
   },
   "ZZZ": {
     "xs": 0.01476,
@@ -157,15 +157,15 @@
   },
   "ZZZ-ext1": {
     "xs": 0.01476,
-    "evt": 4090920
+    "evt": 4039336
   },
   "WGToLNuG": {
     "xs": 489,
-    "evt": 8477521
+    "evt": 3353413
   },
   "Tbar-t": {
     "xs": 80.95,
-    "evt": 28677096
+    "evt": 28814525
   },
   "Tbar-tW": {
     "xs": 35.6,
@@ -173,15 +173,15 @@
   },
   "T-t": {
     "xs": 136.02,
-    "evt": 58866028
+    "evt": 59088204
   },
   "T-tW": {
     "xs": 35.6,
-    "evt": 2451860
+    "evt": 2490860
   },
   "GluGluHToTauTau_M125": {
     "xs": 3.045966,
-    "evt": 6364252
+    "evt": 6372230
   },
   "VBFHToTauTau_M125": {
     "xs": 0.2371,
@@ -189,315 +189,27 @@
   },
   "WminusHToTauTau_M125": {
     "xs": 0.03340,
-    "evt": 1893278
+    "evt": 1889522
   },
   "WplusHToTauTau_M125": {
     "xs": 0.05266,
-    "evt": 1885832
+    "evt": 1888336
   },
   "ZHToTauTau_M125": {
     "xs": 0.05542,
-    "evt": 2254794
+    "evt": 2278906
   },
   "ttHToTauTau_M125": {
     "xs": 0.0318,
-    "evt": 10554543
+    "evt": 2278906
   },
   "VBF_HToZZTo4L_M125": {
     "xs": 0.001038159,
-    "evt": 497014
+    "evt": 497314
   },
   "GluGlu_HToZZTo4L_M125": {
     "xs": 0.01333521,
     "evt": 989632
-  },
-  "ZstarTophi100A100To4Tau": {
-    "xs": 0.2902,
-    "evt": 185136
-  },
-  "ZstarTophi100A125To4Tau": {
-    "xs": 0.1848,
-    "evt": 185628
-  },
-  "ZstarTophi100A140To4Tau": {
-    "xs": 0.1438,
-    "evt": 186156
-  },
-  "ZstarTophi100A160To4Tau": {
-    "xs": 0.105,
-    "evt": 186572
-  },
-  "ZstarTophi100A60To4Tau": {
-    "xs": 0.659,
-    "evt": 183644
-  },
-  "ZstarTophi100A70To4Tau": {
-    "xs": 0.5302,
-    "evt": 183948
-  },
-  "ZstarTophi100A80To4Tau": {
-    "xs": 0.4309,
-    "evt": 184336
-  },
-  "ZstarTophi100A90To4Tau": {
-    "xs": 0.352,
-    "evt": 184916
-  },
-  "ZstarTophi110A100To4Tau": {
-    "xs": 0.2411,
-    "evt": 185434
-  },
-  "ZstarTophi110A125To4Tau": {
-    "xs": 0.1579,
-    "evt": 185712
-  },
-  "ZstarTophi110A140To4Tau": {
-    "xs": 0.1243,
-    "evt": 186168
-  },
-  "ZstarTophi110A160To4Tau": {
-    "xs": 0.0922,
-    "evt": 186564
-  },
-  "ZstarTophi110A60To4Tau": {
-    "xs": 0.5119,
-    "evt": 184136
-  },
-  "ZstarTophi110A70To4Tau": {
-    "xs": 0.4198,
-    "evt": 184732
-  },
-  "ZstarTophi110A80To4Tau": {
-    "xs": 0.3472,
-    "evt": 184358
-  },
-  "ZstarTophi110A90To4Tau": {
-    "xs": 0.2884,
-    "evt": 185034
-  },
-  "ZstarTophi125A100To4Tau": {
-    "xs": 0.1848,
-    "evt": 185792
-  },
-  "ZstarTophi125A125To4Tau": {
-    "xs": 0.1256,
-    "evt": 186228
-  },
-  "ZstarTophi125A140To4Tau": {
-    "xs": 0.1008,
-    "evt": 186334
-  },
-  "ZstarTophi125A160To4Tau": {
-    "xs": 0.07622,
-    "evt": 186458
-  },
-  "ZstarTophi125A60To4Tau": {
-    "xs": 0.3604,
-    "evt": 184464
-  },
-  "ZstarTophi125A70To4Tau": {
-    "xs": 0.3035,
-    "evt": 185092
-  },
-  "ZstarTophi125A80To4Tau": {
-    "xs": 0.2561,
-    "evt": 185284
-  },
-  "ZstarTophi125A90To4Tau": {
-    "xs": 0.2172,
-    "evt": 185692
-  },
-  "ZstarTophi140A100To4Tau": {
-    "xs": 0.1438,
-    "evt": 185846
-  },
-  "ZstarTophi140A125To4Tau": {
-    "xs": 0.1009,
-    "evt": 186318
-  },
-  "ZstarTophi140A140To4Tau": {
-    "xs": 0.08223,
-    "evt": 186608
-  },
-  "ZstarTophi140A160To4Tau": {
-    "xs": 0.06333,
-    "evt": 186820
-  },
-  "ZstarTophi140A60To4Tau": {
-    "xs": 0.2612,
-    "evt": 184976
-  },
-  "ZstarTophi140A70To4Tau": {
-    "xs": 0.2244,
-    "evt": 185334
-  },
-  "ZstarTophi140A80To4Tau": {
-    "xs": 0.1933,
-    "evt": 185702
-  },
-  "ZstarTophi140A90To4Tau": {
-    "xs": 0.1665,
-    "evt": 185780
-  },
-  "ZstarTophi160A100To4Tau": {
-    "xs": 0.105,
-    "evt": 186406
-  },
-  "ZstarTophi160A125To4Tau": {
-    "xs": 0.07622,
-    "evt": 186830
-  },
-  "ZstarTophi160A140To4Tau": {
-    "xs": 0.06333,
-    "evt": 186754
-  },
-  "ZstarTophi160A160To4Tau": {
-    "xs": 0.04988,
-    "evt": 187102
-  },
-  "ZstarTophi160A60To4Tau": {
-    "xs": 0.1765,
-    "evt": 186052
-  },
-  "ZstarTophi160A70To4Tau": {
-    "xs": 0.1551,
-    "evt": 185758
-  },
-  "ZstarTophi160A80To4Tau": {
-    "xs": 0.1361,
-    "evt": 186126
-  },
-  "ZstarTophi160A90To4Tau": {
-    "xs": 0.1193,
-    "evt": 186144
-  },
-  "ZstarTophi180A100To4Tau": {
-    "xs": 0.07796,
-    "evt": 186556
-  },
-  "ZstarTophi180A125To4Tau": {
-    "xs": 0.05837,
-    "evt": 186672
-  },
-  "ZstarTophi180A140To4Tau": {
-    "xs": 0.04938,
-    "evt": 186750
-  },
-  "ZstarTophi180A160To4Tau": {
-    "xs": 0.03959,
-    "evt": 187140
-  },
-  "ZstarTophi180A60To4Tau": {
-    "xs": 0.1236,
-    "evt": 186114
-  },
-  "ZstarTophi180A70To4Tau": {
-    "xs": 0.1104,
-    "evt": 186398
-  },
-  "ZstarTophi180A80To4Tau": {
-    "xs": 0.09847,
-    "evt": 186398
-  },
-  "ZstarTophi180A90To4Tau": {
-    "xs": 0.08766,
-    "evt": 186240
-  },
-  "ZstarTophi200A100To4Tau": {
-    "xs": 0.05897,
-    "evt": 186718
-  },
-  "ZstarTophi200A125To4Tau": {
-    "xs": 0.04541,
-    "evt": 187010
-  },
-  "ZstarTophi200A140To4Tau": {
-    "xs": 0.03887,
-    "evt": 187176
-  },
-  "ZstarTophi200A160To4Tau": {
-    "xs": 0.0317,
-    "evt": 187080
-  },
-  "ZstarTophi200A60To4Tau": {
-    "xs": 0.08911,
-    "evt": 186602
-  },
-  "ZstarTophi200A70To4Tau": {
-    "xs": 0.08062,
-    "evt": 186716
-  },
-  "ZstarTophi200A80To4Tau": {
-    "xs": 0.07276,
-    "evt": 186686
-  },
-  "ZstarTophi200A90To4Tau": {
-    "xs": 0.06557,
-    "evt": 186436
-  },
-  "ZstarTophi250A100To4Tau": {
-    "xs": 0.03143,
-    "evt": 186948
-  },
-  "ZstarTophi250A125To4Tau": {
-    "xs": 0.02537,
-    "evt": 187260
-  },
-  "ZstarTophi250A140To4Tau": {
-    "xs": 0.02231,
-    "evt": 187292
-  },
-  "ZstarTophi250A160To4Tau": {
-    "xs": 0.01883,
-    "evt": 187088
-  },
-  "ZstarTophi250A60To4Tau": {
-    "xs": 0.04321,
-    "evt": 186926
-  },
-  "ZstarTophi250A70To4Tau": {
-    "xs": 0.04007,
-    "evt": 186774
-  },
-  "ZstarTophi250A80To4Tau": {
-    "xs": 0.037,
-    "evt": 187094
-  },
-  "ZstarTophi250A90To4Tau": {
-    "xs": 0.03413,
-    "evt": 186878
-  },
-  "ZstarTophi300A100To4Tau": {
-    "xs": 0.01793,
-    "evt": 187298
-  },
-  "ZstarTophi300A125To4Tau": {
-    "xs": 0.01501,
-    "evt": 187528
-  },
-  "ZstarTophi300A140To4Tau": {
-    "xs": 0.01345,
-    "evt": 187280
-  },
-  "ZstarTophi300A160To4Tau": {
-    "xs": 0.0116,
-    "evt": 187302
-  },
-  "ZstarTophi300A60To4Tau": {
-    "xs": 0.02322,
-    "evt": 187166
-  },
-  "ZstarTophi300A70To4Tau": {
-    "xs": 0.02187,
-    "evt": 187314
-  },
-  "ZstarTophi300A80To4Tau": {
-    "xs": 0.02051,
-    "evt": 187260
-  },
-  "ZstarTophi300A90To4Tau": {
-    "xs": 0.01921,
-    "evt": 187042
   },
   "GluGluToContinToZZTo2e2mu": {
     "xs": 0.0031942,
@@ -531,8 +243,293 @@
     "xs": 0.00158529,
     "evt": 499183
   },
-  "EGamma": {
-    "lumi": 16810
+  "ZstarTophi140A80To4Tau": {
+    "xs": 0.1933,
+    "evt": 185702
+  },
+  "ZstarTophi110A60To4Tau": {
+    "xs": 0.5119,
+    "evt": 184136
+  },
+  "ZstarTophi300A100To4Tau": {
+    "xs": 0.01793,
+    "evt": 187298
+  },
+  "ZstarTophi140A70To4Tau": {
+    "xs": 0.2244,
+    "evt": 185334
+  },
+  "ZstarTophi110A140To4Tau": {
+    "xs": 0.1243,
+    "evt": 186168
+  },
+  "ZstarTophi200A90To4Tau": {
+    "xs": 0.06557,
+    "evt": 186436
+  },
+  "ZstarTophi100A90To4Tau": {
+    "xs": 0.352,
+    "evt": 184916
+  },
+  "ZstarTophi200A125To4Tau": {
+    "xs": 0.04541,
+    "evt": 187010
+  },
+  "ZstarTophi100A100To4Tau": {
+    "xs": 0.2902,
+    "evt": 185136
+  },
+  "ZstarTophi300A70To4Tau": {
+    "xs": 0.02187,
+    "evt": 187314
+  },
+  "ZstarTophi250A125To4Tau": {
+    "xs": 0.02537,
+    "evt": 187260
+  },
+  "ZstarTophi160A125To4Tau": {
+    "xs": 0.07622,
+    "evt": 186830
+  },
+  "ZstarTophi250A160To4Tau": {
+    "xs": 0.01883,
+    "evt": 187088
+  },
+  "ZstarTophi100A125To4Tau": {
+    "xs": 0.1848,
+    "evt": 185628
+  },
+  "ZstarTophi300A90To4Tau": {
+    "xs": 0.01921,
+    "evt": 187042
+  },
+  "ZstarTophi125A140To4Tau": {
+    "xs": 0.1008,
+    "evt": 186334
+  },
+  "ZstarTophi110A80To4Tau": {
+    "xs": 0.3472,
+    "evt": 184358
+  },
+  "ZstarTophi100A60To4Tau": {
+    "xs": 0.659,
+    "evt": 183644
+  },
+  "ZstarTophi200A160To4Tau": {
+    "xs": 0.0317,
+    "evt": 187080
+  },
+  "ZstarTophi100A160To4Tau": {
+    "xs": 0.105,
+    "evt": 186572
+  },
+  "ZstarTophi180A90To4Tau": {
+    "xs": 0.08766,
+    "evt": 186240
+  },
+  "ZstarTophi110A90To4Tau": {
+    "xs": 0.2884,
+    "evt": 185034
+  },
+  "ZstarTophi110A70To4Tau": {
+    "xs": 0.4198,
+    "evt": 184732
+  },
+  "ZstarTophi125A70To4Tau": {
+    "xs": 0.3035,
+    "evt": 185092
+  },
+  "ZstarTophi300A80To4Tau": {
+    "xs": 0.02051,
+    "evt": 187260
+  },
+  "ZstarTophi160A160To4Tau": {
+    "xs": 0.04988,
+    "evt": 187102
+  },
+  "ZstarTophi180A125To4Tau": {
+    "xs": 0.05837,
+    "evt": 186672
+  },
+  "ZstarTophi200A60To4Tau": {
+    "xs": 0.08911,
+    "evt": 186602
+  },
+  "ZstarTophi250A100To4Tau": {
+    "xs": 0.03143,
+    "evt": 186948
+  },
+  "ZstarTophi200A70To4Tau": {
+    "xs": 0.08062,
+    "evt": 186716
+  },
+  "ZstarTophi140A160To4Tau": {
+    "xs": 0.06333,
+    "evt": 186820
+  },
+  "ZstarTophi300A125To4Tau": {
+    "xs": 0.01501,
+    "evt": 187528
+  },
+  "ZstarTophi160A90To4Tau": {
+    "xs": 0.1193,
+    "evt": 186144
+  },
+  "ZstarTophi250A80To4Tau": {
+    "xs": 0.037,
+    "evt": 187094
+  },
+  "ZstarTophi140A125To4Tau": {
+    "xs": 0.1009,
+    "evt": 186318
+  },
+  "ZstarTophi160A60To4Tau": {
+    "xs": 0.1765,
+    "evt": 186052
+  },
+  "ZstarTophi140A100To4Tau": {
+    "xs": 0.1438,
+    "evt": 185846
+  },
+  "ZstarTophi200A100To4Tau": {
+    "xs": 0.05897,
+    "evt": 186718
+  },
+  "ZstarTophi180A100To4Tau": {
+    "xs": 0.07796,
+    "evt": 186556
+  },
+  "ZstarTophi300A60To4Tau": {
+    "xs": 0.02322,
+    "evt": 187166
+  },
+  "ZstarTophi125A100To4Tau": {
+    "xs": 0.1848,
+    "evt": 185792
+  },
+  "ZstarTophi100A80To4Tau": {
+    "xs": 0.4309,
+    "evt": 184336
+  },
+  "ZstarTophi160A70To4Tau": {
+    "xs": 0.1551,
+    "evt": 185758
+  },
+  "ZstarTophi250A60To4Tau": {
+    "xs": 0.04321,
+    "evt": 186926
+  },
+  "ZstarTophi180A80To4Tau": {
+    "xs": 0.09847,
+    "evt": 186398
+  },
+  "ZstarTophi125A80To4Tau": {
+    "xs": 0.2561,
+    "evt": 185284
+  },
+  "ZstarTophi125A90To4Tau": {
+    "xs": 0.2172,
+    "evt": 185692
+  },
+  "ZstarTophi180A70To4Tau": {
+    "xs": 0.1104,
+    "evt": 186398
+  },
+  "ZstarTophi250A140To4Tau": {
+    "xs": 0.02231,
+    "evt": 187292
+  },
+  "ZstarTophi160A100To4Tau": {
+    "xs": 0.105,
+    "evt": 186406
+  },
+  "ZstarTophi125A60To4Tau": {
+    "xs": 0.3604,
+    "evt": 184464
+  },
+  "ZstarTophi160A80To4Tau": {
+    "xs": 0.1361,
+    "evt": 186126
+  },
+  "ZstarTophi110A160To4Tau": {
+    "xs": 0.0922,
+    "evt": 186564
+  },
+  "ZstarTophi250A70To4Tau": {
+    "xs": 0.04007,
+    "evt": 186774
+  },
+  "ZstarTophi180A140To4Tau": {
+    "xs": 0.04938,
+    "evt": 186750
+  },
+  "ZstarTophi125A125To4Tau": {
+    "xs": 0.1256,
+    "evt": 186228
+  },
+  "ZstarTophi160A140To4Tau": {
+    "xs": 0.06333,
+    "evt": 186754
+  },
+  "ZstarTophi140A60To4Tau": {
+    "xs": 0.2612,
+    "evt": 184976
+  },
+  "ZstarTophi100A70To4Tau": {
+    "xs": 0.5302,
+    "evt": 183948
+  },
+  "ZstarTophi110A125To4Tau": {
+    "xs": 0.1579,
+    "evt": 185712
+  },
+  "ZstarTophi100A140To4Tau": {
+    "xs": 0.1438,
+    "evt": 186156
+  },
+  "ZstarTophi110A100To4Tau": {
+    "xs": 0.2411,
+    "evt": 185434
+  },
+  "ZstarTophi200A80To4Tau": {
+    "xs": 0.07276,
+    "evt": 186686
+  },
+  "ZstarTophi140A140To4Tau": {
+    "xs": 0.08223,
+    "evt": 186608
+  },
+  "ZstarTophi180A60To4Tau": {
+    "xs": 0.1236,
+    "evt": 186114
+  },
+  "ZstarTophi300A160To4Tau": {
+    "xs": 0.0116,
+    "evt": 187302
+  },
+  "ZstarTophi250A90To4Tau": {
+    "xs": 0.03413,
+    "evt": 186878
+  },
+  "ZstarTophi125A160To4Tau": {
+    "xs": 0.07622,
+    "evt": 186458
+  },
+  "ZstarTophi200A140To4Tau": {
+    "xs": 0.03887,
+    "evt": 187176
+  },
+  "ZstarTophi140A90To4Tau": {
+    "xs": 0.1665,
+    "evt": 185780
+  },
+  "ZstarTophi180A160To4Tau": {
+    "xs": 0.03959,
+    "evt": 187140
+  },
+  "ZstarTophi300A140To4Tau": {
+    "xs": 0.01345,
+    "evt": 187280
   },
   "SingleElectron": {
     "lumi": 16810

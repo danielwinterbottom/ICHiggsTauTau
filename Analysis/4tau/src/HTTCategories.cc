@@ -646,6 +646,9 @@ namespace ic {
     lumi_ = eventInfo->lumi_block();
 
     if (run_==prev_run_ && event_==prev_event_ && lumi_==prev_lumi_) {
+      std::cout << "Prev run/ run: " << prev_run_ << " " << run_ << std::endl;
+      std::cout << "Prev event/ event: " << prev_event_ << " " << event_ << std::endl;
+      std::cout << "Prev lumi/ lumi: " << prev_lumi_ << " " << lumi_ << std::endl;
       return 1;
     }
     prev_run_ = run_;

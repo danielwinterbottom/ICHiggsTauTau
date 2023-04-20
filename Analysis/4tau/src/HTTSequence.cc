@@ -591,11 +591,11 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_do_ditau_trg(!is_data)
  .set_do_etau_fakerate(!is_data)
  .set_do_mtau_fakerate(!is_data)
- .set_do_etaucross_trg(!is_data)
+ .set_do_etaucross_trg(false)
  .set_do_singlee_trg(!is_data)
- .set_do_mtaucross_trg(!is_data)
+ .set_do_mtaucross_trg(false)
  .set_do_singlem_trg(!is_data)  
- .set_do_emucross_trg(!is_data)
+ .set_do_emucross_trg(false)
  .set_do_ggZZ_k_fact(output_name.find("GluGluToContinToZZ") != output_name.npos)
  .set_do_qqZZ_k_fact(output_name.find("ZZTo4L") != output_name.npos);
 
@@ -613,11 +613,11 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
   }
   if(era_type == era::data_2016UL_preVFP){
    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-   httStitching.SetWInputYields(74666678,48027537,26899459,16700652,4512908);
+   httStitching.SetWInputYields(74676349, 47938929, 26899459, 16517929, 4575554);
   }
   if(era_type == era::data_2016UL_postVFP){
    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-   httStitching.SetWInputYields(88449177,44776881,27508906,17865879,4658574);
+   httStitching.SetWInputYields(82742220, 42019790, 24473569, 17830876, 4816485);
   } 
   if(era_type == era::data_2017) {
    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
@@ -625,7 +625,7 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
   }
   if(era_type == era::data_2017UL){
    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-   httStitching.SetWInputYields(80769480,46632904,27676442,18149048,9386322);
+   httStitching.SetWInputYields(78981243, 46923030, 26941858, 18045982, 9606448);
   }
   if(era_type == era::data_2018) {
    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
@@ -633,7 +633,7 @@ if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W
   }
   if(era_type == era::data_2018UL){
    httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-   httStitching.SetWInputYields(82943459,47420631,28072865,18020893,9036122);
+   httStitching.SetWInputYields(82360950, 47850048, 27411802, 18297679, 9130068);
   }
 }
 if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -644,11 +644,11 @@ if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO
   }
   if(era_type == era::data_2016UL_preVFP){
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
-    httStitching.SetDYInputYields(95170542, 31961410, 12696373, 10285720, 4630986);
+    httStitching.SetDYInputYields(95170542, 31663215, 12696373, 10285720, 4655680);
   }
   if(era_type == era::data_2016UL_postVFP){
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
-    httStitching.SetDYInputYields(103681490, 33389481, 14499284, 10430201, 4581523);
+    httStitching.SetDYInputYields(82444586, 31570459, 14573456, 9553830, 4450325);
   }
   if(era_type == era::data_2017) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -656,7 +656,7 @@ if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO
   }
   if(era_type == era::data_2017UL) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-    httStitching.SetDYInputYields(100829338,65925787,28990629,21037534,11451413);
+    httStitching.SetDYInputYields(97237260+101893848, 66063783, 27099640, 20165687, 11267712);
   }
   if(era_type == era::data_2018) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -664,26 +664,27 @@ if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO
   }
   if(era_type == era::data_2018UL) {
     httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-    httStitching.SetDYInputYields(98357936, 65810202, 29068773, 20436016, 9105126);
+    httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
   }
 }
 if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
   httStitching.set_do_dy_soup_NLO(true);
+  // UPDATE
   if(era_type == era::data_2016UL_preVFP){
     httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-    httStitching.SetDYInputYields_NLO(61968877, 63927658, 41467188, 13149249);
+    httStitching.SetDYInputYields_NLO(61134271, 64114200, 41519367, 13244344);
   }
   if(era_type == era::data_2016UL_postVFP){
     httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-    httStitching.SetDYInputYields_NLO(49687671,77292489,43799187,13744579);
+    httStitching.SetDYInputYields_NLO(49693903, 61458133, 38644052, 12915771);
   }
   if(era_type == era::data_2017UL) {
     httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-    httStitching.SetDYInputYields_NLO(132006980,70426128,44912593,14398418);
+    httStitching.SetDYInputYields_NLO(132089877, 63067016, 39621895, 14506834);
   }
   if(era_type == era::data_2018UL) {
     httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-    httStitching.SetDYInputYields_NLO(132322003,70018162,43196379,13761572);
+    httStitching.SetDYInputYields_NLO(132321936, 69493624, 43156627, 13793541);
   }
 }
 BuildModule(httStitching);   
