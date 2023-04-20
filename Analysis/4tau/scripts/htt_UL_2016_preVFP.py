@@ -176,8 +176,6 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
  
-FILELIST='filelists/Nov29_2016-preVFP_MC_106X'
-
 signal_mc = [ ]
 signal_vh = [ ] 
 signal_mc_ww = [ ]
@@ -220,13 +218,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       if 'tttt' in chn or 'mttt' in chn or "ettt" in chn or "emtt" in chn or "eett" in chn or "mmtt" in chn:
           data_samples+=['Tau'+era]
 
-  DATAFILELIST="./filelists/Nov29_2016-preVFP_Data_106X"
+  DATAFILELIST="./filelists/Mar31_2016-preVFP_Data_124X"
 
   for sa in data_samples:
       JOB='%s_2016_preVFP' % (sa)
       DATAFILELIST_ = DATAFILELIST
-      user='ksavva'
-      prefix='Nov29_Data_106X_2016-preVFP'
+      user='dwinterb'
+      prefix='Mar31_Data_124X_2016-preVFP'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST_)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
       nfiles = sum(1 for line in open('%(DATAFILELIST_)s_%(sa)s.dat' % vars()))
       nperjob = 40
@@ -265,10 +263,10 @@ if options.proc_bkg or options.proc_all:
 
   # Low mass Drell Yan LO
   'DYJetsToLL_M-10to50-LO',
-  'DY1JetsToLL_M-10to50-LO',
-  'DY2JetsToLL_M-10to50-LO',
-  'DY3JetsToLL_M-10to50-LO',
-  'DY4JetsToLL_M-10to50-LO',
+  #'DY1JetsToLL_M-10to50-LO',
+  #'DY2JetsToLL_M-10to50-LO',
+  #'DY3JetsToLL_M-10to50-LO',
+  #'DY4JetsToLL_M-10to50-LO',
 
   # Drell-Yan NLO
   #'DYJetsToLL_0J-NLO',
@@ -309,9 +307,9 @@ if options.proc_bkg or options.proc_all:
   'ZZTo4L',
 
   # Inclusive
-  'WW',
-  'WZ',
-  'ZZ',
+  #'WW',
+  #'WZ',
+  #'ZZ',
 
    # Triboson
   'WWZ',
@@ -331,11 +329,11 @@ if options.proc_bkg or options.proc_all:
   'T-tW',
 
    # SM Higgs (Missing Files: VBFHToTauTau_M125,WminusHToTauTau_M125,WplusHToTauTau_M125,ttHToTauTau_M125)
-#  'GluGluHToTauTau_M125',
-#  'ZHToTauTau_M125',
-#  'VBFHToTauTau_M125',
-#  'WminusHToTauTau_M125',
-#  'WplusHToTauTau_M125',
+  'GluGluHToTauTau_M125',
+  'ZHToTauTau_M125',
+  'VBFHToTauTau_M125',
+  'WminusHToTauTau_M125',
+  'WplusHToTauTau_M125',
 #  'ttHToTauTau_M125',
   'VBF_HToZZTo4L_M125',
   'GluGlu_HToZZTo4L_M125',
@@ -344,7 +342,7 @@ if options.proc_bkg or options.proc_all:
   'GluGluToContinToZZTo2e2mu',
   'GluGluToContinToZZTo2e2nu',
   'GluGluToContinToZZTo2e2tau',
-  'GluGluToContinToZZTo2mu2nu',
+  #'GluGluToContinToZZTo2mu2nu',
   'GluGluToContinToZZTo2mu2tau',
   'GluGluToContinToZZTo4e',
   'GluGluToContinToZZTo4mu',
@@ -354,9 +352,9 @@ if options.proc_bkg or options.proc_all:
 #  Nov23_samples = ["ZZTo4L","VBF_HToZZTo4L_M125","GluGlu_HToZZTo4L_M125"]
   for sa in central_samples:
       JOB='%s_2016_preVFP' % (sa)
-      FILELIST='filelists/Nov29_2016-preVFP_MC_106X'
-      user='ksavva'
-      prefix='Nov29_MC_106X_2016-preVFP'
+      FILELIST='filelists/Mar31_2016-preVFP_MC_124X'
+      user='dwinterb'
+      prefix='Mar31_MC_124X_2016-preVFP'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
       # # New Samples
       # if sa in Sep28_samples:
@@ -435,15 +433,9 @@ if options.proc_sig:
     print("Number of Signal Samples is: ", counter)
 
     for sa in signal_mc:
-        print sa
-        #SIG_DIR = 'June03_Signal_106X_2018'
-        #SIG_FILELIST = "filelists/June03_2018_MC_106X"
-        #SIG_DIR = 'Jun15_Signal_106X_2018'
-        #SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
-        #user='guttley'
-        SIG_DIR = 'Nov29_Signal_106X_2016-preVFP'
-        SIG_FILELIST = "filelists/Nov29_2016-preVFP_MC_106X"
-        user='ksavva'
+        SIG_DIR = 'Apr05_Signal_124X_2016-preVFP'
+        SIG_FILELIST = "filelists/Apr05_2016-preVFP_MC_124X"
+        user='guttley'
         JOB='%s_2016_preVFP' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         job_num=0

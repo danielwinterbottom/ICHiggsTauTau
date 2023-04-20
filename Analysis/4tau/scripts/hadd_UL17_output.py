@@ -83,6 +83,7 @@ sample_list = [
 	'DY2JetsToLL_M-10to50-LO',
 	'DY3JetsToLL_M-10to50-LO',
 	'DY4JetsToLL_M-10to50-LO',
+  'DYJetsToLL-LO-ext1',
 	 # Drell-Yan NLO
 	#'DYJetsToLL_0J-NLO',
 	#'DYJetsToLL_1J-NLO',

@@ -225,10 +225,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
  
   data_samples = list(set(data_samples))
 
-  DATAFILELIST="./filelists/Nov30_2017_Data_106X"
-#  DATAPREFIX = DATAFILELIST.split("/")[2]
-  DATAPREFIX = 'Nov30_Data_106X_2017'
-  user='guttley'
+  DATAFILELIST="./filelists/Mar31_2017_Data_124X"
+  DATAPREFIX = 'Mar31_Data_124X_2017'
+  user='dwinterb'
    
   if options.calc_lumi:
     for sa in data_samples:
@@ -283,13 +282,14 @@ if options.proc_bkg or options.proc_all:
   'DY3JetsToLL-LO',
   'DY4JetsToLL-LO',
   'DYJetsToLL-LO',
+  'DYJetsToLL-LO-ext1',
 
   # Low mass Drell Yan LO
   'DYJetsToLL_M-10to50-LO',
-  'DY1JetsToLL_M-10to50-LO',
-  'DY2JetsToLL_M-10to50-LO',
-  'DY3JetsToLL_M-10to50-LO',
-  'DY4JetsToLL_M-10to50-LO',
+  #'DY1JetsToLL_M-10to50-LO',
+  #'DY2JetsToLL_M-10to50-LO',
+  #'DY3JetsToLL_M-10to50-LO',
+  #'DY4JetsToLL_M-10to50-LO',
 
   # Drell-Yan NLO
   #'DYJetsToLL_0J-NLO',
@@ -321,18 +321,18 @@ if options.proc_bkg or options.proc_all:
 
   # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q,WZTo1L1Nu2Q,WWTo1L1Nu2Q)
   'WZTo3LNu',
-  'WZTo1L3Nu',
-  'WZTo2Q2L',
-  'WZTo1L1Nu2Q',
-  'WWTo1L1Nu2Q', 
   'WWTo2L2Nu',
   'ZZTo2L2Nu',
   'ZZTo4L',
+  'WZTo1L3Nu',
+  'WZTo2Q2L',
+  'WZTo1L1Nu2Q',
+  'WWTo1L1Nu2Q',
   
   # Inclusive
-  'WW',
-  'WZ',
-  'ZZ',
+  #'WW',
+  #'WZ',
+  #'ZZ',
   
   # Triboson
   'WWZ',
@@ -352,12 +352,12 @@ if options.proc_bkg or options.proc_all:
   'T-tW',
  
   # SM Higgs
-#  'GluGluHToTauTau_M125',
-#  'VBFHToTauTau_M125',
-#  'WminusHToTauTau_M125',
-#  'WplusHToTauTau_M125',
-#  'ZHToTauTau_M125',
-#  'ttHToTauTau_M125',    
+  'GluGluHToTauTau_M125',
+  'VBFHToTauTau_M125',
+  'WminusHToTauTau_M125',
+  'WplusHToTauTau_M125',
+  'ZHToTauTau_M125',
+  #'ttHToTauTau_M125',    
   'VBF_HToZZTo4L_M125',
   'GluGlu_HToZZTo4L_M125',
  
@@ -377,10 +377,10 @@ if options.proc_bkg or options.proc_all:
 
 
   for sa in central_samples:
-      FILELIST='filelists/Nov30_2017_MC_106X'
+      FILELIST="filelists/Mar31_2017_MC_124X"
       JOB='%s_2017' % (sa)
-      user='guttley'
-      PREFIX='Nov30_MC_106X_2017'
+      user='dwinterb'
+      PREFIX='Mar31_MC_124X_2017'
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
       # New samples
@@ -466,14 +466,8 @@ if options.proc_sig:
     print("Number of Signal Samples is: ", counter)
 
     for sa in signal_mc:
-        print sa
-        #SIG_DIR = 'June03_Signal_106X_2018'
-        #SIG_FILELIST = "filelists/June03_2018_MC_106X"
-        #SIG_DIR = 'Jun15_Signal_106X_2018'
-        #SIG_FILELIST = "filelists/Jun15_2018_MC_106X"
-        #user='guttley'
-        SIG_DIR = 'Jan20_Signal_106X_2017'
-        SIG_FILELIST = "filelists/Jan20_2017_MC_106X"
+        SIG_DIR = 'Apr05_Signal_124X_2017'
+        SIG_FILELIST = "filelists/Apr05_2017_MC_124X"
         user='guttley'
         JOB='%s_2017' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(SIG_FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(SIG_DIR)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());

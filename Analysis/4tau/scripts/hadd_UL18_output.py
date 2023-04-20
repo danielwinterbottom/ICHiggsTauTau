@@ -80,6 +80,7 @@ sample_list = [
     'DY3JetsToLL-LO',
     'DY4JetsToLL-LO',
     'DYJetsToLL-LO',
+    'DYJetsToLL-LO-ext1',
 	  # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
 	 'DY1JetsToLL_M-10to50-LO',
@@ -142,6 +143,8 @@ sample_list = [
    'VBFHToTauTau_M125',
    'WminusHToTauTau_M125',
    'WplusHToTauTau_M125',
+   'ZHToTauTau_M125',
+   'ZHToTauTau_M125-ext1',
    #'ttHToTauTau_M125',
   'VBF_HToZZTo4L_M125',
   'GluGlu_HToZZTo4L_M125',
