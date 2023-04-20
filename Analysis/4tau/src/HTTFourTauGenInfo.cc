@@ -82,6 +82,7 @@ namespace ic {
         for (unsigned j=1; j<5; ++j){
           if (DR(fourtau->GetCandidate("lepton"+std::to_string(j)),particles[i])< 0.05 && !event->Exists("pdgid_mother_"+std::to_string(j))) {
             event->Add("pdgid_mother_"+std::to_string(j),particles[particles[i]->mothers()[0]]->pdgid()); 
+            //std::cout << particles[particles[i]->mothers()[0]]->pdgid() << " " << particles[particles[i]->mothers()[0]]->M() << std::endl;
           }
         }
       }
@@ -99,6 +100,9 @@ namespace ic {
         j2 = j2 + 1;
       }
     }
+
+    //std::cout << "--------------------------------------------" << std::endl;
+
     if (Z_decays_pdgid.size() == 2) {
       event->Add("diZ_pt",diZ->pt());
       event->Add("diZ_mass",diZ->M());

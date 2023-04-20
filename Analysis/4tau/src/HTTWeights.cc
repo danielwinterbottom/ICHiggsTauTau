@@ -73,14 +73,14 @@ int HTTWeights::PreAnalysis() {
 
     // electron id/iso
     //  world!
-    fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(
-        w_->function("e_idiso_binned_ic_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso"))); 
+    //fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("e_idiso_binned_ic_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso"))); 
 
     // new electron id from Egamma
-    //fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
-    //    w_->function("e_id_ratio")->functor(w_->argSet("e_eta,e_pt")));
-    //fns_["e_iso_ratio"] = std::shared_ptr<RooFunctor>(
-    //    w_->function("e_iso_binned_ic_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
+    fns_["e_id_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("e_id_ratio")->functor(w_->argSet("e_eta,e_pt")));
+    fns_["e_iso_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("e_iso_binned_ic_ratio")->functor(w_->argSet("e_pt,e_eta,e_iso")));
 
 
     // muon id/iso
@@ -109,9 +109,9 @@ int HTTWeights::PreAnalysis() {
     */
     std::string year = "";
     if (era_ == era::data_2016UL_preVFP){
-       year = "2016preVFP";
+       year = "2016_preVFP";
     } else if (era_ == era::data_2016UL_postVFP){
-       year = "2016postVFP";
+       year = "2016_postVFP";
     } else if (era_ == era::data_2017UL){
        year = "2017";
     } else if (era_ == era::data_2018UL){
@@ -189,26 +189,26 @@ int HTTWeights::PreAnalysis() {
     fns_["t_doubletau_trg_ratio_down"] = std::shared_ptr<RooFunctor>(
         w_->function("t_trg_pog_deeptau_medium_ditau_data_down")->functor(w_->argSet("t_pt,t_dm")));
 
-    fns_["t_mutaucross_trg_data"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_mutau_data")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for mutaucross data
-    fns_["t_mutaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_mutau_mc")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for mutaucross mc
-    fns_["m_mutaucross_trg_data"] = std::shared_ptr<RooFunctor>(
-        w_->function("m_trg_23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // muon leg for mutaucross data
-    fns_["m_mutaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-        w_->function("m_trg_23_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // muon leg for mutaucross mc
+    //fns_["t_mutaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_trg_pog_deeptau_medium_mutau_data")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for mutaucross data
+    //fns_["t_mutaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_trg_pog_deeptau_medium_mutau_mc")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for mutaucross mc
+    //fns_["m_mutaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("m_trg_23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // muon leg for mutaucross data
+    //fns_["m_mutaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("m_trg_23_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // muon leg for mutaucross mc
 
-    fns_["t_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));  // tau leg for etaucross data
-    fns_["t_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-        w_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for etaucross mc
+    //fns_["t_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_trg_pog_deeptau_medium_etau_data")->functor(w_->argSet("t_pt,t_dm")));  // tau leg for etaucross data
+    //fns_["t_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //    w_->function("t_trg_pog_deeptau_medium_etau_mc")->functor(w_->argSet("t_pt,t_dm"))); // tau leg for etaucross mc
 
-    if(mc_ == mc::mc2017 || mc_ == mc::mc2018) {
-      fns_["e_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
-          w_->function("e_trg_24_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));  // electron leg for etaucross data
-      fns_["e_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-          w_->function("e_trg_24_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // electron leg for etaucross mc
-    }
+    //if(mc_ == mc::mc2017 || mc_ == mc::mc2018) {
+    //  fns_["e_etaucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //      w_->function("e_trg_24_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));  // electron leg for etaucross data
+    //  fns_["e_etaucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //      w_->function("e_trg_24_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // electron leg for etaucross mc
+    //}
 
     fns_["m_singlem_trg_mc"] = std::shared_ptr<RooFunctor>(
         w_->function("m_trg_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // single muon mc
@@ -220,22 +220,22 @@ int HTTWeights::PreAnalysis() {
         w_->function("e_trg_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // single electron data
 
 
-    fns_["e_high_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-       w_->function("e_trg_23_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // high electron leg for emucross mc
-    fns_["e_high_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
-       w_->function("e_trg_23_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // high electron leg for emucross data
-    fns_["e_low_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-       w_->function("e_trg_12_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // low electron leg for emucross mc
-    fns_["e_low_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
-       w_->function("e_trg_12_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // low electron leg for emucross data
-    fns_["m_high_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-       w_->function("m_trg_23_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // high muon leg for emucross mc
-    fns_["m_high_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
-       w_->function("m_trg_23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // high muon leg for emucross data
-    fns_["m_low_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
-       w_->function("m_trg_8_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // low muon leg for emucross mc
-    fns_["m_low_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
-       w_->function("m_trg_8_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // low muon leg for emucross data
+    //fns_["e_high_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("e_trg_23_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // high electron leg for emucross mc
+    //fns_["e_high_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("e_trg_23_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // high electron leg for emucross data
+    //fns_["e_low_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("e_trg_12_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // low electron leg for emucross mc
+    //fns_["e_low_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("e_trg_12_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso"))); // low electron leg for emucross data
+    //fns_["m_high_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("m_trg_23_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // high muon leg for emucross mc
+    //fns_["m_high_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("m_trg_23_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // high muon leg for emucross data
+    //fns_["m_low_emucross_trg_mc"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("m_trg_8_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // low muon leg for emucross mc
+    //fns_["m_low_emucross_trg_data"] = std::shared_ptr<RooFunctor>(
+    //   w_->function("m_trg_8_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso"))); // low muon leg for emucross data
 
   }
       
@@ -378,13 +378,13 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       if ( e_string == po[i] ) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton"+std::to_string(pn)));
-        auto args_id_sf = std::vector<double>{elec->pt(),elec->sc_eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
-        id_sf = fns_["e_idiso_ratio"]->eval(args_id_sf.data());
+        //auto args_id_sf = std::vector<double>{elec->pt(),elec->sc_eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
+        //id_sf = fns_["e_idiso_ratio"]->eval(args_id_sf.data());
         // change to new id 
-        //auto args_id_sf = std::vector<double>{elec->sc_eta(),elec->pt()};
-        //auto args_iso_sf = std::vector<double>{elec->pt(),elec->sc_eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
-        //id_sf = fns_["e_id_ratio"]->eval(args_id_sf.data());
-        //id_sf *= fns_["e_iso_ratio"]->eval(args_iso_sf.data());
+        auto args_id_sf = std::vector<double>{elec->sc_eta(),elec->pt()};
+        auto args_iso_sf = std::vector<double>{elec->pt(),elec->sc_eta(),PF03EAIsolationVal(elec, eventInfo->jet_rho())};
+        id_sf = fns_["e_id_ratio"]->eval(args_id_sf.data());
+        id_sf *= fns_["e_iso_ratio"]->eval(args_iso_sf.data());
       
       }
       if ( m_string == po[i] ) {
@@ -422,10 +422,10 @@ int HTTWeights::Execute(TreeEvent *event) {
         id_sf_loose_uncert1_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_uncert1_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
         id_sf_loose_syst_all_eras_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_alleras_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
         id_sf_loose_syst_all_eras_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_alleras_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
-        id_sf_loose_syst_year_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_2018_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
-        id_sf_loose_syst_year_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_2018_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
-        id_sf_loose_syst_dm_year_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_2018_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
-        id_sf_loose_syst_dm_year_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_2018_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_year_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_year_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_year_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_year_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_dm_year_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_year_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
+        id_sf_loose_syst_dm_year_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_year_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
         id_sf_loose_highpt_up = (gen_match==5) ? (1. + (std::min(tau->pt(),500.) -40.)*(tau->pt()>40)*0.00018) : 1.0;
         id_sf_loose_highpt_down = (gen_match==5) ? (1. + (std::min(tau->pt(),500.) -40.)*(tau->pt()>40)*0.00037) : 1.0;
 
@@ -768,6 +768,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         event->Add("wt_total_trg", total_trg);
         eventInfo->set_weight("wt_total_trg",total_trg);
       } else {
+        //std::cout << "wt_total_trg_ratio_"+td+i << " " << event->Get<double>("wt_total_trg") << " " << total_trg << std::endl;
         event->Add("wt_total_trg_ratio_"+td+i, event->Get<double>("wt_total_trg") != 0 ? total_trg/event->Get<double>("wt_total_trg") : 0.0);
       }
       ind = ind + 1;

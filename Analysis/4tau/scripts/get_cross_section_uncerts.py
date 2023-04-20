@@ -8,8 +8,8 @@ for mp in grid_phi:
   for mA in grid_A:
        sig_samples.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
 
-folder = "/vols/cms/gu18/Offline/output/4tau/1502_sig_eff/"
-file_ext = "_mmtt_2018.root"
+folder = "/vols/cms/gu18/Offline/output/4tau/1304_eff/"
+file_ext = "_tttt_2018.root"
 
 # total
 dump_dict = {}
@@ -50,15 +50,20 @@ for name in sig_samples:
       for ind, i in enumerate(v): 
         sum_dict[k][ind] += getattr(e ,i)
 
- 
+  print "- "+name
   for k,v in try_weights.items(): 
     dump_dict[name][k] = {}
     if len(v) != 1:
       dump_dict[name][k]["Up"] = max(sum_dict[k])/t.GetEntries()
       dump_dict[name][k]["Down"] = min(sum_dict[k])/t.GetEntries()
+      print "  - "+k 
+      print "    - "+v[sum_dict[k].index(max(sum_dict[k]))],dump_dict[name][k]["Up"]
+      print "    - "+v[sum_dict[k].index(min(sum_dict[k]))],dump_dict[name][k]["Down"]
     else:
       dump_dict[name][k]["Up"] = sum_dict[k][0]/t.GetEntries()
       dump_dict[name][k]["Down"] = 1.0/dump_dict[name][k]["Up"]
+      print "  - "+k, dump_dict[name][k]["Up"]
+
 
   
 

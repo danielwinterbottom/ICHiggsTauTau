@@ -514,7 +514,7 @@ if options.year == "2018":
       wgam_samples = ['WGToLNuG']
       ewkz_samples = ['EWKZ2Jets']
     elif options.campaign == "UL":
-      ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+      ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DYJetsToLL-LO-ext1']
       top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
       vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WWTo1L1Nu2Q','WWTo2L2Nu','ZZTo2L2Nu','Tbar-t','Tbar-tW','T-t','T-tW']
       vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
@@ -522,6 +522,7 @@ if options.year == "2018":
       wgam_samples = ['WGToLNuG']
       ewkz_samples = ['EWKZ2Jets_ZToLL']
       qqzz_samples = ['ZZTo4L']
+      higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125','ZHToTauTau_M125-ext1']
       hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
       ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
       #signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
@@ -541,7 +542,7 @@ if options.year == "2017":
     hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
     signal_samples = []
   elif options.campaign == "UL":
-    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
+    ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO','DYJetsToLL-LO-ext1']
     top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
     vv_samples = ['T-tW', 'Tbar-tW','Tbar-t','T-t','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu']
     vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
@@ -551,6 +552,7 @@ if options.year == "2017":
     qqzz_samples = ['ZZTo4L']
     #hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125','ZHToTauTau_M125']
     hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
+    higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
     ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
     signal_samples = sig_samples
     signal_samples = ReformatSignals(signal_samples,True)
@@ -564,6 +566,7 @@ if options.year == "2016_postVFP":
   wgam_samples = ['WGToLNuG']
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
   qqzz_samples = ['ZZTo4L']
+  higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
   ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
@@ -578,6 +581,7 @@ if options.year == "2016_preVFP":
   vvv_samples = ['WWZ','WWZ-ext1','WZZ','WZZ-ext1','WWW','WWW-ext1','ZZZ','ZZZ-ext1']
   wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
   qqzz_samples = ['ZZTo4L']
+  higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
   ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
   wgam_samples = ['WGToLNuG']
@@ -600,6 +604,8 @@ if options.year == "2016":
 ROOT.TH1.SetDefaultSumw2(True)
 
 correct_gen_matches = []
+lepton_gen_matches = []
+tau_gen_matches = []
 t_gen_matches = []
 e_gen_matches = []
 m_gen_matches = []
@@ -610,10 +616,13 @@ for in0,ch in enumerate(options.channel):
   ind = in0+1
   if ch == "e":
     correct_gen_matches.append("(gen_match_%(ind)i==1 || gen_match_%(ind)i==3)" % vars()) 
+    lepton_gen_matches.append(correct_gen_matches[-1])
   elif ch == "m":
     correct_gen_matches.append("(gen_match_%(ind)i==2 || gen_match_%(ind)i==4)" % vars())
+    lepton_gen_matches.append(correct_gen_matches[-1])
   elif ch == "t":
     correct_gen_matches.append("(gen_match_%(ind)i==5)" % vars())
+    tau_gen_matches.append(correct_gen_matches[-1])
     lfake_gen_matches.append("(gen_match_%(ind)i<5)" % vars())
     jfake_gen_matches.append("(gen_match_%(ind)i==6)" % vars())
 
@@ -650,6 +659,7 @@ other_sels = {
               "R" :"({sgm} == {len_channel})".format(sgm=summed_gen_matches,len_channel=len(options.channel)),
               "JF":"({jfgm} > 0)".format(jfgm=summed_jfake_gen_matches),
               "LF":"({lfgm} > 0) && ({jfgm} == 0)".format(lfgm=summed_lfake_gen_matches,jfgm=summed_jfake_gen_matches),
+              #"JFL":"((({jfl})==0) && ({gt}))".format(jfl=" && ".join(lepton_gen_matches),gt=" && ".join(tau_gen_matches))
               #"inclusive": "(1)",
               }
 
@@ -657,6 +667,7 @@ if options.channel.count("t") == 0:
   other_sels["R"] = "(1)"
   del other_sels["JF"]
   del other_sels["LF"]
+  del other_sels["JLF"]
 
 z_sels = {"Z"+key:val for (key,val) in other_sels.items()}
 top_sels = {"TT"+key:val for (key,val) in other_sels.items()}
@@ -701,7 +712,6 @@ def GenerateTop(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', to
 
 def GenerateVV(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', vv_sels={}):
     for key, val in vv_sels.items():
-      print key, val
       vv_node = GetNode(ana, key, add_name, samples, plot, wt, "("+val+"&&"+sel+")", cat)
       ana.nodes[nodename].AddNode(vv_node)
 
@@ -727,6 +737,10 @@ def GenerateGGZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', g
 def GenerateQQZZ(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', qqzz_sels={}):
     qqzz_node = GetNode(ana, "qqZZ", add_name, samples, plot, wt, sel, cat)
     ana.nodes[nodename].AddNode(qqzz_node)
+
+def GenerateHiggs(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', qqzz_sels={}):
+    higgs_node = GetNode(ana, "Higgs", add_name, samples, plot, wt, sel, cat)
+    ana.nodes[nodename].AddNode(higgs_node)
 
 def GenerateMCFakeTaus(ana, ff_from, add_name='', samples=[], plot='', wt='', sel='', cat=''):
     total_sel = []
@@ -1062,6 +1076,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           GenerateQQZZ(ana, add_name, qqzz_samples, plot, wt, sel, cat)         
       if 'HZZ' not in samples_to_skip and options.channel == "mmmm": 
           GenerateHZZ(ana, add_name, hzz_samples, plot, "("+wt+"/wt_ggZZ_k_factor)", sel, cat)
+      if 'Higgs' not in samples_to_skip:
+          GenerateHiggs(ana, add_name, higgs_samples, plot, wt, sel, cat)
       if 'ggZZ' not in samples_to_skip and options.channel == "mmmm": 
           GenerateGGZZ(ana, add_name, ggzz_samples, plot, wt, sel, cat)          
       if 'signal' not in samples_to_skip and not options.no_signal:
@@ -1183,7 +1199,8 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels)
       if 'VV' not in samples_to_skip:
           GenerateVV(ana, add_name, vv_samples+ggzz_samples+qqzz_samples, plot, wt, sel, cat, vv_sels)
-          GenerateHZZ(ana, add_name, hzz_samples, plot, wt, sel, cat) 
+      if 'Higgs' not in samples_to_skip:
+          GenerateHiggs(ana, add_name, higgs_samples+hzz_samples, plot, wt, sel, cat) 
       if 'VVV' not in samples_to_skip:
           GenerateVVV(ana, add_name, vvv_samples, plot, wt, sel, cat, vvv_sels)
       if 'W' not in samples_to_skip:
@@ -1326,7 +1343,7 @@ if options.syst_tau_id_new:
            up_wts = []
            down_wts = []
            for ind, ch in enumerate(options.channel):
-              if options.year == k: 
+             if options.year == k: 
                  if ch == "t":
                     up_wts.append("((idisoweight_ratio_{0}_{2}_up*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
                     down_wts.append("((idisoweight_ratio_{0}_{2}_down*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
@@ -1336,7 +1353,7 @@ if options.syst_tau_id_new:
                     down_wts.append("(((1)*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
 
         bin_name = "syst_tau_id_{}_DM".format(j)+dm+k
-        if j == "syst_dm_year": bin_name = "syst_tau_id_{}_DM".format(j.replace("_year","")+dm+k
+        if j == "syst_dm_year": bin_name = "syst_tau_id_{}_DM".format(j.replace("_year","")+dm+k)
         systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
         systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
@@ -1456,8 +1473,8 @@ if options.syst_jet_scale_group:
       if "year" in name:
         for yr in ["2016_preVFP","2016_postVFP","2017","2018"]:
           year_name = name.replace("year",yr)
-          systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder) if yr == options.year else "", "_{}Up".format(year_name),"wt", ['jetFakes'], False)
-          systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder) if yr == options.year else "", "_{}Down".format(year_name),"wt", ['jetFakes'], False)
+          systematics['syst_scale_j_{}_up'.format(year_name)] = ("{}_UP".format(folder) if yr == options.year else "", "_{}Up".format(year_name),"wt", ['jetFakes'], False)
+          systematics['syst_scale_j_{}_down'.format(year_name)] = ("{}_DOWN".format(folder) if yr == options.year else "", "_{}Down".format(year_name),"wt", ['jetFakes'], False)
       else:
         systematics['syst_scale_j_{}_up'.format(name)] = ("{}_UP".format(folder), "_{}Up".format(name),"wt", ['jetFakes'], False)
         systematics['syst_scale_j_{}_down'.format(name)] = ("{}_DOWN".format(folder), "_{}Down".format(name),"wt", ['jetFakes'], False)
@@ -1537,21 +1554,21 @@ if options.syst_signal_theory:
     removed_signal_samples = [i[0] for i in signal_samples]
     removed_signal_samples.remove(k)
 
-    systematics['syst_signal_{}_qcd_scale_up'.format(v)] = ('', '_syst_signal_qcd_scaleUp', '(wt*wt_mc_1008/{})'.format(xs_shift[k]["qcd_scale"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
-    systematics['syst_signal_{}_qcd_scale_down'.format(v)] = ('', '_syst_signal_qcd_scaleDown', '(wt*wt_mc_1006/{})'.format(xs_shift[k]["qcd_scale"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+    systematics['syst_signal_{}_qcd_scale_up'.format(v)] = ('', '_syst_signal_qcd_scaleUp', '(wt*wt_mc_1003/{})'.format(xs_shift[k]["qcd_scale"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes','Higgs']+removed_signal_samples, False)
+    systematics['syst_signal_{}_qcd_scale_down'.format(v)] = ('', '_syst_signal_qcd_scaleDown', '(wt*wt_mc_1002/{})'.format(xs_shift[k]["qcd_scale"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes','Higgs']+removed_signal_samples, False)
 
-    systematics['syst_signal_{}_pdf_up'.format(v)] = ('', '_syst_signal_pdfUp', '(wt*wt_mc_pdf/{})'.format(xs_shift[k]["pdf"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
-    systematics['syst_signal_{}_pdf_down'.format(v)] = ('', '_syst_signal_pdfDown', '(wt/(wt_mc_pdf*{}))'.format(xs_shift[k]["pdf"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+    systematics['syst_signal_{}_pdf_up'.format(v)] = ('', '_syst_signal_pdfUp', '(wt*wt_mc_pdf/{})'.format(xs_shift[k]["pdf"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes','Higgs']+removed_signal_samples, False)
+    systematics['syst_signal_{}_pdf_down'.format(v)] = ('', '_syst_signal_pdfDown', '(wt/(wt_mc_pdf*{}))'.format(xs_shift[k]["pdf"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes','Higgs']+removed_signal_samples, False)
 
-    systematics['syst_signal_{}_alphas_up'.format(v)] = ('', '_syst_signal_alphasUp', '(wt*wt_mc_1112/{})'.format(xs_shift[k]["alpha_s"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
-    systematics['syst_signal_{}_alphas_down'.format(v)] = ('', '_syst_signal_alphasDown', '(wt*wt_mc_1111/{})'.format(xs_shift[k]["alpha_s"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes']+removed_signal_samples, False)
+    systematics['syst_signal_{}_alphas_up'.format(v)] = ('', '_syst_signal_alphasUp', '(wt*wt_mc_1112/{})'.format(xs_shift[k]["alpha_s"]["Up"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes','Higgs']+removed_signal_samples, False)
+    systematics['syst_signal_{}_alphas_down'.format(v)] = ('', '_syst_signal_alphasDown', '(wt*wt_mc_1111/{})'.format(xs_shift[k]["alpha_s"]["Down"]), ['jetFakes','VV','VVV','ZTT','TT','MC_jetFakes','Higgs']+removed_signal_samples, False)
 
 if options.syst_k_factor: 
-    systematics['syst_qqZZ_k_factor_up'] = ('', '_syst_qqZZ_k_factorUp', 'wt*wt_qqZZ_k_factor', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
-    systematics['syst_qqZZ_k_factor_down'] = ('', '_syst_qqZZ_k_factorDown', '(wt/wt_qqZZ_k_factor)', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
+    systematics['syst_qqZZ_k_factor_up'] = ('', '_syst_qqZZ_k_factorUp', 'wt*wt_qqZZ_k_factor', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','Higgs','signal'], False)
+    systematics['syst_qqZZ_k_factor_down'] = ('', '_syst_qqZZ_k_factorDown', '(wt/wt_qqZZ_k_factor)', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','Higgs','signal'], False)
 
-    systematics['syst_ggZZ_k_factor_up'] = ('', '_syst_ggZZ_k_factorUp', 'wt*wt_ggZZ_k_factor', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
-    systematics['syst_ggZZ_k_factor_down'] = ('', '_syst_ggZZ_k_factorDown', '(wt/wt_ggZZ_k_factor)', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
+    systematics['syst_ggZZ_k_factor_up'] = ('', '_syst_ggZZ_k_factorUp', 'wt*wt_ggZZ_k_factor', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','Higgs','signal'], False)
+    systematics['syst_ggZZ_k_factor_down'] = ('', '_syst_ggZZ_k_factorDown', '(wt/wt_ggZZ_k_factor)', ['jetFakes','VVV','ZTT','TT','MC_jetFakes','Higgs','signal'], False)
 
 
     #for k in ["PDFScale","QCDScale","As","PDFReplica"]:
@@ -1610,7 +1627,7 @@ if options.plot_from_dc == "":
             ana.AddSamples(data_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         
         # Add all MC background files
-        for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + qqzz_samples + hzz_samples + ggzz_samples:
+        for sample_name in ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + qqzz_samples + hzz_samples + ggzz_samples + higgs_samples:
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         #print(ana.trees)
         for sample_name in signal_samples:
