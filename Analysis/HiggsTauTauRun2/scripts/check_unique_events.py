@@ -1,5 +1,5 @@
 import argparse
-
+import ROOT
 import uproot
 import pandas as pd
 
@@ -8,10 +8,42 @@ parser.add_argument('--file', '-f', help= 'File to check for duplicated events',
 args = parser.parse_args()
 filename = args.file
 
-file = uproot.open(filename)
-tree = file["effective"]
+file = ROOT.TFile(filename)
+
+tree = file.Get("effective")
+
+unique_sets = set()
+duplicated_sets = set()
 
 print 'Checking file: %(filename)s' % vars()
+
+N=tree.GetEntries()
+
+#first check looks if there are cases where the next even along is a duplicate (most likely to happen give the bug that caused the duplicates) 
+print 'Checking neighbouring events:' 
+foundDuplicates=False
+i=0
+while i<N-1:
+  tree.GetEntry(i)
+  values_1 = (tree.run, tree.lumi, tree.event)
+  tree.GetEntry(i+1)
+  values_2 = (tree.run, tree.lumi, tree.event)
+  i+=2
+  if values_1==values_2:
+    print i-2, values_1, values_2 
+    foundDuplicates=True 
+    break
+
+if foundDuplicates: print 'Found duplicated events!'
+else:
+  print 'No duplicates found'
+
+file.Close()
+
+# the next check looks for duplicates anywhere in the tree (can have issues with memory for large samples)
+print 'Checking all events:' 
+file = uproot.open(filename)
+tree = file["effective"]
 
 branches = ["event", "lumi", "run"]
 

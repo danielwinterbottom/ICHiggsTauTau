@@ -98,6 +98,16 @@ int EffectiveEvents::Execute(TreeEvent *event){
  run_ = eventInfo->run();
  event_ = (unsigned long long) eventInfo->event();
  lumi_ = eventInfo->lumi_block();
+
+
+ // temporary fix to removed duplicated events
+ if (run_==prev_run_ && event_==prev_event_ && lumi_==prev_lumi_) {
+   return 1;
+ }
+ prev_run_ = run_;
+ prev_event_ = event_;
+ prev_lumi_ = lumi_;
+
  
  outtree_->Fill();
  return 0;

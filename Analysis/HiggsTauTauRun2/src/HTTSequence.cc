@@ -161,7 +161,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    tau_pt = 20;
    tau_eta = 2.3;
    min_taus = 1;
-   if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) muon_pt = 20.0; 
+   if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || json["make_sync_ntuple"].asBool()) muon_pt = 20.0; 
    else  muon_pt = 21.0;
   }
   if (channel_str == "tt"){
@@ -440,7 +440,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     }
     if(era_type == era::data_2016UL_postVFP){
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
-      httStitching.SetDYInputYields(82448537, 31570459, 14573456, 9553830, 4450325);
+      httStitching.SetDYInputYields(82444586, 31570459, 14573456, 9553830, 4450325);
     }
     if(era_type == era::data_2017) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -448,7 +448,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     }
     if(era_type == era::data_2017UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(97237260+101893848, 66063783, 27099640, 20165687, 11315390);
+      httStitching.SetDYInputYields(97237260+101893848, 66063783, 27099640, 20165687, 11267712);
     }
     if(era_type == era::data_2018) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -456,7 +456,7 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(96233328+101415750, 60368985, 27494377, 20466041, 8885353);
+      httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
     }
 
 
@@ -832,11 +832,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2016UL_preVFP){
      httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-     httStitching.SetWInputYields(74676454, 47939105, 26899459, 16517929, 4575554);
+     httStitching.SetWInputYields(74676349, 47938929, 26899459, 16517929, 4575554);
     }
     if(era_type == era::data_2016UL_postVFP){
      httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-     httStitching.SetWInputYields(82754918, 42019790, 24473616, 17830876, 42019790);
+     httStitching.SetWInputYields(82742220, 42019790, 24473569, 17830876, 4816485);
     } 
     if(era_type == era::data_2017) {
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
@@ -852,7 +852,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL){
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
-      httStitching.SetWInputYields(82392917, 47850048, 27411802, 18297679, 9130068);
+      httStitching.SetWInputYields(82360950, 47850048, 27411802, 18297679, 9130068);
     }
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
@@ -867,7 +867,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2016UL_postVFP){
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118);
-      httStitching.SetDYInputYields(82448537, 31570459, 14573456, 9553830, 4450325);
+      httStitching.SetDYInputYields(82444586, 31570459, 14573456, 9553830, 4450325);
     }
     if(era_type == era::data_2017) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -875,7 +875,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2017UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(97237260+101893848, 66063783, 27099640, 20165687, 11315390);
+      httStitching.SetDYInputYields(97237260+101893848, 66063783, 27099640, 20165687, 11267712);
     }
     if(era_type == era::data_2018) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
@@ -883,7 +883,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
-      httStitching.SetDYInputYields(96233328+101415750, 60368985, 27494377, 20466041, 8885353);
+      httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
     }
   }
 
@@ -891,11 +891,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     httStitching.set_do_dy_soup_NLO(true);
     if(era_type == era::data_2016UL_preVFP){
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-      httStitching.SetDYInputYields_NLO(61046959, 64114200, 41519367, 13244574);
+      httStitching.SetDYInputYields_NLO(61134271, 64114200, 41519367, 13244344);
     }
     if(era_type == era::data_2016UL_postVFP){
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-      httStitching.SetDYInputYields_NLO(49693956, 61458399, 38644301, 12871989);
+      httStitching.SetDYInputYields_NLO(49693903, 61458133, 38644052, 12915771);
     }
     if(era_type == era::data_2017UL) {
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
@@ -903,7 +903,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2018UL) {
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
-      httStitching.SetDYInputYields_NLO(132322033, 69493624, 43144209, 13793541);
+      httStitching.SetDYInputYields_NLO(132321936, 69493624, 43156627, 13793541);
     }
   }
   BuildModule(httStitching);   
@@ -2294,7 +2294,14 @@ void HTTSequence::BuildZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
-  
+
+  // Filter cases where muon 1 is softer than muon 2 which can happen due to different eta cuts for sel_muons and sel_leadmuons 
+  BuildModule(SimpleFilter<CompositeCandidate>("ZMMPairFirstLeadingSecondFilter")
+      .set_input_label("ditau").set_min(1)
+      .set_predicate([=](CompositeCandidate const* c) {
+        return PairFirstLeadingSecond(c);
+      }));
+ 
   
   if(js["baseline"]["do_faketaus"].asBool()){
     BuildModule(SimpleFilter<Tau>("TauFilter")
