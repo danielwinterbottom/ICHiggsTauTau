@@ -4,7 +4,7 @@ import os
 #python3 crab_4tau_12_4.py --data --mc --output_folder Dec22 --year 2018
 #cmsRun test/higgstautau_cfg_124X_Dec22_2018.py isData=0 globalTag=106X_upgrade2018_realistic_v15_L1v1 isEmbed=0
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Mar31')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Apr20')
 parser.add_argument('--year','-y', help= 'Name of input year', choices=["2016-preVFP","2016-postVFP","2017","2018","all"], default='all')
 parser.add_argument('--data', help= 'Run data samples',  action='store_true')
 parser.add_argument('--mc', help= 'Run mc samples',  action='store_true')
@@ -78,7 +78,7 @@ for dm in dml:
     config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
     config.Data.publication = False
     config.Data.allowNonValidInputDataset = True
-    config.Data.ignoreLocality = True
+    #config.Data.ignoreLocality = True # don't use this!
     
     config.Site.whitelist   = ['T2_*','T1_*','T3_*']
     config.Site.storageSite = 'T2_UK_London_IC'
