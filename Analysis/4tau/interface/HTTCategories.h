@@ -89,6 +89,65 @@ class HTTCategories : public ModuleBase {
   double idisoweight_ratio_3_down_;
   double idisoweight_ratio_4_down_;
 
+  double idisoweight_ratio_1_uncert0_up_;
+  double idisoweight_ratio_2_uncert0_up_;
+  double idisoweight_ratio_3_uncert0_up_;
+  double idisoweight_ratio_4_uncert0_up_;
+
+  double idisoweight_ratio_1_uncert0_down_; 
+  double idisoweight_ratio_2_uncert0_down_; 
+  double idisoweight_ratio_3_uncert0_down_; 
+  double idisoweight_ratio_4_uncert0_down_; 
+
+  double idisoweight_ratio_1_uncert1_up_; 
+  double idisoweight_ratio_2_uncert1_up_;
+  double idisoweight_ratio_3_uncert1_up_;
+  double idisoweight_ratio_4_uncert1_up_;
+
+  double idisoweight_ratio_1_uncert1_down_; 
+  double idisoweight_ratio_2_uncert1_down_; 
+  double idisoweight_ratio_3_uncert1_down_; 
+  double idisoweight_ratio_4_uncert1_down_; 
+
+  double idisoweight_ratio_1_syst_all_eras_up_; 
+  double idisoweight_ratio_2_syst_all_eras_up_; 
+  double idisoweight_ratio_3_syst_all_eras_up_; 
+  double idisoweight_ratio_4_syst_all_eras_up_; 
+
+  double idisoweight_ratio_1_syst_all_eras_down_; 
+  double idisoweight_ratio_2_syst_all_eras_down_; 
+  double idisoweight_ratio_3_syst_all_eras_down_; 
+  double idisoweight_ratio_4_syst_all_eras_down_; 
+
+  double idisoweight_ratio_1_syst_year_up_; 
+  double idisoweight_ratio_2_syst_year_up_; 
+  double idisoweight_ratio_3_syst_year_up_; 
+  double idisoweight_ratio_4_syst_year_up_; 
+
+  double idisoweight_ratio_1_syst_year_down_; 
+  double idisoweight_ratio_2_syst_year_down_; 
+  double idisoweight_ratio_3_syst_year_down_; 
+  double idisoweight_ratio_4_syst_year_down_; 
+
+  double idisoweight_ratio_1_syst_dm_year_up_; 
+  double idisoweight_ratio_2_syst_dm_year_up_; 
+  double idisoweight_ratio_3_syst_dm_year_up_; 
+  double idisoweight_ratio_4_syst_dm_year_up_; 
+
+  double idisoweight_ratio_1_syst_dm_year_down_; 
+  double idisoweight_ratio_2_syst_dm_year_down_; 
+  double idisoweight_ratio_3_syst_dm_year_down_; 
+  double idisoweight_ratio_4_syst_dm_year_down_; 
+
+  double idisoweight_ratio_1_highpt_up_; 
+  double idisoweight_ratio_2_highpt_up_; 
+  double idisoweight_ratio_3_highpt_up_; 
+  double idisoweight_ratio_4_highpt_up_; 
+
+  double idisoweight_ratio_1_highpt_down_; 
+  double idisoweight_ratio_2_highpt_down_; 
+  double idisoweight_ratio_3_highpt_down_; 
+  double idisoweight_ratio_4_highpt_down_; 
 
   double idisoweight_vvvloose_1_;
   double idisoweight_vvvloose_2_;
