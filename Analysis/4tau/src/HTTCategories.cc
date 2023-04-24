@@ -153,6 +153,67 @@ namespace ic {
       outtree_->Branch("idisoweight_tight_3", &idisoweight_tight_3_);
       outtree_->Branch("idisoweight_tight_4", &idisoweight_tight_4_);
 
+      // updated tauid uncertainties 24/04/2023
+      outtree_->Branch("idisoweight_ratio_1_uncert0_up", &idisoweight_ratio_1_uncert0_up_);
+      outtree_->Branch("idisoweight_ratio_2_uncert0_up", &idisoweight_ratio_2_uncert0_up_);
+      outtree_->Branch("idisoweight_ratio_3_uncert0_up", &idisoweight_ratio_3_uncert0_up_);
+      outtree_->Branch("idisoweight_ratio_4_uncert0_up", &idisoweight_ratio_4_uncert0_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_uncert0_down", &idisoweight_ratio_1_uncert0_down_);
+      outtree_->Branch("idisoweight_ratio_2_uncert0_down", &idisoweight_ratio_2_uncert0_down_);
+      outtree_->Branch("idisoweight_ratio_3_uncert0_down", &idisoweight_ratio_3_uncert0_down_);
+      outtree_->Branch("idisoweight_ratio_4_uncert0_down", &idisoweight_ratio_4_uncert0_down_);
+
+      outtree_->Branch("idisoweight_ratio_1_uncert1_up", &idisoweight_ratio_1_uncert1_up_);
+      outtree_->Branch("idisoweight_ratio_2_uncert1_up", &idisoweight_ratio_2_uncert1_up_);
+      outtree_->Branch("idisoweight_ratio_3_uncert1_up", &idisoweight_ratio_3_uncert1_up_);
+      outtree_->Branch("idisoweight_ratio_4_uncert1_up", &idisoweight_ratio_4_uncert1_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_uncert1_down", &idisoweight_ratio_1_uncert1_down_);
+      outtree_->Branch("idisoweight_ratio_2_uncert1_down", &idisoweight_ratio_2_uncert1_down_);
+      outtree_->Branch("idisoweight_ratio_3_uncert1_down", &idisoweight_ratio_3_uncert1_down_);
+      outtree_->Branch("idisoweight_ratio_4_uncert1_down", &idisoweight_ratio_4_uncert1_down_);
+
+      outtree_->Branch("idisoweight_ratio_1_syst_all_eras_up", &idisoweight_ratio_1_syst_all_eras_up_);
+      outtree_->Branch("idisoweight_ratio_2_syst_all_eras_up", &idisoweight_ratio_2_syst_all_eras_up_);
+      outtree_->Branch("idisoweight_ratio_3_syst_all_eras_up", &idisoweight_ratio_3_syst_all_eras_up_);
+      outtree_->Branch("idisoweight_ratio_4_syst_all_eras_up", &idisoweight_ratio_4_syst_all_eras_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_syst_all_eras_down", &idisoweight_ratio_1_syst_all_eras_down_);
+      outtree_->Branch("idisoweight_ratio_2_syst_all_eras_down", &idisoweight_ratio_2_syst_all_eras_down_);
+      outtree_->Branch("idisoweight_ratio_3_syst_all_eras_down", &idisoweight_ratio_3_syst_all_eras_down_);
+      outtree_->Branch("idisoweight_ratio_4_syst_all_eras_down", &idisoweight_ratio_4_syst_all_eras_down_);
+
+      outtree_->Branch("idisoweight_ratio_1_syst_year_up", &idisoweight_ratio_1_syst_year_up_);
+      outtree_->Branch("idisoweight_ratio_2_syst_year_up", &idisoweight_ratio_2_syst_year_up_);
+      outtree_->Branch("idisoweight_ratio_3_syst_year_up", &idisoweight_ratio_3_syst_year_up_);
+      outtree_->Branch("idisoweight_ratio_4_syst_year_up", &idisoweight_ratio_4_syst_year_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_syst_year_down", &idisoweight_ratio_1_syst_year_down_);
+      outtree_->Branch("idisoweight_ratio_2_syst_year_down", &idisoweight_ratio_2_syst_year_down_);
+      outtree_->Branch("idisoweight_ratio_3_syst_year_down", &idisoweight_ratio_3_syst_year_down_);
+      outtree_->Branch("idisoweight_ratio_4_syst_year_down", &idisoweight_ratio_4_syst_year_down_);
+
+      outtree_->Branch("idisoweight_ratio_1_syst_dm_year_up", &idisoweight_ratio_1_syst_dm_year_up_);
+      outtree_->Branch("idisoweight_ratio_2_syst_dm_year_up", &idisoweight_ratio_2_syst_dm_year_up_);
+      outtree_->Branch("idisoweight_ratio_3_syst_dm_year_up", &idisoweight_ratio_3_syst_dm_year_up_);
+      outtree_->Branch("idisoweight_ratio_4_syst_dm_year_up", &idisoweight_ratio_4_syst_dm_year_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_syst_dm_year_down", &idisoweight_ratio_1_syst_dm_year_down_);
+      outtree_->Branch("idisoweight_ratio_2_syst_dm_year_down", &idisoweight_ratio_2_syst_dm_year_down_);
+      outtree_->Branch("idisoweight_ratio_3_syst_dm_year_down", &idisoweight_ratio_3_syst_dm_year_down_);
+      outtree_->Branch("idisoweight_ratio_4_syst_dm_year_down", &idisoweight_ratio_4_syst_dm_year_down_);
+
+      outtree_->Branch("idisoweight_ratio_1_highpt_up", &idisoweight_ratio_1_highpt_up_);
+      outtree_->Branch("idisoweight_ratio_2_highpt_up", &idisoweight_ratio_2_highpt_up_);
+      outtree_->Branch("idisoweight_ratio_3_highpt_up", &idisoweight_ratio_3_highpt_up_);
+      outtree_->Branch("idisoweight_ratio_4_highpt_up", &idisoweight_ratio_4_highpt_up_);
+
+      outtree_->Branch("idisoweight_ratio_1_highpt_down", &idisoweight_ratio_1_highpt_down_);
+      outtree_->Branch("idisoweight_ratio_2_highpt_down", &idisoweight_ratio_2_highpt_down_);
+      outtree_->Branch("idisoweight_ratio_3_highpt_down", &idisoweight_ratio_3_highpt_down_);
+      outtree_->Branch("idisoweight_ratio_4_highpt_down", &idisoweight_ratio_4_highpt_down_);
+
       // etau fake rates
       outtree_->Branch("etau_fakerate_1", &etau_fakerate_1_);
       outtree_->Branch("etau_fakerate_2", &etau_fakerate_2_);
@@ -766,6 +827,71 @@ namespace ic {
     idisoweight_ratio_2_up_ = event->Exists("idisoweight_ratio_2_up") ? event->Get<double>("idisoweight_ratio_2_up") : 1.0;
     idisoweight_ratio_3_up_ = event->Exists("idisoweight_ratio_3_up") ? event->Get<double>("idisoweight_ratio_3_up") : 1.0;
     idisoweight_ratio_4_up_ = event->Exists("idisoweight_ratio_4_up") ? event->Get<double>("idisoweight_ratio_4_up") : 1.0;
+
+    idisoweight_ratio_1_down_ = event->Exists("idisoweight_ratio_1_down") ? event->Get<double>("idisoweight_ratio_1_down") : 1.0;
+    idisoweight_ratio_2_down_ = event->Exists("idisoweight_ratio_2_down") ? event->Get<double>("idisoweight_ratio_2_down") : 1.0;
+    idisoweight_ratio_3_down_ = event->Exists("idisoweight_ratio_3_down") ? event->Get<double>("idisoweight_ratio_3_down") : 1.0;
+    idisoweight_ratio_4_down_ = event->Exists("idisoweight_ratio_4_down") ? event->Get<double>("idisoweight_ratio_4_down") : 1.0;
+
+    idisoweight_ratio_1_uncert0_up_ = event->Exists("idisoweight_ratio_1_uncert0_up") ? event->Get<double>("idisoweight_ratio_1_uncert0_up") : 1.0;
+    idisoweight_ratio_2_uncert0_up_ = event->Exists("idisoweight_ratio_2_uncert0_up") ? event->Get<double>("idisoweight_ratio_2_uncert0_up") : 1.0;
+    idisoweight_ratio_3_uncert0_up_ = event->Exists("idisoweight_ratio_3_uncert0_up") ? event->Get<double>("idisoweight_ratio_3_uncert0_up") : 1.0;
+    idisoweight_ratio_4_uncert0_up_ = event->Exists("idisoweight_ratio_4_uncert0_up") ? event->Get<double>("idisoweight_ratio_4_uncert0_up") : 1.0;
+
+    idisoweight_ratio_1_uncert0_down_ = event->Exists("idisoweight_ratio_1_uncert0_down") ? event->Get<double>("idisoweight_ratio_1_uncert0_down") : 1.0;
+    idisoweight_ratio_2_uncert0_down_ = event->Exists("idisoweight_ratio_2_uncert0_down") ? event->Get<double>("idisoweight_ratio_2_uncert0_down") : 1.0;
+    idisoweight_ratio_3_uncert0_down_ = event->Exists("idisoweight_ratio_3_uncert0_down") ? event->Get<double>("idisoweight_ratio_3_uncert0_down") : 1.0;
+    idisoweight_ratio_4_uncert0_down_ = event->Exists("idisoweight_ratio_4_uncert0_down") ? event->Get<double>("idisoweight_ratio_4_uncert0_down") : 1.0;
+
+    idisoweight_ratio_1_uncert1_up_ = event->Exists("idisoweight_ratio_1_uncert1_up") ? event->Get<double>("idisoweight_ratio_1_uncert1_up") : 1.0;
+    idisoweight_ratio_2_uncert1_up_ = event->Exists("idisoweight_ratio_2_uncert1_up") ? event->Get<double>("idisoweight_ratio_2_uncert1_up") : 1.0;
+    idisoweight_ratio_3_uncert1_up_ = event->Exists("idisoweight_ratio_3_uncert1_up") ? event->Get<double>("idisoweight_ratio_3_uncert1_up") : 1.0;
+    idisoweight_ratio_4_uncert1_up_ = event->Exists("idisoweight_ratio_4_uncert1_up") ? event->Get<double>("idisoweight_ratio_4_uncert1_up") : 1.0;
+
+    idisoweight_ratio_1_uncert1_down_ = event->Exists("idisoweight_ratio_1_uncert1_down") ? event->Get<double>("idisoweight_ratio_1_uncert1_down") : 1.0;
+    idisoweight_ratio_2_uncert1_down_ = event->Exists("idisoweight_ratio_2_uncert1_down") ? event->Get<double>("idisoweight_ratio_2_uncert1_down") : 1.0;
+    idisoweight_ratio_3_uncert1_down_ = event->Exists("idisoweight_ratio_3_uncert1_down") ? event->Get<double>("idisoweight_ratio_3_uncert1_down") : 1.0;
+    idisoweight_ratio_4_uncert1_down_ = event->Exists("idisoweight_ratio_4_uncert1_down") ? event->Get<double>("idisoweight_ratio_4_uncert1_down") : 1.0;
+
+    idisoweight_ratio_1_syst_all_eras_up_ = event->Exists("idisoweight_ratio_1_syst_all_eras_up") ? event->Get<double>("idisoweight_ratio_1_syst_all_eras_up") : 1.0;
+    idisoweight_ratio_2_syst_all_eras_up_ = event->Exists("idisoweight_ratio_2_syst_all_eras_up") ? event->Get<double>("idisoweight_ratio_2_syst_all_eras_up") : 1.0;
+    idisoweight_ratio_3_syst_all_eras_up_ = event->Exists("idisoweight_ratio_3_syst_all_eras_up") ? event->Get<double>("idisoweight_ratio_3_syst_all_eras_up") : 1.0;
+    idisoweight_ratio_4_syst_all_eras_up_ = event->Exists("idisoweight_ratio_4_syst_all_eras_up") ? event->Get<double>("idisoweight_ratio_4_syst_all_eras_up") : 1.0;
+
+    idisoweight_ratio_1_syst_all_eras_down_ = event->Exists("idisoweight_ratio_1_syst_all_eras_down") ? event->Get<double>("idisoweight_ratio_1_syst_all_eras_down") : 1.0;
+    idisoweight_ratio_2_syst_all_eras_down_ = event->Exists("idisoweight_ratio_2_syst_all_eras_down") ? event->Get<double>("idisoweight_ratio_2_syst_all_eras_down") : 1.0;
+    idisoweight_ratio_3_syst_all_eras_down_ = event->Exists("idisoweight_ratio_3_syst_all_eras_down") ? event->Get<double>("idisoweight_ratio_3_syst_all_eras_down") : 1.0;
+    idisoweight_ratio_4_syst_all_eras_down_ = event->Exists("idisoweight_ratio_4_syst_all_eras_down") ? event->Get<double>("idisoweight_ratio_4_syst_all_eras_down") : 1.0;
+
+    idisoweight_ratio_1_syst_year_up_ = event->Exists("idisoweight_ratio_1_syst_year_up") ? event->Get<double>("idisoweight_ratio_1_syst_year_up") : 1.0;
+    idisoweight_ratio_2_syst_year_up_ = event->Exists("idisoweight_ratio_2_syst_year_up") ? event->Get<double>("idisoweight_ratio_2_syst_year_up") : 1.0;
+    idisoweight_ratio_3_syst_year_up_ = event->Exists("idisoweight_ratio_3_syst_year_up") ? event->Get<double>("idisoweight_ratio_3_syst_year_up") : 1.0;
+    idisoweight_ratio_4_syst_year_up_ = event->Exists("idisoweight_ratio_4_syst_year_up") ? event->Get<double>("idisoweight_ratio_4_syst_year_up") : 1.0;
+
+    idisoweight_ratio_1_syst_year_down_ = event->Exists("idisoweight_ratio_1_syst_year_down") ? event->Get<double>("idisoweight_ratio_1_syst_year_down") : 1.0;
+    idisoweight_ratio_2_syst_year_down_ = event->Exists("idisoweight_ratio_2_syst_year_down") ? event->Get<double>("idisoweight_ratio_2_syst_year_down") : 1.0;
+    idisoweight_ratio_3_syst_year_down_ = event->Exists("idisoweight_ratio_3_syst_year_down") ? event->Get<double>("idisoweight_ratio_3_syst_year_down") : 1.0;
+    idisoweight_ratio_4_syst_year_down_ = event->Exists("idisoweight_ratio_4_syst_year_down") ? event->Get<double>("idisoweight_ratio_4_syst_year_down") : 1.0;
+
+    idisoweight_ratio_1_syst_dm_year_up_ = event->Exists("idisoweight_ratio_1_syst_dm_year_up") ? event->Get<double>("idisoweight_ratio_1_syst_dm_year_up") : 1.0;
+    idisoweight_ratio_2_syst_dm_year_up_ = event->Exists("idisoweight_ratio_2_syst_dm_year_up") ? event->Get<double>("idisoweight_ratio_2_syst_dm_year_up") : 1.0;
+    idisoweight_ratio_3_syst_dm_year_up_ = event->Exists("idisoweight_ratio_3_syst_dm_year_up") ? event->Get<double>("idisoweight_ratio_3_syst_dm_year_up") : 1.0;
+    idisoweight_ratio_4_syst_dm_year_up_ = event->Exists("idisoweight_ratio_4_syst_dm_year_up") ? event->Get<double>("idisoweight_ratio_4_syst_dm_year_up") : 1.0;
+
+    idisoweight_ratio_1_syst_dm_year_down_ = event->Exists("idisoweight_ratio_1_syst_dm_year_down") ? event->Get<double>("idisoweight_ratio_1_syst_dm_year_down") : 1.0;
+    idisoweight_ratio_2_syst_dm_year_down_ = event->Exists("idisoweight_ratio_2_syst_dm_year_down") ? event->Get<double>("idisoweight_ratio_2_syst_dm_year_down") : 1.0;
+    idisoweight_ratio_3_syst_dm_year_down_ = event->Exists("idisoweight_ratio_3_syst_dm_year_down") ? event->Get<double>("idisoweight_ratio_3_syst_dm_year_down") : 1.0;
+    idisoweight_ratio_4_syst_dm_year_down_ = event->Exists("idisoweight_ratio_4_syst_dm_year_down") ? event->Get<double>("idisoweight_ratio_4_syst_dm_year_down") : 1.0;
+
+    idisoweight_ratio_1_highpt_up_ = event->Exists("idisoweight_ratio_1_highpt_up") ? event->Get<double>("idisoweight_ratio_1_highpt_up") : 1.0;
+    idisoweight_ratio_2_highpt_up_ = event->Exists("idisoweight_ratio_2_highpt_up") ? event->Get<double>("idisoweight_ratio_2_highpt_up") : 1.0;
+    idisoweight_ratio_3_highpt_up_ = event->Exists("idisoweight_ratio_3_highpt_up") ? event->Get<double>("idisoweight_ratio_3_highpt_up") : 1.0;
+    idisoweight_ratio_4_highpt_up_ = event->Exists("idisoweight_ratio_4_highpt_up") ? event->Get<double>("idisoweight_ratio_4_highpt_up") : 1.0;
+    
+    idisoweight_ratio_1_highpt_down_ = event->Exists("idisoweight_ratio_1_highpt_down") ? event->Get<double>("idisoweight_ratio_1_highpt_down") : 1.0;
+    idisoweight_ratio_2_highpt_down_ = event->Exists("idisoweight_ratio_2_highpt_down") ? event->Get<double>("idisoweight_ratio_2_highpt_down") : 1.0;
+    idisoweight_ratio_3_highpt_down_ = event->Exists("idisoweight_ratio_3_highpt_down") ? event->Get<double>("idisoweight_ratio_3_highpt_down") : 1.0;
+    idisoweight_ratio_4_highpt_down_ = event->Exists("idisoweight_ratio_4_highpt_down") ? event->Get<double>("idisoweight_ratio_4_highpt_down") : 1.0;
 
     idisoweight_ratio_1_down_ = event->Exists("idisoweight_ratio_1_down") ? event->Get<double>("idisoweight_ratio_1_down") : 1.0;
     idisoweight_ratio_2_down_ = event->Exists("idisoweight_ratio_2_down") ? event->Get<double>("idisoweight_ratio_2_down") : 1.0;
