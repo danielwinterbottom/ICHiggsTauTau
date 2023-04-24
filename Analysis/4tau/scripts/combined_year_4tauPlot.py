@@ -295,7 +295,7 @@ if args.zero_negative_bins:
         new_hist.Write()
 
 #recalculate total
-proc_names = ["VVV","ZR","TTR","VVR","WR","ZLF","TTLF","VVLF","WLF","jetFakes","MC_jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes134","jetFakes234","jetFakes1234"]
+proc_names = ["Higgs","VVV","ZR","TTR","VVR","WR","ZLF","TTLF","VVLF","WLF","jetFakes","MC_jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes134","jetFakes234","jetFakes1234"]
 first = True
 for i in proc_names:
   if i in directory.GetListOfKeys():
