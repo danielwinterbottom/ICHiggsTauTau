@@ -94,6 +94,8 @@ namespace ic {
     if(fs_){  
       outtree_ = fs_->make<TTree>("gen_ntuple","gen_ntuple");
       outtree_->Branch("event"       , &event_       );
+      outtree_->Branch("lumi"       , &lumi_       );
+      outtree_->Branch("run"       , &run_       );
       outtree_->Branch("wt"       , &wt_       );
       outtree_->Branch("hasTaus"       , &hasTaus_       );
       outtree_->Branch("gen_wt"       , &gen_wt_       );
@@ -415,6 +417,17 @@ namespace ic {
 	    
 	    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 	    event_ = (unsigned long long) eventInfo->event();
+            run_ = eventInfo->run();
+            lumi_ = eventInfo->lumi_block();
+
+            // temporary fix to removed duplicated events
+            if (run_==prev_run_ && event_==prev_event_ && lumi_==prev_lumi_) { 
+              return 1;
+            }
+            prev_run_ = run_;
+            prev_event_ = event_;
+            prev_lumi_ = lumi_;
+
 	    wt_ = 1;
 	    rand->SetSeed(event_);
 	    rand_ = rand->Uniform();   

@@ -76,6 +76,9 @@ parser.add_option("--list_backup", dest="slbackupname", type='string', default='
 parser.add_option("--condor", action='store_true', default=False,
                   help="Submit jobs to condor (for lxplus)")
 
+parser.add_option("--effective_events", action='store_true', default=False,
+                  help="Generating effective event numbers for processing all samples")
+
 parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
                   help="Do JES, JER, and MET uncertainties")
 # ----------------------------------------
@@ -212,6 +215,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
       for era in data_eras:
         data_samples+=['Tau'+era]        
 
+    if options.effective_events: # this is just used for the effective events case
+        for era in data_eras:
+          if 'SingleMuon'+era not in data_samples: data_samples+=['SingleMuon'+era]
+          if 'EGamma'+era not in data_samples: data_samples+=['EGamma'+era]
+          if 'Tau'+era not in data_samples: data_samples+=['Tau'+era]
+          if 'MuonEG'+era not in data_samples: data_samples+=['MuonEG'+era]
+          if 'DoubleMuon'+era not in data_samples: data_samples+=['DoubleMuon'+era]
+
   DATAFILELIST="./filelists/Mar31_2016-preVFP_Data_124X"
 
   for sa in data_samples:
@@ -277,9 +288,9 @@ if options.proc_bkg or options.proc_all:
      'W4JetsToLNu-LO',
 
      # W + Jets NLO
-     #'WJetsToLNu_0J-NLO',
-     #'WJetsToLNu_1J-NLO',
-     #'WJetsToLNu_2J-NLO',
+     'WJetsToLNu_0J-NLO',
+     'WJetsToLNu_1J-NLO',
+     'WJetsToLNu_2J-NLO',
  
      # ttbar
      'TTTo2L2Nu',
@@ -313,14 +324,26 @@ if options.proc_bkg or options.proc_all:
      'T-t',
      'T-tW',
 
-#     # SM Higgs 
-#     'GluGluHToTauTau_M125',
-#     'ZHToTauTau_M125',
-#     'VBFHToTauTau_M125',
-#     'WminusHToTauTau_M125',
-#     'WplusHToTauTau_M125',
-#     'ttHToTauTau_M125',
+     # SM Higgs 
+     'GluGluHToTauTau_M125',
+     'ZHToTauTau_M125',
+     'VBFHToTauTau_M125',
+     'WminusHToTauTau_M125',
+     'WplusHToTauTau_M125',
+     'ttHToTauTau_M125',
  ] 
+
+  if options.effective_events: # this is just used for the effective events case
+    central_samples += [
+                        'VBF_HToZZTo4L_M125',
+                        'GluGlu_HToZZTo4L_M125',
+                        'GluGluToContinToZZTo2e2mu',
+                        'GluGluToContinToZZTo2e2tau',
+                        'GluGluToContinToZZTo2mu2tau',
+                        'GluGluToContinToZZTo4e',
+                        'GluGluToContinToZZTo4mu',
+                        'GluGluToContinToZZTo4tau',
+                        ]
 
 
   for sa in central_samples:

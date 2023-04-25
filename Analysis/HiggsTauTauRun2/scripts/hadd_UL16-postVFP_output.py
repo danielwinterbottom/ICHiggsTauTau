@@ -95,10 +95,10 @@ sample_list = [
 	 'W3JetsToLNu-LO',
 	 'W4JetsToLNu-LO',
 	# # W + Jets NLO
-# #	WJetsToLNu_0J-NLO',
-# #	WJetsToLNu_1J-NLO',
-# #	WJetsToLNu_2J-NLO',
-# #	WJetsToLNu-NLO',
+ 	 'WJetsToLNu_0J-NLO',
+ 	 'WJetsToLNu_1J-NLO',
+ 	 'WJetsToLNu_2J-NLO',
+ 	 'WJetsToLNu-NLO',
 	# # ttbar
 	 'TTTo2L2Nu',
 	 'TTToHadronic',
@@ -138,6 +138,14 @@ sample_list = [
 	 'WplusHToTauTau_M125',
 	 'ZHToTauTau_M125',
 	 'ttHToTauTau_M125',
+         'VBF_HToZZTo4L_M125',
+         'GluGlu_HToZZTo4L_M125',
+         'GluGluToContinToZZTo2e2mu',
+         'GluGluToContinToZZTo2e2tau',
+         'GluGluToContinToZZTo2mu2tau',
+         'GluGluToContinToZZTo4e',
+         'GluGluToContinToZZTo4mu',
+         'GluGluToContinToZZTo4tau',
 	]
 
 sample_list = list(set(sample_list))
@@ -190,7 +198,7 @@ for sa in sample_list:
   hadd_dirs=[]
   command=''
   if batch:
-    JOB='jobs/jobs16post/hadd_%s_2016postVFP.sh' % sa
+    JOB='jobs/hadd_%s_2016postVFP.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:

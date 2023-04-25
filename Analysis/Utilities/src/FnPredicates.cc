@@ -1649,6 +1649,10 @@ namespace ic {
 
   }
 
+  bool PairFirstLeadingSecond(CompositeCandidate const* cand){
+    if (cand->At(0)->pt() > cand->At(1)->pt()) return true;
+    return false;
+  }
 
   bool PairOneWithPt(CompositeCandidate const* cand, double const& ptMin) {
     std::vector<Candidate*> const& vec = cand->AsVector();

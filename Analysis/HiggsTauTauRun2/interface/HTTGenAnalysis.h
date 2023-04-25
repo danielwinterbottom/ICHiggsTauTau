@@ -47,6 +47,12 @@ class HTTGenAnalysis : public ModuleBase {
   TRandom3  *rand;
   
   unsigned long long event_;
+  int run_;
+  int lumi_;
+
+  int prev_run_;
+  unsigned long long prev_event_;
+  int prev_lumi_;
 
   unsigned n_rho_;
   unsigned n_tot_;
