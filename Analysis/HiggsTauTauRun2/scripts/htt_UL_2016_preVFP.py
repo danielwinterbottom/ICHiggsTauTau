@@ -287,10 +287,10 @@ if options.proc_bkg or options.proc_all:
      'W3JetsToLNu-LO',
      'W4JetsToLNu-LO',
 
-     # W + Jets NLO
-     'WJetsToLNu_0J-NLO',
-     'WJetsToLNu_1J-NLO',
-     'WJetsToLNu_2J-NLO',
+#     # W + Jets NLO
+#     'WJetsToLNu_0J-NLO',
+#     'WJetsToLNu_1J-NLO',
+#     'WJetsToLNu_2J-NLO',
  
      # ttbar
      'TTTo2L2Nu',
@@ -307,15 +307,15 @@ if options.proc_bkg or options.proc_all:
      'WZTo1L3Nu',
      'WZTo2Q2L',
 
-     # Triboson
-     'WWZ',
-     'WWZ-ext1',
-     'WZZ',
-     'WZZ-ext1',
-     'WWW',
-     'WWW-ext1',
-     'ZZZ',
-     'ZZZ-ext1',
+#     # Triboson
+#     'WWZ',
+#     'WWZ-ext1',
+#     'WZZ',
+#     'WZZ-ext1',
+#     'WWW',
+#     'WWW-ext1',
+#     'ZZZ',
+#     'ZZZ-ext1',
 
      # Other backgrounds
      'WGToLNuG',
@@ -324,13 +324,13 @@ if options.proc_bkg or options.proc_all:
      'T-t',
      'T-tW',
 
-     # SM Higgs 
-     'GluGluHToTauTau_M125',
-     'ZHToTauTau_M125',
-     'VBFHToTauTau_M125',
-     'WminusHToTauTau_M125',
-     'WplusHToTauTau_M125',
-     'ttHToTauTau_M125',
+#     # SM Higgs 
+#     'GluGluHToTauTau_M125',
+#     'ZHToTauTau_M125',
+#     'VBFHToTauTau_M125',
+#     'WminusHToTauTau_M125',
+#     'WplusHToTauTau_M125',
+#     'ttHToTauTau_M125',
  ] 
 
   if options.effective_events: # this is just used for the effective events case

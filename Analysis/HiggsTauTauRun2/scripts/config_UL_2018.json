@@ -4,8 +4,9 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar31_MC_124X_2018/",
     "max_events":   -1,
     "timings":      true,
-   //"channels":     ["mt","et","tt","zmm"],
-   "channels":     ["mt","et","tt","zmm"],
+   //"channels":     ["mt","et","tt","zmm","zee","em"],
+   // "channels":     ["mt","zmm","tt","et"],
+    "channels":     ["mt","zmm"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -65,7 +66,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_sync_v2/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",

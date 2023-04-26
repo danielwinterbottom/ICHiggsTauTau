@@ -10,7 +10,11 @@ filename = args.file
 
 file = ROOT.TFile(filename)
 
-tree = file.Get("effective")
+#tree_name = 'effective'
+tree_name = 'ntuple'
+#tree_name = 'TauCheck'
+
+tree = file.Get(tree_name)
 
 unique_sets = set()
 duplicated_sets = set()
@@ -43,7 +47,7 @@ file.Close()
 # the next check looks for duplicates anywhere in the tree (can have issues with memory for large samples)
 print 'Checking all events:' 
 file = uproot.open(filename)
-tree = file["effective"]
+tree = file[tree_name]
 
 branches = ["event", "lumi", "run"]
 
