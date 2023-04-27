@@ -142,8 +142,6 @@ for year in years:
            run_cmd_2=''
            run_cmd_3=''
            run_cmd_4=''
-           run_cmd_5=''
-           run_cmd_6=''
 
            extra=''
            if ',' in var_used: extra = '--do_unrolling=0' 
@@ -200,4 +198,3 @@ for year in years:
                   CreateBatchJob(job_file,cmssw_base,[commands[i]])
                   if 'syst_scale_j_regrouped' in s_name: SubmitBatchJob(job_file,time=500,memory=24,cores=1)
                   else: SubmitBatchJob(job_file,time=180,memory=24,cores=1)
-  
