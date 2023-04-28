@@ -524,7 +524,8 @@ if options.year == "2018":
       qqzz_samples = ['ZZTo4L']
       higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125','ZHToTauTau_M125-ext1']
       hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+      #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
       #signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
       signal_samples = sig_samples
       signal_samples = ReformatSignals(signal_samples,True)
@@ -553,7 +554,8 @@ if options.year == "2017":
     #hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125','ZHToTauTau_M125']
     hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
     higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
-    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+    #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
     signal_samples = sig_samples
     signal_samples = ReformatSignals(signal_samples,True)
 
@@ -568,7 +570,8 @@ if options.year == "2016_postVFP":
   qqzz_samples = ['ZZTo4L']
   higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
   signal_samples = ReformatSignals(signal_samples,True)
@@ -583,7 +586,8 @@ if options.year == "2016_preVFP":
   qqzz_samples = ['ZZTo4L']
   higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
   wgam_samples = ['WGToLNuG']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
@@ -667,7 +671,7 @@ if options.channel.count("t") == 0:
   other_sels["R"] = "(1)"
   del other_sels["JF"]
   del other_sels["LF"]
-  del other_sels["JLF"]
+  #del other_sels["JLF"]
 
 z_sels = {"Z"+key:val for (key,val) in other_sels.items()}
 top_sels = {"TT"+key:val for (key,val) in other_sels.items()}
@@ -1093,76 +1097,83 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
         if options.do_ff_systs:
           #wt_exts = ["_q_sum_down","_q_sum_up","_non_closure_down","_non_closure_up","_subtract_pass_non_closure_down","_subtract_pass_non_closure_up","_subtract_fail_non_closure_down","_subtract_fail_non_closure_up","_subtraction_up","_subtraction_down"]
           wt_exts = ["_non_closure_down","_non_closure_up","_subtract_pass_non_closure_down","_subtract_pass_non_closure_up","_subtract_fail_non_closure_down","_subtract_fail_non_closure_up","_subtraction_up","_subtraction_down"]
+          #wt_exts = ["_non_closure_down","_non_closure_up","_subtract_pass_non_closure_down","_subtract_pass_non_closure_up","_subtract_fail_non_closure_down","_subtract_fail_non_closure_up","_subtraction_up","_subtraction_down","_tau_number_up","_tau_number_down"]
           if options.channel == "ttt":
             spec_wt_exts = {
-                            "1":{"wt_ff_ml_1":["_iso_0f_up","_iso_0f_down"]},
-                            "2":{"wt_ff_ml_2":["_iso_0f_up","_iso_0f_down"]},
-                            "3":{"wt_ff_ml_3":["_iso_0f_up","_iso_0f_down"]},
-                            "12":{"wt_ff_ml_1":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_2":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "13":{"wt_ff_ml_1":["_iso_1p1f_up","_iso_1p1f_down"],
-                                  "wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"]},
-                            "23":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_3":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "123":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"]}
+                            "1":{"wt_ff_ml_1":["_iso_0f_1_up","_iso_0f_1_down"]},
+                            "2":{"wt_ff_ml_2":["_iso_0f_2_up","_iso_0f_2_down"]},
+                            "3":{"wt_ff_ml_3":["_iso_0f_3_up","_iso_0f_3_down"]},
+                            "12":{"wt_ff_ml_1":["_iso_1f1p_1_up","_iso_1f1p_1_down"],
+                                  "wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"]},
+                            "13":{"wt_ff_ml_1":["_iso_1p1f_1_up","_iso_1p1f_1_down"],
+                                  "wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"]},
+                            "23":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
+                                  "wt_ff_ml_3":["_iso_1p1f_3_up","_iso_1p1f_3_down"]},
+                            "123":{"wt_ff_ml_1":["_iso_2f_1_up","_iso_2f_1_down"],
+                                   "wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
+                                   "wt_ff_ml_3":["_iso_2f_3_up","_iso_2f_3_down"]}
                             }
           elif options.channel == "tttt":
             spec_wt_exts = {
-                            "12":{"wt_ff_ml_1":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_2":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "13":{"wt_ff_ml_1":["_iso_1p1f_up","_iso_1p1f_down"],
-                                  "wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"]},
-                            "14":{"wt_ff_ml_1":["_iso_1p1f_up","_iso_1p1f_down"],
-                                  "wt_ff_ml_4":["_iso_1f1p_up","_iso_1f1p_down"]},
-                            "23":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_3":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "24":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_4":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "34":{"wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_4":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "123":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"]},
-                            "124":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
-                            "134":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
-                            "234":{"wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
-                            "1234":{"wt_ff_ml_1":["_iso_2f_up","_iso_2f_down"],
-                                    "wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
-                                    "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
-                                    "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]},
+                            "12":{"wt_ff_ml_1":["_iso_1f1p_1_up","_iso_1f1p_1_down"],
+                                  "wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"]},
+                            "13":{"wt_ff_ml_1":["_iso_1p1f_1_up","_iso_1p1f_1_down"],
+                                  "wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"]},
+                            "14":{"wt_ff_ml_1":["_iso_1p1f_1_up","_iso_1p1f_1_down"],
+                                  "wt_ff_ml_4":["_iso_1f1p_4_up","_iso_1f1p_4_down"]},
+                            "23":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
+                                  "wt_ff_ml_3":["_iso_1p1f_3_up","_iso_1p1f_3_down"]},
+                            "24":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
+                                  "wt_ff_ml_4":["_iso_1p1f_4_up","_iso_1p1f_4_down"]},
+                            "34":{"wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"],
+                                  "wt_ff_ml_4":["_iso_1p1f_4_up","_iso_1p1f_4_down"]},
+                            "123":{"wt_ff_ml_1":["_iso_2f_1_up","_iso_2f_1_down"],
+                                   "wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
+                                   "wt_ff_ml_3":["_iso_2f_3_up","_iso_2f_3_down"]},
+                            "124":{"wt_ff_ml_1":["_iso_2f_1_up","_iso_2f_1_down"],
+                                   "wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
+                                   "wt_ff_ml_4":["_iso_2f_4_up","_iso_2f_4_down"]},
+                            "134":{"wt_ff_ml_1":["_iso_2f_1_up","_iso_2f_1_down"],
+                                   "wt_ff_ml_3":["_iso_2f_3_up","_iso_2f_3_down"],
+                                   "wt_ff_ml_4":["_iso_2f_4_up","_iso_2f_4_down"]},
+                            "234":{"wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
+                                   "wt_ff_ml_3":["_iso_2f_3_up","_iso_2f_3_down"],
+                                   "wt_ff_ml_4":["_iso_2f_4_up","_iso_2f_4_down"]},
+                            "1234":{"wt_ff_ml_1":["_iso_2f_1_up","_iso_2f_1_down"],
+                                    "wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
+                                    "wt_ff_ml_3":["_iso_2f_3_up","_iso_2f_3_down"],
+                                    "wt_ff_ml_4":["_iso_2f_4_up","_iso_2f_4_down"]},
                             }
           elif options.channel in ["ettt","mttt"]:
             spec_wt_exts = {
-                            "2":{"wt_ff_ml_2":["_iso_0f_up","_iso_0f_down"]},
-                            "3":{"wt_ff_ml_3":["_iso_0f_up","_iso_0f_down"]},
-                            "4":{"wt_ff_ml_4":["_iso_0f_up","_iso_0f_down"]},
-                            "23":{"wt_ff_ml_2":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_3":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "24":{"wt_ff_ml_2":["_iso_1p1f_up","_iso_1p1f_down"],
-                                  "wt_ff_ml_4":["_iso_1f1p_up","_iso_1f1p_down"]},
-                            "34":{"wt_ff_ml_3":["_iso_1f1p_up","_iso_1f1p_down"],
-                                  "wt_ff_ml_4":["_iso_1p1f_up","_iso_1p1f_down"]},
-                            "234":{"wt_ff_ml_2":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_3":["_iso_2f_up","_iso_2f_down"],
-                                   "wt_ff_ml_4":["_iso_2f_up","_iso_2f_down"]}
+                            "2":{"wt_ff_ml_2":["_iso_0f_2_up","_iso_0f_2_down"]},
+                            "3":{"wt_ff_ml_3":["_iso_0f_3_up","_iso_0f_3_down"]},
+                            "4":{"wt_ff_ml_4":["_iso_0f_4_up","_iso_0f_4_down"]},
+                            "23":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
+                                  "wt_ff_ml_3":["_iso_1p1f_3_up","_iso_1p1f_3_down"]},
+                            "24":{"wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"],
+                                  "wt_ff_ml_4":["_iso_1f1p_4_up","_iso_1f1p_4_down"]},
+                            "34":{"wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"],
+                                  "wt_ff_ml_4":["_iso_1p1f_4_up","_iso_1p1f_4_down"]},
+                            "234":{"wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
+                                   "wt_ff_ml_3":["_iso_2f_3_up","_iso_2f_3_down"],
+                                   "wt_ff_ml_4":["_iso_2f_4_up","_iso_2f_4_down"]}
                             }
 
           elif options.channel in ["eett","mmtt","emtt"]:
             spec_wt_exts = {
-                            "3":{"wt_ff_ml_3":["_iso_0f_up","_iso_0f_down"]},
-                            "4":{"wt_ff_ml_4":["_iso_0f_up","_iso_0f_down"]},
-                            "34":{"wt_ff_ml_3":["_iso_1f_up","_iso_1f_down"],
-                                  "wt_ff_ml_4":["_iso_1f_up","_iso_1f_down"]},
+                            "3":{"wt_ff_ml_3":["_iso_0f_3_up","_iso_0f_3_down"]},
+                            "4":{"wt_ff_ml_4":["_iso_0f_4_up","_iso_0f_4_down"]},
+                            "34":{"wt_ff_ml_3":["_iso_1f_3_up","_iso_1f_3_down"],
+                                  "wt_ff_ml_4":["_iso_1f_4_up","_iso_1f_4_down"]},
                             }
-
+          #elif options.channel in ["eett","mmtt","emtt"]:
+          #  spec_wt_exts = {
+          #                  "3":{"wt_ff_ml_3":["_iso_0f_3_up","_iso_0f_3_down","_q_sum_0f_3_up","_q_sum_0f_3_down","_tau_number_0f_3_up","_tau_number_0f_3_down"]},
+          #                  "4":{"wt_ff_ml_4":["_iso_0f_4_up","_iso_0f_4_down","_q_sum_0f_4_up","_q_sum_0f_4_down","_tau_number_0f_4_up","_tau_number_0f_4_down"]},
+          #                  "34":{"wt_ff_ml_3":["_iso_1f_3_up","_iso_1f_3_down","_q_sum_1f_3_up","_q_sum_1f_3_down","_tau_number_1f_3_up","_tau_number_1f_3_down"],
+          #                        "wt_ff_ml_4":["_iso_1f_4_up","_iso_1f_4_down","_q_sum_1f_4_up","_q_sum_1f_4_down","_tau_number_1f_4_up","_tau_number_1f_4_down"]},
+          #                  }
 
 
         else:
@@ -1352,10 +1363,10 @@ if options.syst_tau_id_new:
                     up_wts.append("(((1)*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
                     down_wts.append("(((1)*(tau_decay_mode_{0}=={1}))+(tau_decay_mode_{0}!={1}))".format(ind+1,dm,j))
 
-        bin_name = "syst_tau_id_{}_DM".format(j)+dm+k
-        if j == "syst_dm_year": bin_name = "syst_tau_id_{}_DM".format(j.replace("_year","")+dm+k)
-        systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
-        systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
+           bin_name = "syst_tau_id_{}_DM".format(j)+dm+k
+           if j == "syst_dm_year": bin_name = "syst_tau_id_{}_DM".format(j.replace("_year","")+dm+k)
+           systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
+           systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
   # syst_$ERA should be correlated across DMs but uncorrelated by eras
   for k in ["2016_preVFP","2016_postVFP","2017","2018"]:
@@ -1376,13 +1387,17 @@ if options.syst_tau_id_new:
      systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)
 
   # syst_alleras should correlated across DMs and eras
-  for k in ["syst_all_eras","high_pt"]:
+  for k in ["syst_all_eras","highpt"]:
      up_wts =[]
      down_wts = []
      for ind, ch in enumerate(options.channel):
         if ch == "t":
-           up_wts.append("(idisoweight_ratio_{0}_{1}_up)".format(ind+1,k))
-           down_wts.append("(idisoweight_ratio_{0}_{1}_down)".format(ind+1,k))
+           if k == "highpt": # hacky fix for high pT uncerts
+             up_wts.append("(idisoweight_ratio_{0}_{1}_up*idisoweight_ratio_{0})".format(ind+1,k))
+             down_wts.append("((gen_match_{0}==5 && pt_{0}>40)*(2-idisoweight_ratio_{0}_{1}_down*idisoweight_ratio_{0}))".format(ind+1,k))
+           else:
+             up_wts.append("(idisoweight_ratio_{0}_{1}_up)".format(ind+1,k))
+             down_wts.append("(idisoweight_ratio_{0}_{1}_down)".format(ind+1,k))
      bin_name = "syst_tau_id_{}".format(k)
      systematics['{}_up'.format(bin_name)] = ('' , '_'+bin_name+'Up', 'wt*'+"*".join(up_wts), ['jetFakes'], False)
      systematics['{}_down'.format(bin_name)] = ('' , '_'+bin_name+'Down', 'wt*'+"*".join(down_wts), ['jetFakes'], False)

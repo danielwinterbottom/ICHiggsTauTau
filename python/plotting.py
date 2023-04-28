@@ -2173,10 +2173,13 @@ def NonZeroMinimum(h):
       min_value = h.GetBinContent(i)
   return min_value
 
-def ShrinkFinalBin(h):
+def ShrinkFinalBin(h,val=600.0):
   bins = [h.GetBinLowEdge(b) for b in range(1,h.GetNbinsX()+2)]
   if len(bins) < 3: return h
-  new_bins = array('f',bins[:-1] + [2*bins[-2]-bins[-3]])
+  if val == None:
+    new_bins = array('f',bins[:-1] + [2*bins[-2]-bins[-3]])
+  else:
+    new_bins = array('f',bins[:-1] + [val])
   new_h = R.TH1D(h.GetName(),'',len(new_bins)-1, new_bins)
   for b in range(1,h.GetNbinsX()+1):
     new_h.SetBinContent(b,h.GetBinContent(b))

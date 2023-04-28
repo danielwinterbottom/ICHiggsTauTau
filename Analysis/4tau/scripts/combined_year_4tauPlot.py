@@ -294,6 +294,74 @@ if args.zero_negative_bins:
         directory.Delete(i+';1')
         new_hist.Write()
 
+# capping jetfakes if higher numbers have a greater value of events when better stats
+print "Capping jetFakes yields"
+
+def ShiftYields(check,minimum,check_scale=1.0,minimum_scale=1.0):
+  cf.cd(dir_name)
+
+  min_hist = cf.Get(dir_name+'/'+minimum)
+  min_hist.Scale(minimum_scale)
+
+  for c in check:
+
+    hist = cf.Get(dir_name+'/'+c)
+    new_hist = copy.deepcopy(hist)
+
+    new_hist.Scale(check_scale)
+
+    for i in range(0,new_hist.GetNbinsX()+1):
+      if abs(min_hist.GetBinContent(i)) > abs(new_hist.GetBinContent(i)):
+        if new_hist.Integral() > 0:
+          new_hist.SetBinContent(i,abs(min_hist.GetBinContent(i)))
+        else:
+          new_hist.SetBinContent(i,-abs(min_hist.GetBinContent(i)))
+
+    new_hist.Scale(1.0/check_scale)
+
+    directory.Delete(c+';1')
+    new_hist.Write()
+    shift = new_hist.Clone()
+    shift.Add(hist,-1)
+
+    shifted = []
+    for i in directory.GetListOfKeys():
+      if c+"_" in i.GetName():
+        print i.GetName()
+        new_shift = copy.deepcopy(directory.Get(i.GetName()))
+        new_shift.Add(shift)
+        shifted.append(new_shift)
+
+    for i in shifted:
+      directory.Delete(i.GetName()+';1')
+      i.Write()
+
+
+if args.channel in ["tttt"]:
+  ShiftYields(["jetFakes123","jetFakes124","jetFakes134","jetFakes234"],"jetFakes1234",minimum_scale=1.0/3.0,check_scale=1.0/2.0)
+  ShiftYields(["jetFakes12","jetFakes13","jetFakes23"],"jetFakes123",minimum_scale=1.0/2.0)
+  ShiftYields(["jetFakes12","jetFakes14","jetFakes24"],"jetFakes124",minimum_scale=1.0/2.0)
+  ShiftYields(["jetFakes13","jetFakes14","jetFakes34"],"jetFakes134",minimum_scale=1.0/2.0)
+  ShiftYields(["jetFakes23","jetFakes24","jetFakes34"],"jetFakes234",minimum_scale=1.0/2.0)
+
+if args.channel in ["ettt","mttt"]:
+  ShiftYields(["jetFakes23","jetFakes24","jetFakes34"],"jetFakes234")
+  ShiftYields(["jetFakes2","jetFakes3"],"jetFakes23")
+  ShiftYields(["jetFakes2","jetFakes4"],"jetFakes24")
+  ShiftYields(["jetFakes3","jetFakes4"],"jetFakes34")
+
+
+if args.channel in ["ttt"]:
+  ShiftYields(["jetFakes12","jetFakes13","jetFakes23"],"jetFakes123")
+  ShiftYields(["jetFakes1","jetFakes2"],"jetFakes12")
+  ShiftYields(["jetFakes1","jetFakes3"],"jetFakes13")
+  ShiftYields(["jetFakes2","jetFakes3"],"jetFakes23")
+
+if args.channel in ["eett","mmtt","emtt"]:
+  ShiftYields(["jetFakes3","jetFakes4"],"jetFakes34")
+
+
+
 #recalculate total
 proc_names = ["Higgs","VVV","ZR","TTR","VVR","WR","ZLF","TTLF","VVLF","WLF","jetFakes","MC_jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes134","jetFakes234","jetFakes1234"]
 first = True

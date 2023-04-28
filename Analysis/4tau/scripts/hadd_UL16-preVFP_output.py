@@ -204,7 +204,7 @@ for sa in sample_list:
     remove=True
     to_remove=[]
     hadd_dirs=[]
-    command=''
+    commands=[]
     if batch:
       JOB='jobs/hadd_%(sa)s_%(ch)s_2016_preVFP.sh' % vars()
       os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
@@ -231,9 +231,9 @@ for sa in sample_list:
               else :
                 to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_%(ch)s_*' %vars())
             else:
-              haddout='haddout_%s_%s_%s_2016_preVFP.txt' % (sa,ch,sdir)  
-              hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_%(ch)s_*' %vars())) 
-              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_preVFP.root %(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
+              haddout='jobs/haddout_%s_%s_%s_2016_preVFP.txt' % (sa,ch,sdir)  
+              hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_%(ch)s_*; rm %(haddout)s' %vars())) 
+              commands.append("echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2016_preVFP.root %(outputf)s/%(sdir)s/%(sa)s_2016_preVFP_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s" % vars())     
           else :
             print "Incorrect number of files for sample %(sa)s_2016_preVFP_%(ch)s! in %(sdir)s"%vars()
             remove=False
@@ -243,18 +243,33 @@ for sa in sample_list:
       for x in to_remove: 
         os.system(x)
   
-    if batch and command:
-      with open(JOB, "a") as file: 
-        file.write("\n%s" % command)
-        rm_command = 'y=1\n' % vars()
-        for i in hadd_dirs:
+    #if batch and command:
+    #  with open(JOB, "a") as file: 
+    #    file.write("\n%s" % command)
+    #    rm_command = 'y=1\n' % vars()
+    #    for i in hadd_dirs:
+    #      hadd_file  = i[0]
+    #      rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
+    #    rm_command+='if [ $y == 1 ]; then\n'
+    #    for i in hadd_dirs:
+    #      input_file = i[1]
+    #      rm_command+=input_file+'\n'
+    #    rm_command+='fi'
+    #    if remove: file.write("\n%s" % rm_command)
+    #    file.write('\nEnd of job')
+    #  os.system('%(JOBSUBMIT)s %(JOB)s' % vars())
+
+    if batch and len(commands) != 0:
+      with open(JOB, "a") as file:
+        for ind,i in enumerate(hadd_dirs):
+          file.write("\n%s" % commands[ind])
+          rm_command = 'y=1\n' % vars()
           hadd_file  = i[0]
           rm_command+='if [ \"$(cat %(hadd_file)s | grep -e Warning -e Error)\"  != \"\" ]; then y=0; fi\n' % vars()
-        rm_command+='if [ $y == 1 ]; then\n'
-        for i in hadd_dirs:
+          rm_command+='if [ $y == 1 ]; then\n'
           input_file = i[1]
           rm_command+=input_file+'\n'
-        rm_command+='fi'
-        if remove: file.write("\n%s" % rm_command)
+          rm_command+='fi'
+          if remove: file.write("\n%s" % rm_command)
         file.write('\nEnd of job')
       os.system('%(JOBSUBMIT)s %(JOB)s' % vars())

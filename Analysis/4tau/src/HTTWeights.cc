@@ -427,7 +427,7 @@ int HTTWeights::Execute(TreeEvent *event) {
         id_sf_loose_syst_dm_year_up = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_year_up"]->eval(args_id_sf_dm_pt.data()) : 1.0;
         id_sf_loose_syst_dm_year_down = (gen_match==5) ?fns_["t_deeptauid_dm_pt_loose_syst_dm_year_down"]->eval(args_id_sf_dm_pt.data()) : 1.0;
         id_sf_loose_highpt_up = (gen_match==5) ? (1. + (std::min(tau->pt(),500.) -40.)*(tau->pt()>40)*0.00018) : 1.0;
-        id_sf_loose_highpt_down = (gen_match==5) ? (1. + (std::min(tau->pt(),500.) -40.)*(tau->pt()>40)*0.00037) : 1.0;
+        id_sf_loose_highpt_down = (gen_match==5) ? (1. - (std::min(tau->pt(),500.) -40.)*(tau->pt()>40)*0.00037) : 1.0;
 
         if(do_etau_fakerate_) {
           auto args_etau_fakerate = std::vector<double>{fabs(tau->eta())};
@@ -476,8 +476,8 @@ int HTTWeights::Execute(TreeEvent *event) {
       event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_year_down",id_sf_loose_syst_year_down/id_sf_loose);
       event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_dm_year_up",id_sf_loose_syst_dm_year_up/id_sf_loose);
       event->Add("idisoweight_ratio_"+std::to_string(pn)+"_syst_dm_year_down",id_sf_loose_syst_dm_year_down/id_sf_loose);
-      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_highpt_up",id_sf_loose_highpt_up/id_sf_loose);
-      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_highpt_down",id_sf_loose_highpt_down/id_sf_loose);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_highpt_up",id_sf_loose_highpt_up);
+      event->Add("idisoweight_ratio_"+std::to_string(pn)+"_highpt_down",id_sf_loose_highpt_down);
 
  
       event->Add("etau_fakerate_"+std::to_string(pn), etau_fakerate);
