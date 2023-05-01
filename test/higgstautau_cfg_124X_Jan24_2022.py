@@ -1068,7 +1068,7 @@ process.icDoubleMu178ObjectProducer = producers.icTriggerObjectProducer.clone(
 process.icEle30ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsEle30"),
-    hltPath = cms.string("HLT_Ele230_WPTight_Gsf_v"),
+    hltPath = cms.string("HLT_Ele30_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
     ) # new path
