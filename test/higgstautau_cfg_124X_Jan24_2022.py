@@ -43,7 +43,7 @@ doLHEWeights = opts.LHEWeights
 if not isData: doHT     = opts.doHT
 else: doHT = 0
 includenpNLO = opts.includenpNLO
-
+tauSpinner = True
 print('isData      : '+str(isData))
 print('isEmbed      : '+str(isEmbed))
 print('globalTag   : '+str(tag))

@@ -1,7 +1,7 @@
 import argparse
 import os
 
-#python3 crab_4tau_12_4.py --data --mc --output_folder Dec22 --year 2018
+#python3 crab_4tau_12_4.py --data --mc --output_folder May0223 --year 2022-preEE
 #cmsRun test/higgstautau_cfg_124X_Dec22_2018.py isData=0 globalTag=106X_upgrade2018_realistic_v15_L1v1 isEmbed=0
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Jan24_Run3')
@@ -22,18 +22,21 @@ if args.year == "all": yl = ["2022-preEE", "2022-postEE"]
 else: yl = [args.year]
 
 cfg = {
-       "2022":"higgstautau_cfg_124X_Jan24_2022.py"
-       }
+       "2022-preEE":"higgstautau_cfg_124X_Jan24_2022.py",
+       "2022-postEE":"higgstautau_cfg_124X_Jan24_2022.py"}
 
 gt = {
       "MC"  :{
-              "2022":"124X_mcRun3_2022_realistic_postEE_v1" # check
+              "2022-preEE":"124X_mcRun3_2022_realistic_v12", # check
+               "2022-postEE":"124X_mcRun3_2022_realistic_postEE_v1"
               },
       "Signal":{
-                "2022":"124X_mcRun3_2022_realistic_postEE_v1" # check
+                "2022-preEE":"124X_mcRun3_2022_realistic_postEE_v1", # check
+                "2022-postEE":"124X_mcRun3_2022_realistic_postEE_v1"
               },
       "Data":{
-              "2022":"124X_dataRun3_Prompt_v4" # needs updating 
+              "2022-preEE":"124X_dataRun3_v11", # needs updating
+              "2022-postEE":"124X_dataRun3_v14" 
               }
       }
 
