@@ -608,6 +608,16 @@ for dm in dml:
 
         if dm == "Signal":
           if yr == "2016-preVFP":
+            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+
+            # Not found
+            #tasks.append(('WplusHToTauTau',''))
+	    #tasks.append(('ZHToTauTau',''))
+
             tasks.append(('ZstarTophi100A100To4Tau', '/ZstarTophi100A100To4Tau/guttley-ZstarTophi100A100To4Tau_2016_preVFP_MiniAODv2-dde8416f077af18277410769aefcab29/USER'))
             tasks.append(('ZstarTophi100A125To4Tau', '/ZstarTophi100A125To4Tau/guttley-ZstarTophi100A125To4Tau_2016_preVFP_MiniAODv2-dde8416f077af18277410769aefcab29/USER'))
             tasks.append(('ZstarTophi100A140To4Tau', '/ZstarTophi100A140To4Tau/guttley-ZstarTophi100A140To4Tau_2016_preVFP_MiniAODv2-dde8416f077af18277410769aefcab29/USER'))
@@ -682,6 +692,14 @@ for dm in dml:
             tasks.append(('ZstarTophi300A90To4Tau', '/ZstarTophi300A90To4Tau/guttley-ZstarTophi300A90To4Tau_2016_preVFP_MiniAODv2-dde8416f077af18277410769aefcab29/USER'))
 
           elif yr == "2016-postVFP":
+            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+
             tasks.append(('ZstarTophi100A100To4Tau', '/ZstarTophi100A100To4Tau/guttley-ZstarTophi100A100To4Tau_2016_postVFP_MiniAODv2-b7fcf42526cc36d3ab682c6ddd6f0b59/USER'))
             tasks.append(('ZstarTophi100A125To4Tau', '/ZstarTophi100A125To4Tau/guttley-ZstarTophi100A125To4Tau_2016_postVFP_MiniAODv2-b7fcf42526cc36d3ab682c6ddd6f0b59/USER'))
             tasks.append(('ZstarTophi100A140To4Tau', '/ZstarTophi100A140To4Tau/guttley-ZstarTophi100A140To4Tau_2016_postVFP_MiniAODv2-b7fcf42526cc36d3ab682c6ddd6f0b59/USER'))
@@ -756,6 +774,14 @@ for dm in dml:
             tasks.append(('ZstarTophi300A90To4Tau', '/ZstarTophi300A90To4Tau/guttley-ZstarTophi300A90To4Tau_2016_postVFP_MiniAODv2-b7fcf42526cc36d3ab682c6ddd6f0b59/USER'))
 
           elif yr == "2017":
+            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+
             tasks.append(('ZstarTophi100A100To4Tau', '/ZstarTophi100A100To4Tau/guttley-ZstarTophi100A100To4Tau_2017_MiniAODv2-3f0b140a720de1c801ff414923884f7b/USER'))
             tasks.append(('ZstarTophi100A125To4Tau', '/ZstarTophi100A125To4Tau/guttley-ZstarTophi100A125To4Tau_2017_MiniAODv2-3f0b140a720de1c801ff414923884f7b/USER'))
             tasks.append(('ZstarTophi100A140To4Tau', '/ZstarTophi100A140To4Tau/guttley-ZstarTophi100A140To4Tau_2017_MiniAODv2-3f0b140a720de1c801ff414923884f7b/USER'))
@@ -830,6 +856,14 @@ for dm in dml:
             tasks.append(('ZstarTophi300A90To4Tau', '/ZstarTophi300A90To4Tau/guttley-ZstarTophi300A90To4Tau_2017_MiniAODv2-3f0b140a720de1c801ff414923884f7b/USER'))
 
           elif yr == "2018":
+            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+
             tasks.append(('ZstarTophi100A100To4Tau', '/ZstarTophi100A100To4Tau/guttley-ZstarTophi100A100To4Tau_2018_MiniAODv2-07bb2832fd9cf08ee8da01c42829422a/USER'))
             tasks.append(('ZstarTophi100A125To4Tau', '/ZstarTophi100A125To4Tau/guttley-ZstarTophi100A125To4Tau_2018_MiniAODv2-07bb2832fd9cf08ee8da01c42829422a/USER'))
             tasks.append(('ZstarTophi100A140To4Tau', '/ZstarTophi100A140To4Tau/guttley-ZstarTophi100A140To4Tau_2018_MiniAODv2-07bb2832fd9cf08ee8da01c42829422a/USER'))
