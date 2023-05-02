@@ -1252,7 +1252,7 @@ namespace ic {
 
       synctree_->Branch("run", &run_, "run/I");
       synctree_->Branch("lumi", &lumi_, "lumi/I");
-      synctree_->Branch("evt", &event_, "event/l");
+      synctree_->Branch("event", &event_, "event/l");
 
       synctree_->Branch("npv", &n_vtx_, "n_vtx/I");
       synctree_->Branch("npu", &n_pu_, "n_pu/F");
@@ -1984,6 +1984,15 @@ namespace ic {
     run_ = eventInfo->run();
     event_ = (unsigned long long) eventInfo->event();
     lumi_ = eventInfo->lumi_block();
+
+    // temporary fix to removed duplicated events
+    if (run_==prev_run_ && event_==prev_event_ && lumi_==prev_lumi_) { 
+      return 1;
+    }
+    prev_run_ = run_;
+    prev_event_ = event_;
+    prev_lumi_ = lumi_;
+
     rand->SetSeed(event_);
     rand_ = rand->Uniform();
   
