@@ -43,7 +43,7 @@ doLHEWeights = opts.LHEWeights
 if not isData: doHT     = opts.doHT
 else: doHT = 0
 includenpNLO = opts.includenpNLO
-
+tauSpinner = True
 print('isData      : '+str(isData))
 print('isEmbed      : '+str(isEmbed))
 print('globalTag   : '+str(tag))
@@ -955,6 +955,14 @@ if isData:
 
 # mt paths
 
+process.icIsoMu20ObjectProducer = producers.icTriggerObjectProducer.clone(
+    input   = cms.InputTag("selectedPatTrigger"),
+    branch = cms.string("triggerObjectsIsoMu20"),
+    hltPath = cms.string("HLT_IsoMu20_v"),
+    inputIsStandAlone = cms.bool(True),
+    storeOnlyIfFired = cms.bool(False)
+    ) #new path
+
 process.icIsoMu24ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
     branch = cms.string("triggerObjectsIsoMu24"),
@@ -972,13 +980,13 @@ process.icIsoMu24erObjectProducer = producers.icTriggerObjectProducer.clone(
     )
 
 
-process.icIsoMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsIsoMu27"),
-    hltPath = cms.string("HLT_IsoMu27_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
+#process.icIsoMu27ObjectProducer = producers.icTriggerObjectProducer.clone(
+#    input   = cms.InputTag("selectedPatTrigger"),
+#    branch = cms.string("triggerObjectsIsoMu27"),
+#    hltPath = cms.string("HLT_IsoMu27_v"),
+#    inputIsStandAlone = cms.bool(True),
+#    storeOnlyIfFired = cms.bool(False)
+#    )
 
 process.icIsoMu20Tau27ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
@@ -1041,21 +1049,29 @@ process.icDoubleMu178ObjectProducer = producers.icTriggerObjectProducer.clone(
 
 # et paths
 
-process.icEle27ObjectProducer = producers.icTriggerObjectProducer.clone(
-    input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsEle27"),
-    hltPath = cms.string("HLT_Ele27_WPTight_Gsf_v"),
-    inputIsStandAlone = cms.bool(True),
-    storeOnlyIfFired = cms.bool(False)
-    )
+#process.icEle27ObjectProducer = producers.icTriggerObjectProducer.clone(
+#    input   = cms.InputTag("selectedPatTrigger"),
+#    branch = cms.string("triggerObjectsEle27"),
+#    hltPath = cms.string("HLT_Ele27_WPTight_Gsf_v"),
+#    inputIsStandAlone = cms.bool(True),
+#    storeOnlyIfFired = cms.bool(False)
+#    ) # no events pass this
 
-process.icEle28ObjectProducer = producers.icTriggerObjectProducer.clone(
+#process.icEle28ObjectProducer = producers.icTriggerObjectProducer.clone(
+#    input   = cms.InputTag("selectedPatTrigger"),
+#    branch = cms.string("triggerObjectsEle28"),
+#    hltPath = cms.string("HLT_Ele28_WPTight_Gsf_v"),
+#    inputIsStandAlone = cms.bool(True),
+#    storeOnlyIfFired = cms.bool(False)
+#    ) # no events pass this
+
+process.icEle30ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
-    branch = cms.string("triggerObjectsEle28"),
-    hltPath = cms.string("HLT_Ele28_WPTight_Gsf_v"),
+    branch = cms.string("triggerObjectsEle30"),
+    hltPath = cms.string("HLT_Ele30_WPTight_Gsf_v"),
     inputIsStandAlone = cms.bool(True),
     storeOnlyIfFired = cms.bool(False)
-    )
+    ) # new path
 
 process.icEle32ObjectProducer = producers.icTriggerObjectProducer.clone(
     input   = cms.InputTag("selectedPatTrigger"),
@@ -1600,9 +1616,10 @@ process.icEle16Ele12Ele8 = producers.icTriggerObjectProducer.clone(
 )
 
 process.icTriggerObjectSequence += cms.Sequence(
+    process.icIsoMu20ObjectProducer+
     process.icIsoMu24ObjectProducer+
     process.icIsoMu24erObjectProducer+
-    process.icIsoMu27ObjectProducer+
+    #process.icIsoMu27ObjectProducer+
     process.icIsoMu20Tau27ObjectProducer+
     process.icIsoMu20Tau27TightIDObjectProducer+
     process.icIsoMu20TauHPS27ObjectProducer+
@@ -1610,8 +1627,9 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icDoubleEl24ObjectProducer+
     process.icDoubleMu20ObjectProducer+
     process.icDoubleMu178ObjectProducer+
-    process.icEle27ObjectProducer+
-    process.icEle28ObjectProducer+
+    #process.icEle27ObjectProducer+
+    #process.icEle28ObjectProducer+
+    process.icEle30ObjectProducer+
     process.icEle32ObjectProducer+
     process.icEle32L1DoubleEGObjectProducer+
     process.icEle35ObjectProducer+
