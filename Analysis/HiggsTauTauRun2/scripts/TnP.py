@@ -630,7 +630,10 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
     for j in range(1,hist2d.GetNbinsY()+1):
       bin_low_edge = str(round(hist2d.GetYaxis().GetBinLowEdge(j),1)).replace(".","p")
       bin_up_edge  = str(round(hist2d.GetYaxis().GetBinUpEdge(j),1)).replace(".","p")
-      path = options.outputfolder + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
+      if "id" in name: path = options.outputfolder + "/id/" + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
+      elif "iso" in name: path = options.outputfolder + "/iso/" + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
+      else: path = options.outputfolder + "/trg/" + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
+
       if not os.path.exists(path):
          os.makedirs(path)
 
@@ -800,8 +803,11 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         else: legend2.AddEntry(xframe2.findObject("AllFail"), "Z #rightarrow #mu#mu + BG", "l")
         legend2.AddEntry(xframe2.findObject("BkgFail"), "BG", "l")
         legend2.Draw()
-         
-        canv.Print(options.outputfolder + name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+        
+        if "id" in name: canv.Print(options.outputfolder + "/id/" + name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+        elif "iso" in name: canv.Print(options.outputfolder + "/iso/"+ name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+        else: canv.Print(options.outputfolder + "/trg/" + name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+ 
         del canv
         
       res.append((dat, wsp.var('efficiency').getVal(), wsp.var('efficiency').getError()))
@@ -939,7 +945,6 @@ if options.draw_hists == 1:
 else:
     outfile = ROOT.TFile(output_name)
 
-
 wsfilename = output_name.replace('.root','_ws.root')
 wsfilename_sig = output_name.replace('.root','_ws_sig.root')
 wsfilename_bkg = output_name.replace('.root','_ws_bkg.root')
@@ -978,7 +983,7 @@ for i in variations:
    sffile = ROOT.TFile(sffile_name, 'RECREATE')
    
    for name in wsnames:
-      if channel == "tpzee"
+      if options.channel == "tpzee":
          sig_model = 'BWDoubleCBConvCorr'
          if i == "signal": sig_model = "DoubleVUncorr"
          bkg_model = 'CMSShape'
@@ -1000,7 +1005,7 @@ for i in variations:
          if (i == "nominal" or i == "tightTag" or i =="signal") and "id" not in name: bkg_model = "Exponential"
          print(i,name,sig_model,bkg_model)
       
-      elif channel == "tpzmm":
+      elif options.channel == "tpzmm":
          sig_model = 'BWDoubleCBConvCorr'
          if "iso" in name: sig_model = "BWDoubleCBConvCorr_TwoPeaks"
          bkg_model = 'CMSShape'
@@ -1019,12 +1024,12 @@ for i in variations:
             if i == "signal": sig_model = "BWDoubleCBConvCorr"
 
          if (i == "nominal" or i == "tightTag" or i =="signal") and "id" not in name: bkg_model = "Exponential"
-
-      if ('trg' in name or not options.trg_only):
-         if i == "nominal": FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,i,True)#'data' in name)
-         if i == "signal": FitWorkspace(name,wsfile_sig,sffile,sig_model,bkg_model,i,True)#'data' in name)
-         if i == "bkg": FitWorkspace(name,wsfile_bkg,sffile,sig_model,bkg_model,i,True)#'data' in name)
-         if i == "tightTag": FitWorkspace(name,wsfile_tightTag,sffile,sig_model,bkg_model,i,True)#'data' in name)
+      print(i,name,sig_model,bkg_model)
+    #  if ('trg' in name or not options.trg_only):
+    #     if i == "nominal": FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,i,True)#'data' in name)
+    #     if i == "signal": FitWorkspace(name,wsfile_sig,sffile,sig_model,bkg_model,i,True)#'data' in name)
+    #     if i == "bkg": FitWorkspace(name,wsfile_bkg,sffile,sig_model,bkg_model,i,True)#'data' in name)
+    #     if i == "tightTag": FitWorkspace(name,wsfile_tightTag,sffile,sig_model,bkg_model,i,True)#'data' in name)
 
    sffile.Close()
 
