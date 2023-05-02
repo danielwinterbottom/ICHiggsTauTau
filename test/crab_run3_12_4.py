@@ -5,7 +5,7 @@ import os
 #cmsRun test/higgstautau_cfg_124X_Dec22_2018.py isData=0 globalTag=106X_upgrade2018_realistic_v15_L1v1 isEmbed=0
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Jan24_Run3')
-parser.add_argument('--year','-y', help= 'Name of input year', choices=["2022","all"], default='2022')
+parser.add_argument('--year','-y', help= 'Name of input year', choices=["2022-preEE", "2022-postEE","all"], default='2022-preEE')
 parser.add_argument('--data', help= 'Run data samples',  action='store_true')
 parser.add_argument('--mc', help= 'Run mc samples',  action='store_true')
 parser.add_argument('--signal', help= 'Run signal samples',  action='store_true')
