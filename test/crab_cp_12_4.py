@@ -557,42 +557,72 @@ for dm in dml:
    
         if dm == "Signal":
           if yr == "2016-preVFP":
-            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
-            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_CPodd_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_Filtered','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_Filtered','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            #tasks.append(('WplusHToTauTau','')) # seems to be in production as of 02/05/2023 -> https://cms-pdmv.cern.ch/grasp/samples?campaign=RunIISummer20UL16*GENAPV&dataset=WplusHToTauTauUncorrelatedDecay
+	    #tasks.append(('ZHToTauTau','')) # seems to be in production as of 02/05/2023 -> https://cms-pdmv.cern.ch/grasp/samples?campaign=RunIISummer20UL16*GENAPV&dataset=ZHToTauTauUncorrelatedDecay
 
-            # Not found
-            #tasks.append(('WplusHToTauTau',''))
-	    #tasks.append(('ZHToTauTau',''))
+            tasks.append(('GluGluHToTauTau_CPodd_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            #tasks.append(('GluGluHToTauTau_MM_UnFiltered','')) # seems to be in production as of 02/05/2023 -> https://cms-pdmv.cern.ch/grasp/samples?campaign=RunIISummer20UL16*GENAPV&dataset=GluGluHToTauTauPlusTwoJetsUncorDecay_MM
+            tasks.append(('GluGluHToTauTau_SM_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_UnFiltered','/VBFHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_UnFiltered','/WminusHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            #tasks.append(('WplusHToTauTau_UnFiltered','')) # seems to be in production as of 02/05/2023 -> https://cms-pdmv.cern.ch/grasp/samples?campaign=RunIISummer20UL16*GENAPV&dataset=WplusHToTauTauUncorrelatedDecay
+            tasks.append(('ZHToTauTau_UnFiltered','/ZHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
 
           elif yr == "2016-postVFP":
-            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-            tasks.append(('WplusHToTauTau','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
-            tasks.append(('ZHToTauTau','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_CPodd_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_Filtered','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_Filtered','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_Filtered','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_Filtered','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+
+            tasks.append(('GluGluHToTauTau_CPodd_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_UnFiltered','/VBFHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_UnFiltered','/WminusHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_UnFiltered','/WplusHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_UnFiltered','/ZHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
 
           elif yr == "2017":
-            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-            tasks.append(('WplusHToTauTau','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
-            tasks.append(('ZHToTauTau','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_CPodd_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_Filtered','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_Filtered','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_Filtered','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_Filtered','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+
+            tasks.append(('GluGluHToTauTau_CPodd_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_UnFiltered','/VBFHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_UnFiltered','/WminusHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_UnFiltered','/WplusHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_UnFiltered','/ZHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
 
           elif yr == "2018":
-            tasks.append(('GluGluHToTauTau_CPodd','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_MM','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-            tasks.append(('GluGluHToTauTau_SM','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-            tasks.append(('VBFHToTauTau','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-            tasks.append(('WminusHToTauTau','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-            tasks.append(('WplusHToTauTau','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
-            tasks.append(('ZHToTauTau','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_CPodd_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM_Filtered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_Filtered_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_Filtered','/VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_Filtered','/WminusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_Filtered','/WplusHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_Filtered','/ZHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+
+            tasks.append(('GluGluHToTauTau_CPodd_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_CPodd_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_MM_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_MM_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('GluGluHToTauTau_SM_UnFiltered','/GluGluHToTauTauPlusTwoJetsUncorDecay_SM_M125_TuneCP5_13TeV-amcatnlopowheg-minlo-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('VBFHToTauTau_UnFiltered','/VBFHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WminusHToTauTau_UnFiltered','/WminusHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('WplusHToTauTau_UnFiltered','/WplusHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('ZHToTauTau_UnFiltered','/ZHToTauTauUncorrelatedDecay_M125_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
 
         for task in tasks:
 
