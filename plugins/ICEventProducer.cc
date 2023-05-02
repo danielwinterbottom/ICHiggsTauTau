@@ -26,7 +26,7 @@ ICEventProducer::~ICEventProducer() {}
 
 void ICEventProducer::produce(edm::Event& /*event*/,
                               const edm::EventSetup& /*setup*/) {
-  if (processed_>0) ic::StaticTree::tree_->Fill();
+  ic::StaticTree::tree_->Fill();
   ++processed_;
   if (processed_ == 500) ic::StaticTree::tree_->OptimizeBaskets();
 }
@@ -34,7 +34,6 @@ void ICEventProducer::produce(edm::Event& /*event*/,
 void ICEventProducer::beginJob() {}
 
 void ICEventProducer::endJob() {
-  ic::StaticTree::tree_->Fill();
 }
 
 // define this as a plug-in
