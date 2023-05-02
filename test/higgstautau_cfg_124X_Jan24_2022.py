@@ -1823,7 +1823,6 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
-    process.icEventProducer+ # in 12_4 if we dont add EventProducer first then there is a bug where the electrons get added to the next event - not sure how to fix properly but seems to work as long as it comes first in the path
     process.icSelectionSequence+
     process.pfParticleSelectionSequence+
     process.icVertexSequence+
@@ -1845,5 +1844,8 @@ process.p = cms.Path(
 )
 
 
-process.schedule = cms.Schedule(process.p)
+process.endPath = cms.Path(
+    process.icEventProducer
+)
 
+process.schedule = cms.Schedule(process.p, process.endPath)
