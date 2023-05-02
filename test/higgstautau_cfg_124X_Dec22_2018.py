@@ -14,7 +14,7 @@ parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '106X_upgrade2018_realistic_v15_L1v1', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbed', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as embedded?")
@@ -1685,7 +1685,6 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
-    process.icEventProducer+ # in 12_4 if we dont add EventProducer first then there is a bug where the electrons get added to the next event - not sure how to fix properly but seems to work as long as it comes first in the path
     process.icSelectionSequence+
     process.pfParticleSelectionSequence+
     process.icVertexSequence+
@@ -1707,6 +1706,9 @@ process.p = cms.Path(
     process.icEventInfoSequence
 )
 
+process.endPath = cms.Path( 
+    process.icEventProducer
+)
 
-process.schedule = cms.Schedule(process.p)
+process.schedule = cms.Schedule(process.p, process.endPath)
 
