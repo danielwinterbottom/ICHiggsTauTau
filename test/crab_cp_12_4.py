@@ -72,7 +72,9 @@ for dm in dml:
       cfgParams.append('isData=1')
     else: 
       cfgParams.append('isData=0')
-    if dm == "Signal": config.Data.inputDBS = 'phys03'
+    if dm == "Signal": 
+       config.Data.inputDBS = 'phys03'
+       cfgParams.append('tauSpinner=True')
 
     config.JobType.allowUndistributedCMSSW = True
     config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
