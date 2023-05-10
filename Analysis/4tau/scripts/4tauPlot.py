@@ -1104,10 +1104,10 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
                             "2":{"wt_ff_ml_2":["_iso_0f_2_up","_iso_0f_2_down"]},
                             "3":{"wt_ff_ml_3":["_iso_0f_3_up","_iso_0f_3_down"]},
                             "12":{"wt_ff_ml_1":["_iso_1f1p_1_up","_iso_1f1p_1_down"],
-                                  "wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"]},
+                                  "wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"]},
                             "13":{"wt_ff_ml_1":["_iso_1p1f_1_up","_iso_1p1f_1_down"],
                                   "wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"]},
-                            "23":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
+                            "23":{"wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"],
                                   "wt_ff_ml_3":["_iso_1p1f_3_up","_iso_1p1f_3_down"]},
                             "123":{"wt_ff_ml_1":["_iso_2f_1_up","_iso_2f_1_down"],
                                    "wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
@@ -1116,14 +1116,14 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
           elif options.channel == "tttt":
             spec_wt_exts = {
                             "12":{"wt_ff_ml_1":["_iso_1f1p_1_up","_iso_1f1p_1_down"],
-                                  "wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"]},
+                                  "wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"]},
                             "13":{"wt_ff_ml_1":["_iso_1p1f_1_up","_iso_1p1f_1_down"],
                                   "wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"]},
                             "14":{"wt_ff_ml_1":["_iso_1p1f_1_up","_iso_1p1f_1_down"],
                                   "wt_ff_ml_4":["_iso_1f1p_4_up","_iso_1f1p_4_down"]},
-                            "23":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
+                            "23":{"wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"],
                                   "wt_ff_ml_3":["_iso_1p1f_3_up","_iso_1p1f_3_down"]},
-                            "24":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
+                            "24":{"wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"],
                                   "wt_ff_ml_4":["_iso_1p1f_4_up","_iso_1p1f_4_down"]},
                             "34":{"wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"],
                                   "wt_ff_ml_4":["_iso_1p1f_4_up","_iso_1p1f_4_down"]},
@@ -1150,10 +1150,10 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
                             "3":{"wt_ff_ml_3":["_iso_0f_3_up","_iso_0f_3_down"]},
                             "4":{"wt_ff_ml_4":["_iso_0f_4_up","_iso_0f_4_down"]},
                             "23":{"wt_ff_ml_2":["_iso_1f1p_2_up","_iso_1f1p_2_down"],
-                                  "wt_ff_ml_3":["_iso_1p1f_3_up","_iso_1p1f_3_down"]},
+                                  "wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"]},
                             "24":{"wt_ff_ml_2":["_iso_1p1f_2_up","_iso_1p1f_2_down"],
                                   "wt_ff_ml_4":["_iso_1f1p_4_up","_iso_1f1p_4_down"]},
-                            "34":{"wt_ff_ml_3":["_iso_1f1p_3_up","_iso_1f1p_3_down"],
+                            "34":{"wt_ff_ml_3":["_iso_1p1f_3_up","_iso_1p1f_3_down"],
                                   "wt_ff_ml_4":["_iso_1p1f_4_up","_iso_1p1f_4_down"]},
                             "234":{"wt_ff_ml_2":["_iso_2f_2_up","_iso_2f_2_down"],
                                    "wt_ff_ml_3":["_iso_2f_3_up","_iso_2f_3_down"],
@@ -1393,8 +1393,8 @@ if options.syst_tau_id_new:
      for ind, ch in enumerate(options.channel):
         if ch == "t":
            if k == "highpt": # hacky fix for high pT uncerts
-             up_wts.append("(idisoweight_ratio_{0}_{1}_up*idisoweight_ratio_{0})".format(ind+1,k))
-             down_wts.append("((gen_match_{0}==5 && pt_{0}>40)*(2-idisoweight_ratio_{0}_{1}_down*idisoweight_ratio_{0}))".format(ind+1,k))
+             up_wts.append("((gen_match_{0}!=5)+((gen_match_{0}==5)*((1.+(min(pt_{0},500.)-40.)*(pt_{0}>40.)*0.00018))))".format(ind+1))
+             down_wts.append("((gen_match_{0}!=5)+((gen_match_{0}==5)*((1.-(min(pt_{0},500.)-40.)*(pt_{0}>40.)*0.00037))))".format(ind+1))
            else:
              up_wts.append("(idisoweight_ratio_{0}_{1}_up)".format(ind+1,k))
              down_wts.append("(idisoweight_ratio_{0}_{1}_down)".format(ind+1,k))

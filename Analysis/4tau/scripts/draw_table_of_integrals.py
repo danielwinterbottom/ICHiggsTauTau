@@ -18,6 +18,8 @@ else:
   folder = args.folder+"/CHANNEL/mt_tot_signal_CAT_all.root"
   show_data = False
   unblind = ["mmtt_z_control_nobtag","eett_z_control_nobtag"]
+  #show_data = True
+  #unblind = []
   show_other = ["A160phi300"]
   replace_show_other = ["$(m_{A},m_{\\phi}) = (160,300)$ GeV"]
 

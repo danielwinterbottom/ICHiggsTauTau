@@ -324,13 +324,14 @@ for channel in channels:
         if var_string[-1] == "4" and channel == "ttt": continue
         output_folder = '%(cmssw_base)s/%(output)s/%(channel)s' % vars()
         combined_options = ""
-        if not (args.no_syst or "ff" in name):
+        if not (args.no_syst or ("ff" in name and "ff_full" not in name)):
+           combined_options += " --adjust_jf"
            print "Adding Systematics"
            for syst in systs:
               add_cond += (syst + " ")
         if "ff" in name:
           add_cond += "--do_ff_systs "
-        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"%(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --zero_negative_bins" % vars()
+        run_cmd = "python %(cmssw_base)s/scripts/combined_year_4tauPlot.py --outputfolder=%(output_folder)s --options=\\\"%(changed_option)s --method=2 --var=\'%(var)s\' --vsjets=loose --ratio_range=0,2 %(add_cond)s \\\" --channel=%(channel)s --cat=%(cat)s --extra_name=%(var_string)s_%(name)s --add_stat_to_syst --zero_negative_bins%(combined_options)s" % vars()
         if not args.collect: run_cmd += " --run_datacards"
         if "ff" in name and "full" not in name: 
           run_cmd += " --rebin_with_data --auto_rebinning --bin_uncert_fraction=0.25"

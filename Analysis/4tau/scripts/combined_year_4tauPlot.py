@@ -20,6 +20,7 @@ parser.add_argument("--bin_threshold", type=float, default=100000.0, help="Thres
 parser.add_argument("--bin_uncert_fraction", type=float, default=0.5, help="Threshold for bin auto rebin fractional uncertainty")
 parser.add_argument("--rebin_with_data", action='store_true', help="Use data in the rebinning algorithm")
 parser.add_argument("--zero_negative_bins", action='store_true', help="Zero negative bins")
+parser.add_argument("--adjust_jf", action='store_true', help="Adjust jet fakes backgrounds")
 parser.add_argument("--batch", action='store_true', help="Run each year separetely on the batch")
 args = parser.parse_args()
 
@@ -213,7 +214,11 @@ if args.run_datacards:
       job_file = "{}/jobs/{}_{}.sh".format(args.outputfolder,dc_name,year)
       if not os.path.isdir('{}/jobs'.format(args.outputfolder)): os.system("mkdir {}/jobs".format(args.outputfolder))
       CreateBatchJob(job_file,os.getcwd().replace('src/UserCode/ICHiggsTauTau/Analysis/4tau',''),[cmd])
-      SubmitBatchJob(job_file,time=180,memory=24,cores=1)
+      if args.channel == "ttt" and year == "2018" and "signal" in dc_name:
+        print "Submitting to the long queue"
+        SubmitBatchJob(job_file,time=600,memory=24,cores=1)
+      else:
+        SubmitBatchJob(job_file,time=180,memory=24,cores=1)
 
 if args.batch: exit()
 
@@ -337,28 +342,29 @@ def ShiftYields(check,minimum,check_scale=1.0,minimum_scale=1.0):
       i.Write()
 
 
-if args.channel in ["tttt"]:
-  ShiftYields(["jetFakes123","jetFakes124","jetFakes134","jetFakes234"],"jetFakes1234",minimum_scale=1.0/3.0,check_scale=1.0/2.0)
-  ShiftYields(["jetFakes12","jetFakes13","jetFakes23"],"jetFakes123",minimum_scale=1.0/2.0)
-  ShiftYields(["jetFakes12","jetFakes14","jetFakes24"],"jetFakes124",minimum_scale=1.0/2.0)
-  ShiftYields(["jetFakes13","jetFakes14","jetFakes34"],"jetFakes134",minimum_scale=1.0/2.0)
-  ShiftYields(["jetFakes23","jetFakes24","jetFakes34"],"jetFakes234",minimum_scale=1.0/2.0)
-
-if args.channel in ["ettt","mttt"]:
-  ShiftYields(["jetFakes23","jetFakes24","jetFakes34"],"jetFakes234")
-  ShiftYields(["jetFakes2","jetFakes3"],"jetFakes23")
-  ShiftYields(["jetFakes2","jetFakes4"],"jetFakes24")
-  ShiftYields(["jetFakes3","jetFakes4"],"jetFakes34")
-
-
-if args.channel in ["ttt"]:
-  ShiftYields(["jetFakes12","jetFakes13","jetFakes23"],"jetFakes123")
-  ShiftYields(["jetFakes1","jetFakes2"],"jetFakes12")
-  ShiftYields(["jetFakes1","jetFakes3"],"jetFakes13")
-  ShiftYields(["jetFakes2","jetFakes3"],"jetFakes23")
-
-if args.channel in ["eett","mmtt","emtt"]:
-  ShiftYields(["jetFakes3","jetFakes4"],"jetFakes34")
+if args.adjust_jf:
+  if args.channel in ["tttt"]:
+    ShiftYields(["jetFakes123","jetFakes124","jetFakes134","jetFakes234"],"jetFakes1234",minimum_scale=1.0/3.0,check_scale=1.0/2.0)
+    ShiftYields(["jetFakes12","jetFakes13","jetFakes23"],"jetFakes123",minimum_scale=1.0/2.0)
+    ShiftYields(["jetFakes12","jetFakes14","jetFakes24"],"jetFakes124",minimum_scale=1.0/2.0)
+    ShiftYields(["jetFakes13","jetFakes14","jetFakes34"],"jetFakes134",minimum_scale=1.0/2.0)
+    ShiftYields(["jetFakes23","jetFakes24","jetFakes34"],"jetFakes234",minimum_scale=1.0/2.0)
+  
+  if args.channel in ["ettt","mttt"]:
+    ShiftYields(["jetFakes23","jetFakes24","jetFakes34"],"jetFakes234")
+    ShiftYields(["jetFakes2","jetFakes3"],"jetFakes23")
+    ShiftYields(["jetFakes2","jetFakes4"],"jetFakes24")
+    ShiftYields(["jetFakes3","jetFakes4"],"jetFakes34")
+  
+  
+  if args.channel in ["ttt"]:
+    ShiftYields(["jetFakes12","jetFakes13","jetFakes23"],"jetFakes123")
+    ShiftYields(["jetFakes1","jetFakes2"],"jetFakes12")
+    ShiftYields(["jetFakes1","jetFakes3"],"jetFakes13")
+    ShiftYields(["jetFakes2","jetFakes3"],"jetFakes23")
+  
+  if args.channel in ["eett","mmtt","emtt"]:
+    ShiftYields(["jetFakes3","jetFakes4"],"jetFakes34")
 
 
 
@@ -445,3 +451,91 @@ cf.Write()
 print "python scripts/4tauPlot.py --outputfolder={} --plot_from_dc='{}' --cfg={} --lumi='138 fb^{{-1}} (13 TeV)' --replace_name={}_all  --channel={} --cat={} {} {}".format(args.outputfolder,output_name,config,dc_name,args.channel,args.cat,args.options,args.combined_options)
 os.system("python scripts/4tauPlot.py --outputfolder={} --plot_from_dc='{}' --cfg={} --lumi='138 fb^{{-1}} (13 TeV)' --replace_name={}_all  --channel={} --cat={} {} {}".format(args.outputfolder,output_name,config,dc_name,args.channel,args.cat,args.options,args.combined_options))
 
+
+
+if args.adjust_jf:
+  # combine templates for jet fakes
+  rcf = ROOT.TFile(rfn,"update")
+  systs_done = []
+  for dkey in f.GetListOfKeys():
+    rcf.cd(dkey.GetName())
+  
+    # get jetFakes process
+    jF_procs = [i.GetName() for i in rcf.Get(dkey.GetName()).GetListOfKeys() if "jetFakes" in i.GetName() and "_" not in i.GetName()]
+    jF_procs.sort()
+    print jF_procs
+    
+  
+    # set only one bbb template
+  
+    bbb_hist = copy.deepcopy(rcf.Get(dkey.GetName()+"/"+jF_procs[0]))
+    for ind, jF_proc in enumerate(jF_procs):
+      jF_hist = copy.deepcopy(rcf.Get(dkey.GetName()+"/"+jF_proc))
+      for i in range(0,bbb_hist.GetNbinsX()+1):
+        if ind == 0:
+          bbb_hist.SetBinError(i,jF_hist.GetBinError(i)**2) 
+        else:
+          bbb_hist.SetBinError(i,bbb_hist.GetBinError(i) + (jF_hist.GetBinError(i)**2)) 
+  
+    for i in range(0,bbb_hist.GetNbinsX()+1):
+      bbb_hist.SetBinError(i,bbb_hist.GetBinError(i)**0.5)
+  
+    rcf.Delete(dkey.GetName()+"/"+bbb_hist.GetName()+';1')
+    bbb_hist.Write()
+    
+  
+    for ind, jF_proc in enumerate(jF_procs[1:]):
+      jF_hist = copy.deepcopy(rcf.Get(dkey.GetName()+"/"+jF_proc))
+      for i in range(0,jF_hist.GetNbinsX()+1):
+        jF_hist.SetBinError(i,0)
+      rcf.Delete(dkey.GetName()+"/"+jF_hist.GetName()+';1')
+      jF_hist.Write()
+  
+  
+  
+    for hkey in rcf.Get(dkey.GetName()).GetListOfKeys():
+  
+      if "jetFakes" in hkey.GetName():
+        if len(hkey.GetName().split("_")) == 1:
+          syst = ""
+        else:
+          syst = "_" + "_".join(hkey.GetName().split("_")[1:])
+  
+        if syst not in systs_done:
+          print "Summing jetFakes for {}".format(syst)
+          first = True
+          systs_done.append(syst)
+          doing_syst = copy.deepcopy(syst)
+          # need to loop through jetFakes processes instead and add nominal if it doesn't exist
+          for jF_proc in jF_procs:
+            name = jF_proc+syst
+            if name in f.Get(dkey.GetName()).GetListOfKeys():
+              print "  -",name
+              if first:
+                jF_hist = copy.deepcopy(rcf.Get(dkey.GetName()+"/"+name))
+                jF_hist.SetName("jetFakes"+syst)
+                first = False
+              else:
+                jF_hist.Add(copy.deepcopy(rcf.Get(dkey.GetName()+"/"+name)))
+            else:
+              print "  -",jF_proc
+              if first:
+                jF_hist = copy.deepcopy(rcf.Get(dkey.GetName()+"/"+jF_proc))
+                jF_hist.SetName("jetFakes"+syst)
+                first = False
+              else:
+                jF_hist.Add(copy.deepcopy(rcf.Get(dkey.GetName()+"/"+jF_proc)))
+  
+          jF_hist.Write()  
+            
+  # make negative integrals positive for combine
+  for dkey in f.GetListOfKeys():
+    rcf.cd(dkey.GetName())
+    for hkey in rcf.Get(dkey.GetName()).GetListOfKeys():
+      hist = copy.deepcopy(rcf.Get(dkey.GetName()+"/"+hkey.GetName()))
+      if hist.Integral() < 0: hist.Scale(-1)
+      rcf.Delete(dkey.GetName()+"/"+hkey.GetName()+';1')
+      hist.Write()
+  
+  rcf.Write()
+  rcf.Close()
