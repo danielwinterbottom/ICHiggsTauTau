@@ -7,21 +7,21 @@ parser = OptionParser()
 parser.add_option('--channel',help= 'Name of channel', default='tpzee')
 parser.add_option("--year", dest="year", type='string', default='2018',help="Year input")
 parser.add_option("--input_folder", help = 'Name of the input folder', default='plots/TnP/')
-parser.add_option('--output_folder', help= 'Name of output folder to create', default='plots')
 (options, args) = parser.parse_args()
 
 channel = options.channel
 year = options.year
 input_folder = options.input_folder
-output_folder = options.output_folder
 file_name = "muon"
 if channel == "tpzee": file_name = "electron"
 
 # Open the source and destination root files
-f_nom = ROOT.TFile.Open("{}/{}/{}/{}_nom.root".format(input_folder,year,channel,file_name))
-f_sig = ROOT.TFile.Open("{}/{}/{}/{}_sig.root".format(input_folder,year,channel,file_name))
-f_bkg = ROOT.TFile.Open("{}/{}/{}/{}_bkg.root".format(input_folder,year,channel,file_name))
-f_tag = ROOT.TFile.Open("{}/{}/{}/{}_tightTag.root".format(input_folder,year,channel,file_name))
+f_nom = ROOT.TFile.Open("{}/{}/{}/{}_nom.root".format(input_folder,channel,year,file_name))
+f_sig = ROOT.TFile.Open("{}/{}/{}/{}_sig.root".format(input_folder,channel,year,file_name))
+f_bkg = ROOT.TFile.Open("{}/{}/{}/{}_bkg.root".format(input_folder,channel,year,file_name))
+f_tag = ROOT.TFile.Open("{}/{}/{}/{}_tightTag.root".format(input_folder,channel,year,file_name))
+
+output_folder = "{}/{}/{}/correction/".format(input_folder,channel,year)
 
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
@@ -118,6 +118,12 @@ destination_file.Close()
 
 destination_file = ROOT.TFile.Open("{}/{}_SF.root".format(output_folder,file_name), "READ")
 
+plots_folder = "{}/plots/".format(output_folder)
+
+if not os.path.exists(plots_folder):
+    os.makedirs(plots_folder)
+
+
 types = ["id","iso","trg"]
 for name in types:
    h_SF = destination_file.Get("ScaleFactor_{}".format(name))
@@ -142,10 +148,8 @@ for name in types:
             canvas = ROOT.TCanvas('canvas', 'canvas', 800, 600)
             histo1.GetYaxis().SetRangeUser(0.9*min(bin_contents),1.1*histo1.GetMaximum())
             histo1.SetStats(0)
-            #histo1.SetMaximum(1.1*histo1.Getoutput_folder,file_name,Maximum())
-            #print(0.9*histo1.GetMinimum(),1.1*histo1.GetMaximum())
             histo1.Draw()
-            canvas.SaveAs("{}/{}_SF_{}_{}_{}.png".format(output_folder,file_name,name,h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
+            canvas.SaveAs("{}/{}_SF_{}_{}_{}.png".format(plots_folder,file_name,name,h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
             canvas.Update()
             del canvas
             del histo1
