@@ -10,6 +10,7 @@ opts = parser.VarParsing ('analysis')
 
 opts.register('file',
 'root://xrootd.unl.edu//store/mc/RunIISummer20UL18MiniAOD/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v11_L1v1-v2/100000/A6824A57-A304-E14E-8D8E-1EACD1EDA9EF.root',
+#'root://xrootd.unl.edu//store/group/rucio/pog_tau_group/ul_embedding/large_miniAOD_v2/TauTauFinalState/EmbeddingRun2018A/MINIAOD/inputDoubleMu_106X_ULegacy_miniAOD-v1/0000/008bbef8-3766-4f4e-9d85-8a2492f021d4.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '106X_upgrade2018_realistic_v15_L1v1', parser.VarParsing.multiplicity.singleton,
@@ -815,6 +816,17 @@ runMetCorAndUncFromMiniAOD(process,
                            )
 
 
+#process.patJetsReapplyJECPuppi.jetSource = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
+#process.patJetCorrFactorsReapplyJECPuppi.src = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
+#process.puppiMetTable.src = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+#process.rawPuppiMetTable.src = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+if isEmbed:
+  process.patJetsReapplyJECPuppiModifiedMET.jetSource = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
+  process.patJetCorrFactorsReapplyJECPuppiModifiedMET.src = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
+  process.slimmedMETsPuppiModifiedMET.t01Variation = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+  process.metrawCaloPuppiModifiedMET.metSource = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+  process.pfMetPuppiModifiedMET.metSource = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
                          input = cms.InputTag("slimmedMETsModifiedMET"),
@@ -956,7 +968,7 @@ switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
 
 process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
     branch = cms.string("triggerPaths"),
-    input  = cms.InputTag("TriggerResults","","HLT"),
+    input  = cms.InputTag("TriggerResults","","SIMembeddingHLT" if isEmbed else "HLT"),
     inputIsStandAlone = cms.bool(True),
     inputPrescales = cms.InputTag("patTrigger")
 )
@@ -1544,7 +1556,7 @@ process.icTriggerObjectSequence += cms.Sequence(
 for name in process.icTriggerObjectSequence.moduleNames():
     mod = getattr(process, name)
     if isEmbed:
-        mod.inputTriggerResults = cms.InputTag("TriggerResults", "","SIMembedding")
+        mod.inputTriggerResults = cms.InputTag("TriggerResults", "","SIMembeddingHLT")
 
 
 ## Need to unpack filterLabels on slimmedPatTrigger then make selectedPatTrigger
@@ -1555,7 +1567,7 @@ process.patTriggerUnpacker = cms.EDProducer("PATTriggerObjectStandAloneUnpacker"
 )
 
 if isEmbed:
-    process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
+    process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembeddingHLT")
 
 process.selectedPatTrigger = cms.EDFilter(
     'PATTriggerObjectStandAloneSelector',
@@ -1587,7 +1599,8 @@ else: lheTag = 'externalLHEProducer'
 
 data_type = ""
 if isData: data_type = "RECO"
-elif isEmbed: data_type = "MERGE"
+#elif isEmbed: data_type = "MERGE"
+elif isEmbed: data_type = "SIMembeddingHLT"
 else: data_type = "PAT"
 
 ## add prefiring weights
