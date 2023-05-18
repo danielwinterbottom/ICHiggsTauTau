@@ -1595,7 +1595,6 @@ else: lheTag = 'externalLHEProducer'
 
 data_type = ""
 if isData: data_type = "RECO"
-#elif isEmbed: data_type = "MERGE"
 elif isEmbed: data_type = "SIMembeddingHLT"
 else: data_type = "PAT"
 
