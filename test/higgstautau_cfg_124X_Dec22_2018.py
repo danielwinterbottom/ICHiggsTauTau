@@ -816,10 +816,6 @@ runMetCorAndUncFromMiniAOD(process,
                            )
 
 
-#process.patJetsReapplyJECPuppi.jetSource = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
-#process.patJetCorrFactorsReapplyJECPuppi.src = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
-#process.puppiMetTable.src = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
-#process.rawPuppiMetTable.src = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
 if isEmbed:
   process.patJetsReapplyJECPuppiModifiedMET.jetSource = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
   process.patJetCorrFactorsReapplyJECPuppiModifiedMET.src = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
