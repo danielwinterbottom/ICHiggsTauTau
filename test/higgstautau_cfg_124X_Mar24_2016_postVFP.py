@@ -7,8 +7,10 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
-#root://xrootd.unl.edu/
-opts.register('file', 'root://xrootd.unl.edu//store/mc/RunIISummer20UL16MiniAOD/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v3/40000/A08F56AA-BC37-FB40-829C-DBF2C4C8F41C.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', 
+'root://xrootd.unl.edu//store/mc/RunIISummer20UL16MiniAOD/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v3/40000/A08F56AA-BC37-FB40-829C-DBF2C4C8F41C.root',
+#'root://xrootd.unl.edu//store/group/rucio/pog_tau_group/ul_embedding/large_miniAOD_v2/MuTauFinalState/EmbeddingRun2016_G/MINIAOD/inputDoubleMu_106X_ULegacy_miniAOD-v1/0000/0572306d-856c-47a7-bc89-b7a570c5a1af.root', 
+parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_mcRun2_asymptotic_v3', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
@@ -840,6 +842,13 @@ runMetCorAndUncFromMiniAOD(process,
                            jetFlavor="AK4PFPuppi",
                            )
 
+if isEmbed:
+   process.patJetsReapplyJECPuppiModifiedMET.jetSource = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
+   process.patJetCorrFactorsReapplyJECPuppiModifiedMET.src = cms.InputTag("slimmedJetsPuppi", "", "MERGE")
+   process.slimmedMETsPuppiModifiedMET.t01Variation = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+   process.metrawCaloPuppiModifiedMET.metSource = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+   process.pfMetPuppiModifiedMET.metSource = cms.InputTag("slimmedMETsPuppi", "", "RERUNPUPPI")
+
 process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                          branch = cms.string("pfMetFromSlimmed"),
                          input = cms.InputTag("slimmedMETsModifiedMET"),
@@ -869,40 +878,6 @@ process.icMetSequence = cms.Sequence(
 process.icGenSequence = cms.Sequence()
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.prunedGenParticles = cms.EDProducer("GenParticlePruner",
-    src = cms.InputTag("genParticles","","HLT"),
-    select = cms.vstring(
-        "drop  *", # this is the default
-        "++keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15", # keep leptons, with history
-        "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",   # keep neutrinos
-        "drop   status == 2",                                              # drop the shower part of the history
-        "+keep pdgId == 22 && status == 1 && (pt > 10 || isPromptFinalState())", # keep gamma above 10 GeV (or all prompt) and its first parent
-        "+keep abs(pdgId) == 11 && status == 1 && (pt > 3 || isPromptFinalState())", # keep first parent of electrons above 3 GeV (or prompt)
-        "keep++ abs(pdgId) == 15",                                         # but keep keep taus with decays
-	"drop  status > 30 && status < 70 ", 				   #remove pythia8 garbage
-	"drop  pdgId == 21 && pt < 5",                                    #remove pythia8 garbage
-        "drop   status == 2 && abs(pdgId) == 21",                          # but remove again gluons in the inheritance chain
-        "keep abs(pdgId) == 23 || abs(pdgId) == 24 || abs(pdgId) == 25 || abs(pdgId) == 6 || abs(pdgId) == 37 ",   # keep VIP(articles)s
-        "keep abs(pdgId) == 310 && abs(eta) < 2.5 && pt > 1 ",                                                     # keep K0
-# keep heavy flavour quarks for parton-based jet flavour
-	"keep (4 <= abs(pdgId) <= 5) & (status = 2 || status = 11 || status = 71 || status = 72)",
-# keep light-flavour quarks and gluons for parton-based jet flavour
-	"keep (1 <= abs(pdgId) <= 3 || pdgId = 21) & (status = 2 || status = 11 || status = 71 || status = 72) && pt>5",
-# keep b and c hadrons for hadron-based jet flavour
-	"keep (400 < abs(pdgId) < 600) || (4000 < abs(pdgId) < 6000)",
-# additional c hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433",
-# additional b hadrons for jet fragmentation studies
-	"keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543",
-#keep SUSY particles
-	"keep (1000001 <= abs(pdgId) <= 1000039 ) || ( 2000001 <= abs(pdgId) <= 2000015)",
-# keep protons
-        "keep pdgId = 2212",
-        "keep status == 3 || ( 21 <= status <= 29) || ( 11 <= status <= 19)",  #keep event summary (status=3 for pythia6, 21 <= status <= 29 for pythia8)
-        "keep isHardProcess() || fromHardProcessFinalState() || fromHardProcessDecayed() || fromHardProcessBeforeFSR() || (statusFlags().fromHardProcess() && statusFlags().isLastCopy())",  #keep event summary based on status flags
-    )
-)
-
 
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
@@ -967,10 +942,8 @@ process.icPileupInfoProducer.input=cms.InputTag("slimmedAddPileupInfo")
 
 if not isData:
   process.icGenSequence += (
-    process.prunedGenParticles+
     process.icGenParticleProducer
   )
-  process.icGenSequence.remove(process.prunedGenParticles)
   process.icGenSequence += (
     process.ak4GenJetsNoNuBSM+
     process.selectedGenJets+
@@ -1019,11 +992,6 @@ process.icL1MuonProducer = cms.EDProducer('ICL1TObjectProducer<l1t::Muon>',
   doBXloop = cms.bool(v_doBXloop)
 )
 
-if isEmbed:
-  process.icL1EGammaProducer.input = cms.InputTag("caloStage2Digis","EGamma","SIMembedding")
-  process.icL1TauProducer.input = cms.InputTag("caloStage2Digis","Tau","SIMembedding")
-  process.icL1MuonProducer.input = cms.InputTag("gmtStage2Digis","Muon","SIMembedding")
-
 
 process.patTriggerPath = cms.Path()
 switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
@@ -1032,7 +1000,7 @@ switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
 
 process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
  branch = cms.string("triggerPaths"),
- input  = cms.InputTag("TriggerResults","","HLT"),
+ input  = cms.InputTag("TriggerResults","","SIMembeddingHLT" if isEmbed else "HLT"),
  inputIsStandAlone = cms.bool(True),
  inputPrescales = cms.InputTag("patTrigger")
 )
@@ -1445,7 +1413,7 @@ for name in process.icTriggerObjectSequence.moduleNames():
   mod.inputIsStandAlone = cms.bool(True)
   mod.input = cms.InputTag("selectedPatTrigger")
   if isEmbed:
-    mod.inputTriggerResults = cms.InputTag("TriggerResults","","SIMembedding")
+    mod.inputTriggerResults = cms.InputTag("TriggerResults","","SIMembeddingHLT")
   else:
     mod.inputTriggerResults = cms.InputTag("TriggerResults", "","HLT")
 
@@ -1456,7 +1424,7 @@ process.patTriggerUnpacker = cms.EDProducer("PATTriggerObjectStandAloneUnpacker"
     unpackFilterLabels = cms.bool(True)
 )
 
-if isEmbed: process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembedding")
+if isEmbed: process.patTriggerUnpacker.triggerResults = cms.InputTag("TriggerResults", "", "SIMembeddingHLT")
 
 process.selectedPatTrigger = cms.EDFilter(
     'PATTriggerObjectStandAloneSelector',
@@ -1487,7 +1455,7 @@ else: lheTag = 'externalLHEProducer'
 
 data_type = ""
 if isData: data_type = "RECO"
-elif isEmbed: data_type = "MERGE"
+elif isEmbed: data_type = "SIMembeddingHLT"
 else: data_type = "PAT"
 
 ## add prefiring weights
@@ -1505,6 +1473,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
   includeLHEWeights   = cms.bool(doLHEWeights),
   includeGenWeights   = cms.bool(doLHEWeights),
+  includeEmbeddingWeights = cms.bool(bool(isEmbed)),
   includenpNLO        = cms.bool(includenpNLO),
   includeHTXS         = cms.bool(opts.includeHTXS),
   includeHT           = cms.bool(False),
@@ -1526,9 +1495,6 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   )
 )
 
-if isEmbed:
-  process.icEventInfoProducer.includeEmbeddingWeights = cms.bool(True)
-  process.icEventInfoProducer.inputfiltersfromtrig = cms.InputTag("TriggerResults","","MERGE")
 
 process.icEventInfoSequence = cms.Sequence(
   process.BadPFMuonFilterUpdateDz+
