@@ -8,8 +8,8 @@ import sys
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 opts.register('file', 
-'root://xrootd.unl.edu//store/mc/RunIISummer20UL16MiniAOD/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v3/40000/A08F56AA-BC37-FB40-829C-DBF2C4C8F41C.root',
-#'root://xrootd.unl.edu//store/group/rucio/pog_tau_group/ul_embedding/large_miniAOD_v2/MuTauFinalState/EmbeddingRun2016_G/MINIAOD/inputDoubleMu_106X_ULegacy_miniAOD-v1/0000/0572306d-856c-47a7-bc89-b7a570c5a1af.root', 
+#'root://xrootd.unl.edu//store/mc/RunIISummer20UL16MiniAOD/VBFHToTauTau_M125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_v13-v3/40000/A08F56AA-BC37-FB40-829C-DBF2C4C8F41C.root',
+'root://xrootd.unl.edu//store/group/rucio/pog_tau_group/ul_embedding/large_miniAOD_v2/MuTauFinalState/EmbeddingRun2016_G/MINIAOD/inputDoubleMu_106X_ULegacy_miniAOD-v1/0000/0572306d-856c-47a7-bc89-b7a570c5a1af.root', 
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '94X_mcRun2_asymptotic_v3', parser.VarParsing.multiplicity.singleton,

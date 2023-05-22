@@ -120,6 +120,20 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     prefweightdown_token_ = consumes< float >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
   }
 
+  if(do_embedding_weights_){
+    consumes<bool>(edm::InputTag("selectedMuonsForEmbedding:isMediumLeadingMuon:RESELECT"));
+    consumes<bool>(edm::InputTag("selectedMuonsForEmbedding:isMediumTrailingMuon:RESELECT"));
+    consumes<bool>(edm::InputTag("selectedMuonsForEmbedding:isTightLeadingMuon:RESELECT"));
+    consumes<bool>(edm::InputTag("selectedMuonsForEmbedding:isTightTrailingMuon:RESELECT"));
+    consumes<float>(edm::InputTag("selectedMuonsForEmbedding:initialMETEt:RESELECT"));
+    consumes<float>(edm::InputTag("selectedMuonsForEmbedding:initialMETphi:RESELECT"));
+    consumes<float>(edm::InputTag("selectedMuonsForEmbedding:initialPuppiMETEt:RESELECT"));
+    consumes<float>(edm::InputTag("selectedMuonsForEmbedding:initialPuppiMETphi:RESELECT"));
+    consumes<float>(edm::InputTag("selectedMuonsForEmbedding:nPairCandidates:RESELECT"));
+    consumes<float>(edm::InputTag("selectedMuonsForEmbedding:newMass:RESELECT"));
+    consumes<float>(edm::InputTag("selectedMuonsForEmbedding:oldMass:RESELECT"));
+  }
+
   info_ = new ic::EventInfo();
 
   PrintHeaderWithBranch(config, branch_);
@@ -230,6 +244,41 @@ void ICEventInfoProducer::produce(edm::Event& event,
   if(do_embedding_weights_){
     event.getByLabel("generator",gen_info_handle);
     info_->set_weight("wt_embedding", gen_info_handle->weight());
+ 
+    // also store information about the selection dimuons and MET as weights, even though they aren't really event weights
+    edm::Handle<bool> isMediumLeadingMuon;
+    edm::Handle<bool> isMediumTrailingMuon;
+    edm::Handle<bool> isTightLeadingMuon;
+    edm::Handle<bool> isTightTrailingMuon;
+    edm::Handle<float> initialMETEt;
+    edm::Handle<float> initialMETphi;
+    edm::Handle<float> initialPuppiMETEt;
+    edm::Handle<float> initialPuppiMETphi;
+    edm::Handle<float> nPairCandidates;
+    edm::Handle<float> newMass;
+    edm::Handle<float> oldMass;
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:isMediumLeadingMuon:RESELECT"), isMediumLeadingMuon);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:isMediumTrailingMuon:RESELECT"), isMediumTrailingMuon);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:isTightLeadingMuon:RESELECT"), isTightLeadingMuon);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:isTightTrailingMuon:RESELECT"), isTightTrailingMuon);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:initialMETEt:RESELECT"), initialMETEt);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:initialMETphi:RESELECT"), initialMETphi);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:initialPuppiMETEt:RESELECT"), initialPuppiMETEt);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:initialPuppiMETphi:RESELECT"), initialPuppiMETphi);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:nPairCandidates:RESELECT"), nPairCandidates);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:newMass:RESELECT"), newMass);
+    event.getByLabel(edm::InputTag("selectedMuonsForEmbedding:oldMass:RESELECT"), oldMass);
+    info_->set_weight("isMediumLeadingMuon", (double)*isMediumLeadingMuon, false);
+    info_->set_weight("isMediumTrailingMuon", (double)*isMediumTrailingMuon, false);
+    info_->set_weight("isTightLeadingMuon", (double)*isTightLeadingMuon, false);
+    info_->set_weight("isTightTrailingMuon", (double)*isTightTrailingMuon, false);
+    info_->set_weight("initialMETEt", (double)*initialMETEt, false);
+    info_->set_weight("initialMETphi", (double)*initialMETphi, false);
+    info_->set_weight("initialPuppiMETEt", (double)*initialPuppiMETEt, false);
+    info_->set_weight("initialPuppiMETphi", (double)*initialPuppiMETphi, false);
+    info_->set_weight("nPairCandidates", (double)*nPairCandidates, false);
+    info_->set_weight("newMass", (double)*newMass, false);
+    info_->set_weight("oldMass", (double)*oldMass, false);
   }
   if(!event.isRealData()){
     event.getByLabel("generator",gen_info_handle);
