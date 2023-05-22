@@ -1039,7 +1039,13 @@ for dm in dml:
             print(task[0])
             config.General.requestName = task[0]
             config.Data.inputDataset = task[1]
-
+            if "includenpNLO=True" not in cfgParams and (task[0] == "DYJetsToLL_0J-NLO" or task[0] == "DYJetsToLL_1J-NLO" or task[0]=="DYJetsToLL_2J-NLO" or task[0]== "DYJetsToLL-NLO"):
+              cfgParams.append("includenpNLO=True")
+            if "includenpNLO=True" in cfgParams: 
+              if (task[0] == "DYJetsToLL_0J-NLO" or task[0] == "DYJetsToLL_1J-NLO" or task[0] == "DYJetsToLL_2J-NLO" or task[0] == "DYJetsToLL-NLO"):
+                pass
+              else:
+                cfgParams.remove("includenpNLO=True")
             if args.recovery:
               os.system("crab kill {}_{}_124X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
               os.system("crab report {}_{}_124X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
