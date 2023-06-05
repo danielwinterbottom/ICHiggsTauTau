@@ -1454,7 +1454,7 @@ else: lheTag = 'externalLHEProducer'
 
 data_type = ""
 if isData: data_type = "RECO"
-elif isEmbed: data_type = "SIMembeddingHLT"
+elif isEmbed: data_type = "MERGE"
 else: data_type = "PAT"
 
 ## add prefiring weights

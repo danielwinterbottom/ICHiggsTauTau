@@ -23,7 +23,7 @@ for fle in $(seq 1 $num); do
       fi
       echo "Getting filelist for : " $name
   
-      file_name=$output_prefix"_"$type"_106X_"$name".dat"
+      file_name=$output_prefix"_"$type"_124X_"$name".dat"
       date_names=($(xrdfs gfe02.grid.hep.ph.ic.ac.uk:1097 ls $j )) # | cut -d"/" -f2-))
       export most_recent=0
       for k in "${date_names[@]}"; do
