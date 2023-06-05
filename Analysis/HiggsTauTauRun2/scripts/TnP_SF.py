@@ -16,12 +16,12 @@ file_name = "muon"
 if channel == "tpzee": file_name = "electron"
 
 # Open the source and destination root files
-f_nom = ROOT.TFile.Open("{}/{}/{}/{}_nom.root".format(input_folder,channel,year,file_name))
-f_sig = ROOT.TFile.Open("{}/{}/{}/{}_sig.root".format(input_folder,channel,year,file_name))
-f_bkg = ROOT.TFile.Open("{}/{}/{}/{}_bkg.root".format(input_folder,channel,year,file_name))
-f_tag = ROOT.TFile.Open("{}/{}/{}/{}_tightTag.root".format(input_folder,channel,year,file_name))
+f_nom = ROOT.TFile.Open("{}/Single/{}/{}/{}_nom.root".format(input_folder,channel,year,file_name))
+f_sig = ROOT.TFile.Open("{}/Single/{}/{}/{}_sig.root".format(input_folder,channel,year,file_name))
+f_bkg = ROOT.TFile.Open("{}/Single/{}/{}/{}_bkg.root".format(input_folder,channel,year,file_name))
+f_tag = ROOT.TFile.Open("{}/Single/{}/{}/{}_tightTag.root".format(input_folder,channel,year,file_name))
 
-output_folder = "{}/{}/{}/correction/".format(input_folder,channel,year)
+output_folder = "{}/Single/{}/{}/correction/".format(input_folder,channel,year)
 
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
