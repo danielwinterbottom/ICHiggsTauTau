@@ -29,9 +29,9 @@ conf_parser.add_argument("--cfg",
 options, remaining_argv = conf_parser.parse_known_args()
 
 defaults = {
-    "channel":"tpzee" , 
-    "outputfolder":"plots/TnP/2018/tpzee/",
-    "folder":"/vols/cms/ks1021/offline/ditau/trees/TnP/2018/",
+    "channel":"tpzmm" , 
+    "outputfolder":"plots/TnP/embed/2018/tpzmm/",
+    "folder":"/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2_TAP/",
     "era":"UL_18", 
     "draw_hists":1,
     "veto_FSR":False,
@@ -39,9 +39,9 @@ defaults = {
     "tree_name":"tagandprobe",
     "mode": "",
     "tight_tag":False,
-    "embedded": False,
-    "embed_sel": False,
-    "embed_dz": False,
+    "embedded": True,
+    "embed_sel": True,
+    "embed_dz": True,
     }
 
 if options.cfg:
@@ -98,10 +98,9 @@ print ''
 # All functions defined here
 
 def BuildCutString(wt='', sel='', cat='', sign='os',bkg_sel=''):
-    full_selection = '(1)'trser.add_argument("--tight_tag", dest="tight_tag", action='store_true')
-ight_tag
-    if wt != '':          tight_tag
-        full_selection = 'tight_tag('+wt+')'
+    full_selection = '(1)'
+    if wt != '':          
+        full_selection = '('+wt+')'
     if sel != '':
         full_selection += '*('+sel+')'
     if sign != '':
@@ -1040,7 +1039,7 @@ if options.draw_hists == 1:
     for sample_name in ztt_samples:
     	ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
 
-   if options.embedded:
+    if options.embedded:
       # Add all embedded files
       for sample_name in embed_samples:
           ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
@@ -1135,7 +1134,7 @@ for i in variations:
             if i == "signal": sig_model = "BWDoubleCBConvCorr"
 
          if (i == "nominal" or i == "tightTag" or i =="signal") and "id" not in name: bkg_model = "Exponential"
-      if not options.embed_dz or 'trg' in name or not options.trg_only):
+      if (not options.embed_dz or 'trg' in name or not options.trg_only):
          if i == "nominal": FitWorkspace(name,wsfile,sffile,sig_model,bkg_model,i,True)#'data' in name)
          if i == "signal": FitWorkspace(name,wsfile_sig,sffile,sig_model,bkg_model,i,True)#'data' in name)
          if i == "bkg": FitWorkspace(name,wsfile_bkg,sffile,sig_model,bkg_model,i,True)#'data' in name)
