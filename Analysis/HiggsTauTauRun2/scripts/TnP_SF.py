@@ -111,11 +111,6 @@ for name in types:
               EMB_y_err_low = h_EMB_eff.GetErrorYlow(xbin-1)
               EMB_y_err_high = h_EMB_eff.GetErrorYhigh(xbin-1)
          
-            #### added this for embedded 
-            ###if ZLL_y_val != 0:
-            ###  stat_error = (((data_y_err_high**2 * ZLL_y_val) + (ZLL_y_err_high**2 * data_y_val))/ZLL_y_val**4)**0.5
-            ###else:
-            ###  stat_error = 0
             stat_error_ZLL = max(ZLL_y_err_high,ZLL_y_err_low)
             stat_error_EMB = 0 if not options.embed else max(EMB_y_err_high,EMB_y_err_low)
             if ZLL_y_val != 0:

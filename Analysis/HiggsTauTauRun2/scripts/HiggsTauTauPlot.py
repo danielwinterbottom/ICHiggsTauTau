@@ -555,7 +555,11 @@ elif options.analysis in ['mssmrun2','vlq']:
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&pt_2<%(t_highpt)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)||(trg_singletau_2&&pt_2>=%(t_highpt)s&&fabs(eta_2)<2.1)))' % vars()
         else: 
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)))' % vars()
-        
+    
+    if wp.startswith('not'):
+      wp_mod=wp.replace('not','')
+      cats['baseline'] = cats['baseline'].replace('deepTauVsJets_%(wp)s_2>0.5' % vars(),'deepTauVsJets_%(wp_mod)s_2<0.5&&deepTauVsJets_vvvloose_2>0.5' % vars())
+
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -596,7 +600,6 @@ if options.channel == 'tt':
       else:
         cats['baseline'] = '(deepTauVsJets_%(wp)s_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
        # cats['baseline'] = '(deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)' % vars()
-
 
 elif options.channel == 'em':
     cats['baseline'] = '(iso_1<0.15 && iso_2<0.2 && !leptonveto)'
@@ -1303,6 +1306,8 @@ ewkz_samples = []
 gghww_samples = []
 qqhww_samples = []
 top_samples = []
+qcd_samples_muenriched15 = []
+qcd_samples_muenriched5 = []
 # ------------------------------------------------------------ 
 
 if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','tauid2016','mvadm2016']:
@@ -1375,6 +1380,8 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         qqhww_samples = []
 	ewkz_samples = ['EWKZ2Jets_ZToLL']
 	top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+        qcd_samples_muenriched15 = ['QCD_Pt-20_MuEnrichedPt15']
+        qcd_samples_muenriched5 = ['QCD_Pt-1000_MuEnrichedPt5','QCD_Pt-120To170_MuEnrichedPt5','QCD_Pt-15To20_MuEnrichedPt5','QCD_Pt-170To300_MuEnrichedPt5','QCD_Pt-20To30_MuEnrichedPt5','QCD_Pt-300To470_MuEnrichedPt5','QCD_Pt-30To50_MuEnrichedPt5','QCD_Pt-470To600_MuEnrichedPt5','QCD_Pt-50To80_MuEnrichedPt5','QCD_Pt-600To800_MuEnrichedPt5','QCD_Pt-800To1000_MuEnrichedPt5','QCD_Pt-80To120_MuEnrichedPt5'] 
 
     if options.era in ["UL_16_postVFP"]:
         if (options.DY_NLO==False):
@@ -1388,6 +1395,8 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         qqhww_samples = []
 	ewkz_samples = ['EWKZ2Jets_ZToLL']
 	top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
+        qcd_samples_muenriched15 = ['QCD_Pt-20_MuEnrichedPt15']
+        qcd_samples_muenriched5 = ['QCD_Pt-1000_MuEnrichedPt5','QCD_Pt-120To170_MuEnrichedPt5','QCD_Pt-15To20_MuEnrichedPt5','QCD_Pt-170To300_MuEnrichedPt5','QCD_Pt-20To30_MuEnrichedPt5','QCD_Pt-300To470_MuEnrichedPt5','QCD_Pt-30To50_MuEnrichedPt5','QCD_Pt-470To600_MuEnrichedPt5','QCD_Pt-50To80_MuEnrichedPt5','QCD_Pt-600To800_MuEnrichedPt5','QCD_Pt-800To1000_MuEnrichedPt5','QCD_Pt-80To120_MuEnrichedPt5'] 
     
 # ------------------------------------------------------------------------
 # Seems Redundant but ok I will ask    
@@ -1468,6 +1477,10 @@ if options.era in ['UL_17']:
     ewkz_samples = ['EWKZ2Jets_ZToLL']
     gghww_samples = ['']
     qqhww_samples = ['']   
+
+
+    qcd_samples_muenriched15 = ['QCD_Pt-20_MuEnrichedPt15']
+    qcd_samples_muenriched5 = ['QCD_Pt-1000_MuEnrichedPt5','QCD_Pt-120To170_MuEnrichedPt5','QCD_Pt-15To20_MuEnrichedPt5','QCD_Pt-170To300_MuEnrichedPt5','QCD_Pt-20To30_MuEnrichedPt5','QCD_Pt-300To470_MuEnrichedPt5','QCD_Pt-30To50_MuEnrichedPt5','QCD_Pt-470To600_MuEnrichedPt5','QCD_Pt-50To80_MuEnrichedPt5','QCD_Pt-600To800_MuEnrichedPt5','QCD_Pt-800To1000_MuEnrichedPt5','QCD_Pt-80To120_MuEnrichedPt5'] 
  
     if options.channel in ['mt','zmm','mj']: 
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
@@ -1546,6 +1559,8 @@ if options.era in ['UL_18']:
     ewkz_samples = ['EWKZ2Jets_ZToLL']
     gghww_samples = ['']
     qqhww_samples = ['']   
+    qcd_samples_muenriched15 = ['QCD_Pt-20_MuEnrichedPt15']
+    qcd_samples_muenriched5 = ['QCD_Pt-1000_MuEnrichedPt5','QCD_Pt-120To170_MuEnrichedPt5','QCD_Pt-15To20_MuEnrichedPt5','QCD_Pt-170To300_MuEnrichedPt5','QCD_Pt-20To30_MuEnrichedPt5','QCD_Pt-300To470_MuEnrichedPt5','QCD_Pt-30To50_MuEnrichedPt5','QCD_Pt-470To600_MuEnrichedPt5','QCD_Pt-50To80_MuEnrichedPt5','QCD_Pt-600To800_MuEnrichedPt5','QCD_Pt-800To1000_MuEnrichedPt5','QCD_Pt-80To120_MuEnrichedPt5'] 
  
     if options.channel in ['mt','zmm','mj']:
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
@@ -3088,7 +3103,6 @@ def GetWGNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_
   wg_node = ana.SummedFactory('WGam'+add_name, samples, plot, full_selection)
   return wg_node
 
-
 def GetWNode(ana, name='W', samples=[], data=[], plot='',plot_unmodified='', wt='', sel='', cat='', cat_data='', method=8, qcd_factor=qcd_os_ss_ratio, get_os=True):
   if get_os: OSSS = 'os'
   else: OSSS = '!os'
@@ -3404,7 +3418,17 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
           subtract_node,
           1.0,
           None))
-            
+       
+
+    
+def GenerateQCDMC(ana, add_name='', samples=[], plot='', wt='', sel='', cat='', get_os=True):
+  if get_os:
+      OSSS = 'os'
+  else:
+      OSSS = '!os'
+  full_selection = BuildCutString(wt, sel, cat, OSSS)
+  qcd_node = ana.SummedFactory('QCD_MC'+add_name, samples, plot, full_selection)
+  ana.nodes[nodename].AddNode(qcd_node)
         
 def GenerateFakeTaus(ana, add_name='', data=[], plot='',plot_unmodified='', wt='', sel='', cat_name='',get_os=True,ff_syst_weight=None):
 
@@ -4405,17 +4429,16 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     zll_samples=list(ztt_samples)
     if options.analysis in ['cpdecay','cpprod','mssmrun2','vlq']: zll_samples+=ewkz_samples
 
-
-    # produce template for observed data
-    if do_data:
-        if options.do_ss:
-          OSSS = '!os'
-        else:
-            OSSS = 'os'
-        weight='wt'
-        if options.add_wt : weight+='*'+options.add_wt
-        full_selection = BuildCutString(weight, sel, cat_data, OSSS)
-        ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
+####    # produce template for observed data
+####    if do_data:
+####        if options.do_ss:
+####          OSSS = '!os'
+####        else:
+####            OSSS = 'os'
+####        weight='wt'
+####        if options.add_wt : weight+='*'+options.add_wt
+####        full_selection = BuildCutString(weight, sel, cat_data, OSSS)
+####        ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
     
     # produce templates for backgrounds
     if options.method in [17] and options.channel != "em":
@@ -4524,6 +4547,9 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
             GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel_mod, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
         if 'QCD' not in samples_to_skip:
             GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
+            # uncomment to add QCD as predicted from MC mu enriched samples
+            #if len(qcd_samples_muenriched5)>0: GenerateQCDMC(ana, '_Mu5'+add_name, qcd_samples_muenriched5, plot, wt, sel, cat, not options.do_ss)
+            #if len(qcd_samples_muenriched15)>0: GenerateQCDMC(ana, '_Mu15'+add_name, qcd_samples_muenriched15, plot, wt, sel, cat, not options.do_ss)
         #if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016'] and options.method!=0: 
         #    GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
         #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis in ['cpprod','mssmrun2'] and options.channel == 'em':
@@ -4971,7 +4997,7 @@ while len(systematics) > 0:
       print(data_samples)
       print("------------------")
       # Add all MC background files
-      for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples:
+      for sample_name in ztt_samples + vv_samples + wgam_samples + top_samples + wjets_samples+ewkz_samples+gghww_samples+qqhww_samples+qcd_samples_muenriched15+qcd_samples_muenriched5:
           ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
           #ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', options.folder+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), sample_name) # this fixes issues if a sample is not included in systematic sub directory (e.g because systematics doesn't affect it) but at the same time can make it easier to miss issues like a sample missing that should be there 
       print("------------------")

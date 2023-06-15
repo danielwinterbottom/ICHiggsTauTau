@@ -1045,51 +1045,51 @@ int HTTWeights::PreAnalysis() {
       fns_["t_trg_35_ratio_dm11_down"] = std::shared_ptr<RooFunctor>(
           w_UL_->function("t_trg_pog_deeptau_medium_ditau_ratio_dm11_down")->functor(w_UL_->argSet("t_pt,t_dm")));
 
-      // deepTau ID SFs from TauPOG
-      // dm binned SFs
-      fns_["t_deeptauid_dm_medium"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_vvvloose")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm0_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm0_up")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm1_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm1_up")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm10_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm10_up")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm11_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm11_up")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm0_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm0_down")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm1_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm1_down")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm10_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm10_down")->functor(w_UL_->argSet("t_dm")));
-      fns_["t_deeptauid_dm_medium_dm11_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_dm_medium_dm11_down")->functor(w_UL_->argSet("t_dm")));
-      // pt dependent SFs
-      fns_["t_deeptauid_pt_vvvloose"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_vvvloose")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin1_up")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin2_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin2_up")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin3_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin3_up")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin4_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin4_up")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin5_up"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin5_up")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin1_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin1_down")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin2_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin2_down")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin3_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin3_down")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin4_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin4_down")->functor(w_UL_->argSet("t_pt")));
-      fns_["t_deeptauid_pt_medium_bin5_down"] = std::shared_ptr<RooFunctor>(
-          w_UL_->function("t_deeptauid_pt_medium_bin5_down")->functor(w_UL_->argSet("t_pt")));
+     // // deepTau ID SFs from TauPOG - need to add new POG numbers!
+     // // dm binned SFs
+     // fns_["t_deeptauid_dm_medium"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_vvvloose"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_vvvloose")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm0_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm0_up")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm1_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm1_up")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm10_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm10_up")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm11_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm11_up")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm0_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm0_down")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm1_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm1_down")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm10_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm10_down")->functor(w_UL_->argSet("t_dm")));
+     // fns_["t_deeptauid_dm_medium_dm11_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_dm_medium_dm11_down")->functor(w_UL_->argSet("t_dm")));
+     // // pt dependent SFs
+     // fns_["t_deeptauid_pt_vvvloose"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_vvvloose")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin1_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin1_up")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin2_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin2_up")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin3_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin3_up")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin4_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin4_up")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin5_up"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin5_up")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin1_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin1_down")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin2_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin2_down")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin3_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin3_down")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin4_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin4_down")->functor(w_UL_->argSet("t_pt")));
+     // fns_["t_deeptauid_pt_medium_bin5_down"] = std::shared_ptr<RooFunctor>(
+     //     w_UL_->function("t_deeptauid_pt_medium_bin5_down")->functor(w_UL_->argSet("t_pt")));
       // l->tau fake SFs
       fns_["t_id_vs_e_eta_vvloose"] = std::shared_ptr<RooFunctor>(
           w_UL_->function("t_id_vs_e_eta_vvloose")->functor(w_UL_->argSet("t_eta")));
@@ -1119,6 +1119,7 @@ int HTTWeights::PreAnalysis() {
       // triggers for muon legs in mt and zmm channels
       fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_mc")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
       fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_data")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_embed")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
 
       fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_binned_ic_mc")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
       fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_binned_ic_data")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
@@ -1141,8 +1142,10 @@ int HTTWeights::PreAnalysis() {
     
       // muon id/iso
       fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_idiso_binned_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_idiso_binned_ic_embed_ratio")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
 
       fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_id_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
+      fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_id_ic_embed_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
 
       fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_looseiso_binned_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
 

@@ -84,6 +84,9 @@ parser.add_option("--effective_events", action='store_true', default=False,
 
 parser.add_option("--jetmetuncerts", dest="jetmetuncerts", action='store_true', default=False,
                   help="Do JES, JER, and MET uncertainties")
+
+parser.add_option("--embed", dest="proc_embed", action='store_true', default=False,
+                  help="Process embedded sampes")
 # ----------------------------------------
 (options, args) = parser.parse_args()
 if options.wrapper: JOBWRAPPER=options.wrapper
@@ -184,7 +187,7 @@ if os.path.isfile("./jobs/files_per_sample_2017.txt"):
 file_persamp = open("./jobs/files_per_sample_2017.txt", "w")
 
 
-if options.proc_data or options.proc_all or options.calc_lumi:
+if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
   if not no_json:
     with open(CONFIG,"r") as input:
       with open ("config_for_python.json","w") as output:
@@ -279,6 +282,73 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
+if options.proc_embed or options.proc_all:
+
+    embed_samples = []
+    data_eras = ['B','C','D','E','F']
+    for chn in channels:
+        for era in data_eras:
+            if 'em' in chn:
+                embed_samples+=['EmbeddingElMu2017'+era]
+            if 'et' in chn:
+                embed_samples+=['EmbeddingElTau2017'+era]
+            if 'mt' in chn:
+                embed_samples+=['EmbeddingMuTau2017'+era]
+            if 'tt' in chn:
+                embed_samples+=['EmbeddingTauTau2017'+era]
+            if 'zmm' in chn:
+                embed_samples+=['EmbeddingMuMu2017'+era]
+            if 'zee' in chn:
+                embed_samples+=['EmbeddingElEl2017'+era]
+
+    EMBEDFILELIST="./filelists/May25_2017_MC_124X"
+
+    for sa in embed_samples:
+        job_num=0
+        JOB='%s_2017' % (sa)
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May25_EMB_124X_2017/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,%(jetuncert_string)s}}' "%vars());
+        for FLATJSONPATCH in flatjsons:
+            nperjob = 20
+            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')
+
+            FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
+            if 'TauTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
+            if 'ElMu' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_t_0pi_hi^scale_t_0pi_lo','').replace('^scale_t_1pi_hi^scale_t_1pi_lo','').replace('^scale_t_3prong_hi^scale_t_3prong_lo','').replace('^scale_t_3prong1pi0_hi^scale_t_3prong1pi0_lo','')
+            if 'MuTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_e_hi^scale_e_lo','').replace('^scale_t_hi^scale_t_lo','')
+            if 'ElTau' in  sa: FLATJSONPATCH = FLATJSONPATCH.replace('^scale_mu_hi^scale_mu_lo','').replace('^scale_t_hi^scale_t_lo','')
+            if FLATJSONPATCH == 'job:sequences:all:^^' or FLATJSONPATCH == 'job:sequences:all:': continue
+
+            n_scales = FLATJSONPATCH.count('_lo')*2 + FLATJSONPATCH.count('default')
+
+            if options.jetmetuncerts and 'default' in FLATJSONPATCH: n_scales +=2
+
+            if n_scales*n_channels>=24: nperjob = 10
+            if n_scales*n_channels>=48: nperjob=5
+
+            nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
+            for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+                os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --flatjson=%(FLATJSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(job_num)d.log" jobs/%(JOB)s-%(job_num)s.sh' %vars())
+                if not parajobs and not options.condor:
+                    os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(job_num)d.sh' % vars())
+                elif not parajobs and options.condor:
+                    outscriptname = '{}-{}.sh'.format(JOB, job_num)
+                    subfilename = '{}_{}.sub'.format(JOB, job_num)
+                    subfile = open("jobs/{}".format(subfilename), "w")
+                    condor_settings = CONDOR_TEMPLATE % {
+                      'EXE': outscriptname,
+                      'TASK': "{}-{}".format(JOB, job_num)
+                    }
+                    subfile.write(condor_settings)
+                    subfile.close()
+                    os.system('condor_submit jobs/{}'.format(subfilename))
+
+                job_num+=1
+            file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+        if parajobs:
+            os.system('%(JOBWRAPPER)s ./jobs/%(JOB)s-\$\(\(SGE_TASK_ID-1\)\).sh  jobs/parajob_%(JOB)s.sh' %vars())
+            PARAJOBSUBMIT = getParaJobSubmit(job_num)
+            os.system('%(PARAJOBSUBMIT)s jobs/parajob_%(JOB)s.sh' % vars())
+
 if options.proc_bkg or options.proc_all:
   central_samples = [ 
     # Drell-Yan LO
@@ -353,7 +423,22 @@ if options.proc_bkg or options.proc_all:
 #    'WminusHToTauTau_M125',
 #    'WplusHToTauTau_M125',
 #    'ZHToTauTau_M125',
-#    'ttHToTauTau_M125',    
+#    'ttHToTauTau_M125',  
+# 
+#     'QCD_Pt-20_MuEnrichedPt15', 
+#
+#     'QCD_Pt-1000_MuEnrichedPt5',
+#     'QCD_Pt-120To170_MuEnrichedPt5',
+#     'QCD_Pt-15To20_MuEnrichedPt5',
+#     'QCD_Pt-170To300_MuEnrichedPt5',
+#     'QCD_Pt-20To30_MuEnrichedPt5',
+#     'QCD_Pt-300To470_MuEnrichedPt5',
+#     'QCD_Pt-30To50_MuEnrichedPt5',
+#     'QCD_Pt-470To600_MuEnrichedPt5',
+#     'QCD_Pt-50To80_MuEnrichedPt5',
+#     'QCD_Pt-600To800_MuEnrichedPt5',
+#     'QCD_Pt-800To1000_MuEnrichedPt5',
+#     'QCD_Pt-80To120_MuEnrichedPt5',
  	]
 
 
@@ -376,6 +461,16 @@ if options.proc_bkg or options.proc_all:
       JOB='%s_2017' % (sa)
       user='dwinterb'
       PREFIX='Mar31_MC_124X_2017'
+      if 'MuEnrichedPt5' in sa:
+        PREFIX='May22_MC_124X_2017'
+        FILELIST='filelists/May22_2017_MC_124X'
+      elif 'MuEnrichedPt15' in sa:
+        PREFIX='Apr20_MC_124X_2017'
+        FILELIST='filelists/Apr20_2017_MC_124X'
+      else:
+        PREFIX='Mar31_MC_124X_2017'
+        FILELIST='filelists/Mar31_2017_MC_124X'
+
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
 
       job_num=0

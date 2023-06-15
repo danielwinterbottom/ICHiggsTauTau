@@ -1274,6 +1274,7 @@ namespace ic {
       synctree_->Branch("trackingweight_2", &trackingweight_2_, "trackingweight_2/F");
       synctree_->Branch("effweight", &effweight_, "effweight/F");
       synctree_->Branch("weight", &wt_.var_float, "wt/F");
+      synctree_->Branch("wt_zpt",&wt_zpt_);
 
       synctree_->Branch("m_vis", &m_vis_.var_float, "m_vis/F");
       synctree_->Branch("mt_sv", &mt_sv_.var_float, "mt_sv/F");

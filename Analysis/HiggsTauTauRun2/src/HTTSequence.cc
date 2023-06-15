@@ -599,7 +599,7 @@ if (js["do_pu_wt"].asBool()&&!is_data&&!is_embedded) {
 }
 
 
-if(do_met_filters){
+if(do_met_filters&&!is_embedded){ // add back later for embedded samples!!!!
   BuildModule(GenericModule("MetFiltersRecoEffect")
     .set_function([=](ic::TreeEvent *event){
       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
