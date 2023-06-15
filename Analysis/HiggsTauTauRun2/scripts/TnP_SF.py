@@ -54,13 +54,14 @@ output_folder = "{}/{}/{}/correction/".format(input_folder,year,channel)
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
-destination_file = ROOT.TFile.Open("{}/{}_SF.root".format(output_folder,file_name), "RECREATE")
+destination_file = ROOT.TFile.Open("{}/{}_SFs.root".format(output_folder,file_name), "RECREATE")
 
 types = ["id","iso","trg"]
 
 # Get the histogram from the source root file
-for name in types:
+for name in types: 
   h_nom_data = f_nom.Get("data_{}_eff".format(name))
+  if not isinstance(h_nom_data, ROOT.TH2): continue
   h_nom_ZLL = f_nom.Get("ZLL_{}_eff".format(name))
   if options.embed:
     h_nom_EMB = f_nom.Get("embed_{}_eff".format(name))
@@ -93,37 +94,39 @@ for name in types:
 
           h_data_eff = f_nom.Get("gr_data_{}_eff_eta_{}_to_{}".format(name,bin_low_edge,bin_up_edge))
           h_ZLL_eff = f_nom.Get("gr_ZLL_{}_eff_eta_{}_to_{}".format(name,bin_low_edge,bin_up_edge))
+          num_only = (not isinstance(h_ZLL_eff, ROOT.TGraphAsymmErrors))
 
           data_y_val = h_data_eff.GetY()[xbin-1]
           data_y_err_low = h_data_eff.GetErrorYlow(xbin-1)
           data_y_err_high = h_data_eff.GetErrorYhigh(xbin-1)
-          ZLL_y_val = h_data_eff.GetY()[xbin-1]
-          ZLL_y_err_low = h_ZLL_eff.GetErrorYlow(xbin-1)
-          ZLL_y_err_high = h_ZLL_eff.GetErrorYhigh(xbin-1)
-
-          if options.embed:
-            h_EMB_eff = f_nom.Get("gr_embed_{}_eff_eta_{}_to_{}".format(name,bin_low_edge,bin_up_edge))
-            EMB_y_val = h_EMB_eff.GetY()[xbin-1]
-            EMB_y_err_low = h_EMB_eff.GetErrorYlow(xbin-1)
-            EMB_y_err_high = h_EMB_eff.GetErrorYhigh(xbin-1)
-         
-          #### added this for embedded 
-          ###if ZLL_y_val != 0:
-          ###  stat_error = (((data_y_err_high**2 * ZLL_y_val) + (ZLL_y_err_high**2 * data_y_val))/ZLL_y_val**4)**0.5
-          ###else:
-          ###  stat_error = 0
           stat_error_data = max(data_y_err_high,data_y_err_low)
-          stat_error_ZLL = max(ZLL_y_err_high,ZLL_y_err_low)
-          stat_error_EMB = 0 if not options.embed else max(EMB_y_err_high,EMB_y_err_low)
-          if ZLL_y_val != 0:
-            # stat error on the overall MC SF
-            stat_error = ((stat_error_data/data_y_val)**2+(stat_error_ZLL/ZLL_y_val)**2)**.5*data_y_val/ZLL_y_val 
-          else: 
-            stat_error = 0
-          if options.embed and EMB_y_val != 0:
-            stat_error_embed_sf = ((stat_error_data/data_y_val)**2+(stat_error_EMB/EMB_y_val)**2)**.5*data_y_val/EMB_y_val
+          if not num_only:
+            ZLL_y_val = h_data_eff.GetY()[xbin-1]
+            ZLL_y_err_low = h_ZLL_eff.GetErrorYlow(xbin-1)
+            ZLL_y_err_high = h_ZLL_eff.GetErrorYhigh(xbin-1)
 
-          if name == 'trg' and (data_y_val<0.1 or ZLL_y_val<0.1 or (options.embed and EMB_y_val<0.1)):
+            if options.embed:
+              h_EMB_eff = f_nom.Get("gr_embed_{}_eff_eta_{}_to_{}".format(name,bin_low_edge,bin_up_edge))
+              EMB_y_val = h_EMB_eff.GetY()[xbin-1]
+              EMB_y_err_low = h_EMB_eff.GetErrorYlow(xbin-1)
+              EMB_y_err_high = h_EMB_eff.GetErrorYhigh(xbin-1)
+         
+            #### added this for embedded 
+            ###if ZLL_y_val != 0:
+            ###  stat_error = (((data_y_err_high**2 * ZLL_y_val) + (ZLL_y_err_high**2 * data_y_val))/ZLL_y_val**4)**0.5
+            ###else:
+            ###  stat_error = 0
+            stat_error_ZLL = max(ZLL_y_err_high,ZLL_y_err_low)
+            stat_error_EMB = 0 if not options.embed else max(EMB_y_err_high,EMB_y_err_low)
+            if ZLL_y_val != 0:
+              # stat error on the overall MC SF
+              stat_error = ((stat_error_data/data_y_val)**2+(stat_error_ZLL/ZLL_y_val)**2)**.5*data_y_val/ZLL_y_val 
+            else: 
+              stat_error = 0
+            if options.embed and EMB_y_val != 0:
+              stat_error_embed_sf = ((stat_error_data/data_y_val)**2+(stat_error_EMB/EMB_y_val)**2)**.5*data_y_val/EMB_y_val
+
+          if name == 'trg' and data_y_val<0.1:
              # for the trigger SF we have to remove the low pT SFs where the SFs don;t make sense as the efficiencies are very small. 
              # at the moment to avoid having to use seperate pT cuts depending on the era/channel/trigger we just zero all SF where the efficiencies are < 10% 
              # need to be careful with this bit method incase efficiencies are low for another reason!
@@ -137,17 +140,17 @@ for name in types:
              ratio_emb = 0
           else:
             content_nom_data = h_nom_data.GetBinContent(xbin,ybin)
-            content_nom_ZLL = h_nom_ZLL.GetBinContent(xbin,ybin)
+            content_nom_ZLL = 0 if num_only else h_nom_ZLL.GetBinContent(xbin,ybin)
             if options.embed: 
               content_nom_EMB = h_nom_EMB.GetBinContent(xbin,ybin)
             if options.run_systs:
               content_sig_data = h_sig_data.GetBinContent(xbin, ybin)
-              content_sig_ZLL = h_sig_ZLL.GetBinContent(xbin, ybin)
+              content_sig_ZLL = 0 if num_only else h_sig_ZLL.GetBinContent(xbin, ybin)
               content_bkg_data = h_bkg_data.GetBinContent(xbin,ybin)
-              content_bkg_ZLL = h_bkg_ZLL.GetBinContent(xbin,ybin)
+              content_bkg_ZLL = 0 if num_only else h_bkg_ZLL.GetBinContent(xbin,ybin)
               content_tag_data = h_tag_data.GetBinContent(xbin,ybin)
-              content_tag_ZLL = h_tag_ZLL.GetBinContent(xbin,ybin)
-              if options.embed:
+              content_tag_ZLL = 0 if num_only else h_tag_ZLL.GetBinContent(xbin,ybin)
+              if options.embed and not num_only:
                 content_sig_EMB = h_sig_EMB.GetBinContent(xbin, ybin)
                 content_bkg_EMB = h_bkg_EMB.GetBinContent(xbin,ybin)
                 content_tag_EMB = h_tag_EMB.GetBinContent(xbin,ybin) 
@@ -172,28 +175,30 @@ for name in types:
                   bkg_error_emb = 0. if content_bkg_EMB<=0. else abs((content_bkg_data/content_bkg_EMB)-(content_nom_data/content_nom_EMB))**2
                   tag_error_emb = 0. if content_tag_EMB<=0. else abs((content_tag_data/content_tag_EMB)-(content_nom_data/content_nom_EMB))**2 
                   ratio_emb = content_nom_data/content_nom_EMB
-              error = (stat_error**2 + sig_error + bkg_error + tag_error)**0.5
+              error = 0 if num_only else (stat_error**2 + sig_error + bkg_error + tag_error)**0.5
               error_data = (stat_error_data**2+(content_sig_data-content_nom_data)**2 + (content_bkg_data-content_nom_data)**2 + (content_tag_data-content_nom_data)**2)**.5 
-              error_mc = (stat_error_ZLL**2+(content_sig_ZLL-content_nom_ZLL)**2 + (content_bkg_ZLL-content_nom_ZLL)**2 + (content_tag_ZLL-content_nom_ZLL)**2)**.5
-              if options.embed:
+              error_mc = 0 if num_only else (stat_error_ZLL**2+(content_sig_ZLL-content_nom_ZLL)**2 + (content_bkg_ZLL-content_nom_ZLL)**2 + (content_tag_ZLL-content_nom_ZLL)**2)**.5
+              if options.embed and not num_only:
                 error_embed_sf = (stat_error_embed_sf**2 + sig_error_emb + bkg_error_emb + tag_error_emb)**0.5  
                 error_embed = (stat_error_EMB**2+(content_sig_EMB-content_nom_EMB)**2 + (content_bkg_EMB-content_nom_EMB)**2 + (content_tag_EMB-content_nom_EMB)**2)**.5
-          h_SF.SetBinContent(xbin,ybin, ratio)
-          h_SF.SetBinError(xbin,ybin, error)
           h_nom_data.SetBinError(xbin,ybin, error_data)
-          h_nom_ZLL.SetBinError(xbin,ybin, error_mc)
-          if options.embed:
-            h_SF_EMB.SetBinContent(xbin,ybin, ratio_emb)
-            h_SF_EMB.SetBinError(xbin,ybin, error_embed_sf)
-            h_nom_EMB.SetBinError(xbin,ybin, error_embed)          
+          if not num_only:
+            h_SF.SetBinContent(xbin,ybin, ratio)
+            h_SF.SetBinError(xbin,ybin, error)
+            h_nom_ZLL.SetBinError(xbin,ybin, error_mc)
+            if options.embed:
+              h_SF_EMB.SetBinContent(xbin,ybin, ratio_emb)
+              h_SF_EMB.SetBinError(xbin,ybin, error_embed_sf)
+              h_nom_EMB.SetBinError(xbin,ybin, error_embed)          
 
   # Write the copy of the histogram to the destination root file
-  h_SF.Write()
   h_nom_data.Write()
-  h_nom_ZLL.Write()
-  if options.embed:
-    h_nom_EMB.Write()
-    h_SF_EMB.Write()
+  if not num_only:
+    h_SF.Write()
+    h_nom_ZLL.Write()
+    if options.embed:
+      h_nom_EMB.Write()
+      h_SF_EMB.Write()
 
 
   # Close the root files
@@ -207,7 +212,7 @@ for name in types:
      del h_tag_data
      del h_tag_ZLL
   del h_SF
-  del h_SF_EMB
+  if options.embed: del h_SF_EMB
 
 f_nom.Close()
 if options.run_systs:
@@ -227,7 +232,9 @@ if not os.path.exists(plots_folder):
 types = ["id","iso","trg"]
 for name in types:
    h_SF = destination_file.Get("ScaleFactor_{}".format(name))
-   h_SF_EMB = destination_file.Get("ScaleFactor_EMB_{}".format(name))
+   if not isinstance(h_SF, ROOT.TGraphAsymmErrors): continue
+   if options.embed:
+     h_SF_EMB = destination_file.Get("ScaleFactor_EMB_{}".format(name))
 
    for j in range(1, h_SF.GetNbinsY()+1):
      histo1 = ROOT.TH1D('ScaleFactor_{}_1D'.format(name), '', h_SF.GetNbinsX(), h_SF.GetXaxis().GetXbins().GetArray())
@@ -268,8 +275,8 @@ for name in types:
         canvas.Update()
         del canvas
         del histo1
-        del histo2
+        if options.embed: del histo2
    del h_SF
-   del h_SF_EMB 
+   if options.embed: del h_SF_EMB 
 
 
