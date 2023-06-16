@@ -1367,7 +1367,8 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         if (options.DY_NLO==False):
            ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
         else:
-           ztt_samples = ['DYJetstoLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+           #ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+           ztt_samples = ['DYJetsToLL-NLO']
         vv_samples = ['WZTo1L1Nu2Q','WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
         wgam_samples = ['WGToLNuG']
         wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
@@ -1380,7 +1381,9 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         if (options.DY_NLO==False):
            ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
         else:
-           ztt_samples = ['DYJetstoLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+           #ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+           ztt_samples = ['DYJetsToLL-NLO']
+
         vv_samples = ['WZTo3LNu','WZTo3LNu','WWTo2L2Nu','ZZTo2L2Nu','ZZTo4L','T-tW', 'Tbar-tW','Tbar-t','T-t']
         wgam_samples = ['WGToLNuG']
         wjets_samples = ['WJetsToLNu-LO' ,'W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
@@ -1452,7 +1455,8 @@ if options.era in ['UL_17']:
     if (options.DY_NLO==False):
         ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
     else:
-        ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+        #ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+        ztt_samples = ['DYJetsToLL-NLO']
 
     # Question: Is this need for UL_17?
     #if options.channel == "tt": # remove 'DYJetsToLL_M-10-50-LO (zero entries)
@@ -1530,8 +1534,9 @@ if options.era in ['UL_18']:
     if (options.DY_NLO==False):
         ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
         #ztt_samples = ['DYJetsToLL-LO']
-    else:
-        ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+    else: 
+        #ztt_samples = ['DYJetsToLL-NLO','DYJetsToLL_0J-NLO','DYJetsToLL_1J-NLO','DYJetsToLL_2J-NLO']
+        ztt_samples = ['DYJetsToLL-NLO']
 
     #ztt_samples = ['DYJetsToLL-NLO']
     #ztt_samples = ['DYJetsToLL-LO','DYJetsToLL_M-10to50-LO']

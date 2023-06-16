@@ -129,14 +129,14 @@ for year in years:
     if not os.path.isdir('%(output_folder)s/%(year)s/%(ch)s' % vars()):
       os.system("mkdir %(output_folder)s/%(year)s/%(ch)s" % vars())
     method='8'
-    add_cond = '--add_wt=\'wt_prefire\''
+    add_cond = '--add_wt=\'wt_prefire*(1/wt_dysoup_NLO)\' --DY_NLO'
  
     categories = cat_schemes[ch]
     variables = var_schemes[ch]
     for cat in categories:
       for item in variables:
            var_used = item[0]
-           #if var_used not in ["pt_tt","fabs(eta_1)","fabs(eta_2)"]: continue
+           if var_used not in ["pt_tt","fabs(eta_1)","fabs(eta_2)","m_vis","pt_1","pt_2"]: continue
            bin_used = item[1]
            var_name = item[0]
            if var_used in ["fabs(eta_1)","fabs(eta_2)"]: var_name = var_name[5:10]
