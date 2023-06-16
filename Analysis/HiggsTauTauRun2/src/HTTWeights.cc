@@ -384,7 +384,6 @@ int HTTWeights::PreAnalysis() {
       fns_["m_sel_trg_ratio"] = std::shared_ptr<RooFunctor>(
       w_->function("m_sel_trg_ic_ratio")->functor(w_->argSet("gt1_pt,gt1_eta,gt2_pt,gt2_eta")));
 
-
       // triggers for electron and muon legs in em channel
       fns_["e_trg_binned_12_mc"] = std::shared_ptr<RooFunctor>(w_->function("e_trg_12_binned_ic_mc")->functor(w_->argSet("e_pt,e_eta,e_iso")));
       fns_["e_trg_binned_12_data"] = std::shared_ptr<RooFunctor>(w_->function("e_trg_12_binned_ic_data")->functor(w_->argSet("e_pt,e_eta,e_iso")));
