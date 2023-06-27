@@ -171,6 +171,7 @@ def ZeroNegativeBins(hist):
     if hist.GetBinContent(i) < 0:
       neg_bins = True
       hist.SetBinContent(i,0)
+      hist.SetBinError(i,0)
   return hist, neg_bins
 
 
@@ -290,7 +291,7 @@ if args.zero_negative_bins:
     if ".subnodes" not in i:
       hist = cf.Get(dir_name+'/'+i)
       scale = False
-      if hist.Integral() < 0:  
+      if hist.Integral() < 0 and "jetFakes" in hist.GetName():  
         scale = True
         hist.Scale(-1)
       new_hist, neg_bins = ZeroNegativeBins(copy.deepcopy(hist))
@@ -369,7 +370,7 @@ if args.adjust_jf:
 
 
 #recalculate total
-proc_names = ["Higgs","VVV","ZR","TTR","VVR","WR","ZLF","TTLF","VVLF","WLF","jetFakes","MC_jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes134","jetFakes234","jetFakes1234"]
+proc_names = ["Higgs","VVV","ZR","TTR","VVR","WR","ZLF","TTLF","VVLF","WLF","jetFakes","MC_jetFakes","jetFakes1","jetFakes2","jetFakes3","jetFakes4","jetFakes12","jetFakes13","jetFakes14","jetFakes23","jetFakes24","jetFakes34","jetFakes123","jetFakes124","jetFakes134","jetFakes234","jetFakes1234","ggZZ","qqZZ","HZZ","QCD_corrected"]
 first = True
 for i in proc_names:
   if i in directory.GetListOfKeys():

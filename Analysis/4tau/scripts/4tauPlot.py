@@ -222,6 +222,8 @@ parser.add_argument("--symmetrise_uncertainty", dest="symmetrise_uncertainty", a
     help="Symmetrise uncertainties in dictionary defined in code.")
 parser.add_argument("--shrink_final_bin", dest="shrink_final_bin", action='store_true',
     help="Shrink the size of the final bin.")
+parser.add_argument("--get_qcd_extrap", dest="get_qcd_extrap", action='store_true',
+    help="Get the histograms to calculate the QCD extrapolation")
 options = parser.parse_args(remaining_argv)   
 
 print ''
@@ -757,6 +759,20 @@ def GenerateMCFakeTaus(ana, ff_from, add_name='', samples=[], plot='', wt='', se
     ana.nodes[nodename].AddNode(mc_jetfakes_node)
 
 
+def GenerateQCD(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='',charges_non_zero=False,data_veto=None,nominal_charge=False):
+  scale = "1.0"
+  ci_cat = copy.deepcopy(cat)
+  if not (charges_non_zero or nominal_charge): ci_cat = ci_cat.replace(charge_sel,"(("+charge_sel+")==0)") 
+  if data_veto != None:
+    new_cat_data = "("+scale+")*("+wt+")*("+data_veto+")"
+  else:
+    new_cat_data = "("+scale+")*("+wt+")"
+  new_cat_mc = "("+scale+")*("+wt+")"
+  qcd_data = GetNode(ana, 'QCD', add_name, data_samples, plot, new_cat_data, sel, ci_cat)
+  qcd_mc = GetNode(ana, 'QCD_subtract', add_name, mc_samples, plot, new_cat_mc, sel, ci_cat)
+  ana.nodes[nodename].AddNode(SubtractNode('QCD{}'.format(add_name), qcd_data, qcd_mc))
+
+
 def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None, wt_ext="", type_ext="", intermediate_shift=[], spec_wt_ext=None):
 
   vj = "deepTauVsJets_" + VsJets_wp
@@ -852,6 +868,8 @@ def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', 
             ff_mc = GetNode(ana, 'jetFakes{}_subtract'.format(name), add_name_channel, mc_samples, plot, "("+scale+")*("+ff_mc_wt+")", sel, "("+ff_sel+")&&("+data_veto+")")
 
           ana.nodes[nodename].AddNode(SubtractNode('jetFakes{}'.format(name)+add_name_channel, ff_data, ff_mc))  
+          #ana.nodes[nodename].AddNode(ff_data)
+
 
 #def GenerateFakeTaus(ana, add_name='', data_samples=[], mc_samples=[], plot='', wt='', sel='', cat='', charges_non_zero=False, data_veto=None,wt_ext="",type_ext="", intermediate_shift=[]):
 #  vj = "deepTauVsJets_" + VsJets_wp
@@ -985,7 +1003,7 @@ def PrintSummary(nodename='', data_strings=['data_obs'], add_names=''):
         else: per_err = node.shape.rate.s/node.shape.rate.n
         print node.name.ljust(10) , ("%.2f" % node.shape.rate.n).ljust(10), '+/-'.ljust(5), ("%.2f" % node.shape.rate.s).ljust(7), "(%.4f)" % per_err 
         if True in [node.name.find(add_name) != -1 and add_name is not '' for add_name in add_names]: continue
-        if node.name not in data_strings and not node.name.endswith("Up") and not node.name.endswith("Down") and not node.name in flat_sig: 
+        if node.name not in data_strings and not node.name.endswith("Up") and not node.name.endswith("Down") and not node.name in flat_sig and not node.name.endswith("extrap"): 
           bkg_total += node.shape.rate      
         if node.name not in data_strings and not node.name.endswith("Up") and not node.name.endswith("Down") and node.name in flat_sig:
           sig_total += node.shape.rate
@@ -1025,6 +1043,7 @@ def GetTotals(ana,add_name="",outfile='outfile.root'):
       if node.name == "data_obs": continue
       if node.name.endswith("Up"): continue
       if node.name.endswith("Down"): continue
+      if node.name.endswith("extrap"): continue
       if first_hist:
           total_bkg = ana.nodes[nodename].nodes[node.name].shape.hist.Clone()
           first_hist=False
@@ -1062,7 +1081,41 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     if options.add_wt : wt+='*'+options.add_wt
      
     # produce templates for backgrounds
+    mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + ggzz_samples + qqzz_samples + higgs_samples
+
     if options.method == 1:
+      if "QCD" not in samples_to_skip:
+          GenerateQCD(ana, add_name, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"], nominal_charge=False)
+          if options.get_qcd_extrap:
+            ncat = copy.deepcopy(cat)
+            for ind,ch in enumerate(options.channel):
+
+              if ch == "e":  
+                find = e_sel.replace("X",str(ind+1)) 
+                rep = "(("+e_sel.replace("X",str(ind+1))+")==0)"
+
+              if ch == "m":
+                find = m_sel.replace("X",str(ind+1))  
+                rep = "(("+m_sel.replace("X",str(ind+1))+")==0)"
+
+              if ch == "t":
+                find = t_sel.replace("X",str(ind+1))
+                rep = "(("+t_sel.replace("X",str(ind+1))+")==0)"
+
+              if ind == 0: rep = "("+rep
+
+              if ind+1 < len(options.channel):
+                find += " &&"
+                rep  += " ||"
+              else:
+                rep += ")"
+
+              ncat = ncat.replace(find, rep)
+
+            GenerateQCD(ana, "_cnz_aiso_extrap"+add_name, data_samples, mc_samples, plot, wt, sel, ncat, options.charges_non_zero, data_veto=cats["data_veto"], nominal_charge=False)
+            GenerateQCD(ana, "_aiso_extrap"+add_name, data_samples, mc_samples, plot, wt, sel, ncat, options.charges_non_zero, data_veto=cats["data_veto"], nominal_charge=True)
+
+
       if 'ZTT' not in samples_to_skip:
           GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels)
       if 'TT' not in samples_to_skip:    
@@ -1091,7 +1144,6 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               run_signal_samples.remove(k)
           GenerateSignal(ana, add_name, run_signal_samples, plot, wt, sel, cat)
     elif options.method == 2:
-      mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + ggzz_samples + qqzz_samples
       if 'jetFakes' not in samples_to_skip:
 
         if options.do_ff_systs:
@@ -1792,6 +1844,18 @@ def SymmetriseUncertainty(hist,hist_up,hist_down):
     hist_up.SetBinContent(i,hist.GetBinContent(i)+max_shift)
     hist_down.SetBinContent(i,hist.GetBinContent(i)-max_shift)
   return hist_up, hist_down
+
+if options.get_qcd_extrap and not options.plot_from_dc:
+  directory = outfile.Get(nodename)
+  outfile.cd(nodename)
+  hist = directory.Get("QCD").Clone()
+  hist_cnz_aiso = directory.Get("QCD_cnz_aiso_extrap").Clone()
+  hist_aiso = directory.Get("QCD_aiso_extrap").Clone()
+  hist_aiso.Divide(hist_cnz_aiso)
+  hist.Multiply(hist_aiso)
+  hist.SetName("QCD_corrected")
+  hist.Write()
+
 
 if options.symmetrise_uncertainty and options.plot_from_dc == "":
   symmetrise_dict = {"jetFakes":["_all_non_closure"]}
