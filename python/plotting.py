@@ -2947,7 +2947,10 @@ def HTTPlot(nodename,
         bkg_histos.append(h)
         
 
-    for i in del_later: del background_schemes[channel][i]
+    removed = 0
+    for i in del_later: 
+      del background_schemes[channel][i-removed]
+      removed += 1
 
     stack = R.THStack("hs","")
     bkghist = R.TH1F()
