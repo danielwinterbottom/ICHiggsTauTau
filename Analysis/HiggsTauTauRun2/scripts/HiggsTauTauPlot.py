@@ -5383,7 +5383,7 @@ elif options.custom_uncerts_up_name != '':
 
 
 if not options.no_plot:
-    if options.extra_name != '': vname = options.extra_name
+    if options.extra_name != '': vname = var_name + '_' +options.extra_name
     else: vname = var_name
 
 

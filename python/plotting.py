@@ -62,6 +62,7 @@ def SetAxisTitles(plot, channel):
   titles = {}
   titles['iso_1'] = ['I^{'+lep1_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep1_label+'}_{rel}']
   titles['iso_2'] = ['I^{'+lep2_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep2_label+'}_{rel}']
+  titles['iso_2_V2p5'] = ['I^{'+lep2_label+'}_{rel}','Events / '+bin_width+' GeV', 'I^{'+lep2_label+'}_{rel}']
   titles['pt_1'] = ['p_{T}^{'+lep1_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep1_label+'} (1/GeV)']
   titles['pt_2'] = ['p_{T}^{'+lep2_label+'} (GeV)','Events / '+bin_width+' GeV', 'dN/dp_{T}^{'+lep2_label+'} (1/GeV)']
   titles['met'] = ['E_{T}^{miss} (GeV)','Events / '+bin_width+' GeV', 'dN/dE_{T}^{miss} (1/GeV)']
