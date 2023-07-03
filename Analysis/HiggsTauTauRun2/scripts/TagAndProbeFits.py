@@ -148,7 +148,9 @@ def GenerateEmbedded(ana, add_name='', samples=[], plot='', wt='', sel='', cat='
     ana.nodes[nodename].AddNode(embed_node)
 
 def Produce3DHistograms(ana, wt='wt', outfile=None):
-    mass_bins = '(50,65,115)'
+    if options.embed_sel or options.embed_dz: mass_bins = '(50,70,120)'
+    else: mass_bins = '(50,65,115)'
+    #mass_bins = '(50,70,120)'
     if options.channel == 'tpzmm':
       gen_cuts='gen_match_1==2&&gen_match_2==2'
       idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
@@ -428,6 +430,18 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "SUM::signalFail(vFracf[0.8,0,1]*signal1Fail, signal2Fail)"
               ]
           )
+  elif sig_model == 'DoubleVUncorr_embedsel':
+      nparams = 6
+      pdf_args.extend(
+              [
+                  "Voigtian::signal1Pass(m_vis, meanp1[90,85,95], widthp1[2.495], sigma1p[0.9,0.5,3])",
+                  "Voigtian::signal2Pass(m_vis, meanp2[90,85,95], widthp2[2.495], sigma2p[4,3,10])",
+                  "SUM::signalPass(vFracp[0.7,0.5,1]*signal1Pass, signal2Pass)",
+                  "Voigtian::signal1Fail(m_vis, meanf1[90,85,95], widthfq[2.495], sigma1f[0.9,0.5,3])",
+                  "Voigtian::signal2Fail(m_vis, meanf2[90,85,95], widthf2[2.495], sigma2f[4,3,10])",
+                  "SUM::signalFail(vFracf[0.7,0.5,1]*signal1Fail, signal2Fail)"
+              ]
+          )
   elif sig_model == 'DoubleVUncorr_18':
       nparams = 6
       pdf_args.extend(
@@ -564,7 +578,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
                   "BreitWigner::BW(m_vis, meanbw[0], widthbw[2.495])",
                   "CBShape::CBPass(m_vis, mean[90,85,95], sigma[2,0.5,10], alpha[1,0,50], n[1,0,50])",
                   "FFTConvPdf::signalPass(m_vis,CBPass,BW)",
-                  "CBShape::CBFail(m_vis, mean[90,85,95], sigma[2,0.5,10], alpha[1,0,50], n[1,0,50])",
+                  "CBShape::CBFail(m_vis, mean, sigma, alpha, n)",
                   "FFTConvPdf::signalFail(m_vis,CBFail,BW)",
               ]
           )            
@@ -970,12 +984,24 @@ elif options.era in ['summer18','sm18']: ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'legacy16': ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 elif options.era == 'UL_16preVFP':  ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_16postVFP': ztt_samples = ['DYJetsToLL-LO']
-elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO']
-elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO']
+elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
+elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 else: ztt_samples = ['DYJetsToLL-LO-ext1','DYJetsToLL-LO-ext2']
 
 embed_samples = []
-if options.era == 'summer17':
+if options.era == 'UL_16preVFP':
+  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMu2016-HIPM_B','EmbeddingMuMu2016-HIPM_C','EmbeddingMuMu2016-HIPM_D','EmbeddingMuMu2016-HIPM_E','EmbeddingMuMu2016-HIPM_F']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElEl2016-HIPM_B','EmbeddingElEl2016-HIPM_C','EmbeddingElEl2016-HIPM_D','EmbeddingElEl2016-HIPM_E','EmbeddingElEl2016-HIPM_F']
+elif options.era == 'UL_16postVFP':
+  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMu2016F','EmbeddingMuMu2016G','EmbeddingMuMu2016H']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElEl2016F','EmbeddingElEl2016G','EmbeddingElEl2016H']
+elif options.era == 'UL_17':
+  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMu2017B','EmbeddingMuMu2017C','EmbeddingMuMu2017D','EmbeddingMuMu2017E','EmbeddingMuMu2017F']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElEl2017B','EmbeddingElEl2017C','EmbeddingElEl2017D','EmbeddingElEl2017E','EmbeddingElEl2017F']
+elif options.era == 'UL_18':
+  if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMu2018B','EmbeddingMuMu2018C','EmbeddingMuMu2018D','EmbeddingMuMu2018A']
+  if options.channel == 'tpzee': embed_samples = ['EmbeddingElEl2018B','EmbeddingElEl2018C','EmbeddingElEl2018D','EmbeddingElEl2018A']
+elif options.era == 'summer17':
   if options.channel == 'tpmt': embed_samples = ['EmbeddingMuTauB','EmbeddingMuTauC','EmbeddingMuTauD','EmbeddingMuTauE','EmbeddingMuTauF']
   if options.channel == 'tpzee': embed_samples = ['EmbeddingElElB','EmbeddingElElC','EmbeddingElElD','EmbeddingElElE','EmbeddingElElF']
   if options.channel == 'tpzmm': embed_samples = ['EmbeddingMuMuB','EmbeddingMuMuC','EmbeddingMuMuD','EmbeddingMuMuE','EmbeddingMuMuF']
@@ -1250,6 +1276,10 @@ for name in wsnames:
   #if options.channel == 'tpzee' and 'trg' in name: sig_model = 'BWCBGausConvCorr'
   if options.mutoele:  
     sig_model='DoubleVUncorr'
+
+  if options.embed_sel or options.embed_dz:
+    bkg_model = 'Exponential'
+    sig_model='DoubleVUncorr_embedsel'
   
   #sig_model='BWCBConvUncorr'
   if (not (options.embed_dz or options.charge_flip) or 'trg' in name or not options.trg_only):
@@ -1282,8 +1312,14 @@ for i in sf_types:
         x_title = 'P_{T}^{e} (GeV)'
         if 'trg' in i: ratio_range="0.1,2.0"
     label = '%s, %.1f < |#eta| < %.1f' % (i, ymin,ymax)
-    if options.channel == "tpzmm": label = 'Muon Trigger, 2018, %.1f < |#eta| < %.1f' % (ymin,ymax)
-    if options.channel == "tpzee": label = 'Electron Trigger, 2018, %.1f < |#eta| < %.1f' % (ymin,ymax)
+    if options.channel == "tpzmm": 
+      if 'trg' in i: label = 'Muon Trigger, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
+      elif 'iso' in i: label = 'Muon Iso, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
+      elif 'id' in i: label = 'Muon ID, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
+    if options.channel == "tpzee": 
+      if 'trg' in i: label = 'Electron Trigger, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
+      elif 'iso' in i: label = 'Electron Iso, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
+      elif 'id' in i: label = 'Electron ID, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
     if options.charge_flip: 
       label=''
       ratio_range="0.1,2.0"
