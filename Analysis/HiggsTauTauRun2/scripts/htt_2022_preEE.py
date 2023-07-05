@@ -71,7 +71,7 @@ parser.add_option("--scales", dest="scales", type='string', default='default',
 parser.add_option("--parajobs", dest="parajobs", action='store_true', default=False,
                   help="Submit jobs parametrically")
 
-parser.add_option("--config", dest="config", type='string', default='scripts/config_2022.json',
+parser.add_option("--config", dest="config", type='string', default='scripts/config_2022_preEE.json',
                   help="Config file")
 
 parser.add_option("--list_backup", dest="slbackupname", type='string', default='prevlist',
