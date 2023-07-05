@@ -124,7 +124,7 @@ for scale in scale_list:
         flatjsonlist.append("^%(scale)s_hi^%(scale)s_lo"%vars())
         flatjsonlistdysig.append("^%(scale)s_hi^%(scale)s_lo"%vars())
 
-CONFIG='scripts/config_2022.json'
+CONFIG='scripts/config_2022_preEE.json'
 if options.config != '': CONFIG = options.config
 
 n_channels=1
