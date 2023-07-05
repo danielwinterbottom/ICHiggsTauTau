@@ -376,6 +376,8 @@ void HTTSequence::BuildSequence(){
       data_json = "input/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt";
   if ((era_type == era::data_2018 || era_type == era::data_2018UL))
       data_json = "input/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt";
+  if ((era_type == era::data_2022_preEE || era_type == era::data_2022_postEE))
+      data_json = "input/json/Cert_Collisions2022_355100_362760_Golden.json";   
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
    std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
