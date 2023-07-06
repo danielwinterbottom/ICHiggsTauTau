@@ -73,7 +73,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
          MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
          MVADM2017 = "MVADM2017v2";
     } else {
          MVADM2017 = " ";
@@ -1798,7 +1799,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
          MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
          MVADM2017 = "MVADM2017v2";
     } else {
          MVADM2017 = " ";
@@ -2653,7 +2655,8 @@ namespace ic {
     std::vector<PFJet*> prebjets = lowpt_jets;
 
     double eta_cut = 2.4;
-    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) eta_cut = 2.5;
+    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) eta_cut = 2.5;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     n_prebjets_ = prebjets.size();
     std::vector<PFJet*> bjets = prebjets;
@@ -2692,6 +2695,14 @@ namespace ic {
 
       deepjet_wp = 0.2783;
     }
+    if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+      btag_wp = 0.4184;
+      loose_btag_wp = 0.1241;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.2783;
+    }    
     if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       btag_wp = 0.6321;
       loose_btag_wp = 0.2217;

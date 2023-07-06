@@ -391,6 +391,7 @@ namespace ic {
     if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP)       csv_file_path = "./input/btag_sf/DeepJet_2016LegacySF_V1.csv";
 	    else if (era_==era::data_2017 || era_ == era::data_2017UL)  csv_file_path = "./input/btag_sf/DeepFlavour_94XSF_V4_B_F.csv";
 	    else if (era_==era::data_2018 || era_ == era::data_2018UL)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
+	    else if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE)  csv_file_path = "./input/btag_sf/DeepJet_102XSF_V2.csv";
 
 	    //calib  = new const BTagCalibration("deepjet",csv_file_path);
 
