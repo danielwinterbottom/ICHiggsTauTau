@@ -84,7 +84,7 @@ int HTTWeights::PreAnalysis() {
   if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
        MVADM2017 = "MVADM2017v1";
 
-  } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+  } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
         MVADM2017 = "MVADM2017v2";
   } else {
         MVADM2017 = " ";
@@ -956,7 +956,7 @@ int HTTWeights::PreAnalysis() {
       	  w_ggh_->function("ggH_mg_ue_down")->functor(w_ggh_->argSet("ngenjets")));
     }
     // UL Scale Factors
-    if(scalefactor_file_UL_!="" && (era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL)){
+    if(scalefactor_file_UL_!="" && (era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE)){
      
 
 
@@ -1190,7 +1190,7 @@ int HTTWeights::Execute(TreeEvent *event) {
   if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
        MVADM2017 = "MVADM2017v1";
 
-  } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+  } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
        MVADM2017 = "MVADM2017v2";
   } else {
        MVADM2017 = " ";
@@ -2190,7 +2190,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
       double xtrg_et_sf_mvadm=1.;
 
-      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
+      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
 
         ele_xtrg = fns_["e_crosstrg_data"]->eval(args_1.data());
         if(is_embedded_) ele_xtrg_mc = fns_["e_crosstrg_embed"]->eval(args_1.data());
@@ -2329,7 +2329,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       double tau_trg_mvadm11_down=1;
 
 
-      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
+      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
 
         if(e_pt<e_high_pt_cut) { // if this isn't true then we are using the single lepton trigger and therefore the weight = 1
           if(!is_embedded_) {

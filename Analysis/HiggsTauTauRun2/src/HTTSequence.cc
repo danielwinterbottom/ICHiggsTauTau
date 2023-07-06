@@ -178,11 +178,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(channel_str == "zee"){
     if(era_type == era::data_2017 || era_type == era::data_2017UL) elec_pt = 28.;
     if(era_type == era::data_2018 || era_type == era::data_2018UL) elec_pt = 33.;
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) elec_pt = 33.;
     else elec_pt = 25.;
     elec_eta = 2.1;
   }
   if(channel_str == "zmm"){
     if(era_type == era::data_2017 || era_type == era::data_2017UL  || era_type == era::data_2018 || era_type == era::data_2018UL) muon_pt = 25.;
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) muon_pt = 25.;
     else muon_pt = 23.;
     muon_eta = 2.1; 
   }
@@ -400,7 +402,7 @@ void HTTSequence::BuildSequence(){
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015 || era_type==era::data_2016  
-          || era_type == era::data_2017 || era_type == era::data_2018 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || era_type == era::data_2017UL || era_type == era::data_2018UL){
+          || era_type == era::data_2017 || era_type == era::data_2018 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || era_type == era::data_2017UL || era_type == era::data_2018UL || era_type == era::data_2022_preEE || era_type == era::data_2022_postEE){
     httPrint.set_muon_label(js["muons"].asString());
     httPrint.set_jet_label(jets_label);
   }
@@ -460,6 +462,10 @@ if(!is_data && js["do_gen_analysis"].asBool()){
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
     }
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
+    }    
 
 
   }
@@ -648,6 +654,18 @@ if(do_met_filters){
 	//met_filters.push_back("Flag_BadPFMuonDzFilter");
 	met_filters.push_back("Flag_ecalBadCalibFilter");
       }
+      if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) 
+      {
+        met_filters.push_back("Flag_goodVertices");
+        met_filters.push_back("Flag_globalSuperTightHalo2016Filter");
+        met_filters.push_back("Flag_HBHENoiseFilter");
+        met_filters.push_back("Flag_HBHENoiseIsoFilter");
+        met_filters.push_back("Flag_EcalDeadCellTriggerPrimitiveFilter");
+        met_filters.push_back("Flag_BadPFMuonFilter");
+        //disabled (missing filter)
+	//met_filters.push_back("Flag_BadPFMuonDzFilter");
+	met_filters.push_back("Flag_ecalBadCalibFilter");
+      }      
       bool pass_filters = true;
       for(unsigned i=0;i<met_filters.size();++i){
        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
@@ -677,6 +695,9 @@ if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_typ
 } else if (era_type == era::data_2017 || era_type == era::data_2017UL) {
   jetIDFilter.set_predicate(bind(PFJetID2017, _1));
 } else if (era_type == era::data_2018 || era_type == era::data_2018UL) {
+  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
+}
+else if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
   jetIDFilter.set_predicate(bind(PFJetID2018, _1));
 }
 BuildModule(jetIDFilter);
@@ -762,6 +783,11 @@ if(era_type == era::data_2018UL) {
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
    scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2018.root";
 }
+if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2018.root";
+}
 
 
 TH2F embed_pt_weights_ic;
@@ -769,6 +795,7 @@ TH2F embed_pt_weights_ic;
 if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2016");
 if(era_type == era::data_2017 || era_type == era::data_2017UL) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2017");
 if(era_type == era::data_2018 || era_type == era::data_2018UL) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
+if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
 
 HTTWeights httWeights = HTTWeights("HTTWeights")   
  .set_channel(channel)
@@ -856,6 +883,10 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
       httStitching.SetWInputYields(82360950, 47850048, 27411802, 18297679, 9130068);
     }
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE){
+      httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
+      httStitching.SetWInputYields(82360950, 47850048, 27411802, 18297679, 9130068);
+    }    
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
     httStitching.set_do_dy_soup(true);
@@ -887,6 +918,10 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
     }
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+      httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
+      httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
+    }    
   }
 
   if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
@@ -907,6 +942,10 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
       httStitching.SetDYInputYields_NLO(132321936, 69493624, 43156627, 13793541);
     }
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+      httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+      httStitching.SetDYInputYields_NLO(132321936, 69493624, 43156627, 13793541);
+    }    
   }
   BuildModule(httStitching);   
 }
@@ -1050,6 +1089,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       jes_input_file = "input/jec/RegroupedV2_Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
+    if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }    
 
     
     if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
@@ -1173,6 +1216,15 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       deepjet_cbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_c");
       deepjet_othbtag_eff = GetFromTFile<TH2D>("input/btag_sf/Eff_DeepFlavour_2018_medium_all_proc_DeepFlavour_medium_inclusive_inclusive.root","/","btag_eff_oth");
     } else if (era_type == era::data_2018UL) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_oth");
+	  
+    } else if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
       bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_b");
       cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_c");
       othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_oth");
@@ -1340,7 +1392,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;
     
-    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
+    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL
+    || era_type == era::data_2022_preEE || era_type == era::data_2022_postEE){
 
         muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
         std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
@@ -1596,7 +1649,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   } 
 
   if(channel == channel::tpzee){
-    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
+    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL
+    || era_type == era::data_2022_preEE || era_type == era::data_2022_postEE){
       std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
       std::function<bool(Electron const*)> elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
 
