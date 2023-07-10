@@ -1,7 +1,7 @@
 {
   "job": {
     "filelist" : "filelists/Mar31_2018_MC_124X_DYJetsToLL.dat",
-    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/irandreo/May0223_Data_124X_2022-preEE/",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/irandreo/July0623_Data_124X_2022-preEE/",
     "max_events":   -1,
     "timings":      true,
    //"channels":     ["mt","et","tt","zmm","zee","em"],
@@ -44,7 +44,7 @@
     "filter_trg" : false,
     "do_leptonplustau" : false,
     "do_singlelepton" :true,
-    "do_singletau"    : true,
+    "do_singletau"    : false,
     "store_trigobjpt" :true,
     "tt_trg_iso_mode" : 0,
     "moriond_tau_scale" : true,
