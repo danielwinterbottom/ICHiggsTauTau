@@ -63,7 +63,8 @@ defaults = {
     "ff_ss_closure":False, "threePads":False,"auto_blind":False,
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
-    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"", "DY_NLO":False, "v2p5":False
+    "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"", "DY_NLO":False, "v2p5":False,
+    "no_qcd_subtract": False
 
 }
 
@@ -397,7 +398,9 @@ parser.add_argument("--DY_NLO", dest="DY_NLO", action='store_true',
 parser.add_argument("--plot_from_dc", default="", type=str,
       help="If not empty will draw plot straight from datacard")
 parser.add_argument("--v2p5", dest="v2p5", action='store_true',
-      help="Get version of DeepTau v2p5")
+      help="Get version of DeepTau v2p5"),
+parser.add_argument("--no_qcd_subtract", dest="no_qcd_subtract", action='store_true',
+    help="Do not subtract background when estimating qcd events")
 options = parser.parse_args(remaining_argv)   
 
 print 'do_unrolling = %s' % options.do_unrolling 
@@ -3367,22 +3370,30 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
         if method == 8:
           qcd_sdb_cat = cats[options.cat]+' && '+cats['tt_qcd_norm'] 
           qcd_sdb_cat_data = cats_unmodified[options.cat]+' && '+cats_unmodified['tt_qcd_norm']
-          
-          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,False,True)        
+          if options.no_qcd_subtract:
+            subtract_node =None       
+          else:
+            subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,False,True) 
           num_selection = BuildCutString(wt, sel, cat_data, '!os')
           num_node = SubtractNode('ratio_num',
                        ana.SummedFactory('data', data, plot_unmodified, num_selection),
                        subtract_node)
           if options.analysis == 'mssmsummer16': tau_id_wt = 'wt_tau2_id_loose'
           else: tau_id_wt = '1'
-          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,False,True)
+          if options.no_qcd_subtract:
+            subtract_node =None 
+          else:
+            subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,False,True)
           den_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, '!os')
           den_node = SubtractNode('ratio_den',
                        ana.SummedFactory('data', data, plot_unmodified, den_selection),
                        subtract_node)
           shape_node = None   
           full_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, OSSS)
-          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,get_os,True)
+          if options.no_qcd_subtract:
+            subtract_node = None
+          else:
+            subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,get_os,True)
   
           ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
             ana.SummedFactory('data', data, plot_unmodified, full_selection),
@@ -4871,8 +4882,12 @@ if options.extra_name != "":
 #  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
   datacard_name+='_'+options.extra_name
 #else: 
-output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
-outfile = ROOT.TFile(output_name, 'RECREATE')
+if options.do_ss:
+  output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'_ss.root'
+  outfile = ROOT.TFile(output_name, 'RECREATE')
+else:
+  output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+  outfile = ROOT.TFile(output_name, 'RECREATE')
     
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
 if options.channel=="em": cats['em_shape_cat'] = '('+cats[options.cat]+')*('+cats['loose_baseline']+')'
