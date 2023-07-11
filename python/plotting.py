@@ -3362,7 +3362,8 @@ def CompareHists(hists=[],
              norm_bins=True,
              uncert_hist=None,
              uncert_title='',
-             ReweightPlot=False):
+             ReweightPlot=False,
+             output_file = None):
    
     objects=[]
     R.gROOT.SetBatch(R.kTRUE)
@@ -3519,9 +3520,9 @@ def CompareHists(hists=[],
     tot = len(hists)
     if isinstance(uncert_hist,list): tot+=len(uncert_hist)
     if tot > 4: legend = PositionedLegend(0.35,0.3,3,0.03)
-    else: legend = PositionedLegend(0.35,0.2,3,0.03)
+    else: legend = PositionedLegend(0.3,0.15,3,0.03)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.040)
+    legend.SetTextSize(0.025)
     legend.SetFillColor(0)
     
 
@@ -3606,7 +3607,9 @@ def CompareHists(hists=[],
     pads[0].RedrawAxis()
     
     c1.SaveAs(plot_name+'.pdf')
-    #c1.SaveAs(plot_name+'.png')
+    c1.SaveAs(plot_name+'.png')
+    if output_file is not None:
+        output_file.WriteObject(c1, plot_name)
 
     for o in objects:
       o.IsA().Destructor(o)
