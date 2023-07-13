@@ -2269,7 +2269,7 @@ def HTTPlot(nodename,
     }
 
     ModTDRStyle(r=0.04, l=0.14)
-    R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
+    R.TGaxis.SetExponentOffset(-0.06, 0.01, "y")
 
     if ("sm" in signal_scheme and "mssm" not in signal_scheme) or True:
         background_schemes = {
@@ -3610,9 +3610,9 @@ def CompareHists(hists=[],
     c1.SaveAs(plot_name+'.png')
     if output_file is not None:
         output_file.WriteObject(c1, plot_name)
-
     for o in objects:
-      o.IsA().Destructor(o)
+        o.IsA().Destructor(o)
+    c1.Close()
     
 def HTTPlotSignal(nodename, 
             infile=None, 
