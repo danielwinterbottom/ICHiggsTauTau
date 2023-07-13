@@ -174,16 +174,16 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
-FILELIST='filelists/July0623_2022-preEE_MC_124X'
+FILELIST='filelists/July0623_2022-postEE_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ]
 signal_mc_ww = [ ]
 
-if os.path.isfile("./jobs/files_per_sample_2018.txt"):
-    os.system("mv ./jobs/files_per_sample_2018.txt ./jobs/files_per_sample_2018-%(BACKUPNAME)s.txt"%vars())
+if os.path.isfile("./jobs/files_per_sample_2022_postEE.txt"):
+    os.system("mv ./jobs/files_per_sample_2022_postEE.txt ./jobs/files_per_sample_2022_postEE-%(BACKUPNAME)s.txt"%vars())
 
-file_persamp = open("./jobs/files_per_sample_2018.txt", "w")
+file_persamp = open("./jobs/files_per_sample_2022_postEE.txt", "w")
 
 
 if options.proc_data or options.proc_all or options.calc_lumi:
@@ -290,81 +290,18 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-    # Drell-Yan LO
-    'DY1JetsToLL-LO',
-    'DY2JetsToLL-LO',
-    'DY3JetsToLL-LO',
-    'DY4JetsToLL-LO',
-    'DYJetsToLL-LO',
-    'DYJetsToLL-LO-ext1',
 
-    # Low mass Drell Yan LO
-    'DYJetsToLL_M-10to50-LO',
- 
-    # Drell-Yan NLO
-    'DYJetsToLL-NLO',
-    'DYJetsToLL_0J-NLO',
-    'DYJetsToLL_1J-NLO',
-    'DYJetsToLL_2J-NLO',
-   
-    # Electroweak W and Z
-    'EWKWMinus2Jets_WToLNu',
-    'EWKWPlus2Jets_WToLNu',
-    'EWKZ2Jets_ZToLL',
-   
-    # W + Jets L0
-    'WJetsToLNu-LO',
-    'W1JetsToLNu-LO',
-    'W2JetsToLNu-LO',
-    'W3JetsToLNu-LO',
-    'W4JetsToLNu-LO',
-   
-#    # W + Jets NLO
-#    'WJetsToLNu_0J-NLO',
-#    'WJetsToLNu_1J-NLO',
-#    'WJetsToLNu_2J-NLO',
-#    #'WJetsToLNu-NLO',
-  
-   # ttbar
+    'DYJetsToLL-LO_postEE',
+    'GluGluHToTauTau_M125_postEE_v2',
+    'GluGluHToTauTau_M125_postEE_v3',
     'TTTo2L2Nu',
-    'TTToHadronic',
-    'TTToSemiLeptonic',
-  
-    # Split diboson (Missing Files: WZTo1L3Nu, WZTo2L2Q)
-    'WZTo1L1Nu2Q',
-    'WZTo3LNu',
-    'WWTo1L1Nu2Q',
-    'WWTo2L2Nu',
-    'WZTo1L3Nu',
-    'WZTo2Q2L',
-    'ZZTo2L2Nu',
-    'ZZTo4L',
- 
-#    # Triboson
-#    'WWZ',
-#    'WWZ-ext1',
-#    'WZZ',
-#    'WZZ-ext1',
-#    'WWW',
-#    'WWW-ext1',
-#    'ZZZ',
-#    'ZZZ-ext1',
- 
-    # Other backgrounds
-    'WGToLNuG',
-    'Tbar-t',
-    'Tbar-tW',
-    'T-t',
-    'T-tW',
- 
-#    # SM Higgs
-#    'GluGluHToTauTau_M125',
-#    'VBFHToTauTau_M125',
-#    'WminusHToTauTau_M125',
-#    'WplusHToTauTau_M125',
-#    'ZHToTauTau_M125',
-#    'ZHToTauTau_M125-ext1',
-#    'ttHToTauTau_M125'
+    'VBFHToTauTau_M125_Poisson60KeepRAW',
+    'VBFHToTauTau_M125_v2_Poisson70KeepRAW',
+    'WW_postEE',
+    'WZ_postEE',
+    'ZZ_postEE'
+    
+
     ]
 
     if options.effective_events: # this is just used for the effective events case
@@ -381,9 +318,9 @@ if options.proc_bkg or options.proc_all:
 
 
     for sa in central_samples:
-        JOB='%s_2018' % (sa)
-        user='dwinterb'
-        PREFIX='Mar31_MC_124X_2018'
+        JOB='%s_postEE_2022' % (sa)
+        user='irandreo'
+        PREFIX='July0623_MC_124X_2022-postEE'
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         
         job_num=0
