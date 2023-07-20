@@ -46,6 +46,9 @@ namespace ic {
     std::string alt_er_trk_trig_obj_label;
     std::string alt_trig_obj_label_2;
     std::string alt_trig_obj_label_3;
+    std::string trig_ttpj_obj_label1="";
+    std::string trig_ttpj_obj_label2="";
+
     std::string leg1_filter;
     std::string leg2_filter;
     std::string extra_leg2_filter;
@@ -71,6 +74,14 @@ namespace ic {
     std::string alt_cross_leg1_filter;
     std::string alt_cross_leg2_filter;
     std::string alt_cross_extra_leg2_filter;
+
+
+    std::string ttplusjet_leg1_filter_1 = "";
+    std::string ttplusjet_leg2_filter_1 = "";
+    std::string ttplusjet_leg1_filter_2 = "";
+    std::string ttplusjet_leg2_filter_2 = "";
+    std::string ttplusjet_jet_filter_1 = "";
+    std::string ttplusjet_jet_filter_2 = "";
 
     std::string monitoring_16_trig_obj_label;
     std::string monitoring_16_leg1_filter;
@@ -398,13 +409,24 @@ namespace ic {
           trig_obj_label = "triggerObjectsDoubleMediumDeepPFTauHPS35";
           leg1_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
           leg2_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
-          alt_trig_obj_label_3 = "triggerObjectsDoubleMediumDeepPFTauHPS35";
-          alt_leg1_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
-          alt_leg2_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
-          alt_jetleg1_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75"; // leading 
-          //subleading from following (but contains leading as well)
-          alt_jetleg2_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60"; 
-        }
+
+          trig_ttpj_obj_label1 = "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets60";
+          ttplusjet_leg1_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_1 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60";
+
+          trig_ttpj_obj_label2= "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets75";
+          ttplusjet_leg1_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_2 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75";          
+
+          // alt_trig_obj_label_3 = "triggerObjectsDoubleMediumDeepPFTauHPS35";
+          // alt_leg1_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          // alt_leg2_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          // alt_jetleg1_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75"; // leading 
+          // //subleading from following (but contains leading as well)
+          // alt_jetleg2_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60"; 
+        }// only leading jet 75 and 60 two variables
       }
       
       //single tau trigger  
@@ -665,12 +687,16 @@ namespace ic {
           trig_obj_label = "triggerObjectsDoubleMediumDeepPFTauHPS35";
           leg1_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
           leg2_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
-          alt_trig_obj_label_3 = "triggerObjectsDoubleMediumDeepPFTauHPS35";
-          alt_leg1_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
-          alt_leg2_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
-          alt_jetleg1_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75"; // leading 
-          //subleading from following (but contains leading as well)
-          alt_jetleg2_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60"; 
+
+          trig_ttpj_obj_label1 = "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets60";
+          ttplusjet_leg1_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_1 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60";
+
+          trig_ttpj_obj_label2= "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets75";
+          ttplusjet_leg1_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_2 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75";  
         }
       }
     }
@@ -996,6 +1022,11 @@ namespace ic {
    bool match_l1_parts = false;
    bool jetleg1_match = false;
    bool jetleg2_match = false;
+   bool passed_doubletau_plusjet_1 = false;
+   bool passed_doubletau_plusjet_2 = false;
+   double trg1_jet_pt = -9999;
+   double trg2_jet_pt = -9999;
+
    if (channel_ == channel::tt){
      for(unsigned i = 0; i < dileptons.size(); ++i){
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
@@ -1064,6 +1095,41 @@ namespace ic {
           match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
           passed_doubletau = passed_doubletau && match_l1_parts;
         }
+        if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
+          std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+          if(jets.size()>0){
+            std::vector<TriggerObject *> ttplusjet_objs_1 = event->GetPtrVec<TriggerObject>(trig_ttpj_obj_label1);
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), ttplusjet_objs_1,ttplusjet_leg1_filter_1, 0.5).first;
+            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), ttplusjet_objs_1,ttplusjet_leg2_filter_1, 0.5).first;
+            if(leg1_match && leg2_match){
+              for(unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
+                jetleg1_match = IsFilterMatchedWithIndex(jets[ijet], ttplusjet_objs_1, ttplusjet_jet_filter_1, 0.5).first;
+                if(jetleg1_match){
+                  trg1_jet_pt = jets[ijet]->pt();               
+                  passed_doubletau_plusjet_1 = true;
+                  break; 
+                }
+              }
+            }
+
+            std::vector<TriggerObject *> ttplusjet_objs_2 = event->GetPtrVec<TriggerObject>(trig_ttpj_obj_label2);
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), ttplusjet_objs_2,ttplusjet_leg1_filter_2, 0.5).first;
+            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), ttplusjet_objs_2,ttplusjet_leg2_filter_2, 0.5).first;
+            if(leg1_match && leg2_match){
+              for(unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
+                jetleg1_match = IsFilterMatchedWithIndex(jets[ijet], ttplusjet_objs_2, ttplusjet_jet_filter_2, 0.5).first;
+                if(jetleg1_match){
+                  trg2_jet_pt = jets[ijet]->pt();               
+                  passed_doubletau_plusjet_2 = true;
+                  break; 
+                }
+              }
+            }            
+            if(!passed_doubletau && (passed_doubletau_plusjet_2 || passed_doubletau_plusjet_1)){
+              dileptons_pass.push_back(dileptons[i]);
+            }
+          }
+        }
       }
 
       // 2018 vbf trg jet matching after double tau trg part
@@ -1095,38 +1161,42 @@ namespace ic {
           else passed_vbfdoubletau = false;
         }
       }
-      if ((era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
-        std::vector<TriggerObject *> alt_objs_3 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_3);  
-        std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
-        // first need to find jets with maximum mjj and cross clean from taus?
-        if (jets.size() >= 2) {
-          unsigned int i1 = 0;
-          unsigned int j1 = 0;
-          double mjj_max = 0;
+      // if ((era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
+      //   std::vector<TriggerObject *> alt_objs_3 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_3);  
+      //   std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+      //   // first need to find jets with maximum mjj and cross clean from taus?
+      //   if (jets.size() >= 2) {
+      //     unsigned int i1 = 0;
+      //     unsigned int j1 = 0;
+      //     double mjj_max = 0;
           
-          for (unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
-            for (unsigned int jjet = ijet+1; jjet < jets.size(); ++jjet){
-              double mjj_test = (jets[ijet]->vector()+jets[jjet]->vector()).M();
+      //     for (unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
+      //       for (unsigned int jjet = ijet+1; jjet < jets.size(); ++jjet){
+      //         double mjj_test = (jets[ijet]->vector()+jets[jjet]->vector()).M();
 
-              if (mjj_test > mjj_max){
-                mjj_max = mjj_test;
-                i1 = ijet;
-                j1 = jjet;
-              }
-            } 
-          }
+      //         if (mjj_test > mjj_max){
+      //           mjj_max = mjj_test;
+      //           i1 = ijet;
+      //           j1 = jjet;
+      //         }
+      //       } 
+      //     }
 
-          // add VBF trig here, need to do jet matching
-          jetleg1_match = IsFilterMatchedWithIndex(jets[i1], alt_objs_3, alt_jetleg1_filter, 0.5).first;
-          jetleg2_match = IsFilterMatchedWithIndex(jets[j1], alt_objs_3, alt_jetleg2_filter, 0.5).first;
-          if (jetleg1_match && jetleg2_match) passed_vbfdoubletau = true;
-          else passed_vbfdoubletau = false;
-        }
-      }
+      //     // add VBF trig here, need to do jet matching
+      //     jetleg1_match = IsFilterMatchedWithIndex(jets[i1], alt_objs_3, alt_jetleg1_filter, 0.5).first;
+      //     jetleg2_match = IsFilterMatchedWithIndex(jets[j1], alt_objs_3, alt_jetleg2_filter, 0.5).first;
+      //     if (jetleg1_match && jetleg2_match) passed_vbfdoubletau = true;
+      //     else passed_vbfdoubletau = false;
+      //   }
+      // }
     }
     event->Add("trg_doubletau", passed_doubletau);
+    event->Add("trg_doubletau_plusjet60", passed_doubletau_plusjet_1);
+    event->Add("trg_doubletau_plusjet75", passed_doubletau_plusjet_2);
     event->Add("trg_doubletau_mssm", (passed_doubletau&&passed_doubletau_extra));
     event->Add("trg_vbfdoubletau", passed_vbfdoubletau);
+    event->Add("trg60jet_pt", trg1_jet_pt);
+    event->Add("trg75jet_pt", trg2_jet_pt);
     
     bool passed_singletau_1 = false;
     bool passed_singletau_2 = false;

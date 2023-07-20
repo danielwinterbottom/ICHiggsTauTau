@@ -171,6 +171,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      tau_pt = 20.;
      lead_tau_pt = 20;
    }
+   if(era_type == era::data_2022_preEE || era_type == era::data_2022_preEE){
+    tau_pt=35;
+    lead_tau_pt=35;
+   }
    tau_eta = 2.1;
    min_taus = 2;
    lead_min_taus = 1;
