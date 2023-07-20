@@ -2216,7 +2216,8 @@ def HTTPlot(nodename,
             qcd_ff_closure=False,
             w_ff_closure=False,
             bkg_comp = False,
-            plot_signals=[]
+            plot_signals=[],
+            qcdname="QCD" #Only used with tt for specific analysis, not implemented fully
             ):
 
     R.gROOT.SetBatch(R.kTRUE)
@@ -2289,7 +2290,7 @@ def HTTPlot(nodename,
                 ],
             'tt':[
                 backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
-                backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+                backgroundComp("QCD", [qcdname], R.TColor.GetColor(250,202,255)),
                 backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),
                 backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
                 ],
@@ -3185,6 +3186,7 @@ def HTTPlot(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+    c1.Close()
 
 def CompareSysts(hists=[],
              plot_name="plot",
