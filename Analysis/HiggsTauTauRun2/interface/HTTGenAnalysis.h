@@ -375,6 +375,8 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ps_fsr_down_;
 
   double tau_pt_1_v2p1_, tau_pt_1_v2p5_, gen_tau_pt_1_, gen_tau_eta_1_, tau_pt_1_hps_;
+  int tau_dm_1_hps_;
+  int tau_mass_1_hps_;
   int gen_tau_dm_1_;
   float n_pu_, n_pu_alt_;
  
@@ -388,6 +390,15 @@ class HTTGenAnalysis : public ModuleBase {
   TGraph *ggh_ph_2jet_;
   TGraph *ggh_ph_3jet_;
   double wt_nnlops_;
+
+  float reco_pt_1_;
+  float reco_pt_2_;
+  float reco_eta_1_;
+  float reco_eta_2_;
+  float reco_dz_1_;
+  float reco_dz_2_;
+  float reco_dxy_1_;
+  float reco_dxy_2_;
  
  public:
   HTTGenAnalysis(std::string const& name);

@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
 //   "channels":     ["et","mt","tt","zmm"],
-   "channels":     ["mt","zmm"],
+   "channels":     ["zmm"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -28,7 +28,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "save_output_jsons": false,
-    "make_sync_ntuple" : true,
+    "make_sync_ntuple" : false,
     "do_jetmet_uncerts": false,
     "lumi_mask_only" : false,
     "iso_study" : false,
@@ -64,7 +64,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_sync_2018_124/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_NovNtuples_2018_PFMet_DeepTauV2p5_v2/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/check_duplicated_events_2016_old_124_ntuples/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",

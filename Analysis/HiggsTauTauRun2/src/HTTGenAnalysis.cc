@@ -113,7 +113,14 @@ namespace ic {
       outtree_->Branch("cand_2"       , &cand_2_       );
       outtree_->Branch("match_1"       , &match_1_       );
       outtree_->Branch("match_2"       , &match_2_       );
-
+      outtree_->Branch("reco_pt_1"       , &reco_pt_1_       );
+      outtree_->Branch("reco_pt_2"       , &reco_pt_2_       );
+      outtree_->Branch("reco_eta_1"       , &reco_eta_1_       );
+      outtree_->Branch("reco_eta_2"       , &reco_eta_2_       );
+      outtree_->Branch("reco_dz_1"       , &reco_dz_1_       );
+      outtree_->Branch("reco_dz_2"       , &reco_dz_2_       );
+      outtree_->Branch("reco_dxy_1"       , &reco_dxy_1_       );
+      outtree_->Branch("reco_dxy_2"       , &reco_dxy_2_       );
       outtree_->Branch("wt_cp_sm"       , &wt_cp_sm_);
       outtree_->Branch("wt_cp_ps"       , &wt_cp_ps_);
       outtree_->Branch("wt_cp_mm"       , &wt_cp_mm_);
@@ -220,6 +227,7 @@ namespace ic {
       outtree_->Branch("tau_pt_1_hps"        , &tau_pt_1_hps_        );
       outtree_->Branch("tau_pt_1_v2p1"        , &tau_pt_1_v2p1_        );
       outtree_->Branch("tau_pt_1_v2p5"        , &tau_pt_1_v2p5_        );
+      outtree_->Branch("tau_dm_1_hps"        , &tau_dm_1_hps_        );
       outtree_->Branch("gen_tau_pt_1"        , &gen_tau_pt_1_        );
       outtree_->Branch("gen_tau_eta_1"        , &gen_tau_eta_1_        );
       outtree_->Branch("gen_tau_dm_1"        , &gen_tau_dm_1_        );
@@ -590,7 +598,20 @@ namespace ic {
       //  <weight id="1009"> muR=0.5 muF=0.5 </weight>
 
     }
-    
+   
+    match_1_=false;
+    match_2_=false;
+    cand_1_=false;
+    cand_2_=false;
+    reco_pt_1_=-9999;
+    reco_pt_2_=-9999;
+    reco_eta_1_=-9999;
+    reco_eta_2_=-9999;
+    reco_dz_1_=-9999;
+    reco_dz_2_=-9999;
+    reco_dxy_1_=-9999;
+    reco_dxy_2_=-9999;
+ 
     if (event->Exists("D0")) D0_ = event->Get<float>("D0");
     else D0_ = -9999;
     if (event->Exists("DCP")) DCP_ = event->Get<float>("DCP");
@@ -716,9 +737,6 @@ namespace ic {
         pT_A_ = pT;
       }
 
-      std::vector<ic::Electron*> reco_electrons = {};//event->GetPtrVec<ic::Electron>("electrons");
-      std::vector<ic::Muon*> reco_muons = {};//event->GetPtrVec<ic::Muon>("muons");     
-
       // add neutrinos 4-vectors to get gen met
       if(genID == 12 || genID == 14 || genID == 16){
         met.set_vector(met.vector() + part.vector());
@@ -728,31 +746,11 @@ namespace ic {
         if(!(genID == 13 && gen_particles[i]->statusFlags()[IsPrompt] && gen_particles[i]->statusFlags()[IsLastCopy])) continue;
         higgs_products.push_back(*(gen_particles[i]));
         decay_types.push_back("m");
-        std::vector<ic::GenParticle *> match_muons = {gen_particles[i]};
-        if(fabs(gen_particles[i]->eta())<2.4 && gen_particles[i]->pt()>20.) {
-          if(decay_types.size()==1){
-            cand_1_ = true;
-            match_1_ = (MatchByDR(match_muons,reco_muons,0.5,true,true).size()>0);
-          } else if (decay_types.size()==2) {
-            cand_2_ = true;
-            match_2_ = (MatchByDR(match_muons,reco_muons,0.5,true,true).size()>0);
-          }
-        }
       }
       if(channel_str_=="zee") {
         if(!(genID == 11 && gen_particles[i]->statusFlags()[IsPrompt] && gen_particles[i]->statusFlags()[IsLastCopy])) continue;
         higgs_products.push_back(*(gen_particles[i]));
         decay_types.push_back("e");
-        std::vector<ic::GenParticle *> match_elecs = {gen_particles[i]};
-        if(fabs(gen_particles[i]->eta())<2.5 && gen_particles[i]->pt()>20.) {
-          if(decay_types.size()==1){
-            cand_1_ = true;
-            match_1_ = (MatchByDR(match_elecs,reco_electrons,0.5,true,true).size()>0);
-          } else if (decay_types.size()==2) {
-            cand_2_ = true;
-            match_2_ = (MatchByDR(match_elecs,reco_electrons,0.5,true,true).size()>0); 
-          }
-        }
       }
       if(!(genID == 15 && status_flag_t && status_flag_tlc)) continue;
       hasTaus_=true;
@@ -883,6 +881,59 @@ namespace ic {
       }
     }
 
+    std::vector<ic::Electron*> reco_electrons = {};
+    std::vector<ic::Muon*> reco_muons = {};
+    if(event->ExistsInTree("electrons")) reco_electrons = event->GetPtrVec<ic::Electron>("electrons");
+    if(event->ExistsInTree("muons")) reco_muons = event->GetPtrVec<ic::Muon>("muons");
+
+    if(channel_str_=="zmm") {
+      std::vector<ic::Candidate *> match_muons_1 = {new ic::Candidate(lep1)};
+      std::vector<ic::Candidate *> match_muons_2 = {new ic::Candidate(lep2)};
+      cand_1_ = true;
+      match_1_ = (MatchByDR(match_muons_1,reco_muons,0.5,true,true).size()>0);
+   
+      if(match_1_){
+        ic::Muon *reco_mu_1=MatchByDR(match_muons_1,reco_muons,0.5,true,true)[0].second;
+        reco_pt_1_=reco_mu_1->pt();
+        reco_eta_1_=reco_mu_1->eta();
+        reco_dxy_1_=fabs(reco_mu_1->dxy_vertex());
+        reco_dz_1_=fabs(reco_mu_1->dz_vertex());
+      }
+ 
+      cand_2_ = true;
+      match_2_ = (MatchByDR(match_muons_2,reco_muons,0.5,true,true).size()>0);
+      if (match_2_){
+        ic::Muon *reco_mu_2=MatchByDR(match_muons_2,reco_muons,0.5,true,true)[0].second;
+        reco_pt_2_=reco_mu_2->pt();
+        reco_eta_2_=reco_mu_2->eta();
+        reco_dxy_2_=fabs(reco_mu_2->dxy_vertex());
+        reco_dz_2_=fabs(reco_mu_2->dz_vertex());
+      }
+    }
+    if(channel_str_=="zee") {
+      std::vector<ic::Candidate *> match_elecs_1 = {new ic::Candidate(lep1)};
+      std::vector<ic::Candidate *> match_elecs_2 = {new ic::Candidate(lep2)};
+      cand_1_ = true;
+      match_1_ = (MatchByDR(match_elecs_1,reco_electrons,0.5,true,true).size()>0);
+      if(match_1_){
+        ic::Electron *reco_ele_1=MatchByDR(match_elecs_2,reco_electrons,0.5,true,true)[0].second;
+        reco_pt_1_=reco_ele_1->pt();
+        reco_eta_1_=reco_ele_1->eta();
+        reco_dxy_1_=fabs(reco_ele_1->dxy_vertex());
+        reco_dz_1_=fabs(reco_ele_1->dz_vertex());
+      }
+      cand_2_ = true;
+      match_2_ = (MatchByDR(match_elecs_2,reco_electrons,0.5,true,true).size()>0);
+      if(match_2_){
+        ic::Electron *reco_ele_2=MatchByDR(match_elecs_2,reco_electrons,0.5,true,true)[0].second;
+        reco_pt_2_=reco_ele_2->pt();
+        reco_eta_2_=reco_ele_2->eta();
+        reco_dxy_2_=fabs(reco_ele_2->dxy_vertex());
+        reco_dz_2_=fabs(reco_ele_2->dz_vertex());
+      }
+    }
+
+
     std::vector<GenJet> gen_tau_jets = BuildTauJets(gen_particles, false,true);
     std::vector<GenJet *> gen_tau_jets_ptr;
     for (auto & x : gen_tau_jets) gen_tau_jets_ptr.push_back(&x);
@@ -896,6 +947,8 @@ namespace ic {
     gen_tau_pt_1_=-9999;
     gen_tau_dm_1_=-1;
     gen_tau_eta_1_=-9999;
+    tau_dm_1_hps_=-9999;
+    tau_mass_1_hps_=-9999;
     // match gen tau jets to taus passing selections for et, mt, and tt channels
     if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
       std::vector<GenJet *> gen_taus = {gen_tau_jets_ptr[0]};
@@ -911,16 +964,20 @@ namespace ic {
 
 
       for(auto t : taus) {
-        if(t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_hps.push_back(t);
-        if(t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p1.push_back(t);
-        if(t->HasTauID("byMediumDeepTau2018v2p5VSjet")&&t->GetTauID("byMediumDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p5.push_back(t);
+        if(t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_hps.push_back(t);
+        if(t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p1.push_back(t);
+        if(t->HasTauID("byMediumDeepTau2018v2p5VSjet")&&t->GetTauID("byMediumDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p5.push_back(t);
         
       }
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> taus_hps_matches =  MatchByDR(gen_taus,taus_hps,0.5,true,true); 
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> taus_v2p1_matches =  MatchByDR(gen_taus,taus_v2p1,0.5,true,true); 
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> taus_v2p5_matches =  MatchByDR(gen_taus,taus_v2p5,0.5,true,true); 
  
-      if(taus_hps_matches.size()>0) tau_pt_1_hps_=taus_hps_matches[0].second->pt();
+      if(taus_hps_matches.size()>0) {
+        tau_pt_1_hps_=taus_hps_matches[0].second->pt();
+        tau_dm_1_hps_=taus_hps_matches[0].second->decay_mode();
+        tau_mass_1_hps_=taus_hps_matches[0].second->vector().M();
+      }
       if(taus_v2p1_matches.size()>0) tau_pt_1_v2p1_=taus_v2p1_matches[0].second->pt();
       if(taus_v2p5_matches.size()>0) tau_pt_1_v2p5_=taus_v2p5_matches[0].second->pt();
  

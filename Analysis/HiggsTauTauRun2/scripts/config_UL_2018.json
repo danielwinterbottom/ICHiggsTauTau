@@ -6,7 +6,7 @@
     "timings":      true,
    //"channels":     ["mt","et","tt","zmm","zee","em"],
    // "channels":     ["mt","zmm","tt","et"],
-    "channels":     ["mt","zmm"],
+    "channels":     ["tt"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -66,8 +66,10 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_sync_v2/",
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2/",
+//    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2_EMB_v2_newntuple/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_ML_FF_2018/",
+    //"output_folder" : "output_tmp/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -234,7 +236,8 @@
         "elec_es_shift_barrel": 0.99,
         "elec_es_shift_endcap": 0.975,
         "tau_es_shift": 0.97,
-        "muon_es_shift": 0.998
+        //"muon_es_shift": 0.998
+        "muon_es_shift": 1.0
       }
     },
     "scale_t_hi": {
@@ -244,7 +247,8 @@
         "elec_es_shift_barrel": 1.01,
         "elec_es_shift_endcap": 1.025,
         "tau_es_shift": 1.03,
-        "muon_es_shift": 1.002
+        //"muon_es_shift": 1.002
+        "muon_es_shift": 1.0
       }
     },
     "scale_jfake_lo": {

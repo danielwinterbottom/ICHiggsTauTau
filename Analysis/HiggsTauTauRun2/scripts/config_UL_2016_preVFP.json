@@ -5,7 +5,7 @@
     "max_events":   -1,
     "timings":      true,
     // "channels":     ["mt","et","tt","zmm"],
-    "channels":     ["mt"],
+    "channels":     ["tt"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -60,7 +60,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2016-preVFP_v2/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2016-preVFP_v2/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_ML_FF_2016-preVFP/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2016_tres1_v2_svfit/",

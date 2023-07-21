@@ -216,7 +216,7 @@ if options.run_systs:
    f_tag.Close()
 destination_file.Close()
 
-destination_file = ROOT.TFile.Open("{}/{}_SF.root".format(output_folder,file_name), "READ")
+destination_file = ROOT.TFile.Open("{}/{}_SFs.root".format(output_folder,file_name), "READ")
 
 plots_folder = "{}/plots/".format(output_folder)
 

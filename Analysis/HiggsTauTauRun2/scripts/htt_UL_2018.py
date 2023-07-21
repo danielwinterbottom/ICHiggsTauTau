@@ -309,12 +309,12 @@ if options.proc_embed or options.proc_all:
             if 'zee' in chn:
                 embed_samples+=['EmbeddingElEl2018'+era]
 
-    EMBEDFILELIST="./filelists/May25_2018_MC_124X"
+    EMBEDFILELIST="./filelists/Jun05_2018_MC_124X"
 
     for sa in embed_samples:
         job_num=0
         JOB='%s_2018' % (sa)
-        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May25_EMB_124X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,%(jetuncert_string)s}}' "%vars());
+        JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/Jun05_EMB_124X_2018/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,%(jetuncert_string)s}}' "%vars());
         for FLATJSONPATCH in flatjsons:
             nperjob = 20
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')
@@ -370,11 +370,11 @@ if options.proc_bkg or options.proc_all:
 #    # Low mass Drell Yan LO
     'DYJetsToLL_M-10to50-LO',
  
-    # Drell-Yan NLO
-    'DYJetsToLL-NLO',
-    'DYJetsToLL_0J-NLO',
-    'DYJetsToLL_1J-NLO',
-    'DYJetsToLL_2J-NLO',
+#    # Drell-Yan NLO
+#    'DYJetsToLL-NLO',
+#    'DYJetsToLL_0J-NLO',
+#    'DYJetsToLL_1J-NLO',
+#    'DYJetsToLL_2J-NLO',
    
     # Electroweak W and Z
     'EWKWMinus2Jets_WToLNu',

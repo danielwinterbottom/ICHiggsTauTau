@@ -53,6 +53,7 @@ parser.add_option('--channel',help= 'Name of input channels', default='mt,tt,et'
 parser.add_option("--years", dest="years", type='string', default='2016_preVFP,2016_postVFP,2017,2018',help="Year input")
 parser.add_option('--output_folder', help= 'Name of output folder to create', default='plots')
 parser.add_option("--batch", dest="batch", action='store_true', default=False, help="Submit on batch.")
+parser.add_option("--tightVSe", dest="tightVSe", action='store_true', default=False, help="Submit on batch.")
 parser.add_option('--wp', help= 'Name of VsJet WP to use', default='medium')
 parser.add_option('--wpvsele', help= 'Name of VsEle WP to use', default='vvloose')
 parser.add_option('--sf_option', help= 'Select which SFs you want to apply', default='none')
@@ -63,8 +64,15 @@ parser.add_option("--v2p5", dest="v2p5", action='store_true', default=False, hel
 output_folder = options.output_folder
 channels = options.channel.split(',')
 years = options.years.split(',')
-wp=options.wp
+extra_name=''
+if options.wp=='none': wp='medium'
+else: 
+  wp=options.wp
+  extra_name+='_%(wp)s' % vars()
+
+if options.sf_option!='none': extra_name+='_%s' % options.sf_option
 wpvsele=options.wpvsele
+
 print 'Processing channels:      %(channels)s' % vars()
 print 'Processing years:         %(years)s' % vars()
 
@@ -80,7 +88,8 @@ if not os.path.isdir('%(output_folder)s/%(wp)svsjets_%(wpvsele)svsele/jobs' % va
   os.system("mkdir %(output_folder)s/%(wp)svsjets_%(wpvsele)svsele/jobs" % vars())
   
 categories_et = ["inclusive",'dm0','dm1','dm10','dm11']
-categories_mt = ["inclusive",'dm0','dm1','dm10','dm11']
+#categories_mt = ["inclusive",'dm0','dm1','dm10','dm11']
+categories_mt = ["inclusive"]
 categories_tt = ["inclusive"]
 categories_zmm = ["inclusive"]
 categories_zee = ["inclusive"]
@@ -99,9 +108,9 @@ var_tt = [
          ['tau_decay_mode_1',BINS(0,12,1,1)],
          ['pt_2', BINS(0,200,5,1)],
          ['pt_1', BINS(0,200,5,1)],
-         ['iso_1', BINS(0.8,1,0.01,0.01)],
-         ['iso_2', BINS(0.8,1,0.01,0.01)],
-         ['iso_2_V2p5', BINS(0.95,1,0.01,0.01)],
+         #['iso_1', BINS(0.8,1,0.01,0.01)],
+         #['iso_2', BINS(0.8,1,0.01,0.01)],
+         #['iso_2_V2p5', BINS(0.95,1,0.01,0.01)],
          #['met', BINS(0,200,10,1)],
          #['pt_vis', BINS(0,300,10,1)],
          #['pt_tt', BINS(0,300,10,1)],
@@ -187,11 +196,14 @@ for year in years:
     sf='1.'
 
     if 'ptbinned' in options.sf_option or 'dmbinned' in options.sf_option:
-      if 'dmbinned' in options.sf_option: json_name = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/tau_SF_strings_dm_binned_%(wp)svsjet_%(wpvsele)svsele_v2p5.json' % vars()
+      if 'dmbinned' in options.sf_option: 
+        #json_name = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/tau_SF_strings_dm_binned_%(wp)svsjet_%(wpvsele)svsele_v2p5.json' % vars()
+        #json_name='/vols/cms/dw515/workareas/CH_tauSF/CMSSW_10_2_13/src/CombineHarvester/TauSF/tau_SF_strings_dm_binned_mediumvsjet_vvloosevsele_externalTES.json'
+        json_name='/vols/cms/ia2318/CMSSW_10_2_13/src/CombineHarvester/TauSF/tau_SF_strings_dm_binned_mediumvsjet_vvloosevsele.json'
       else: json_name= '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/tau_SF_pt_binned.json' % vars()
       with open(json_name) as json_file:
         sf_data = json.load(json_file) 
-      if ch == 'et':
+      if ch == 'et' or options.tightVSe:
         sf=sf_data['%(wp)svsjet_tightvsele' % vars()][year]
       else:
         sf=sf_data['%(wp)svsjet_%(wpvsele)svsele' % vars()][year]
@@ -247,10 +259,18 @@ for year in years:
     for cat in categories:
       for item in variables:
            var_used = item[0]
+           var_job_name = var_used
+           if '_highpT' in var_used: 
+             var_used = var_used.replace('_highpT','')
+             add_cond+=' --log_y'
+         
            bin_used = item[1]
+           print bin_used
+           run_cmd_2=''
            run_cmd_3=''
            if ch == 'tt': 
-             run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(m_vis>40&&m_vis<80)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"%(var_used)s%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5"' % vars()
+             run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(m_vis>40&&m_vis<80)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(wp)svsjets_%(wpvsele)svsele/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s%(extra_name)s"' % vars()
+             run_cmd_2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(m_vis>40&&m_vis<80)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(wp)svsjets_%(wpvsele)svsele/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s%(extra_name)s_ss" --do_ss' % vars()
            elif ch == 'mt':
              if var_used == 'pt_2_extended':
                run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<40)\' --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>40&&m_vis<80&&pt_1>25&&trg_singlemuon&&fabs(eta_1)<2.1)%(tight_wpvsele)s\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(wp)svsjets_%(wpvsele)svsele/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"pt_2%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s_mTLt40" --log_y --extra_name extended' % vars()
@@ -259,11 +279,18 @@ for year in years:
                run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<40)\' --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>40&&m_vis<80&&pt_1>25&&trg_singlemuon&&fabs(eta_1)<2.1)%(tight_wpvsele)s\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(wp)svsjets_%(wpvsele)svsele/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"%(var_used)s%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s_mTLt40" ' % vars()
                run_cmd_2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>40&&m_vis<80&&pt_1>25&&trg_singlemuon&&fabs(eta_1)<2.1)%(tight_wpvsele)s\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(wp)svsjets_%(wpvsele)svsele/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"%(var_used)s%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s_mTLt65" ' % vars()
            elif ch == 'et': 
-             run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<40)\' --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>40&&m_vis<80&&pt_1>25&&trg_singleelectron)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"%(var_used)s%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s_mTLt40" ' % vars()
-             run_cmd_2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>40&&m_vis<80&&pt_1>25&&trg_singleelectron)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"%(var_used)s%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s_mTLt65" ' % vars()
+             run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<40)\' --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>40&&m_vis<80&&pt_1>25&&trg_singleelectron)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"%(var_used)s%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s_mTLt40%(extra_name)s" ' % vars()
+             run_cmd_2 = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --sel=\'(mt_1<65)\' --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>40&&m_vis<80&&pt_1>25&&trg_singleelectron)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\"%(var_used)s%(bin_used)s\" %(add_cond)s --ratio_range="0.5,1.5" --datacard="%(cat)s_mTLt65%(extra_name)s" ' % vars()
 
-           commands = [run_cmd, run_cmd_2]
-           if ',' in var_used: var_used=var_used.replace(',','_vs_')
+
+           extra_tightVSe='' 
+           if options.tightVSe:
+             if ch=='tt': extra_tightVSe=' --set_alias=\'baseline:({baseline}&&deepTauVsEle_tight_1&&deepTauVsEle_tight_2)\''
+             else: extra_tightVSe=' --set_alias=\'baseline:({baseline}&&deepTauVsEle_tight_2)\''
+           
+
+           commands = [run_cmd+extra_tightVSe, run_cmd_2+extra_tightVSe]
+           if ',' in var_job_name: var_job_name=var_job_name.replace(',','_vs_')
 
            for i in range(0,len(commands)):
              if commands[i] is '': continue

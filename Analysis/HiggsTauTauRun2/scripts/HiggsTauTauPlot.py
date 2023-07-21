@@ -1383,6 +1383,13 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
         qcd_samples_muenriched15 = ['QCD_Pt-20_MuEnrichedPt15']
         qcd_samples_muenriched5 = ['QCD_Pt-1000_MuEnrichedPt5','QCD_Pt-120To170_MuEnrichedPt5','QCD_Pt-15To20_MuEnrichedPt5','QCD_Pt-170To300_MuEnrichedPt5','QCD_Pt-20To30_MuEnrichedPt5','QCD_Pt-300To470_MuEnrichedPt5','QCD_Pt-30To50_MuEnrichedPt5','QCD_Pt-470To600_MuEnrichedPt5','QCD_Pt-50To80_MuEnrichedPt5','QCD_Pt-600To800_MuEnrichedPt5','QCD_Pt-800To1000_MuEnrichedPt5','QCD_Pt-80To120_MuEnrichedPt5'] 
 
+        if options.channel == 'mt': embed_samples = ['EmbeddingMuTau2016-HIPM_B_ver2','EmbeddingMuTau2016-HIPM_C','EmbeddingMuTau2016-HIPM_D','EmbeddingMuTau2016-HIPM_E','EmbeddingMuTau2016-HIPM_F']
+        if options.channel == 'et': embed_samples = ['EmbeddingElTau2016-HIPM_B_ver2','EmbeddingElTau2016-HIPM_C','EmbeddingElTau2016-HIPM_D','EmbeddingElTau2016-HIPM_E','EmbeddingElTau2016-HIPM_F']
+        if options.channel == 'em': embed_samples = ['EmbeddingElMu2016-HIPM_B_ver2','EmbeddingElMu2016-HIPM_C','EmbeddingElMu2016-HIPM_D','EmbeddingElMu2016-HIPM_E','EmbeddingElMu2016-HIPM_F']
+        if options.channel == 'tt': embed_samples = ['EmbeddingTauTau2016-HIPM_B_ver2','EmbeddingTauTau2016-HIPM_C','EmbeddingTauTau2016-HIPM_D','EmbeddingTauTau2016-HIPM_E','EmbeddingTauTau2016-HIPM_F']
+        if options.channel == 'zmm': embed_samples = ['EmbeddingMuMu2016-HIPM_B_ver2','EmbeddingMuMu2016-HIPM_C','EmbeddingMuMu2016-HIPM_D','EmbeddingMuMu2016-HIPM_E','EmbeddingMuMu2016-HIPM_F']
+        if options.channel == 'zee': embed_samples = ['EmbeddingElEl2016-HIPM_B_ver2','EmbeddingElEl2016-HIPM_C','EmbeddingElEl2016-HIPM_D','EmbeddingElEl2016-HIPM_E','EmbeddingElEl2016-HIPM_F']
+
     if options.era in ["UL_16_postVFP"]:
         if (options.DY_NLO==False):
            ztt_samples = ['DYJetsToLL-LO','DY1JetsToLL-LO','DY2JetsToLL-LO','DY3JetsToLL-LO','DY4JetsToLL-LO','DYJetsToLL_M-10to50-LO']
@@ -1397,6 +1404,14 @@ if options.era in ["mssmsummer16","smsummer16",'cpsummer16','cpdecay16',"legacy1
 	top_samples = ['TTTo2L2Nu', 'TTToHadronic', 'TTToSemiLeptonic']
         qcd_samples_muenriched15 = ['QCD_Pt-20_MuEnrichedPt15']
         qcd_samples_muenriched5 = ['QCD_Pt-1000_MuEnrichedPt5','QCD_Pt-120To170_MuEnrichedPt5','QCD_Pt-15To20_MuEnrichedPt5','QCD_Pt-170To300_MuEnrichedPt5','QCD_Pt-20To30_MuEnrichedPt5','QCD_Pt-300To470_MuEnrichedPt5','QCD_Pt-30To50_MuEnrichedPt5','QCD_Pt-470To600_MuEnrichedPt5','QCD_Pt-50To80_MuEnrichedPt5','QCD_Pt-600To800_MuEnrichedPt5','QCD_Pt-800To1000_MuEnrichedPt5','QCD_Pt-80To120_MuEnrichedPt5'] 
+
+        if options.channel == 'mt': embed_samples = ['EmbeddingMuTau2016F','EmbeddingMuTau2016G','EmbeddingMuTau2016H']
+        if options.channel == 'et': embed_samples = ['EmbeddingElTau2016F','EmbeddingElTau2016G','EmbeddingElTau2016H']
+        if options.channel == 'em': embed_samples = ['EmbeddingElMu2016F','EmbeddingElMu2016G','EmbeddingElMu2016H']
+        if options.channel == 'tt': embed_samples = ['EmbeddingTauTau2016F','EmbeddingTauTau2016G','EmbeddingTauTau2016H']
+        if options.channel == 'zmm': embed_samples = ['EmbeddingMuMu2016F','EmbeddingMuMu2016G','EmbeddingMuMu2016H']
+        if options.channel == 'zee': embed_samples = ['EmbeddingElEl2016F','EmbeddingElEl2016G','EmbeddingElEl2016H']
+
     
 # ------------------------------------------------------------------------
 # Seems Redundant but ok I will ask    
@@ -1494,6 +1509,13 @@ if options.era in ['UL_17']:
     if options.channel == 'tt': 
         data_samples = ['TauB','TauC','TauD','TauE','TauF']
 
+    if options.channel == 'mt': embed_samples = ['EmbeddingMuTau2017B','EmbeddingMuTau2017C','EmbeddingMuTau2017D','EmbeddingMuTau2017E','EmbeddingMuTau2017F']
+    if options.channel == 'et': embed_samples = ['EmbeddingElTau2017B','EmbeddingElTau2017C','EmbeddingElTau2017D','EmbeddingElTau2017E','EmbeddingElTau2017F']
+    if options.channel == 'em': embed_samples = ['EmbeddingElMu2017B','EmbeddingElMu2017C','EmbeddingElMu2017D','EmbeddingElMu2017E','EmbeddingElMu2017F']
+    if options.channel == 'tt': embed_samples = ['EmbeddingTauTau2017B','EmbeddingTauTau2017C','EmbeddingTauTau2017D','EmbeddingTauTau2017E','EmbeddingTauTau2017F']
+    if options.channel == 'zmm': embed_samples = ['EmbeddingMuMu2017B','EmbeddingMuMu2017C','EmbeddingMuMu2017D','EmbeddingMuMu2017E','EmbeddingMuMu2017F']
+    if options.channel == 'zee': embed_samples = ['EmbeddingElEl2017B','EmbeddingElEl2017C','EmbeddingElEl2017D','EmbeddingElEl2017E','EmbeddingElEl2017F']
+
 # ------------------------------------------------------------------------
 # 2018
 
@@ -1573,6 +1595,12 @@ if options.era in ['UL_18']:
     if options.channel == 'tt':
         data_samples = ['TauA','TauB','TauC','TauD']
 
+    if options.channel == 'mt':  embed_samples = ['EmbeddingMuTau2018A','EmbeddingMuTau2018B','EmbeddingMuTau2018C','EmbeddingMuTau2018D']
+    if options.channel == 'et':  embed_samples = ['EmbeddingElTau2018A','EmbeddingElTau2018B','EmbeddingElTau2018C','EmbeddingElTau2018D']
+    if options.channel == 'em':  embed_samples = ['EmbeddingElMu2018A','EmbeddingElMu2018B','EmbeddingElMu2018C','EmbeddingElMu2018D']
+    if options.channel == 'tt':  embed_samples = ['EmbeddingTauTau2018A','EmbeddingTauTau2018B','EmbeddingTauTau2018C','EmbeddingTauTau2018D']
+    if options.channel == 'zmm': embed_samples = ['EmbeddingMuMu2018A','EmbeddingMuMu2018B','EmbeddingMuMu2018C','EmbeddingMuMu2018D']
+    if options.channel == 'zee': embed_samples = ['EmbeddingElEl2018A','EmbeddingElEl2018B','EmbeddingElEl2018C','EmbeddingElEl2018D']
 
 if options.method==0: ztt_samples+=ewkz_samples
 
@@ -2903,10 +2931,10 @@ def GetZLEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_=wt
-    if options.analysis in ['mssmrun2','vlq']:
+    #if options.analysis in ['mssmrun2','vlq']:
       #wt_+='*wt_emb_sel_kit/(trackingweight_1*trackingweight_2)'
       #wt_+='*wt_zpt_embed_ic/(trackingweight_1*trackingweight_2)'
-      wt_+='*1/(trackingweight_1*trackingweight_2)'
+      #wt_+='*1/(trackingweight_1*trackingweight_2)'
     full_selection = BuildCutString(wt_, sel, cat, OSSS, '1')
     return ana.SummedFactory('EmbedZL'+add_name, samples, plot, full_selection)
 
@@ -4429,16 +4457,17 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     zll_samples=list(ztt_samples)
     if options.analysis in ['cpdecay','cpprod','mssmrun2','vlq']: zll_samples+=ewkz_samples
 
-####    # produce template for observed data
-####    if do_data:
-####        if options.do_ss:
-####          OSSS = '!os'
-####        else:
-####            OSSS = 'os'
-####        weight='wt'
-####        if options.add_wt : weight+='*'+options.add_wt
-####        full_selection = BuildCutString(weight, sel, cat_data, OSSS)
-####        ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
+    # produce template for observed data
+    if do_data:
+        if options.do_ss:
+          OSSS = '!os'
+        else:
+            OSSS = 'os'
+        weight='wt'
+        if options.add_wt : weight+='*'+options.add_wt
+        weight='1' # no weight applied to data usually - can comment this if needed 
+        full_selection = BuildCutString(weight, sel, cat_data, OSSS)
+        ana.nodes[nodename].AddNode(ana.SummedFactory('data_obs', data_samples, plot_unmodified, full_selection))
     
     # produce templates for backgrounds
     if options.method in [17] and options.channel != "em":
@@ -4511,45 +4540,46 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               cat_fail = '('+cats['fail']+')*('+cats['baseline']+')'
               GenerateEmbedded(ana, '_pass'+add_name, embed_samples, plot, wt, sel, cat_pass, z_sels, not options.do_ss)
               GenerateEmbedded(ana, '_fail'+add_name, embed_samples, plot, wt, sel, cat_fail, z_sels, not options.do_ss)
-        if 'ZTT' not in samples_to_skip and not options.embedding:
-          GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-        if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
-          GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-        if 'ZLL' not in samples_to_skip:
-            GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
         if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
-        if 'TT' not in samples_to_skip:    
-            GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ) 
-            if 'mvadm' in options.cat:
-              cat_mvarho = '('+cats['mvadm_rho']+')*('+cats['baseline']+')'
-              cat_mvaa1 = '('+cats['mvadm_a1']+')*('+cats['baseline']+')'
-              cat_mvapi = '('+cats['mvadm_pi']+')*('+cats['baseline']+')'
-              cat_mvanotrho = '('+cats['mvadm_notrho']+')*('+cats['baseline']+')'
-              GenerateTop(ana, '_mvarho'+add_name, top_samples, plot, wt, sel, cat_mvarho, top_sels, not options.do_ss, doTTT, False)
-              GenerateTop(ana, '_mvaa1'+add_name, top_samples, plot, wt, sel, cat_mvaa1, top_sels, not options.do_ss, doTTT, False)
-              GenerateTop(ana, '_mvapi'+add_name, top_samples, plot, wt, sel, cat_mvapi, top_sels, not options.do_ss, doTTT, False)
-              GenerateTop(ana, '_mvanotrho'+add_name, top_samples, plot, wt, sel, cat_mvanotrho, top_sels, not options.do_ss, doTTT, False)             
-        if 'VV' not in samples_to_skip:
-            GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ) 
-            if 'mvadm' in options.cat:
-              cat_mvarho = '('+cats['mvadm_rho']+')*('+cats['baseline']+')'
-              cat_mvaa1 = '('+cats['mvadm_a1']+')*('+cats['baseline']+')'
-              cat_mvapi = '('+cats['mvadm_pi']+')*('+cats['baseline']+')'
-              cat_mvanotrho = '('+cats['mvadm_notrho']+')*('+cats['baseline']+')'
-              GenerateVV(ana, '_mvarho'+add_name, vv_samples, plot, wt, sel, cat_mvarho, vv_sels, not options.do_ss, doVVT, False)
-              GenerateVV(ana, '_mvaa1'+add_name, vv_samples, plot, wt, sel, cat_mvaa1, vv_sels, not options.do_ss, doVVT, False)
-              GenerateVV(ana, '_mvapi'+add_name, vv_samples, plot, wt, sel, cat_mvapi, vv_sels, not options.do_ss, doVVT, False)
-              GenerateVV(ana, '_mvanotrho'+add_name, vv_samples, plot, wt, sel, cat_mvanotrho, vv_sels, not options.do_ss, doVVT, False) 
-        if 'W' not in samples_to_skip:
-            sel_mod=sel
-            if options.method==0 and True in ['baseline_aisotau1' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_1==6)'
-            if options.method==0 and  True in ['baseline_aisotau2' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_2==6)'
-            GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel_mod, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
-        if 'QCD' not in samples_to_skip:
-            GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
-            # uncomment to add QCD as predicted from MC mu enriched samples
-            #if len(qcd_samples_muenriched5)>0: GenerateQCDMC(ana, '_Mu5'+add_name, qcd_samples_muenriched5, plot, wt, sel, cat, not options.do_ss)
-            #if len(qcd_samples_muenriched15)>0: GenerateQCDMC(ana, '_Mu15'+add_name, qcd_samples_muenriched15, plot, wt, sel, cat, not options.do_ss)
+        if not options.embedding or options.channel not in ['zmm','zee']:
+          if 'ZTT' not in samples_to_skip and not options.embedding:
+            GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+          if 'ZTT' not in samples_to_skip and options.embedding and 'VV' not in samples_to_skip and 'TT' not in samples_to_skip:
+            GenerateZTT(ana, add_name, ztt_samples+top_samples+vv_samples+ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+          if 'ZLL' not in samples_to_skip:
+              GenerateZLL(ana, add_name, zll_samples, plot, wt, sel, cat, z_sels, not options.do_ss,doZL,doZJ)
+          if 'TT' not in samples_to_skip:    
+              GenerateTop(ana, add_name, top_samples, plot, wt, sel, cat, top_sels, not options.do_ss, doTTT, doTTJ) 
+              if 'mvadm' in options.cat:
+                cat_mvarho = '('+cats['mvadm_rho']+')*('+cats['baseline']+')'
+                cat_mvaa1 = '('+cats['mvadm_a1']+')*('+cats['baseline']+')'
+                cat_mvapi = '('+cats['mvadm_pi']+')*('+cats['baseline']+')'
+                cat_mvanotrho = '('+cats['mvadm_notrho']+')*('+cats['baseline']+')'
+                GenerateTop(ana, '_mvarho'+add_name, top_samples, plot, wt, sel, cat_mvarho, top_sels, not options.do_ss, doTTT, False)
+                GenerateTop(ana, '_mvaa1'+add_name, top_samples, plot, wt, sel, cat_mvaa1, top_sels, not options.do_ss, doTTT, False)
+                GenerateTop(ana, '_mvapi'+add_name, top_samples, plot, wt, sel, cat_mvapi, top_sels, not options.do_ss, doTTT, False)
+                GenerateTop(ana, '_mvanotrho'+add_name, top_samples, plot, wt, sel, cat_mvanotrho, top_sels, not options.do_ss, doTTT, False)             
+          if 'VV' not in samples_to_skip:
+              GenerateVV(ana, add_name, vv_samples, plot, wt, sel, cat, vv_sels, not options.do_ss, doVVT, doVVJ) 
+              if 'mvadm' in options.cat:
+                cat_mvarho = '('+cats['mvadm_rho']+')*('+cats['baseline']+')'
+                cat_mvaa1 = '('+cats['mvadm_a1']+')*('+cats['baseline']+')'
+                cat_mvapi = '('+cats['mvadm_pi']+')*('+cats['baseline']+')'
+                cat_mvanotrho = '('+cats['mvadm_notrho']+')*('+cats['baseline']+')'
+                GenerateVV(ana, '_mvarho'+add_name, vv_samples, plot, wt, sel, cat_mvarho, vv_sels, not options.do_ss, doVVT, False)
+                GenerateVV(ana, '_mvaa1'+add_name, vv_samples, plot, wt, sel, cat_mvaa1, vv_sels, not options.do_ss, doVVT, False)
+                GenerateVV(ana, '_mvapi'+add_name, vv_samples, plot, wt, sel, cat_mvapi, vv_sels, not options.do_ss, doVVT, False)
+                GenerateVV(ana, '_mvanotrho'+add_name, vv_samples, plot, wt, sel, cat_mvanotrho, vv_sels, not options.do_ss, doVVT, False) 
+          if 'W' not in samples_to_skip:
+              sel_mod=sel
+              if options.method==0 and True in ['baseline_aisotau1' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_1==6)'
+              if options.method==0 and  True in ['baseline_aisotau2' in x for x in options.set_alias] and options.channel=='tt': sel_mod =sel+'&&(gen_match_2==6)'
+              GenerateW(ana, add_name, wjets_samples, data_samples, wgam_samples, plot, plot_unmodified, wt, sel_mod, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss)
+          if 'QCD' not in samples_to_skip:
+              GenerateQCD(ana, add_name, data_samples, plot, plot_unmodified, wt, sel, cat, cat_data, method, qcd_os_ss_ratio, not options.do_ss,wshift)
+              # uncomment to add QCD as predicted from MC mu enriched samples
+              #if len(qcd_samples_muenriched5)>0: GenerateQCDMC(ana, '_Mu5'+add_name, qcd_samples_muenriched5, plot, wt, sel, cat, not options.do_ss)
+              #if len(qcd_samples_muenriched15)>0: GenerateQCDMC(ana, '_Mu15'+add_name, qcd_samples_muenriched15, plot, wt, sel, cat, not options.do_ss)
         #if 'EWKZ' not in samples_to_skip and options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'tauid2016','cpsummer17','tauid2017','cp18','mvadm2016'] and options.method!=0: 
         #    GenerateEWKZ(ana, add_name, ewkz_samples, plot, wt, sel, cat, z_sels, not options.do_ss) 
         #if 'ggH_hww' not in samples_to_skip and 'qqH_hww' not in samples_to_skip and options.analysis in ['cpprod','mssmrun2'] and options.channel == 'em':
@@ -5004,7 +5034,7 @@ while len(systematics) > 0:
       print(ztt_samples,vv_samples,wgam_samples,top_samples,wjets_samples,ewkz_samples,gghww_samples,qqhww_samples)
       print("------------------")
       # Add embedded samples if using
-      if options.embedding: 
+      if options.embedding:
         for sample_name in embed_samples:
           ana.AddSamples(embed_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
           

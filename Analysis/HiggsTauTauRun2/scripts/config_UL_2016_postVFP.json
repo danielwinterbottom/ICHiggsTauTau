@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar31_MC_124X_2016-postVFP/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt"],
+    "channels":     ["tt"],
     //"channels":     ["mt","et","tt","zmm"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
@@ -61,7 +61,8 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2016-postVFP_v2/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2016-postVFP_v2/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_ML_FF_2016-postVFP/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2016_tres1_v2_svfit/",

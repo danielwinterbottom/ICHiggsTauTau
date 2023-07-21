@@ -1336,12 +1336,13 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
 } // end of loop over jet met uncertainties
 
   if(channel == channel::tpzmm){  
-    std::function<bool(Muon const*)> muon_probe_id;
-    
+   
+    std::function<bool(Muon const*)> muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+    std::function<bool(Muon const*)> muon_tag_id = [](Muon const* m) {return MuonMedium(m); };
+    std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
+ 
     if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
 
-        muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
-        std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
         // low pT mu leg of e+mu trigger
         BuildModule(TagAndProbe<Muon const*>("TagAndProbe_EMLow")
           .set_fs(fs.get())
@@ -1351,7 +1352,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(muon_probe_id)
-          .set_tag_id(muon_probe_id) 
+          .set_tag_id(muon_tag_id) 
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
           .set_extra_hlt_probe_pt(8.)
@@ -1367,7 +1368,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(muon_probe_id)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
           .set_extra_hlt_probe_pt(23.)
@@ -1383,7 +1384,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(muon_probe_id)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_probe_trg_objects("triggerObjectsDoubleMu20")
           .set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
           .set_add_name("_mt_c_to_f")
@@ -1397,7 +1398,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(muon_probe_id)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
           .set_probe_trg_filters("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
           .set_do_extra(true)
@@ -1412,7 +1413,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(muon_probe_id)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
           .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")  
         );
@@ -1425,7 +1426,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(MuonLooseID)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
           .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
           .set_add_name("_dimu_low")
@@ -1443,7 +1444,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu27")
           .set_tag_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")
           .set_probe_id(MuonLooseID)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
           .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
           .set_add_name("_dimu_high")
@@ -1471,8 +1472,6 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
         );
          
     } else {
-      muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
-      std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
       // for mu8 leg of EMu cross-trigger
       BuildModule(TagAndProbe<Muon const*>("TagAndProbe_emLow")
           .set_fs(fs.get())
@@ -1482,8 +1481,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu24")
           .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
           .set_probe_id(muon_probe_id)
-          //.set_probe_id(MuonLooseID)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_add_name("_emLow")          
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
@@ -1500,8 +1498,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu24")
           .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
           .set_probe_id(muon_probe_id)
-          //.set_probe_id(MuonLooseID)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_add_name("_emHigh")          
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
@@ -1518,8 +1515,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu24")
           .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
           .set_probe_id(muon_probe_id)
-          //.set_probe_id(MuonLooseID)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_add_name("_Single")                    
           .set_probe_trg_objects("triggerObjectsIsoMu22,triggerObjectsIsoTkMu22,triggerObjectsIsoMu22Eta2p1,triggerObjectsIsoTkMu22Eta2p1")
           .set_probe_trg_filters("hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09,hltL3crIsoL1sSingleMu20erL1f0L2f10QL3f22QL3trkIsoFiltered0p09,hltL3fL1sMu20erL1f0Tkf22QL3trkIsoFiltered0p09")
@@ -1534,12 +1530,19 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu24")
           .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
           .set_probe_id(muon_probe_id)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_add_name("_mt")          
           .set_probe_trg_objects("triggerObjectsIsoMu19LooseTau20SingleL1")
           .set_probe_trg_filters("hltL3crIsoL1sSingleMu18erIorSingleMu20erL1f0L2f10QL3f19QL3trkIsoFiltered0p09")
       
       );
+
+        std::string embed_dimu_triggers = "triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8"; // an extra trigger was used in 2016 for pre-UL
+        std::string embed_dimu_filters = "hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4";
+        if(era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) {
+          embed_dimu_triggers = "triggerObjectsMu17Mu8DZ";
+          embed_dimu_filters = "hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4";
+        }
 
         // low pT leg of dimuon trigger used for embedded selection
         BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuLow")
@@ -1550,10 +1553,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu24")
           .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
           .set_probe_id(MuonLooseID)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_add_name("_dimu_low")
-          .set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_probe_trg_objects(embed_dimu_triggers)
+          .set_probe_trg_filters(embed_dimu_filters)
           .set_extra_hlt_probe_pt(8.)
         );
 
@@ -1566,10 +1569,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_trg_objects("triggerObjectsIsoMu24")
           .set_tag_trg_filters("hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09")
           .set_probe_id(MuonLooseID)
-          .set_tag_id(muon_probe_id)
+          .set_tag_id(muon_tag_id)
           .set_add_name("_dimu_high")
-          .set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_probe_trg_objects(embed_dimu_triggers)
+          .set_probe_trg_filters(embed_dimu_filters)
           .set_extra_hlt_probe_pt(17.)
         );
 
@@ -1584,8 +1587,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_probe_id(MuonLooseID)
           .set_tag_id(MuonLooseID)
           .set_add_name("_dimu_dz")
-          .set_probe_trg_objects("triggerObjectsMu17TkMu8,triggerObjectsMu17Mu8")
-          .set_probe_trg_filters("hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4,hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4")
+          .set_probe_trg_objects(embed_dimu_triggers)
+          .set_probe_trg_filters(embed_dimu_filters)
           .set_extra_hlt_probe_pt(8.)
           .set_do_dzmass(true)
         );
@@ -2193,7 +2196,7 @@ void HTTSequence::BuildTPZEEPairs() {
       .set_max(2)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
-                fabs(e->eta())          < elec_eta   &&
+                fabs(e->eta())          < elec_eta   && 
                 fabs(e->dxy_vertex())   < elec_dxy   &&
                 fabs(e->dz_vertex())    < elec_dz    ;
 
@@ -2295,12 +2298,12 @@ void HTTSequence::BuildZMMPairs() {
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
 
-  // Filter cases where muon 1 is softer than muon 2 which can happen due to different eta cuts for sel_muons and sel_leadmuons 
-  BuildModule(SimpleFilter<CompositeCandidate>("ZMMPairFirstLeadingSecondFilter")
-      .set_input_label("ditau").set_min(1)
-      .set_predicate([=](CompositeCandidate const* c) {
-        return PairFirstLeadingSecond(c);
-      }));
+//  // Filter cases where muon 1 is softer than muon 2 which can happen due to different eta cuts for sel_muons and sel_leadmuons 
+//  BuildModule(SimpleFilter<CompositeCandidate>("ZMMPairFirstLeadingSecondFilter")
+//      .set_input_label("ditau").set_min(1)
+//      .set_predicate([=](CompositeCandidate const* c) {
+//        return PairFirstLeadingSecond(c);
+//      }));
  
   
   if(js["baseline"]["do_faketaus"].asBool()){
@@ -2333,15 +2336,15 @@ void HTTSequence::BuildTPZMMPairs() {
   std::function<bool(Muon const*)> MuonID = [](Muon const* m) { return MuonMedium(m); };
 
   BuildModule(SimpleFilter<Muon>("ProbeFilter")
-      .set_input_label("sel_muons").set_min(2).set_max(2)
+      .set_input_label("sel_muons").set_min(2)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&
-                fabs(m->eta())          < muon_eta   &&
-                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->eta())          < muon_eta &&
+                fabs(m->dxy_vertex())   < muon_dxy  && 
                 fabs(m->dz_vertex())    < muon_dz  ;
 
       }));
-  
+
   BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
       .set_input_label_first("sel_muons")
       .set_input_label_second("sel_muons")

@@ -74,6 +74,9 @@ parser.add_argument("--tight_tag", dest="tight_tag", action='store_true')
 parser.add_argument("--embedded", dest="embedded", action='store_true')
 parser.add_argument("--embed_sel", dest="embed_sel", action='store_true')
 parser.add_argument("--embed_dz", dest="embed_dz", action='store_true')
+parser.add_argument("--fine_dz_bins", dest="fine_dz_bins", action='store_true')
+parser.add_argument("--alt_dz_bins", dest="alt_dz_bins", action='store_true')
+parser.add_argument("--highpT", dest="highpT", action='store_true')
 
 
 options = parser.parse_args(remaining_argv)   
@@ -94,6 +97,9 @@ print 'embed sel         =', options.embed_sel
 print 'embed dz          =', options.embed_dz
 print '###############################################'
 print ''
+
+fine_dz_bins=options.fine_dz_bins
+alt_dz_bins=options.alt_dz_bins
 
 # All functions defined here
 
@@ -154,7 +160,21 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       if options.embed_dz:
         trg_eta_bins='[0,2.4]'
         trg_pt_bins='[28,1000]'
+        if fine_dz_bins:
+          trg_eta_bins='[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]'
+          trg_pt_bins='[28,50,75,100,200]'
+        if alt_dz_bins:
+          #trg_eta_bins='[0,0.9,1.2,2.1,2.4]'
+          trg_eta_bins='[0,2.4]'
+          trg_dr_bins='[0.5,0.6,0.7,0.8,0.9,1.0,1.5,2.0,2.5,3.0,4.0,5.0]'
 
+      if options.highpT:
+        trg_eta_bins='[0,2.4]'
+        idiso_eta_bins='[0,2.4]'
+        iso_eta_bins='[0,2.4]'
+        trg_pt_bins='[100,200,250,300,400,500,700,1000]'
+        idiso_pt_bins='[100,200,250,300,400,500,700,1000]'
+        iso_pt_bins='[100,200,250,300,400,500,700,1000]'
 
     if options.channel == 'tpzee':
       gen_cuts='gen_match_1==1&&gen_match_2==1'  
@@ -168,6 +188,13 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       #trg_pt_bins = '[27,32,35,40,45,50,55,60,70,80,100,200]'
       trg_pt_bins = '[20,24,26,28,33,36,40,44,48,50,55,60,70,80,100,200]'
 
+      if options.highpT:
+        trg_eta_bins='[0,2.5]'
+        idiso_eta_bins='[0,2.5]'
+        iso_eta_bins='[0,2.5]'
+        trg_pt_bins='[100,200,250,300,400,500,700,1000]'
+        idiso_pt_bins='[100,200,250,300,400,500,700,1000]'
+        iso_pt_bins='[100,200,250,300,400,500,700,1000]'
 
           
     trg_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+trg_eta_bins+','+trg_pt_bins+','+mass_bins
@@ -177,7 +204,16 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     iso_plot_probe_1 = 'abs(eta_1),pt_1,m_vis'+idiso_eta_bins+','+iso_pt_bins+','+mass_bins
     iso_plot_probe_2 = 'abs(eta_2),pt_2,m_vis'+idiso_eta_bins+','+iso_pt_bins+','+mass_bins
 
-    if not options.embed_sel:
+    if fine_dz_bins:
+      # 2D eta bins for dz filter
+      trg_plot_probe_1= 'abs(eta_1),abs(eta_2),m_vis'+trg_eta_bins+','+trg_eta_bins+','+mass_bins
+      trg_plot_probe_2= 'abs(eta_2),abs(eta_1),m_vis'+trg_eta_bins+','+trg_eta_bins+','+mass_bins
+    if alt_dz_bins:
+      trg_plot_probe_1= 'abs(eta_1),dR,m_vis'+trg_eta_bins+','+trg_dr_bins+','+mass_bins
+      trg_plot_probe_2= 'abs(eta_2),dR,m_vis'+trg_eta_bins+','+trg_dr_bins+','+mass_bins
+
+
+    if not options.embed_sel and not options.embed_dz:
       GenerateZLL(ana, '_trg_tag1_fail', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, '!%s' % trg_probe_2)
       GenerateZLL(ana, '_trg_tag2_fail', ztt_samples, trg_plot_probe_1, wt, trg_tag_2+'&&'+gen_cuts, '!%s' % trg_probe_1)
       GenerateZLL(ana, '_trg_tag1_pass', ztt_samples, trg_plot_probe_2, wt, trg_tag_1+'&&'+gen_cuts, trg_probe_2)
@@ -189,7 +225,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
    
 
     if not options.trg_only: 
-      if not options.embed_sel:
+      if not options.embed_sel and not options.embed_dz:
         GenerateZLL(ana, '_id_tag1_fail', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, '!%s' % id_probe_2)
         GenerateZLL(ana, '_id_tag2_fail', ztt_samples, idiso_plot_probe_1, wt, id_tag_2+'&&'+gen_cuts, '!%s' % id_probe_1)
         GenerateZLL(ana, '_id_tag1_pass', ztt_samples, idiso_plot_probe_2, wt, id_tag_1+'&&'+gen_cuts, id_probe_2)
@@ -199,7 +235,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       GenerateData(ana, '_id_tag1_pass', data_samples, idiso_plot_probe_2, wt, id_tag_1, id_probe_2)
       GenerateData(ana, '_id_tag2_pass', data_samples, idiso_plot_probe_1, wt, id_tag_2, id_probe_1)
 
-      if not options.embed_sel:
+      if not options.embed_sel and not options.embed_dz:
         GenerateZLL(ana, '_iso_tag1_fail', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, '!%s' % iso_probe_2)
         GenerateZLL(ana, '_iso_tag2_fail', ztt_samples, iso_plot_probe_1, wt, iso_tag_2+'&&'+gen_cuts, '!%s' % iso_probe_1)
         GenerateZLL(ana, '_iso_tag1_pass', ztt_samples, iso_plot_probe_2, wt, iso_tag_1+'&&'+gen_cuts, iso_probe_2)
@@ -233,8 +269,8 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     ana.nodes.Output(outfile)
     
     outfile.cd()
-    
-    if not options.embed_sel: 
+   
+    if not options.embed_sel and not options.embed_dz: 
       zll_trg_fail = outfile.Get(nodename+'/ZLL_trg_tag1_fail').Clone()
       zll_trg_fail.Add(outfile.Get(nodename+'/ZLL_trg_tag2_fail'))
       zll_trg_pass = outfile.Get(nodename+'/ZLL_trg_tag1_pass').Clone()
@@ -254,7 +290,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
     data_trg_pass.Write('data_trg_pass')
 
     if not options.trg_only:    
-      if not options.embed_sel:
+      if not options.embed_sel and not options.embed_dz:
         zll_id_fail = outfile.Get(nodename+'/ZLL_id_tag1_fail').Clone()
         zll_id_fail.Add(outfile.Get(nodename+'/ZLL_id_tag2_fail'))
         zll_id_pass = outfile.Get(nodename+'/ZLL_id_tag1_pass').Clone()
@@ -273,7 +309,7 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       data_id_fail.Write('data_id_fail')
       data_id_pass.Write('data_id_pass')
       
-      if not options.embed_sel:
+      if not options.embed_sel and not options.embed_dz:
         zll_iso_fail = outfile.Get(nodename+'/ZLL_iso_tag1_fail').Clone()
         zll_iso_fail.Add(outfile.Get(nodename+'/ZLL_iso_tag2_fail'))
         zll_iso_pass = outfile.Get(nodename+'/ZLL_iso_tag1_pass').Clone()
@@ -323,7 +359,16 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
         embed_iso_fail.Write('embed_iso_fail')
         embed_iso_pass.Write('embed_iso_pass')
 
-    
+   
+xvar = 'pt'
+yvar = 'eta'
+if fine_dz_bins:
+  xvar = 'eta1'
+  yvar = 'eta2'
+if alt_dz_bins:
+  xvar = 'dR'
+  yvar = 'eta' 
+
 def Get1DHistsFrom3D(passhist3d,failhist3d):
   # z = eta, y = pt, x = mass
   hists = []
@@ -333,8 +378,8 @@ def Get1DHistsFrom3D(passhist3d,failhist3d):
         ymax = passhist3d.GetYaxis().GetBinUpEdge(j)
         zmin = passhist3d.GetZaxis().GetBinLowEdge(k)
         zmax = passhist3d.GetZaxis().GetBinUpEdge(k)
-        passname1d = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (passhist3d.GetName(),ymin,ymax,zmin,zmax)
-        failname1d = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (failhist3d.GetName(),ymin,ymax,zmin,zmax)
+        passname1d = '%s_%s_%.1f_to_%.1f_%s_%.1f_to_%.1f' % (passhist3d.GetName(),xvar,ymin,ymax,yvar,zmin,zmax)
+        failname1d = '%s_%s_%.1f_to_%.1f_%s_%.1f_to_%.1f' % (failhist3d.GetName(),xvar,ymin,ymax,yvar,zmin,zmax)
         passhist1d = passhist3d.ProjectionX(passname1d,j,j,k,k)
         failhist1d = failhist3d.ProjectionX(failname1d,j,j,k,k)
         hists.append((passhist1d,failhist1d,ymin,ymax,zmin,zmax))
@@ -349,6 +394,12 @@ def CreateWorkspace(name,infile,outfile):
   hist2d.SetTitle('')
   hist2d.GetXaxis().SetTitle('pt')
   hist2d.GetYaxis().SetTitle('eta')
+  if fine_dz_bins:
+    hist2d.GetXaxis().SetTitle('#eta_1')
+    hist2d.GetYaxis().SetTitle('#eta_2')
+  if alt_dz_bins:
+    hist2d.GetXaxis().SetTitle('#Delta R')
+    hist2d.GetYaxis().SetTitle('#eta')
   wsp = ROOT.RooWorkspace('wsp_'+name, '')
   var = wsp.factory('m_vis[100,50,150]')    
   
@@ -768,9 +819,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
     for j in range(1,hist2d.GetNbinsY()+1):
       bin_low_edge = str(round(hist2d.GetYaxis().GetBinLowEdge(j),1)).replace(".","p")
       bin_up_edge  = str(round(hist2d.GetYaxis().GetBinUpEdge(j),1)).replace(".","p")
-      if "id" in name: path = options.outputfolder + "/id/" + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
-      elif "iso" in name: path = options.outputfolder + "/iso/" + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
-      else: path = options.outputfolder + "/trg/" + name +"_eta_{}_to_{}".format(bin_low_edge,bin_up_edge)
+      if "id" in name: path = options.outputfolder + "/id/" + name +"_{}_{}_to_{}".format(yvar,bin_low_edge,bin_up_edge)
+      elif "iso" in name: path = options.outputfolder + "/iso/" + name +"_{}_{}_to_{}".format(yvar,bin_low_edge,bin_up_edge)
+      else: path = options.outputfolder + "/trg/" + name +"_{}_{}_to_{}".format(yvar,bin_low_edge,bin_up_edge)
 
       if not os.path.exists(path):
          os.makedirs(path)
@@ -786,7 +837,7 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
       #if options.era in ['UL_18'] and ('_iso' in name) and options.channel == 'tpzmm':
       #    if xmin >= 50: ForceEventCount = True
 
-      dat = '%s_pt_%.0f_to_%.0f_eta_%.1f_to_%.1f' % (name,xmin,xmax,ymin,ymax)    
+      dat = '%s_%s_%.1f_to_%.1f_%s_%.1f_to_%.1f' % (name,xvar,xmin,xmax,yvar,ymin,ymax)    
       yield_tot = wsp.data(dat).sumEntries()
       yield_pass = wsp.data(dat).sumEntries("cat==cat::pass")
       wsp.var("numTot").setVal(yield_tot)
@@ -941,9 +992,9 @@ def FitWorkspace(name,infile,outfile,sig_model='DoubleVCorr',bkg_model='Exponent
         legend2.AddEntry(xframe2.findObject("BkgFail"), "BG", "l")
         legend2.Draw()
         
-        if "id" in name: canv.Print(options.outputfolder + "/id/" + name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
-        elif "iso" in name: canv.Print(options.outputfolder + "/iso/"+ name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
-        else: canv.Print(options.outputfolder + "/trg/" + name + "_eta_{}_to_{}".format(bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+        if "id" in name: canv.Print(options.outputfolder + "/id/" + name + "_{}_{}_to_{}".format(yvar,bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+        elif "iso" in name: canv.Print(options.outputfolder + "/iso/"+ name + "_{}_{}_to_{}".format(yvar,bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
+        else: canv.Print(options.outputfolder + "/trg/" + name + "_{}_{}_to_{}".format(yvar,bin_low_edge,bin_up_edge) +'/'+dat+'_'+options.channel+"_"+scenario+'.pdf')
  
         del canv
         
@@ -997,7 +1048,6 @@ elif options.era == 'UL_16postVFP': ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 
-#Formula:  abs(eta_2),pt_2,m_vis[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4],[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000],(40,70,110) (wt)*((m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)*(1&&id_probe_1))*(os)*(1)*(!(trg_probe_2))
 ROOT.TH1.SetDefaultSumw2(True)
 
 trg_probe_1 = '(trg_probe_1)'
@@ -1021,6 +1071,10 @@ if options.channel == 'tpzmm':
   else:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>25&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>25&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
+
+  #if not options.embed_sel and not options.embed_dz:
+  baseline_tag1+='*(dxy_1<0.045&&dxy_2<0.045&&dz_1<0.2&&dz_2<0.2)'
+  baseline_tag2+='*(dxy_1<0.045&&dxy_2<0.045&&dz_1<0.2&&dz_2<0.2)'
 
   if options.embed_sel:
     iso_cut_1="1"
@@ -1081,7 +1135,8 @@ trg_tag_2 = baseline_tag2+'*(%s&&id_probe_1)' % iso_cut_1
 if options.embed_dz:
   trg_tag_1= 'm_vis>50&&m_vis<150&&pt_1>28&&pt_2>28&&abs(eta_1)<2.4&&abs(eta_2)<2.4&&id_tag_1&&id_tag_2&&trg_tag_1&&os&&pass_dimu'
   trg_tag_2='0'
-
+  #if alt_dz_bins:
+  #  trg_tag_2=trg_tag_1
 # Create output file
 output_name = options.outputfolder+'/tagandprobe_'+options.channel+'.root'
 if options.tight_tag: output_name = options.outputfolder+'/tagandprobe_'+options.channel+'_tightTag.root'
@@ -1127,7 +1182,7 @@ if options.tight_tag:
    wsfilename_tightTag = output_name.replace('.root','_ws_tightTag.root')
    wsfile_tightTag = ROOT.TFile(wsfilename_tightTag, 'RECREATE')
 
-if not options.embed_sel:
+if not options.embed_sel and not options.embed_dz:
   wsnames = ['data_id', 'ZLL_id', 'data_iso', 'ZLL_iso', 'data_trg', 'ZLL_trg']
   if options.trg_only: wsnames = ['data_trg', 'ZLL_trg']
 else: 
@@ -1215,10 +1270,10 @@ for i in variations:
    
        ymin = hist2d.GetYaxis().GetBinLowEdge(j)
        ymax = hist2d.GetYaxis().GetBinUpEdge(j)
-       if not options.embed_sel:
+       if not options.embed_sel and not options.embed_dz:
          leg_labels=['data','MC']
        else: leg_labels=['data']
-       if not options.embed_sel:
+       if not options.embed_sel and not options.embed_dz:
          graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (sf,ymin,ymax)).replace('.','p')),sffile.Get(('gr_ZLL_%s_eff_eta_%.1f_to_%.1f' % (sf,ymin,ymax)).replace('.','p'))]
        else: graphs = [sffile.Get(('gr_data_%s_eff_eta_%.1f_to_%.1f' % (sf,ymin,ymax)).replace('.','p'))]
        if options.embedded:
@@ -1230,6 +1285,12 @@ for i in variations:
            x_title = 'P_{T}^{e} (GeV)'
            if 'trg' in sf: ratio_range="0.1,2.0"
        label = '%s, %.1f < |#eta| < %.1f' % (sf, ymin,ymax)
+       if fine_dz_bins: 
+         x_title='#eta_#mu_2'
+         label = '%s, %.1f < |#eta_1| < %.1f' % (sf, ymin,ymax)
+       if alt_dz_bins: 
+         x_title='#DeltaR'
+         label = '%s, %.1f < |#eta| < %.1f' % (sf, ymin,ymax)
        if options.channel == "tpzmm":
          if 'trg' in sf: label = 'Muon Trigger, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
          elif 'iso' in sf: label = 'Muon Iso, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
@@ -1238,7 +1299,7 @@ for i in variations:
          if 'trg' in sf: label = 'Electron Trigger, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
          elif 'iso' in sf: label = 'Electron Iso, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
          elif 'id' in sf: label = 'Electron ID, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
-       plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='UL_18',ratio_range,True,200,10,False,0,1.5,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+sf+'_eta_%.1f_to_%.1f_%s'%(ymin,ymax,i),label)
+       plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='UL_18',ratio_range,True,200 if not options.highpT else 1000,10 if not options.highpT else 200,False,0,1.5,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+sf+'_eta_%.1f_to_%.1f_%s'%(ymin,ymax,i),label)
 
    sffile.Close()
 

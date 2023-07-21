@@ -51,7 +51,7 @@ def findAvepT(infile,dirname):
         print(bin_means)
         return bin_means, bin_rmss
 
-def Plot(f, h, name='test', output_folder='highpT_closure', title='',func=None,g=None):
+def Plot(f, h, uncert_form='', name='test', output_folder='highpT_closure', title='',func=None,g=None):
   x_title='p_{T} (GeV)'
   c1 = ROOT.TCanvas()
   f.GetXaxis().SetTitle(x_title)
@@ -84,7 +84,11 @@ def Plot(f, h, name='test', output_folder='highpT_closure', title='',func=None,g
     g.SetMarkerStyle(22)
     g.Draw("pe same")
     leg.AddEntry(g, 'Z#rightarrow#tau#tau','pe')
-  leg.AddEntry(h, 'Fit','lf')
+    leg.AddEntry(h, 'Fit','lf')
+  tex=ROOT.TLatex()
+  tex.SetTextFont(42)
+  tex.DrawLatexNDC(0.15,.18,uncert_form) 
+  #leg.AddEntry(0, uncert_form,'')
   leg.Draw()
   if rescale: name+='_rescaled'
   c1.Print(output_folder+'/%(name)s.pdf' % vars())
@@ -177,12 +181,12 @@ for wp_VSe_upper in ['VVLoose','Tight']:
     g2.SetLineColor(ROOT.kRed)
     g2.SetMarkerColor(ROOT.kRed)
     
-    g.Write('graph_%(wp)sVSjet_%(wp_VSe)sVSe_ZTauTau' % vars())
-    g2.Write('graph_%(wp)sVSjet_%(wp_VSe)sVSe_WTauNu' % vars())
+    g.Write('graph_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe_ZTauTau' % vars())
+    g2.Write('graph_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe_WTauNu' % vars())
     mg=ROOT.TMultiGraph()
     mg.Add(g)
     mg.Add(g2)
-    mg.Write('multigraph_%(wp)sVSjet_%(wp_VSe)sVSe' % vars())
+    mg.Write('multigraph_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
     
     
     func0 = ROOT.TF1('func0','[0]',min_pt,500)
@@ -196,17 +200,18 @@ for wp_VSe_upper in ['VVLoose','Tight']:
     func1.FixParameter(0,fix)
     mg.Fit(func1,'R')
     print 'Func1 chi2, NDF, p-value: ', func1.GetChisquare(), func1.GetNDF(), func1.GetProb()
-    func1.Write('func_%(wp)sVSjet_%(wp_VSe)sVSe' % vars())
+    func1.Write('func_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
    
-    h_uncert=ROOT.TH1D('h_uncert_%(wp)sVSjet_%(wp_VSe)sVSe' % vars(),'',10000,min_pt,496)
+    h_uncert=ROOT.TH1D('h_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(),'',10000,min_pt,496)
     ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
-    h_uncert.Write('h_uncert_%(wp)sVSjet_%(wp_VSe)sVSe' % vars())
-    Plot(g2, h_uncert,name='high_pt_uncert_%(wp)sVSjet_%(wp_VSe)sVSe' % vars(), title='%(wp_upper)sVSjet,%(wp_VSe_upper)sVSe' % vars(),func=func1,g=g)
- 
+    h_uncert.Write('h_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
     m_val = abs(func1.GetParameter(1))+abs(func1.GetParError(1))
-    func_uncert = ROOT.TF1('uncert_func_%(wp)sVSjet_%(wp_VSe)sVSe' % vars(),'1.+(x>=140.)*(x-%s)*%.6f' % (min_pt,m_val),100,500)
+    uncert_form = '#frac{#sigma_{SF}}{SF} = #pm %.5f#times max(min(pt,500)-140,0)' % (m_val)
+    Plot(g2, h_uncert,uncert_form,name='high_pt_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(), title='%(wp_upper)sVSjet,%(wp_VSe_upper)sVSe' % vars(),func=func1,g=g)
+ 
+    func_uncert = ROOT.TF1('uncert_func_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(),'1.+(x>=140.)*(min(x,500.)-%s)*%.6f' % (min_pt,m_val),100,500)
     
-    func_uncert.Write('uncert_func_%(wp)sVSjet_%(wp_VSe)sVSe' % vars())
+    func_uncert.Write('uncert_func_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
     
     print func_uncert
     

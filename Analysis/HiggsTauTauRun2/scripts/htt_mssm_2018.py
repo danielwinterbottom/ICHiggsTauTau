@@ -229,7 +229,7 @@ if options.proc_mssm or options.proc_all:
       signal_mc += ['SUSYGluGluToHToTauTau_M-%s_powheg' % mass]
       signal_mc += ['SUSYGluGluToBBHToTauTau_M-%s_powheg' % mass]
 
-    signal_mc += ['VBFHToTauTau_M-95']
+    #signal_mc += ['VBFHToTauTau_M-95']
 
 if options.proc_data or options.proc_all or options.calc_lumi or options.proc_embed:
     if not no_json:

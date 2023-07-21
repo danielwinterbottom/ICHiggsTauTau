@@ -2724,7 +2724,7 @@ def HTTPlot(nodename,
 
     if not custom_y_range:
         if(log_y):
-            axish[0].SetMinimum(0.1)
+            axish[0].SetMinimum(0.01)
             axish[0].SetMaximum(10**((1+extra_pad)*(math.log10(1.1*bkghist.GetMaximum() - math.log10(axish[0].GetMinimum())))))
         else: 
             axish[0].SetMinimum(0)
@@ -3518,24 +3518,26 @@ def CompareHists(hists=[],
     
     #Setup legend
     tot = len(hists)
-    if isinstance(uncert_hist,list): tot+=len(uncert_hist)
-    if tot > 4: legend = PositionedLegend(0.35,0.3,3,0.03)
-    else: legend = PositionedLegend(0.35,0.2,3,0.03)
-    legend.SetTextFont(42)
-    legend.SetTextSize(0.040)
-    legend.SetFillColor(0)
-    
+    if tot>1:
+      if isinstance(uncert_hist,list): tot+=len(uncert_hist)
+      if tot > 4: legend = PositionedLegend(0.35,0.3,3,0.03)
+      #else: legend = PositionedLegend(0.35,0.2,3,0.03)
+      else: legend = PositionedLegend(0.35,0.2,6,0.03)
+      legend.SetTextFont(42)
+      legend.SetTextSize(0.040)
+      legend.SetFillColor(0)
+      
 
-    for legi,hist in enumerate(legend_hists):
-        legend.AddEntry(hist,legend_titles[legi],"l")
-    if isinstance(uncert_hist, (list,)):
-     count=0
-     for i in uncert_hist:
-       if i is not None: legend.AddEntry(i,uncert_title[count],'f') 
-       count+=1
-    else:
-      if uncert_hist is not None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
-    legend.Draw("same")
+      for legi,hist in enumerate(legend_hists):
+          legend.AddEntry(hist,legend_titles[legi],"l")
+      if isinstance(uncert_hist, (list,)):
+       count=0
+       for i in uncert_hist:
+         if i is not None: legend.AddEntry(i,uncert_title[count],'f') 
+         count+=1
+      else:
+        if uncert_hist is not None and uncert_title: legend.AddEntry(uncert_hist,uncert_title,'f')
+      legend.Draw("same")
     
     #CMS label and title
     #FixTopRange(pads[0], axish[0].GetMaximum(), extra_pad if extra_pad>0 else 0.30)
@@ -3857,6 +3859,7 @@ def TagAndProbePlot(graphs=[],
         legend_graphs.append(g.Clone())
         
     c1 = R.TCanvas()
+    R.SetOwnership(c1,False) # this line helps with seg faults when making plots in a loop!
     c1.cd()
         
     if ratio:

@@ -1117,37 +1117,37 @@ int HTTWeights::PreAnalysis() {
           w_UL_->function("t_id_vs_mu_eta_tight_down")->functor(w_UL_->argSet("t_eta")));
 
       // triggers for muon legs in mt and zmm channels
-      fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_mc")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_data")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_embed")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_mc")->functor(w_UL_->argSet("m_pt,m_eta")));
+      fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_data")->functor(w_UL_->argSet("m_pt,m_eta")));
+      fns_["m_trg_binned_embed"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_binned_ic_embed")->functor(w_UL_->argSet("m_pt,m_eta")));
 
-      fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_binned_ic_mc")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
-      fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_binned_ic_data")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
+      fns_["e_trg_binned_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_binned_ic_mc")->functor(w_UL_->argSet("e_pt,e_eta")));
+      fns_["e_trg_binned_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_binned_ic_data")->functor(w_UL_->argSet("e_pt,e_eta")));
 
       // triggers for electron and muon legs in em channel
-      fns_["e_trg_binned_12_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_12_binned_ic_mc")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
-      fns_["e_trg_binned_12_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_12_binned_ic_data")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
+      fns_["e_trg_binned_12_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_12_binned_ic_mc")->functor(w_UL_->argSet("e_pt,e_eta")));
+      fns_["e_trg_binned_12_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_12_binned_ic_data")->functor(w_UL_->argSet("e_pt,e_eta")));
 
-      fns_["e_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_23_binned_ic_mc")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
-      fns_["e_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_23_binned_ic_data")->functor(w_UL_->argSet("e_pt,e_eta,e_iso")));
+      fns_["e_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_23_binned_ic_mc")->functor(w_UL_->argSet("e_pt,e_eta")));
+      fns_["e_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_trg_23_binned_ic_data")->functor(w_UL_->argSet("e_pt,e_eta")));
 
-      fns_["m_trg_binned_8_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_8_binned_ic_mc")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_trg_binned_8_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_8_binned_ic_data")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_trg_binned_8_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_8_binned_ic_mc")->functor(w_UL_->argSet("m_pt,m_eta")));
+      fns_["m_trg_binned_8_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_8_binned_ic_data")->functor(w_UL_->argSet("m_pt,m_eta")));
 
-      fns_["m_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_23_binned_ic_mc")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_23_binned_ic_data")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_trg_binned_23_mc"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_23_binned_ic_mc")->functor(w_UL_->argSet("m_pt,m_eta")));
+      fns_["m_trg_binned_23_data"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_trg_23_binned_ic_data")->functor(w_UL_->argSet("m_pt,m_eta")));
 
       // electron id/iso
-      fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_idiso_binned_ic_ratio")->functor(w_UL_->argSet("e_pt,e_eta,e_iso"))); 
+      fns_["e_idiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("e_idiso_binned_ic_ratio")->functor(w_UL_->argSet("e_pt,e_eta"))); 
     
       // muon id/iso
-      fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_idiso_binned_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
-      fns_["m_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_idiso_binned_ic_embed_ratio")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_idiso_binned_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
+      fns_["m_idiso_embed_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_idiso_binned_ic_embed_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
 
       fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_id_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
       fns_["m_id_embed_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_id_ic_embed_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
 
-      fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_looseiso_binned_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta,m_iso")));
+      fns_["m_looseiso_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_looseiso_binned_ic_ratio")->functor(w_UL_->argSet("m_pt,m_eta")));
 
       fns_["m_sel_idEmb_ratio"] = std::shared_ptr<RooFunctor>(w_UL_->function("m_sel_id_ic_ratio")->functor(w_UL_->argSet("gt_eta,gt_pt")));
      
