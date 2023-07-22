@@ -1080,6 +1080,7 @@ namespace ic {
         }
       }
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+      std::cout << tt_matches.size() << std::endl;
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> mt_matches =  MatchByDR(lead_gen_tau,taus_mt,0.5,true,true); 
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> et_matches =  MatchByDR(lead_gen_tau,taus_et,0.5,true,true); 
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> sf_matches =  MatchByDR(lead_gen_tau,taus_sf,0.5,true,true); 
@@ -2893,47 +2894,6 @@ namespace ic {
             reco_sv_z_1_ = reco_tau->secondary_vertex().Z() - refit_vertex->vz();
           }
         }
-        if (tt_matches.size()>=1) {
-           ic::Tau *reco_tau_2 = tt_matches[1].second;
-           int tau_decay_mode_2_ = reco_tau_2->decay_mode();
-           reco_dm_2_ = reco_tau_2->HasTauID("MVADM2017v1") ? reco_tau_2->GetTauID("MVADM2017v1") : 0.0;
-           if(tau_decay_mode_2_==0&&reco_dm_2_>0) reco_dm_2_=-1;
-           if(tau_decay_mode_2_<3){
-             std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(reco_tau_2, refit_vertex, pfcands);
-             TVector3 ip_2 = ipandsig_2.first;
-             reco_ip_x_2_ = ip_2.X();
-             reco_ip_y_2_ = ip_2.Y();
-             reco_ip_z_2_ = ip_2.Z();
-           } 
-             
-           if(tau_decay_mode_2_<3) {
-             reco_pi_px_2_=reco_tau_2->vector().Px();
-             reco_pi_py_2_=reco_tau_2->vector().Py();
-             reco_pi_pz_2_=reco_tau_2->vector().Pz();
-             reco_pi_E_2_ =reco_tau_2->vector().E(); 
-           } 
-           if(tau_decay_mode_2_==1) {
-             std::pair<ic::Candidate*, ic::Candidate*> rho2 = GetRho(reco_tau_2, pfcands);
-             ic::Candidate *pi_tau2 = rho2.first;
-             ic::Candidate *pi0_tau2 = rho2.second;
-             reco_pi_px_2_=pi_tau2->vector().Px();
-             reco_pi_py_2_=pi_tau2->vector().Py();
-             reco_pi_pz_2_=pi_tau2->vector().Pz();
-             reco_pi_E_2_=pi_tau2->vector().E(); 
-             reco_pi0_px_2_=pi0_tau2->vector().Px();
-             reco_pi0_py_2_=pi0_tau2->vector().Py();
-             reco_pi0_pz_2_=pi0_tau2->vector().Pz();
-             reco_pi0_E_2_=pi0_tau2->vector().E();
-           } 
-           if(tau_decay_mode_2_==10){
-             if(reco_tau_2->hasSV()){
-               reco_sv_x_2_ = reco_tau_2->secondary_vertex().X() - refit_vertex->vx();
-               reco_sv_y_2_ = reco_tau_2->secondary_vertex().Y() - refit_vertex->vy();
-               reco_sv_z_2_ = reco_tau_2->secondary_vertex().Z() - refit_vertex->vz();
-             } 
-           }   
-        }
-
       }
     }
 
