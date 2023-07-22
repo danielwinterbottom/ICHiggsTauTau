@@ -2816,7 +2816,7 @@ namespace ic {
     reco_ip_x_1_=-9999, reco_ip_y_1_=-9999, reco_ip_z_1_=-9999;
     reco_metx_=-9999, reco_mety_=-9999; 
     reco_dm_1_=-9999; 
-	
+    // Adding second tau info	
     reco_pi_px_2_=-9999, reco_pi_py_2_=-9999, reco_pi_pz_2_=-9999, reco_pi_E_2_=-9999;
     reco_pi0_px_2_=-9999, reco_pi0_py_2_=-9999, reco_pi0_pz_2_=-9999, reco_pi0_E_2_=-9999;
     reco_sv_x_2_=-9999, reco_sv_y_2_=-9999, reco_sv_z_2_=-9999; 
