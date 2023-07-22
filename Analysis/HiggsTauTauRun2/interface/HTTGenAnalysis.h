@@ -379,8 +379,8 @@ class HTTGenAnalysis : public ModuleBase {
   double wt_ps_fsr_up_;
   double wt_ps_fsr_down_;
 
-  float tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_;
-  int gen_tau_dm_1_;
+  float tau_pt_1_tt_, tau_pt_1_mt_, tau_pt_1_et_, tau_pt_1_sf_, gen_tau_pt_1_, gen_tau_eta_1_,tau_pt_2_tt_, tau_pt_2_mt_, tau_pt_2_et_, tau_pt_2_sf_, gen_tau_pt_2_, gen_tau_eta_2_;
+  int gen_tau_dm_1_, gen_tau_dm_2_;
   float pi_px_1_, pi_py_1_, pi_pz_1_, pi_E_1_, pi_px_2_, pi_py_2_, pi_pz_2_, pi_E_2_;
   float pi2_px_1_, pi2_py_1_, pi2_pz_1_, pi2_E_1_, pi2_px_2_, pi2_py_2_, pi2_pz_2_, pi2_E_2_;
   float pi3_px_1_, pi3_py_1_, pi3_pz_1_, pi3_E_1_, pi3_px_2_, pi3_py_2_, pi3_pz_2_, pi3_E_2_;
@@ -398,6 +398,12 @@ class HTTGenAnalysis : public ModuleBase {
   double reco_metx_, reco_mety_;
   int reco_dm_1_;
  
+  double reco_pi_px_2_, reco_pi_py_2_, reco_pi_pz_2_, reco_pi_E_2_;
+  double reco_pi0_px_2_, reco_pi0_py_2_, reco_pi0_pz_2_, reco_pi0_E_2_;
+  double reco_sv_x_2_, reco_sv_y_2_, reco_sv_z_2_;
+  double reco_ip_x_2_, reco_ip_y_2_, reco_ip_z_2_;
+  int reco_dm_2_;
+
   double gammas_deta_1_;
   double gammas_dphi_1_;
   double gammas_deta_2_;

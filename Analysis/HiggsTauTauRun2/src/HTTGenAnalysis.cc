@@ -1057,9 +1057,18 @@ namespace ic {
     gen_tau_dm_1_=-1;
     gen_tau_eta_1_=-9999;
 
+    tau_pt_2_tt_=-9999;
+    gen_tau_pt_2_=-9999;
+    gen_tau_dm_2_=-1;
+    gen_tau_eta_2_=-9999;
+
     // match gen tau jets to taus passing selections for et, mt, and tt channels
-    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
+//    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
+    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()==2) {
+//      std::vector<GenJet *> lead_gen_tau = {gen_tau_jets_ptr[0]};
       std::vector<GenJet *> lead_gen_tau = {gen_tau_jets_ptr[0]};
+      std::vector<GenJet *> sublead_gen_tau = {gen_tau_jets_ptr[1]};
+
       std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
       ic::erase_if(taus,!boost::bind(MinPtMaxEta, _1, 20.0, 2.3));         
       std::vector<Tau *> taus_tt;
@@ -1071,6 +1080,10 @@ namespace ic {
       gen_tau_eta_1_ = lead_gen_tau[0]->eta();
       gen_tau_dm_1_ = lead_gen_tau[0]->flavour();
 
+      gen_tau_pt_2_ = sublead_gen_tau[0]->pt();
+      gen_tau_eta_2_ = sublead_gen_tau[0]->eta();
+      gen_tau_dm_2_ = sublead_gen_tau[0]->flavour();
+
       for(auto t : taus) {
         if(t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<2 || t->decay_mode()>9) && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) {
         taus_tt.push_back(t);
@@ -1079,12 +1092,15 @@ namespace ic {
         if(t->GetTauID("byTightDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSe") > 0.5 ) taus_sf.push_back(t);
         }
       }
-      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches_lead =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches_sublead =  MatchByDR(sublead_gen_tau,taus_tt,0.5,true,true);
+
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> mt_matches =  MatchByDR(lead_gen_tau,taus_mt,0.5,true,true); 
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> et_matches =  MatchByDR(lead_gen_tau,taus_et,0.5,true,true); 
       std::vector<std::pair<ic::GenJet *, ic::Tau *>> sf_matches =  MatchByDR(lead_gen_tau,taus_sf,0.5,true,true); 
  
-      if(tt_matches.size()>0) tau_pt_1_tt_=tt_matches[0].second->pt();
+      if(tt_matches_lead.size()>0) tau_pt_1_tt_=tt_matches_lead[0].second->pt();
+      if(tt_matches_sublead.size()>0) tau_pt_2_tt_=tt_matches_sublead[0].second->pt();
       if(mt_matches.size()>0) tau_pt_1_mt_=mt_matches[0].second->pt();
       if(et_matches.size()>0) tau_pt_1_et_=et_matches[0].second->pt();
       if(sf_matches.size()>0) tau_pt_1_sf_=sf_matches[0].second->pt();
@@ -1885,7 +1901,7 @@ namespace ic {
           break;
         }
 
-        if (pi_daughters.size()==1) {
+        if (pi_daughters.size()>=1) {
           pi_px_2_ = pi_daughters[0]->vector().Px();
           pi_py_2_ = pi_daughters[0]->vector().Py();
           pi_pz_2_ = pi_daughters[0]->vector().Pz();
@@ -2008,7 +2024,7 @@ namespace ic {
             break;
           }
 
-          if (pi_daughters.size()==1) {
+          if (pi_daughters.size()>=1) {
             pi_px_2_ = pi_daughters[0]->vector().Px();
             pi_py_2_ = pi_daughters[0]->vector().Py();
             pi_pz_2_ = pi_daughters[0]->vector().Pz();
@@ -2067,7 +2083,7 @@ namespace ic {
             }
 
           }
-      } else if (pi_daughters.size()>=1 && pi_daughters.size()<=2) {
+      } else if (pi_daughters.size()>=1) {
 
           pi_px_1_ = pi_daughters[0]->vector().Px();
           pi_py_1_ = pi_daughters[0]->vector().Py();
@@ -2095,7 +2111,7 @@ namespace ic {
           ip_y_1_ = gen_ip_1.Y();
           ip_z_1_ = gen_ip_1.Z();
 
-          if (pi_daughters.size()==2) {
+          if (pi_daughters.size()>1) {
             pi_px_2_ = pi_daughters[1]->vector().Px();
             pi_py_2_ = pi_daughters[1]->vector().Py();
             pi_pz_2_ = pi_daughters[1]->vector().Pz();
@@ -2816,22 +2832,28 @@ namespace ic {
     reco_ip_x_1_=-9999, reco_ip_y_1_=-9999, reco_ip_z_1_=-9999;
     reco_metx_=-9999, reco_mety_=-9999; 
     reco_dm_1_=-9999; 
-	
+    // Adding second tau info	
     reco_pi_px_2_=-9999, reco_pi_py_2_=-9999, reco_pi_pz_2_=-9999, reco_pi_E_2_=-9999;
     reco_pi0_px_2_=-9999, reco_pi0_py_2_=-9999, reco_pi0_pz_2_=-9999, reco_pi0_E_2_=-9999;
     reco_sv_x_2_=-9999, reco_sv_y_2_=-9999, reco_sv_z_2_=-9999; 
     reco_ip_x_2_=-9999, reco_ip_y_2_=-9999, reco_ip_z_2_=-9999;
     reco_dm_2_=-9999; 
 
-    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
+    //if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=1) {
+    if(event->ExistsInTree("taus") && gen_tau_jets_ptr.size()>=2) {
       std::vector<GenJet *> lead_gen_tau;
-      if(tau1_charge == gen_tau_jets_ptr[0]->charge()) lead_gen_tau = {gen_tau_jets_ptr[0]};
-      if(gen_tau_jets_ptr.size()>1) {
-        if(tau1_charge == gen_tau_jets_ptr[1]->charge()) lead_gen_tau = {gen_tau_jets_ptr[1]};
+      std::vector<GenJet *> sublead_gen_tau;
+
+      if(tau1_charge == gen_tau_jets_ptr[0]->charge() && tau2_charge == gen_tau_jets_ptr[1]->charge()){
+         lead_gen_tau = {gen_tau_jets_ptr[0]};
+         sublead_gen_tau = {gen_tau_jets_ptr[1]};
+      } else {
+         lead_gen_tau = {gen_tau_jets_ptr[1]};
+         sublead_gen_tau = {gen_tau_jets_ptr[0]};
       }
+
       std::vector<Tau *> taus = event->GetPtrVec<Tau>("taus");
       ic::erase_if(taus,!boost::bind(MinPtMaxEta, _1, 20.0, 2.3));         
-      
       std::vector<Tau *> taus_tt;
 
       for(auto t : taus) {
@@ -2839,14 +2861,17 @@ namespace ic {
         taus_tt.push_back(t);
         }
       }
-      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches_lead =  MatchByDR(lead_gen_tau,taus_tt,0.5,true,true); 
+      std::vector<std::pair<ic::GenJet *, ic::Tau *>> tt_matches_sublead =  MatchByDR(sublead_gen_tau,taus_tt,0.5,true,true);
 
-      if (tt_matches.size()>0) {
+      if (tt_matches_lead.size()>0 && tt_matches_sublead.size()>0) {
 
         std::vector<ic::Vertex*> & vertex_vec = event->GetPtrVec<ic::Vertex>("vertices");
         ic::Vertex* refit_vertex = vertex_vec[0];
 
-        ic::Tau *reco_tau = tt_matches[0].second;
+        ic::Tau *reco_tau_lead = tt_matches_lead[0].second;
+        ic::Tau *reco_tau_sublead = tt_matches_sublead[0].second;
+
         std::vector<ic::PFCandidate*> pfcands =  event->GetPtrVec<ic::PFCandidate>("pfCandidates");
 
         std::vector<Met*> reco_met_vec = event->GetPtrVec<Met>("puppiMet");
@@ -2854,27 +2879,46 @@ namespace ic {
         reco_metx_ = reco_met->vector().Px();
         reco_mety_ = reco_met->vector().Py();
       
-        int tau_decay_mode_1_ = reco_tau->decay_mode();
+        int tau_decay_mode_1_ = reco_tau_lead->decay_mode();
+        int tau_decay_mode_2_ = reco_tau_sublead->decay_mode();
  
-        reco_dm_1_ = reco_tau->HasTauID("MVADM2017v1") ? reco_tau->GetTauID("MVADM2017v1") : 0.0;
-        if(tau_decay_mode_1_==0&&reco_dm_1_>0) reco_dm_1_=-1;
+        reco_dm_1_ = reco_tau_lead->HasTauID("MVADM2017v1") ? reco_tau_lead->GetTauID("MVADM2017v1") : 0.0;
+        reco_dm_2_ = reco_tau_sublead->HasTauID("MVADM2017v1") ? reco_tau_sublead->GetTauID("MVADM2017v1") : 0.0;
 
-        if(tau_decay_mode_1_<3){
-          std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(reco_tau, refit_vertex, pfcands);
+        if(tau_decay_mode_1_==0&&reco_dm_1_>0) reco_dm_1_=-1;
+        if(tau_decay_mode_2_==0&&reco_dm_2_>0) reco_dm_2_=-1;
+
+        if(tau_decay_mode_2_<3){
+          std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(reco_tau_lead, refit_vertex, pfcands);
           TVector3 ip_1 = ipandsig_1.first;
           reco_ip_x_1_ = ip_1.X();
           reco_ip_y_1_ = ip_1.Y();
           reco_ip_z_1_ = ip_1.Z();
         }
+        if(tau_decay_mode_2_<3){
+          std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(reco_tau_sublead, refit_vertex, pfcands);
+          TVector3 ip_2 = ipandsig_2.first;
+          reco_ip_x_2_ = ip_2.X();
+          reco_ip_y_2_ = ip_2.Y();
+          reco_ip_z_2_ = ip_2.Z();
+        }
 
         if(tau_decay_mode_1_<3) {
-          reco_pi_px_1_=reco_tau->vector().Px();
-          reco_pi_py_1_=reco_tau->vector().Py();
-          reco_pi_pz_1_=reco_tau->vector().Pz();
-          reco_pi_E_1_ =reco_tau->vector().E(); 
+          reco_pi_px_1_=reco_tau_lead->vector().Px();
+          reco_pi_py_1_=reco_tau_lead->vector().Py();
+          reco_pi_pz_1_=reco_tau_lead->vector().Pz();
+          reco_pi_E_1_ =reco_tau_lead->vector().E(); 
         }
+        if(tau_decay_mode_2_<3) {
+          reco_pi_px_2_=reco_tau_sublead->vector().Px();
+          reco_pi_py_2_=reco_tau_sublead->vector().Py();
+          reco_pi_pz_2_=reco_tau_sublead->vector().Pz();
+          reco_pi_E_2_ =reco_tau_sublead->vector().E();
+        }
+
+
         if(tau_decay_mode_1_==1) {
-          std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(reco_tau, pfcands);
+          std::pair<ic::Candidate*, ic::Candidate*> rho1 = GetRho(reco_tau_lead, pfcands);
           ic::Candidate *pi_tau1 = rho1.first;
           ic::Candidate *pi0_tau1 = rho1.second;
           reco_pi_px_1_=pi_tau1->vector().Px();
@@ -2886,54 +2930,34 @@ namespace ic {
           reco_pi0_pz_1_=pi0_tau1->vector().Pz();
           reco_pi0_E_1_=pi0_tau1->vector().E();
         }
-        if(tau_decay_mode_1_==10){
-          if(reco_tau->hasSV()){
-            reco_sv_x_1_ = reco_tau->secondary_vertex().X() - refit_vertex->vx();
-            reco_sv_y_1_ = reco_tau->secondary_vertex().Y() - refit_vertex->vy();
-            reco_sv_z_1_ = reco_tau->secondary_vertex().Z() - refit_vertex->vz();
-          }
-        }
-        if (tt_matches.size()>=1) {
-           ic::Tau *reco_tau_2 = tt_matches[1].second;
-           int tau_decay_mode_2_ = reco_tau_2->decay_mode();
-           reco_dm_2_ = reco_tau_2->HasTauID("MVADM2017v1") ? reco_tau_2->GetTauID("MVADM2017v1") : 0.0;
-           if(tau_decay_mode_2_==0&&reco_dm_2_>0) reco_dm_2_=-1;
-           if(tau_decay_mode_2_<3){
-             std::pair<TVector3,double> ipandsig_2 = IPAndSignificance(reco_tau_2, refit_vertex, pfcands);
-             TVector3 ip_2 = ipandsig_2.first;
-             reco_ip_x_2_ = ip_2.X();
-             reco_ip_y_2_ = ip_2.Y();
-             reco_ip_z_2_ = ip_2.Z();
-           } 
-             
-           if(tau_decay_mode_2_<3) {
-             reco_pi_px_2_=reco_tau_2->vector().Px();
-             reco_pi_py_2_=reco_tau_2->vector().Py();
-             reco_pi_pz_2_=reco_tau_2->vector().Pz();
-             reco_pi_E_2_ =reco_tau_2->vector().E(); 
-           } 
-           if(tau_decay_mode_2_==1) {
-             std::pair<ic::Candidate*, ic::Candidate*> rho2 = GetRho(reco_tau_2, pfcands);
-             ic::Candidate *pi_tau2 = rho2.first;
-             ic::Candidate *pi0_tau2 = rho2.second;
-             reco_pi_px_2_=pi_tau2->vector().Px();
-             reco_pi_py_2_=pi_tau2->vector().Py();
-             reco_pi_pz_2_=pi_tau2->vector().Pz();
-             reco_pi_E_2_=pi_tau2->vector().E(); 
-             reco_pi0_px_2_=pi0_tau2->vector().Px();
-             reco_pi0_py_2_=pi0_tau2->vector().Py();
-             reco_pi0_pz_2_=pi0_tau2->vector().Pz();
-             reco_pi0_E_2_=pi0_tau2->vector().E();
-           } 
-           if(tau_decay_mode_2_==10){
-             if(reco_tau_2->hasSV()){
-               reco_sv_x_2_ = reco_tau_2->secondary_vertex().X() - refit_vertex->vx();
-               reco_sv_y_2_ = reco_tau_2->secondary_vertex().Y() - refit_vertex->vy();
-               reco_sv_z_2_ = reco_tau_2->secondary_vertex().Z() - refit_vertex->vz();
-             } 
-           }   
+        if(tau_decay_mode_2_==1) {
+          std::pair<ic::Candidate*, ic::Candidate*> rho2 = GetRho(reco_tau_sublead, pfcands);
+          ic::Candidate *pi_tau2 = rho2.first;
+          ic::Candidate *pi0_tau2 = rho2.second;
+          reco_pi_px_2_=pi_tau2->vector().Px();
+          reco_pi_py_2_=pi_tau2->vector().Py();
+          reco_pi_pz_2_=pi_tau2->vector().Pz();
+          reco_pi_E_2_=pi_tau2->vector().E();
+          reco_pi0_px_2_=pi0_tau2->vector().Px();
+          reco_pi0_py_2_=pi0_tau2->vector().Py();
+          reco_pi0_pz_2_=pi0_tau2->vector().Pz();
+          reco_pi0_E_2_=pi0_tau2->vector().E();
         }
 
+        if(tau_decay_mode_1_==10){
+          if(reco_tau_lead->hasSV()){
+            reco_sv_x_1_ = reco_tau_lead->secondary_vertex().X() - refit_vertex->vx();
+            reco_sv_y_1_ = reco_tau_lead->secondary_vertex().Y() - refit_vertex->vy();
+            reco_sv_z_1_ = reco_tau_lead->secondary_vertex().Z() - refit_vertex->vz();
+          }
+        }
+        if(tau_decay_mode_2_==10){
+          if(reco_tau_sublead->hasSV()){
+            reco_sv_x_2_ = reco_tau_sublead->secondary_vertex().X() - refit_vertex->vx();
+            reco_sv_y_2_ = reco_tau_sublead->secondary_vertex().Y() - refit_vertex->vy();
+            reco_sv_z_2_ = reco_tau_sublead->secondary_vertex().Z() - refit_vertex->vz();
+          }
+        }
       }
     }
 
