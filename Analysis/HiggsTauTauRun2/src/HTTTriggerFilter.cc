@@ -1101,8 +1101,8 @@ namespace ic {
             std::vector<TriggerObject *> ttplusjet_objs_1 = event->GetPtrVec<TriggerObject>(trig_ttpj_obj_label1);
             leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), ttplusjet_objs_1,ttplusjet_leg1_filter_1, 0.5).first;
             leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), ttplusjet_objs_1,ttplusjet_leg2_filter_1, 0.5).first;
-            if(leg1_match && leg2_match){
-              for(unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
+            if(leg1_match && leg2_match){             
+              for(unsigned int ijet = 0; ijet < jets.size(); ++ijet){
                 jetleg1_match = IsFilterMatchedWithIndex(jets[ijet], ttplusjet_objs_1, ttplusjet_jet_filter_1, 0.5).first;
                 if(jetleg1_match){
                   trg1_jet_pt = jets[ijet]->pt();               
@@ -1116,7 +1116,7 @@ namespace ic {
             leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), ttplusjet_objs_2,ttplusjet_leg1_filter_2, 0.5).first;
             leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), ttplusjet_objs_2,ttplusjet_leg2_filter_2, 0.5).first;
             if(leg1_match && leg2_match){
-              for(unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
+              for(unsigned int ijet = 0; ijet < jets.size(); ++ijet){
                 jetleg1_match = IsFilterMatchedWithIndex(jets[ijet], ttplusjet_objs_2, ttplusjet_jet_filter_2, 0.5).first;
                 if(jetleg1_match){
                   trg2_jet_pt = jets[ijet]->pt();               

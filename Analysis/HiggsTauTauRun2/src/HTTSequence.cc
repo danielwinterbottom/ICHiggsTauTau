@@ -571,21 +571,7 @@ httPairSelector.set_gen_taus_label("genParticles");
 
 BuildModule(httPairSelector);
  
-if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_in_mc"].asBool())){
 
-  bool tau_dataset = output_name.find("Tau") != output_name.npos && is_data; 
-  BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-      .set_channel(channel)
-      .set_mc(mc_type)
-      .set_era(era_type)
-      .set_strategy(strategy_type)
-      .set_is_data(is_data)
-      .set_tau_dataset(tau_dataset)
-      .set_is_embedded(is_embedded)
-      .set_do_singletau(js["do_singletau"].asBool())
-      .set_do_filter(false)
-      .set_pair_label("ditau"));
-}
 
 // Lepton Vetoes
 if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
@@ -1350,6 +1336,22 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
    svFitTest.set_from_grid(js["svfit_from_grid"].asBool());
   
   BuildModule(svFitTest);
+  
+  if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_in_mc"].asBool())){
+
+    bool tau_dataset = output_name.find("Tau") != output_name.npos && is_data; 
+    BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+        .set_channel(channel)
+        .set_mc(mc_type)
+        .set_era(era_type)
+        .set_strategy(strategy_type)
+        .set_is_data(is_data)
+        .set_tau_dataset(tau_dataset)
+        .set_is_embedded(is_embedded)
+        .set_do_singletau(js["do_singletau"].asBool())
+        .set_do_filter(false)
+        .set_pair_label("ditau"));
+  }
   
   
   bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
