@@ -688,7 +688,6 @@ class Analysis(object):
         if scaleToLumi:
             myfactors = factors[:]
             if sample in self.info:
-                print '!!!!!!', sample
                 myfactors.append(self.info[sample]['sf'])
             else:
                 myfactors.append(1.0)
