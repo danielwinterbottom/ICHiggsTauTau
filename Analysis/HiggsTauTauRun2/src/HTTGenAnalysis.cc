@@ -2888,7 +2888,7 @@ namespace ic {
         if(tau_decay_mode_1_==0&&reco_dm_1_>0) reco_dm_1_=-1;
         if(tau_decay_mode_2_==0&&reco_dm_2_>0) reco_dm_2_=-1;
 
-        if(tau_decay_mode_2_<3){
+        if(tau_decay_mode_1_<3){
           std::pair<TVector3,double> ipandsig_1 = IPAndSignificance(reco_tau_lead, refit_vertex, pfcands);
           TVector3 ip_1 = ipandsig_1.first;
           reco_ip_x_1_ = ip_1.X();
