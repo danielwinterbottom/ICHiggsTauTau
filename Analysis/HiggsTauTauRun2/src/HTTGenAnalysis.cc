@@ -1901,7 +1901,7 @@ namespace ic {
           break;
         }
 
-        if (pi_daughters.size()==1) {
+        if (pi_daughters.size()>=1) {
           pi_px_2_ = pi_daughters[0]->vector().Px();
           pi_py_2_ = pi_daughters[0]->vector().Py();
           pi_pz_2_ = pi_daughters[0]->vector().Pz();
@@ -2024,7 +2024,7 @@ namespace ic {
             break;
           }
 
-          if (pi_daughters.size()==1) {
+          if (pi_daughters.size()>=1) {
             pi_px_2_ = pi_daughters[0]->vector().Px();
             pi_py_2_ = pi_daughters[0]->vector().Py();
             pi_pz_2_ = pi_daughters[0]->vector().Pz();
@@ -2083,7 +2083,7 @@ namespace ic {
             }
 
           }
-      } else if (pi_daughters.size()>=1 && pi_daughters.size()<=2) {
+      } else if (pi_daughters.size()>=1) {
 
           pi_px_1_ = pi_daughters[0]->vector().Px();
           pi_py_1_ = pi_daughters[0]->vector().Py();
@@ -2111,7 +2111,7 @@ namespace ic {
           ip_y_1_ = gen_ip_1.Y();
           ip_z_1_ = gen_ip_1.Z();
 
-          if (pi_daughters.size()==2) {
+          if (pi_daughters.size()>1) {
             pi_px_2_ = pi_daughters[1]->vector().Px();
             pi_py_2_ = pi_daughters[1]->vector().Py();
             pi_pz_2_ = pi_daughters[1]->vector().Pz();
