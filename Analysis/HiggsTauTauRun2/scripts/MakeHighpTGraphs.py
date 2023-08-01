@@ -3,6 +3,15 @@ from array import array
 import ctypes
 ROOT.gROOT.SetBatch(1)
 
+# before running this script need to produce control plots to make ZTT checks
+# run control plots with:
+#for wp in loose medium tight vtight vvtight; do python ./scripts/make_tauSF_control_plots.py --output_folder tauSF_control_plots_Jul18_highpT --batch  --v2p5 --sf_option highpT  --channel "mt" --wp ${wp}; done
+#for wp in loose medium tight vtight vvtight; do python ./scripts/make_tauSF_control_plots.py --output_folder tauSF_control_plots_Jul18_highpT --batch  --v2p5 --sf_option highpT  --channel "mt" --wp ${wp} --wpvsele tight; done
+# the hadd years into Run2 templates like:
+# for i in tauSF_control_plots_Jul18_highpT/* ; do mkdir -p ${i}/Run2/mt/; hadd -f ${i}/Run2/mt/datacard_pt_2_inclusive_mTLt65_mt_Run2.root ${i}/201*/mt/datacard_pt_2_inclusive_mTLt65_mt_201*.root; done
+# finally copy Alexsei's W->taunu inputs:
+# scp -r dwinterb@lxplus.cern.ch:/afs/cern.ch/user/r/rasp/public/HighPT_deepTauV2p5 .
+
 bins=[100.,120.,140.,180.,220.,260.,500.]
 bins=[100.,120.,140.,180.,220.,280.,500.]
 min_pt=140
@@ -99,17 +108,18 @@ else: fout = ROOT.TFile('highpt_fit_graphs.root','RECREATE')
 #wp_VSe_upper='VVLoose'
 
 for wp_VSe_upper in ['VVLoose','Tight']:
-  for wp_upper in ['Loose','Medium','Tight','VTight']:
+  for wp_upper in ['Loose','Medium','Tight','VTight','VVTight']:
 
     print '\n VSjet WP=%(wp_upper)s, VSele = %(wp_VSe_upper)s' % vars()
 
     wp=wp_upper.lower()
     wp_VSe=wp_VSe_upper.lower()
 
-    f = ROOT.TFile('HighpTChecks_%(wp_VSe)sVSe_Apr26_finepTbins/Run2/mt/datacard_pt_2_inclusive_mTLt65_%(wp)s_highpT_mt_Run2.root' % vars())
-    f2 = ROOT.TFile('HighPT_pt/pT_%(wp_upper)sVsJet_TightVsMu_%(wp_VSe_upper)sVsE.root' % vars())
+    #f = ROOT.TFile('HighpTChecks_%(wp_VSe)sVSe_Apr26_finepTbins/Run2/mt/datacard_pt_2_inclusive_mTLt65_%(wp)s_highpT_mt_Run2.root' % vars())
+    f = ROOT.TFile('tauSF_control_plots_Jul18_highpT/%(wp)svsjets_%(wp_VSe)svsele/Run2/mt/datacard_pt_2_inclusive_mTLt65_mt_Run2.root' % vars())
+    f2 = ROOT.TFile('HighPT_deepTauV2p5/PT/pT_%(wp_upper)sVsJet_TightVsMu_%(wp_VSe_upper)sVsE_Run2_corrected.root' % vars())
     
-    dirname = 'mt_inclusive_mTLt65_%(wp)s_highpT' % vars()
+    dirname = 'mt_inclusive_mTLt65' % vars()
     
     bin_means, bin_rmss = findAvepT(f,dirname)
     
@@ -132,7 +142,7 @@ for wp_VSe_upper in ['VVLoose','Tight']:
       g.SetPointError(n,x_e,y_e)
        
     if rescale:
-      func0 = ROOT.TF1('func0','[0]',min_pt,500)
+      func0 = ROOT.TF1('func0','[0]',min_pt,800)
       g.Fit(func0)
       p0=func0.GetParameter(0)
       x=ctypes.c_double(0.)
@@ -152,6 +162,9 @@ for wp_VSe_upper in ['VVLoose','Tight']:
     
     for i in range(0,data_w.GetNbinsX()):
       x = data_w.GetXaxis().GetBinCenter(i+1)
+      if i==data_w.GetNbinsX()-1: 
+        #for last bin we take mean of wide last bin which is at 690 GeV - you will need to recheck this if inputs change in future!!!
+        x=690.
       if x<min_pt: continue 
       x_e = 0.
       y= data_w.GetBinContent(i+1)
@@ -162,7 +175,7 @@ for wp_VSe_upper in ['VVLoose','Tight']:
       g2.SetPointError(n,x_e,y_e)
 
     if rescale:
-      func0 = ROOT.TF1('func0','[0]',min_pt,500)
+      func0 = ROOT.TF1('func0','[0]',min_pt,690)
       g2.Fit(func0)
       p0=func0.GetParameter(0)
       x=ctypes.c_double(0.)
@@ -189,8 +202,8 @@ for wp_VSe_upper in ['VVLoose','Tight']:
     mg.Write('multigraph_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
     
     
-    func0 = ROOT.TF1('func0','[0]',min_pt,500)
-    func1 = ROOT.TF1('func1','[0]+[1]*(x-%s)' % min_pt,min_pt,500)
+    func0 = ROOT.TF1('func0','[0]',min_pt,800)
+    func1 = ROOT.TF1('func1','[0]+[1]*(min(x,690.)-%s)' % min_pt,min_pt,800)
     
     mg.Fit(func0,'R')
     print 'Func0 chi2, NDF, p-value: ', func0.GetChisquare(), func0.GetNDF(), func0.GetProb()
@@ -202,14 +215,15 @@ for wp_VSe_upper in ['VVLoose','Tight']:
     print 'Func1 chi2, NDF, p-value: ', func1.GetChisquare(), func1.GetNDF(), func1.GetProb()
     func1.Write('func_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
    
-    h_uncert=ROOT.TH1D('h_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(),'',10000,min_pt,496)
+    #h_uncert=ROOT.TH1D('h_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(),'',10000,min_pt,496)
+    h_uncert=ROOT.TH1D('h_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(),'',10000,min_pt,800)
     ROOT.TVirtualFitter.GetFitter().GetConfidenceIntervals(h_uncert, 0.68)
     h_uncert.Write('h_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
     m_val = abs(func1.GetParameter(1))+abs(func1.GetParError(1))
-    uncert_form = '#frac{#sigma_{SF}}{SF} = #pm %.5f#times max(min(pt,500)-140,0)' % (m_val)
+    uncert_form = '#frac{#sigma_{SF}}{SF} = #pm %.5f#times max(min(pt,690)-140,0)' % (m_val)
     Plot(g2, h_uncert,uncert_form,name='high_pt_uncert_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(), title='%(wp_upper)sVSjet,%(wp_VSe_upper)sVSe' % vars(),func=func1,g=g)
  
-    func_uncert = ROOT.TF1('uncert_func_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(),'1.+(x>=140.)*(min(x,500.)-%s)*%.6f' % (min_pt,m_val),100,500)
+    func_uncert = ROOT.TF1('uncert_func_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars(),'1.+(x>=140.)*(min(x,690.)-%s)*%.6f' % (min_pt,m_val),100,690)
     
     func_uncert.Write('uncert_func_%(wp_upper)sVSjet_%(wp_VSe_upper)sVSe' % vars())
     

@@ -4927,7 +4927,8 @@ if options.extra_name != "":
 #  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
   datacard_name+='_'+options.extra_name
 #else: 
-output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+if options.do_ss: output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'_ss.root'
+else: output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
 outfile = ROOT.TFile(output_name, 'RECREATE')
     
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'

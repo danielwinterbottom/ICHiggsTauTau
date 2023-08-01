@@ -735,12 +735,12 @@ if(era_type == era::data_2016) {
 if(era_type == era::data_2016UL_preVFP) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
-   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2016preVFP.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2016preVFP_DeepTauV2p5.root";
 }
 if(era_type == era::data_2016UL_postVFP) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2016.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2016_MGggh.root";
-   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2016postVFP.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2016postVFP_DeepTauV2p5.root";
 }
 if(era_type == era::data_2017) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
@@ -749,7 +749,7 @@ if(era_type == era::data_2017) {
 if(era_type == era::data_2017UL) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2017.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
-   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2017.root";   
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2017_DeepTauV2p5.root";   
 }
 if(era_type == era::data_2018) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
@@ -758,7 +758,7 @@ if(era_type == era::data_2018) {
 if(era_type == era::data_2018UL) {
    scalefactor_file = "input/scale_factors/htt_scalefactors_legacy_2018.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
-   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2018.root";
+   scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2018_DeepTauV2p5.root";
 }
 
 
