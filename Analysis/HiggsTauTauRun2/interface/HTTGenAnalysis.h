@@ -392,6 +392,8 @@ class HTTGenAnalysis : public ModuleBase {
   int tau1_charge, tau2_charge;
 
   double reco_pi_px_1_, reco_pi_py_1_, reco_pi_pz_1_, reco_pi_E_1_;
+  double reco_pi2_px_1_, reco_pi2_py_1_, reco_pi2_pz_1_, reco_pi2_E_1_;
+  double reco_pi3_px_1_, reco_pi3_py_1_, reco_pi3_pz_1_, reco_pi3_E_1_;
   double reco_pi0_px_1_, reco_pi0_py_1_, reco_pi0_pz_1_, reco_pi0_E_1_;
   double reco_sv_x_1_, reco_sv_y_1_, reco_sv_z_1_;
   double reco_ip_x_1_, reco_ip_y_1_, reco_ip_z_1_;
@@ -399,6 +401,8 @@ class HTTGenAnalysis : public ModuleBase {
   int reco_dm_1_;
  
   double reco_pi_px_2_, reco_pi_py_2_, reco_pi_pz_2_, reco_pi_E_2_;
+  double reco_pi2_px_2_, reco_pi2_py_2_, reco_pi2_pz_2_, reco_pi2_E_2_;
+  double reco_pi3_px_2_, reco_pi3_py_2_, reco_pi3_pz_2_, reco_pi3_E_2_;
   double reco_pi0_px_2_, reco_pi0_py_2_, reco_pi0_pz_2_, reco_pi0_E_2_;
   double reco_sv_x_2_, reco_sv_y_2_, reco_sv_z_2_;
   double reco_ip_x_2_, reco_ip_y_2_, reco_ip_z_2_;

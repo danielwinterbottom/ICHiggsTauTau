@@ -197,6 +197,14 @@ namespace ic {
       mvatree_->Branch("reco_pi_py_1",  &reco_pi_py_1_);
       mvatree_->Branch("reco_pi_pz_1",  &reco_pi_pz_1_);
       mvatree_->Branch("reco_pi_E_1",   &reco_pi_E_1_);
+      mvatree_->Branch("reco_pi2_px_1",  &reco_pi2_px_1_);
+      mvatree_->Branch("reco_pi2_py_1",  &reco_pi2_py_1_);
+      mvatree_->Branch("reco_pi2_pz_1",  &reco_pi2_pz_1_);
+      mvatree_->Branch("reco_pi2_E_1",   &reco_pi2_E_1_);
+      mvatree_->Branch("reco_pi3_px_1",  &reco_pi3_px_1_);
+      mvatree_->Branch("reco_pi3_py_1",  &reco_pi3_py_1_);
+      mvatree_->Branch("reco_pi3_pz_1",  &reco_pi3_pz_1_);
+      mvatree_->Branch("reco_pi3_E_1",   &reco_pi3_E_1_);
       mvatree_->Branch("reco_pi0_px_1", &reco_pi0_px_1_);
       mvatree_->Branch("reco_pi0_py_1", &reco_pi0_py_1_);
       mvatree_->Branch("reco_pi0_pz_1", &reco_pi0_pz_1_);
@@ -213,6 +221,14 @@ namespace ic {
       mvatree_->Branch("reco_pi_py_2",  &reco_pi_py_2_);
       mvatree_->Branch("reco_pi_pz_2",  &reco_pi_pz_2_);
       mvatree_->Branch("reco_pi_E_2",   &reco_pi_E_2_);
+      mvatree_->Branch("reco_pi2_px_2",  &reco_pi2_px_2_);
+      mvatree_->Branch("reco_pi2_py_2",  &reco_pi2_py_2_);
+      mvatree_->Branch("reco_pi2_pz_2",  &reco_pi2_pz_2_);
+      mvatree_->Branch("reco_pi2_E_2",   &reco_pi2_E_2_);
+      mvatree_->Branch("reco_pi3_px_2",  &reco_pi3_px_2_);
+      mvatree_->Branch("reco_pi3_py_2",  &reco_pi3_py_2_);
+      mvatree_->Branch("reco_pi3_pz_2",  &reco_pi3_pz_2_);
+      mvatree_->Branch("reco_pi3_E_2",   &reco_pi3_E_2_);
       mvatree_->Branch("reco_pi0_px_2", &reco_pi0_px_2_);
       mvatree_->Branch("reco_pi0_py_2", &reco_pi0_py_2_);
       mvatree_->Branch("reco_pi0_pz_2", &reco_pi0_pz_2_);
@@ -2827,6 +2843,8 @@ namespace ic {
     }
 
     reco_pi_px_1_=-9999, reco_pi_py_1_=-9999, reco_pi_pz_1_=-9999, reco_pi_E_1_=-9999;
+    reco_pi2_px_1_=-9999, reco_pi2_py_1_=-9999, reco_pi2_pz_1_=-9999, reco_pi2_E_1_=-9999;
+    reco_pi3_px_1_=-9999, reco_pi3_py_1_=-9999, reco_pi3_pz_1_=-9999, reco_pi3_E_1_=-9999;
     reco_pi0_px_1_=-9999, reco_pi0_py_1_=-9999, reco_pi0_pz_1_=-9999, reco_pi0_E_1_=-9999;
     reco_sv_x_1_=-9999, reco_sv_y_1_=-9999, reco_sv_z_1_=-9999; 
     reco_ip_x_1_=-9999, reco_ip_y_1_=-9999, reco_ip_z_1_=-9999;
@@ -2834,6 +2852,8 @@ namespace ic {
     reco_dm_1_=-9999; 
     // Adding second tau info	
     reco_pi_px_2_=-9999, reco_pi_py_2_=-9999, reco_pi_pz_2_=-9999, reco_pi_E_2_=-9999;
+    reco_pi2_px_2_=-9999, reco_pi2_py_2_=-9999, reco_pi2_pz_2_=-9999, reco_pi2_E_2_=-9999;
+    reco_pi3_px_2_=-9999, reco_pi3_py_2_=-9999, reco_pi3_pz_2_=-9999, reco_pi3_E_2_=-9999;
     reco_pi0_px_2_=-9999, reco_pi0_py_2_=-9999, reco_pi0_pz_2_=-9999, reco_pi0_E_2_=-9999;
     reco_sv_x_2_=-9999, reco_sv_y_2_=-9999, reco_sv_z_2_=-9999; 
     reco_ip_x_2_=-9999, reco_ip_y_2_=-9999, reco_ip_z_2_=-9999;
@@ -2944,18 +2964,64 @@ namespace ic {
           reco_pi0_E_2_=pi0_tau2->vector().E();
         }
 
-        if(tau_decay_mode_1_==10){
+        if(tau_decay_mode_1_==10 || tau_decay_mode_1_==11){
           if(reco_tau_lead->hasSV()){
             reco_sv_x_1_ = reco_tau_lead->secondary_vertex().X() - refit_vertex->vx();
             reco_sv_y_1_ = reco_tau_lead->secondary_vertex().Y() - refit_vertex->vy();
             reco_sv_z_1_ = reco_tau_lead->secondary_vertex().Z() - refit_vertex->vz();
           }
+          std::vector<ic::PFCandidate*> hads1 = GetTauHads(reco_tau_lead, pfcands,0);
+          if(hads1.size()>2){
+             hads1 = GetA1 (reco_tau_lead, pfcands).first;
+             reco_pi_px_1_=hads1[0]->vector().Px();
+             reco_pi_py_1_=hads1[0]->vector().Py();
+             reco_pi_pz_1_=hads1[0]->vector().Pz();
+             reco_pi_E_1_=hads1[0]->vector().E();
+             reco_pi2_px_1_=hads1[1]->vector().Px();
+             reco_pi2_py_1_=hads1[1]->vector().Py();
+             reco_pi2_pz_1_=hads1[1]->vector().Pz();
+             reco_pi2_E_1_=hads1[1]->vector().E();
+             reco_pi3_px_1_=hads1[2]->vector().Px();
+             reco_pi3_py_1_=hads1[2]->vector().Py();
+             reco_pi3_pz_1_=hads1[2]->vector().Pz();
+             reco_pi3_E_1_=hads1[2]->vector().E();
+          }
+          if(tau_decay_mode_1_==11){
+             ic::Candidate* gamma1 = GetA1(reco_tau_lead, pfcands).second;
+             reco_pi0_px_1_=gamma1->vector().Px();
+             reco_pi0_py_1_=gamma1->vector().Py();
+             reco_pi0_pz_1_=gamma1->vector().Pz();
+             reco_pi0_E_1_= gamma1->vector().E();
+          } 
         }
-        if(tau_decay_mode_2_==10){
+        if(tau_decay_mode_2_==10 || tau_decay_mode_2_==11){
           if(reco_tau_sublead->hasSV()){
             reco_sv_x_2_ = reco_tau_sublead->secondary_vertex().X() - refit_vertex->vx();
             reco_sv_y_2_ = reco_tau_sublead->secondary_vertex().Y() - refit_vertex->vy();
             reco_sv_z_2_ = reco_tau_sublead->secondary_vertex().Z() - refit_vertex->vz();
+          }
+          std::vector<ic::PFCandidate*> hads2 = GetTauHads(reco_tau_sublead, pfcands,0);
+          if(hads2.size()>2){
+             hads2 = GetA1 (reco_tau_sublead, pfcands).first;
+             reco_pi_px_2_=hads2[0]->vector().Px();
+             reco_pi_py_2_=hads2[0]->vector().Py();
+             reco_pi_pz_2_=hads2[0]->vector().Pz();
+             reco_pi_E_2_=hads2[0]->vector().E();
+             reco_pi2_px_2_=hads2[1]->vector().Px();
+             reco_pi2_py_2_=hads2[1]->vector().Py();
+             reco_pi2_pz_2_=hads2[1]->vector().Pz();
+             reco_pi2_E_2_=hads2[1]->vector().E();
+             reco_pi3_px_2_=hads2[2]->vector().Px();
+             reco_pi3_py_2_=hads2[2]->vector().Py();
+             reco_pi3_pz_2_=hads2[2]->vector().Pz();
+             reco_pi3_E_2_=hads2[2]->vector().E();
+          }
+          if(tau_decay_mode_2_==11){
+             ic::Candidate* gamma2 = GetA1(reco_tau_sublead, pfcands).second;
+             reco_pi0_px_2_=gamma2->vector().Px();
+             reco_pi0_py_2_=gamma2->vector().Py();
+             reco_pi0_pz_2_=gamma2->vector().Pz();
+             reco_pi0_E_2_= gamma2->vector().E();
           }
         }
       }
