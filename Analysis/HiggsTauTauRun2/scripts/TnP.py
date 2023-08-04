@@ -973,6 +973,8 @@ if options.channel == 'tpzmm':
         data_samples = ['SingleMuonB','SingleMuonC','SingleMuonD','SingleMuonE','SingleMuonF']
     elif options.era == 'UL_18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
+    elif options.era == '22_preEE':
+        data_samples = ['SingleMuonA_rereco_preEE','SingleMuonB_rereco_preEE','SingleMuonC_rereco_preEE','MuonD_rereco_preEE']        
     
 if  options.channel == 'tpzee': 
     if options.era == 'UL_16preVFP': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
@@ -996,6 +998,7 @@ if options.era == 'UL_16preVFP':  ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_16postVFP': ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
+elif options.era == '22_preEE': ztt_samples = ['DYJetsToLL-LO_summer_preEE']
 
 #Formula:  abs(eta_2),pt_2,m_vis[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4],[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000],(40,70,110) (wt)*((m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)*(1&&id_probe_1))*(os)*(1)*(!(trg_probe_2))
 ROOT.TH1.SetDefaultSumw2(True)
@@ -1093,7 +1096,9 @@ if options.draw_hists == 1:
     ana.nodes.AddNode(ListNode(nodename))
     
     ana.remaps = {}
-    if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
+    if options.channel =='tpzmm': 
+      ana.remaps['SingleMuon'] = 'data_obs'
+      #ana.remaps['Muon'] = 'data_obs'
     elif options.channel == 'tpzee':
         if options.era in ['UL_18']: ana.remaps['EGamma'] = 'data_obs'
         else: ana.remaps['SingleElectron'] = 'data_obs'
@@ -1104,7 +1109,7 @@ if options.draw_hists == 1:
     
     # Add all MC background files
     for sample_name in ztt_samples:
-    	ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
+      ana.AddSamples(options.folder+'/'+sample_name+'_'+options.channel+'*.root', options.tree_name, None, sample_name)
 
     if options.embedded:
       # Add all embedded files
