@@ -132,9 +132,9 @@ int main(int argc, char* argv[]) {
                 (channel_str.find("tt") != channel_str.npos &&
                  output_name.find("Tau") == output_name.npos) ||
                 (channel_str.find("zmm") != channel_str.npos &&
-                 output_name.find("SingleMuon") == output_name.npos ) ||
+                 output_name.find("Muon") == output_name.npos ) ||
                 (channel_str.find("tpzmm") != channel_str.npos &&
-                 output_name.find("SingleMuon") == output_name.npos ) ||
+                output_name.find("Muon") == output_name.npos ) ||
                 (channel_str.find("zee") != channel_str.npos &&
                  !(output_name.find("SingleEle") != output_name.npos ||
                   output_name.find("EGamma") != output_name.npos )) ||

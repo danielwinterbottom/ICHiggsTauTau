@@ -383,7 +383,7 @@ void HTTSequence::BuildSequence(){
   if ((era_type == era::data_2018 || era_type == era::data_2018UL))
       data_json = "input/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt";
   if ((era_type == era::data_2022_preEE || era_type == era::data_2022_postEE))
-      data_json = "input/json/Cert_Collisions2022_355100_362760_Golden.json";   
+      data_json = "input/json/Cert_Collisions2022_355100_362760_Golden_lumicorr.json"; //359571 and 359661 removed https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3  
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
    std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
@@ -1398,8 +1398,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   if(channel == channel::tpzmm){  
     std::function<bool(Muon const*)> muon_probe_id;
     
-    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL
-    || era_type == era::data_2022_preEE || era_type == era::data_2022_postEE){
+    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
 
         muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
         std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
@@ -1524,6 +1523,138 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_tag_id(MuonLooseID)
           .set_probe_trg_objects("triggerObjectsIsoMu27,triggerObjectsIsoMu24")
           .set_probe_trg_filters("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_add_name("_dimu_dz")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_do_dzmass(true)
+        );
+         
+    }else if(era_type == era::data_2022_postEE || era_type == era::data_2022_preEE){
+
+        muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+        std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
+        // low pT mu leg of e+mu trigger
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_EMLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id) 
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_extra_l1_probe_pt(5.)
+          .set_add_name("_em_low")
+        );
+        // high pT mu leg of e+mu trigger
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_EMHigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(23.)
+          .set_extra_l1_probe_pt(20.)
+          .set_add_name("_em_high")
+        );
+        // mu leg of mu+tau cross trigger for runs C-F
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_MT_CtoF")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsDoubleMu20")
+          .set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          .set_add_name("_mt_c_to_f")
+        );
+        // mu leg of mu+tau cross trigger for run B
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_MT_B")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
+          .set_probe_trg_filters("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          .set_do_extra(true)
+          .set_add_name("_mt_b")
+        );
+        // single muons trigger measurment
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_single")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered")
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered")  
+        );
+        // low pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_add_name("_dimu_low")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+
+        );
+        // high pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuhigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_add_name("_dimu_high")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(17.)
+        );
+        // use to measure DZ filter efficiency for embedded selection selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuDZ")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(MuonLooseID)
+          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
+          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
           .set_add_name("_dimu_dz")
           .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
