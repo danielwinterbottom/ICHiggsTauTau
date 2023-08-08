@@ -1395,7 +1395,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   
 } // end of loop over jet met uncertainties
 
-  if(channel == channel::tpzmm){  
+  if(channel == channel::tpzmm){   
     std::function<bool(Muon const*)> muon_probe_id;
     
     if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
@@ -1531,7 +1531,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
         );
          
     }else if(era_type == era::data_2022_postEE || era_type == era::data_2022_preEE){
-
+        std::string isoMu24FilterName = (era_type == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
         muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
         std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
         // low pT mu leg of e+mu trigger
@@ -1541,7 +1542,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id) 
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
@@ -1557,7 +1558,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id)
           .set_probe_trg_objects("triggerObjectsMu17Mu8")
@@ -1573,7 +1574,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id)
           .set_probe_trg_objects("triggerObjectsDoubleMu20")
@@ -1587,7 +1588,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id)
           .set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
@@ -1601,12 +1602,12 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_channel(channel)
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
-          .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")                
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(muon_probe_id)
           .set_tag_id(muon_probe_id)
-          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
-          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered")  
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)  
         );
         // low pT leg of dimuon trigger used for embedded selection
         BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuLow")
@@ -1615,11 +1616,11 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(MuonLooseID)
           .set_tag_id(muon_probe_id)
-          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
-          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)
           .set_add_name("_dimu_low")
           .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
@@ -1633,11 +1634,11 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(MuonLooseID)
           .set_tag_id(muon_probe_id)
-          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
-          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)
           .set_add_name("_dimu_high")
           .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
@@ -1650,11 +1651,11 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_strategy(strategy_type)
           .set_ditau_label("ditau")
           .set_tag_trg_objects("triggerObjectsIsoMu24")
-          .set_tag_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_tag_trg_filters(isoMu24FilterName)
           .set_probe_id(MuonLooseID)
           .set_tag_id(MuonLooseID)
-          .set_probe_trg_objects("triggerObjectsIsoMu24,triggerObjectsIsoMu24")
-          .set_probe_trg_filters("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07,hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)
           .set_add_name("_dimu_dz")
           .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
           .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")

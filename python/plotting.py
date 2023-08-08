@@ -3999,8 +3999,9 @@ def TagAndProbePlot(graphs=[],
     pads[0].RedrawAxis()
     
     c1.SaveAs(plot_name+'.pdf')
-    #c1.SaveAs(plot_name+'.png')    
-    del c1    
+    c1.SaveAs(plot_name+'.png')    
+    #del c1    
+    c1.Close()
 def HTTPlotUnrolled(nodename, 
             infile=None, 
             signal_scale=1, 

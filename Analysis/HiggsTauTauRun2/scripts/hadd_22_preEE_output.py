@@ -55,6 +55,20 @@ sample_list = [
          'TauF_postEE',
          'TauG_postEE',
          
+         #Muon
+         
+         'SingleMuonA_rereco_preEE',
+         'SingleMuonB_rereco_preEE',
+         'SingleMuonC_rereco_preEE',
+         'SingleMuonA_preEE',
+         'SingleMuonB_preEE',
+         'SingleMuonC_preEE',
+         'MuonD_rereco_preEE',
+         'MuonD_preEE',
+         'MuonC_preEE',
+         'MuonC_rereco_preEE',
+         
+         
          #MC postEE
          
          'DYJetsToLL-LO_postEE_postEE',
