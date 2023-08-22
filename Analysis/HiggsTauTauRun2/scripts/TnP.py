@@ -974,7 +974,7 @@ if options.channel == 'tpzmm':
     elif options.era == 'UL_18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     elif options.era == '22_preEE':
-        data_samples = ['SingleMuonA_rereco_preEE','SingleMuonB_rereco_preEE','SingleMuonC_rereco_preEE','MuonD_rereco_preEE']        
+        data_samples = ['SingleMuonB_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE']        
     
 if  options.channel == 'tpzee': 
     if options.era == 'UL_16preVFP': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
