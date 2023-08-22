@@ -285,5 +285,9 @@ for name in types:
         canvas.SaveAs("{}/{}_SF_{}_{}_{}.pdf".format(plots_folder,file_name,name,h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
         canvas.Update()
         canvas.Close()
-
+        del canvas
+        del histo1
+        if options.embed: del histo2
+  del h_SF
+  if options.embed: del h_SF_EMB 
 
