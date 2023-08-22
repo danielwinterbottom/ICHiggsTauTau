@@ -83,14 +83,25 @@ sample_list = [
          
          #MC preEE
          
-         'DYJetsToLL-LO_summer_preEE',
-         'GluGluHToTauTau_M125_preEE',
-         'TTTo2L2Nu_preEE',
-         'VBFHToTauTau_M125_preEE',
-         'WW_preEE',
-         'WZ_preEE',
-         'ZZ_preEE',
-         'ZZZ_preEE'
+        'DYJetsToLL-LO_summer_preEE',
+        'DYto2TautoMuTauh_M50_preEE',
+        'GluGluHToTauTau_M125_preEE',
+        'TBbarQ_t-channel_4FS_preEE',
+        'TTTo2L2Nu_preEE',
+        'TTto4Q_preEE',
+        'TTtoLNu2Q_preEE',
+        'TWminusto2L2Nu_preEE',
+        'TWminustoLNu2Q_preEE',
+        'TbarBQ_t-channel_4FS_preEE',
+        'TbarWplusto2L2Nu_preEE',
+        'TbarWplustoLNu2Q_preEE',
+        'VBFHToTauTau_M125_preEE',
+        'W3JetsToLNu-LO_preEE',
+        'WJetsToLNu-LO_preEE',
+        'WW_preEE',
+        'WZ_preEE',
+        'ZZ_preEE',
+        'ZZZ_preEE',
 	]
 
 

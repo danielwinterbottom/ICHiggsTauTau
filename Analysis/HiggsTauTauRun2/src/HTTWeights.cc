@@ -127,6 +127,8 @@ int HTTWeights::PreAnalysis() {
       w_ggh_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));;
       f_ggh.Close();
     }
+    //This if statement excludes almost all scale factors in Run3 until they are created
+    if(era_ != era::data_2022_preEE && era_ != era::data_2022_postEE) {
 
     // tracking corrections for electrons and muons
     fns_["e_trk_ratio"] = std::shared_ptr<RooFunctor>(
@@ -955,8 +957,22 @@ int HTTWeights::PreAnalysis() {
       fns_["ggH_mg_ue_down"] = std::shared_ptr<RooFunctor>(
       	  w_ggh_->function("ggH_mg_ue_down")->functor(w_ggh_->argSet("ngenjets")));
     }
+    }
+
+// These are the factors that are also available in Run 3
+    fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(  w_->function("m_trg_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+    fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
+       w_->function("m_trg_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+     fns_["m_idiso_ratio"] = std::shared_ptr<RooFunctor>(
+      w_->function("m_idiso_binned_ic_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
+    fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
+        w_->function("m_id_ic_ratio")->functor(w_->argSet("m_pt,m_eta")));
+    fns_["zpt_weight_nom"] = std::shared_ptr<RooFunctor>(
+         w_->function("zptmass_weight_nom")->functor(w_->argSet("z_gen_pt,z_gen_mass"))); 
+
+
     // UL Scale Factors
-    if(scalefactor_file_UL_!="" && (era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE)){
+    if(scalefactor_file_UL_!="" && (era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL)){
      
 
 
@@ -2329,7 +2345,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       double tau_trg_mvadm11_down=1;
 
 
-      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+      if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
 
         if(e_pt<e_high_pt_cut) { // if this isn't true then we are using the single lepton trigger and therefore the weight = 1
           if(!is_embedded_) {
@@ -2464,7 +2480,14 @@ int HTTWeights::Execute(TreeEvent *event) {
       mu_trg = fns_["m_trg_binned_data"]->eval(args_1.data());
       if(!is_embedded_) mu_trg_mc = fns_["m_trg_binned_mc"]->eval(args_1.data());
       else mu_trg_mc = fns_["m_trg_binned_embed"]->eval(args_1.data());
-
+    if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
+     if (trg_applied_in_mc_) {
+       mu_trg = mu_trg / mu_trg_mc;
+     }
+     weight *= mu_trg ;
+     event->Add("trigweight_1", mu_trg);
+     event->Add("trigweight_2", double(1.0));
+    }else {
       double single_m_sf = mu_trg / mu_trg_mc;
       double t_dm = tau->decay_mode();
       auto args_2 = std::vector<double>{pt,m_signed_eta};  
@@ -2668,6 +2691,7 @@ int HTTWeights::Execute(TreeEvent *event) {
      weight *= (mu_trg * tau_trg);
      event->Add("trigweight_1", mu_trg);
      event->Add("trigweight_2", tau_trg);
+    }
    } else if (channel_ == channel::em) {
      Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));

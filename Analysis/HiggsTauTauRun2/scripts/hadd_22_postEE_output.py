@@ -56,27 +56,28 @@ sample_list = [
          'TauG_postEE',
          
          #MC postEE
-         
-         'DYJetsToLL-LO_postEE_postEE',
-         'GluGluHToTauTau_M125_postEE_v2_postEE',
-         'GluGluHToTauTau_M125_postEE_v3_postEE',
-         'TTTo2L2Nu_postEE',
-         'VBFHToTauTau_M125_Poisson60KeepRAW_postEE',
-         'VBFHToTauTau_M125_v2_Poisson70KeepRAW_postEE',
-         'WW_postEE_postEE',
-         'WZ_postEE_postEE',
-         'ZZ_postEE_postEE',
-         
-         #MC preEE
-         
-         'DYJetsToLL-LO_summer',
-         'GluGluHToTauTau_M125',
-         'TTTo2L2Nu',
-         'VBFHToTauTau_M125',
-         'WW',
-         'WZ',
-         'ZZ',
-         'ZZZ'
+
+          'DYJetsToLL-LO_postEE',
+          'DYto2TautoMuTauh_M50_postEE',
+          'GluGluHToTauTau_M125_v2_postEE',
+          'GluGluHToTauTau_M125_v3_postEE',
+          'TBbarQ_t-channel_4FS_postEE',
+          'TTTo2L2Nu_postEE',
+          'TTto4Q_postEE',
+          'TTtoLNu2Q_postEE',
+          'TWminusto2L2Nu_postEE',
+          'TWminustoLNu2Q_postEE',
+          'TbarBQ_t-channel_4FS_postEE',
+          'TbarWplusto2L2Nu_postEE',
+          'TbarWplustoLNu2Q_postEE',
+          'VBFHToTauTau_M125_Poisson60KeepRAW_postEE',
+          'VBFHToTauTau_M125_v2_Poisson70KeepRAW_postEE',
+          'W1JetsToLNu-LO_postEE',
+          'W2JetsToLNu-LO_postEE',
+          'WJetsToLNu-LO_postEE',
+          'WW_postEE',
+          'WZ_postEE',
+          'ZZ_postEE',
                   
 	]
 

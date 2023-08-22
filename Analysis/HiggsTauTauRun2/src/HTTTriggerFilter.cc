@@ -261,7 +261,7 @@ namespace ic {
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
-        if (run >= 317509) { //2018 post hps
+        if (run >= 317509 && run < 355100) { //2018 post hps
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -271,6 +271,20 @@ namespace ic {
           leg1_filter = "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07";
           leg2_filter = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
+        }
+        if (run >= 355100) {
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+          alt_trk_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_trk_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+          high_leg_pt = 21.;
+        trig_obj_label = "triggerObjectsMu24LooseDeepTauHPS27"; //https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger
+         leg1_filter =(era_ == era::data_2022_postEE) ?
+         "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered" : "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p08";
+         leg2_filter = "hltHpsSelectedPFTau27LooseMuTauWPDeepTauVsJetsAgainstMuonL1HLTMatched";
+         extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseMuTauWPDeepTauPFTau27L1Seeded";
         }
         // --------------------------
         // Monitoring paths for checks
@@ -439,11 +453,15 @@ namespace ic {
           singletau_trg_obj_alt_label = "triggerObjectsSingleTau140";
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_alt_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
-        } else if(run >= 294927) {
+        } else if(run < 355100 && run >= 294927) {
           singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
           singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
+        } else if(run >= 355100) {
+          singletau_trg_obj_label = "triggerObjectsLooseDeepTauPFTauHPS180";
+          singletau_leg1_filter = "hltSelectedPFTau180LooseSingleTauWPDeepTauL1HLTMatched";
+          singletau_leg1_filter_2 = "";
         }
       }  
     } else {
@@ -470,7 +488,11 @@ namespace ic {
             singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
             singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
           }
-        }
+        }else if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+          singletau_trg_obj_label = "triggerObjectsLooseDeepTauPFTauHPS180";
+          singletau_leg1_filter = "hltSelectedPFTau180LooseSingleTauWPDeepTauL1HLTMatched";
+          singletau_leg1_filter_2 = "";
+          }
       }
         
       if (channel_ == channel::et || channel_ == channel::zee || channel_ ==  channel::tpzee) {
@@ -589,7 +611,7 @@ namespace ic {
           alt_monitoring_17_leg1_filter_2 = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_monitoring_17_leg2_filter_2 = "hltSelectedPFTau35TrackPt1TightChargedIsolationL1HLTMatchedReg";
           
-        } else if (era_ == era::data_2018 || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+        } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -611,6 +633,19 @@ namespace ic {
           monitoring_18_trig_obj_label = "triggerObjectsMu24MediumIsoTauHPS35";
           monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           monitoring_18_leg2_filter = "hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg";
+        } else if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+          alt_trk_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_trk_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+        trig_obj_label = "triggerObjectsMu24LooseDeepTauHPS27";
+         leg1_filter =(era_ == era::data_2022_postEE) ?
+         "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered" : "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p08";
+         leg2_filter = "hltHpsSelectedPFTau27LooseMuTauWPDeepTauVsJetsAgainstMuonL1HLTMatched";
+         extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseMuTauWPDeepTauPFTau27L1Seeded";
+          high_leg_pt = 21.;
         }
 
       } else if (channel_ == channel::em) {
@@ -740,7 +775,7 @@ namespace ic {
 
            leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first); 
         } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm) 
-                && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)) {
+                && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE)) {
            std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
            leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
         }

@@ -1,5 +1,6 @@
-void zpt_reweighting(std::string outfile="zpt_reweighting_LO.root"){
+void zpt_reweighting(){
   // initialising binning
+  std::string outfile="/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/zpt_reweighting_LO.root";
   double x_bins[17] = {0,50,60,70,80,90,100,120,140,160,180,200,300,400,600,800,1000};
   double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
   int n_xbins = 16;
@@ -7,66 +8,21 @@ void zpt_reweighting(std::string outfile="zpt_reweighting_LO.root"){
   TFile *fout = new TFile(outfile.c_str(),"RECREATE");
   // datacards (var pt_tt with mvis cuts)
   std::vector<std::string> file_names = {
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis50to60.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis60to70.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis70to80.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis80to90.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis90to100.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis100to120.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis120to140.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis140to160.root",	
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis160to180.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis180to200.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis200to300.root",	
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis300to400.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis400to600.root",
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis600to800.root",		 
-    "input/zpt/LO/2018/zmm/datacard_pt_tt_inclusive_zmm_2018_mvis800toinf.root",	
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis50to60.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis60to70.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis70to80.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis80to90.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis90to100.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis100to120.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis120to140.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis140to160.root",	
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis160to180.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis180to200.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis200to300.root",	
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis300to400.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis400to600.root",
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis600to800.root",		 
-    "input/zpt/LO/2017/zmm/datacard_pt_tt_inclusive_zmm_2017_mvis800toinf.root",		 
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis50to60.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis60to70.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis70to80.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis120to140.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis140to160.root",	
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis160to180.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis180to200.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis200to300.root",	
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis300to400.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis400to600.root",
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis600to800.root",		 
-    "input/zpt/LO/2016_postVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis800toinf.root",		 
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis50to60.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis60to70.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis70to80.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis80to90.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis90to100.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis100to120.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis120to140.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis140to160.root",	
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis160to180.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis180to200.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis200to300.root",	
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis300to400.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis400to600.root",
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis600to800.root",		 
-    "input/zpt/LO/2016_preVFP/zmm/datacard_pt_tt_inclusive_zmm_2016_mvis800toinf.root",			 
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis50to60_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis60to70_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis70to80_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis80to90_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis90to100_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis100to120_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis120to140_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis140to160_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis160to180_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis180to200_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis200to300_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis300to400_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis400to600_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis600to800_zmm_2022.root",
+    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis800toinf_zmm_2022.root"
   };
   
   std::vector<TH1D*> data_hist_vector;
@@ -154,18 +110,8 @@ void zpt_reweighting(std::string outfile="zpt_reweighting_LO.root"){
     unsigned x_bin = i+1;
     TH1D *h = data_hist_vector[i];
     if (i != 0) {
-      TH1D *h_2 = data_hist_vector[15+i];
-      TH1D *h_3 = data_hist_vector[30+i];
-      TH1D *h_4 = data_hist_vector[45+i];
       h->SetDirectory(0);
-      h_2->SetDirectory(0);
-      h_3->SetDirectory(0);
-      h_4->SetDirectory(0);
-      h->Add(h_2,1);
-      h->Add(h_3,1);
-      h->Add(h_4,1);
     }
-
     for(unsigned j=0; j<h_data->GetNbinsY(); ++j){
         unsigned y_bin = j+1;
         double z_pt = h_data->GetYaxis()->GetBinCenter(y_bin);
@@ -175,23 +121,14 @@ void zpt_reweighting(std::string outfile="zpt_reweighting_LO.root"){
         if(x_bin==1){ content = 1; error = 0;}
         h_data->SetBinContent(x_bin,y_bin,content);
         h_data->SetBinError(x_bin,y_bin,error);                 
-    } 
+    }
   }
   // filling mc TH2D
   for(unsigned i=0; i<h_mc->GetNbinsX(); ++i){
     unsigned x_bin = i+1;
     TH1D *h = mc_hist_vector[i];
     if (i != 0) {
-      TH1D *h_2 = mc_hist_vector[15+i];
-      TH1D *h_3 = mc_hist_vector[30+i];
-      TH1D *h_4 = mc_hist_vector[45+i];
       h->SetDirectory(0);
-      h_2->SetDirectory(0);
-      h_3->SetDirectory(0);
-      h_4->SetDirectory(0);
-      h->Add(h_2,1);
-      h->Add(h_3,1);
-      h->Add(h_4,1);
     }
  
     for(unsigned j=0; j<h_mc->GetNbinsY(); ++j){
