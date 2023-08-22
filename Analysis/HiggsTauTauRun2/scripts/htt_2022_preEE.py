@@ -3,7 +3,7 @@
 # python scripts/htt_mssm_2018.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
 
 
-# python scripts/htt_2022_preEE.py --data --bkg --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
+# python scripts/htt_2022_preEE.py --data --bkg --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' 
 
 
 # importing libraries
@@ -174,7 +174,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
-FILELIST='filelists/July0623_2022-preEE_MC_102X'
+FILELIST='filelists/Aug1123_2022-preEE_MC_102X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -205,9 +205,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_data or options.proc_all or options.calc_lumi:
 
-    data_samples = []
-    data_eras = ['A','B','B_rereco','C','C_rereco','D','D_rereco']
-  
+    data_samples = ["SingleMuonB_rereco","MuonC_rereco","MuonD_rereco"]
+    data_eras = []
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
@@ -231,13 +230,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
           if 'MuonEG'+era not in data_samples: data_samples+=['MuonEG'+era]
           if 'DoubleMuon'+era not in data_samples: data_samples+=['DoubleMuon'+era]
 
-    DATAFILELIST="./filelists/July0623_2022-preEE_Data_102X"
+    DATAFILELIST="./filelists/Aug0223_2022-preEE_Data_102X"
 
     if options.calc_lumi:
         for sa in data_samples:
             JOB='%s_preEE_2022' % (sa)
             user='irandreo'
-            prefix='July0623_Data_124X_2022-preEE'
+            prefix='Aug0223_Data_124X_2022-preEE'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 500 
@@ -257,7 +256,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         for sa in data_samples:
             JOB='%s_preEE_2022' % (sa)
             user='irandreo'
-            prefix='July0623_Data_124X_2022-preEE'
+            prefix='Aug0223_Data_124X_2022-preEE'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 30
@@ -290,14 +289,26 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-        'DYJetsToLL-LO_summer',
-        'GluGluHToTauTau_M125',
-        'TTTo2L2Nu',
-        'VBFHToTauTau_M125',
-        'WW',
-        'WZ',
-        'ZZ',
-        'ZZZ'
+    'DYJetsToLL-LO_summer',
+    'DYto2TautoMuTauh_M50',
+    'GluGluHToTauTau_M125',
+    'TBbarQ_t-channel_4FS',
+    'TTTo2L2Nu',
+    'TTto4Q',
+    'TTtoLNu2Q',
+    'TWminusto2L2Nu',
+    'TWminustoLNu2Q',
+    'TbarBQ_t-channel_4FS',
+    'TbarWplusto2L2Nu',
+    'TbarWplustoLNu2Q',
+    'VBFHToTauTau_M125',
+    'W3JetsToLNu-LO',
+    'WJetsToLNu-LO',
+    'WW',
+    'WZ',
+    'ZZ',
+    'ZZZ'
+        
     
     ]
 
@@ -317,7 +328,7 @@ if options.proc_bkg or options.proc_all:
     for sa in central_samples:
         JOB='%s_preEE_2022' % (sa)
         user='irandreo'
-        PREFIX='July0623_MC_124X_2022-preEE'
+        PREFIX='Aug1123_MC_124X_2022-preEE'
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         
         job_num=0
