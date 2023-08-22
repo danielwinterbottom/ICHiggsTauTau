@@ -86,8 +86,8 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/2018UL/PileupHistogram-goldenJSON-13tev-2018-69200ub-99bins.root",
-    "mc_pu_file"    : "input/pileup/2018UL/pileup_2018_DYJetsToLL-LO.root",
+    "data_pu_file"  : "input/pileup/2022/pu_2022_postEE.root",
+    "mc_pu_file"    : "input/pileup/2022/pileup_2022_DYJetsToLL-LO_postEE_postEE.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
