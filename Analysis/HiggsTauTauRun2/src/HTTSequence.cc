@@ -777,8 +777,13 @@ if(era_type == era::data_2018UL) {
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
    scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2018.root";
 }
-if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
-   scalefactor_file = "input/scale_factors/htt_scalefactors_2022.root";
+if(era_type == era::data_2022_preEE) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_2022preEE.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
+   scalefactor_file_UL = "";
+}
+if(era_type == era::data_2022_postEE) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_2022postEE.root";
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
    scalefactor_file_UL = "";
 }

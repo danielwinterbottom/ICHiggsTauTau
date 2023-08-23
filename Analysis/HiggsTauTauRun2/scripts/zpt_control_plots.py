@@ -2,10 +2,12 @@ import os
 import json
 import numpy as np
 
-DO_ZPT_CONTROL = False
-DO_CONTROL = True
-
+DO_ZPT_CONTROL = True
+DO_CONTROL = False
 DO_SS = False
+
+FOLDER = "/vols/cms/eb921/test_output/output_zmm_2022/"
+ZPTFOLDER = "/vols/cms/eb921/test_output/output_zmm_Zpt_2022/"
 
 if DO_ZPT_CONTROL or DO_CONTROL:
   variables = [
@@ -40,11 +42,11 @@ for v in variables:
     #Factor out wt_dysoup if it is wrongly not 1
     #extra+=' --add_wt="1/wt_dysoup"'
     if DO_ZPT_CONTROL:
-      extra+= ' --folder="/vols/cms/eb921/output/output_zmm_Zpt_2022/"'
+      extra+= ' --folder="%s"'%ZPTFOLDER
       extra+= ' --extra_name=mvis50_Zpt'
       extra+= ' --sel="(m_vis>50)"'
     else:
-      extra+= ' --folder="/vols/cms/eb921/output/output_zmm_2022/"'
+      extra+= ' --folder="%s"'%FOLDER
       if DO_CONTROL:
         extra+= ' --extra_name=mvis50'
         extra+= ' --sel="(m_vis>50)"'
