@@ -886,11 +886,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetWInputYields(82360950, 47850048, 27411802, 18297679, 9130068);
     }
     if(era_type == era::data_2022_preEE){
-      httStitching.SetWInputCrossSections(1.0,1.0,1.0,0.0156,1.0);
+      httStitching.SetWInputCrossSections(1.0,1.0,1.0,0.0184,1.0);
       httStitching.SetWInputYields(87900584, 0, 0, 8214147, 0);
     }
     if(era_type == era::data_2022_postEE){
-      httStitching.SetWInputCrossSections(1.0,0.1651,0.0528,1.0,1.0);
+      httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,1.0,1.0);
       httStitching.SetWInputYields(348456687, 42838501, 36384428, 0, 0);
     }      
   }
