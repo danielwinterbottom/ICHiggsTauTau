@@ -6,7 +6,7 @@
     "timings":      true,
    //"channels":     ["mt","et","tt","zmm","zee","em"],
    // "channels":     ["mt","zmm","tt","et"],
-    "channels":     ["tt"],
+    "channels":     ["mt"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -22,7 +22,7 @@
   "sequence": {
     // "do_mssm_higgspt" : true,
     // "mssm_higgspt_file" : "/vols/build/cms/gu18/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau2/input/mssm_higgspt/higgs_pt_v2_mssm_mode.root",
-    "usePFMET" : true,
+    "usePFMET" : false,
     "do_gen_analysis" : false,
     "mc"            : "mc2018",
     "era"           : "data_2022_postEE",
@@ -67,7 +67,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_sync_v2/",
-    "output_folder" : "/vols/cms/eb921/output/tt_2022",
+    "output_folder" : "/vols/cms/eb921/test_output/output_mt_2022postEE",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -191,8 +191,8 @@
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
         "do_tau_anti_elec":true,
-        "do_ff_weights" : true,
-        "do_ff_systematics": true,
+        "do_ff_weights" : false,
+        "do_ff_systematics": false,
         "ff_categories" :"inclusive",
         "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2018.root",
         "ff_fracs_file" : ""

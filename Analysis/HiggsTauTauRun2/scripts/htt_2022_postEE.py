@@ -3,7 +3,7 @@
 # python scripts/htt_mssm_2018.py --bkg --data --embed --sm --mssm --jetmetuncerts --scales="default,scale_t_0pi,scale_t_1pi,scale_t_3prong,scale_t_3prong1pi0,scale_efake_0pi,scale_efake_1pi,scale_mufake_0pi,scale_mufake_1pi,scale_e" --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
 
 
-# python scripts/htt_2022_postEE.py --data --bkg --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"' --parajobs
+# python scripts/htt_2022_postEE.py --data --bkg --submit='./scripts/submit_ic_batch_job.sh "hep.q -l h_rt=0:180:0 -l h_vmem=24G"'
 
 
 # importing libraries
@@ -205,8 +205,8 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_data or options.proc_all or options.calc_lumi:
 
-    data_samples = []
-    data_eras = ['E','E_rereco','F','G']
+    data_samples = ["MuonE_rereco","MuonF","MuonG"]
+    data_eras = []
   
     for chn in channels:
         for era in data_eras:
@@ -231,13 +231,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
           if 'MuonEG'+era not in data_samples: data_samples+=['MuonEG'+era]
           if 'DoubleMuon'+era not in data_samples: data_samples+=['DoubleMuon'+era]
 
-    DATAFILELIST="./filelists/July0623_2022-postEE_Data_102X"
+    DATAFILELIST="./filelists/Aug0223_2022-postEE_Data_102X"
 
     if options.calc_lumi:
         for sa in data_samples:
             JOB='%s_postEE_2022' % (sa)
             user='irandreo'
-            prefix='July0623_Data_124X_2022-postEE'
+            prefix='Aug0223_Data_124X_2022-postEE'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 500 
@@ -257,7 +257,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
         for sa in data_samples:
             JOB='%s_postEE_2022' % (sa)
             user='irandreo'
-            prefix='July0623_Data_124X_2022-postEE'
+            prefix='Aug0223_Data_124X_2022-postEE'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 30

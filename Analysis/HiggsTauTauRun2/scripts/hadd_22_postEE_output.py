@@ -54,6 +54,10 @@ sample_list = [
          'TauE_rereco_postEE',
          'TauF_postEE',
          'TauG_postEE',
+         'MuonE_rereco_postEE',
+         'MuonE_postEE',
+         'MuonF_postEE',
+         'MuonG_postEE',
          
          #MC postEE
 
