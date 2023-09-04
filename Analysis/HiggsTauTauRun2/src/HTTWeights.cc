@@ -959,7 +959,7 @@ int HTTWeights::PreAnalysis() {
     }
     }
 
-// These are the factors that are also available in Run 3
+// These are the factors that are also available in Run 3, 2022 as of August 2023
     fns_["m_trg_binned_mc"] = std::shared_ptr<RooFunctor>(  w_->function("m_trg_binned_ic_mc")->functor(w_->argSet("m_pt,m_eta,m_iso")));
     fns_["m_trg_binned_data"] = std::shared_ptr<RooFunctor>(
        w_->function("m_trg_binned_ic_data")->functor(w_->argSet("m_pt,m_eta,m_iso")));

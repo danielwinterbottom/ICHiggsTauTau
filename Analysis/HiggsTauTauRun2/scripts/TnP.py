@@ -1099,9 +1099,7 @@ if options.draw_hists == 1:
     ana.nodes.AddNode(ListNode(nodename))
     
     ana.remaps = {}
-    if options.channel =='tpzmm': 
-      ana.remaps['SingleMuon'] = 'data_obs'
-      #ana.remaps['Muon'] = 'data_obs'
+    if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'tpzee':
         if options.era in ['UL_18']: ana.remaps['EGamma'] = 'data_obs'
         else: ana.remaps['SingleElectron'] = 'data_obs'

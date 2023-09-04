@@ -6,10 +6,12 @@ import numpy as np
 DO_SS = False
 DOTAUDECAY=False
 
+INPUT_FOLDER='/vols/cms/eb921/test_output/output_mt2_2022/'
+OUTPUT_FOLDER='mt_plots'
 
 variables = [
-      'pt_tt[0,10,20,30,40,60,80,100,120,160,200,280,320,400,600]',
-      'm_vis(20,0,200)',
+     'pt_tt[0,10,20,30,40,60,80,100,120,160,200,280,320,400,600]',
+       'm_vis(20,0,200)',
       'eta_1(30,-3,3)',
       'eta_2(30,-3,3)',
      'n_jets(4,0,4)', 
@@ -32,19 +34,29 @@ for v in variables:
     #Factor out Run2 top weight
     extra+=' --add_wt="wt_tquark_down"'
     #extra+= ' --singletau'
-    extra+= ' --folder="/vols/cms/eb921/output/output_mt_2022/"'
+    extra+= ' --folder="%s"'%INPUT_FOLDER
     if DOTAUDECAY:
-      extra+= ' --sel="(mt_1<70 && m_vis>50&&m_vis<80 && tau_decay_mode_2==%s)"'%mode
+      if v=='mt_1(30,0,300)':
+        extra+= ' --sel="(m_vis>50&&m_vis<80 && tau_decay_mode_2==%s)"'%mode
+      elif v=='m_vis(20,0,200)':
+        extra+= ' --sel="(mt_1<70 && tau_decay_mode_2==%s)"'%mode
+      else:
+        extra+= ' --sel="(mt_1<70 && m_vis>50&&m_vis<80 && tau_decay_mode_2==%s)"'%mode
       try:
-          path = 'mt_plots/taumode_%s'%mode
+          path = '%s/taumode_%s'%(OUTPUT_FOLDER,mode)
           os.mkdir(path)
           print("Directory '%(path)s' created"% vars())
       except OSError as error:
           print("Directory '%(path)s' can not be created: %(error)s"% vars())
       extra+= ' --outputfolder="%s"'%path
     else:
-      extra+= ' --sel="(mt_1<70 && m_vis>50&&m_vis<80)"'
-      extra+= ' --outputfolder="mt_plots"'
+      if v=='mt_1(30,0,300)':
+        extra+= ' --sel="(m_vis>50&&m_vis<80)"'
+      elif v=='m_vis(20,0,200)':
+        extra+= ' --sel="(mt_1<70)"'
+      else:
+        extra+= ' --sel="(mt_1<70 && m_vis>50&&m_vis<80)"'
+      extra+= ' --outputfolder="%s"'%OUTPUT_FOLDER
     os.system('python scripts/HiggsTauTauPlot_Run3.py %(extra)s --cfg scripts/mt_plot_2022.cfg --var=\"%(v_tt)s\"' % vars() )
     if DO_SS:
       os.system('python scripts/HiggsTauTauPlot_Run3.py %(extra)s --do_ss --do_aiso --cfg scripts/mt_plot_2022.cfg --var=\"%(v_tt)s\"' % vars() )            
