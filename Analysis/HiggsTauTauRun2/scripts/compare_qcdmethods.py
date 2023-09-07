@@ -3,9 +3,9 @@ from UserCode.ICHiggsTauTau.plotting import *
 import numpy as np
 
 PLOTBYBIN = True
-DOCHI2 = True
-infiles_dirname = "output_2018_good/"
-output_folder_name = "output_test/"
+DOCHI2 = False #Chi2 comparison of QCD fits, produces a text file in the outputfolder named "chi2test.txt"
+infiles_dirname = "output_2018/"
+output_folder_name = "output_2018qcdcompare/"
 
 def MyCompareHists(hists=[],
              legend_titles=[],
@@ -294,7 +294,7 @@ def MyCompareHists(hists=[],
     legendstats.Draw("same")
     
     c1.SaveAs(outputfolder+plot_name+'.png')
-    #c1.SaveAs(outputfolder+plot_name+'.pdf')
+    c1.SaveAs(outputfolder+plot_name+'.pdf')
     if output_file is not None:
         output_file.WriteObject(c1, plot_name)
     for o in objects:
@@ -303,11 +303,11 @@ def MyCompareHists(hists=[],
 
 variables = [
   
-  # ["n_jets","N_{jets}"],
-  # ["pt_1","p_{T}^{#tau_{1}}"],
-  # ["pt_2", "p_{T}^{#tau_{2}}"],
-  # ["mt_1", "m_{T}(p_{T}^{#tau_{1}},p_{T}^{miss})"],
-  # ["mt_2","m_{T}(p_{T}^{#tau_{2}},p_{T}^{miss})"],
+  ["n_jets","N_{jets}"],
+  ["pt_1","p_{T}^{#tau_{1}}"],
+  ["pt_2", "p_{T}^{#tau_{2}}"],
+  ["mt_1", "m_{T}(p_{T}^{#tau_{1}},p_{T}^{miss})"],
+  ["mt_2","m_{T}(p_{T}^{#tau_{2}},p_{T}^{miss})"],
   ["m_vis","m_{#tau#tau}"],
   ["pt_tt", "p_{T}^{#tau#tau}"]
 

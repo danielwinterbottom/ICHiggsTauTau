@@ -64,7 +64,7 @@ defaults = {
     "syst_tau_id_diff":"", "syst_tau_trg_diff":"","syst_lep_trg_diff":"",
     "syst_scale_j_regrouped":"", "syst_tau_scale_grouped":"","wp":"medium","singletau":False,"qcd_ff_closure":False,
     "w_ff_closure":False,"ggh_masses_powheg":"", "bbh_masses_powheg":"", "vlq_sig":"","ratio_log_y":False,"plot_signals":"", "DY_NLO":False, "v2p5":False,
-    "no_qcd_subtract": False, "tt_qcd_sel_num": 3,"scale_by_bin":False
+    "no_qcd_subtract": False, "scale_by_bin":False
 
 }
 
@@ -401,8 +401,6 @@ parser.add_argument("--v2p5", dest="v2p5", action='store_true',
       help="Get version of DeepTau v2p5"),
 parser.add_argument("--no_qcd_subtract", dest="no_qcd_subtract", action='store_true',
     help="Do not subtract background when estimating qcd events")
-parser.add_argument("--tt_qcd_sel_num", dest="tt_qcd_sel_num", type=int,
-    help="Change selection type for tt_qcd_norm")
 parser.add_argument("--scale_by_bin", dest="scale_by_bin", action='store_true',
     help="Scale QCD by bin")
 options = parser.parse_args(remaining_argv)   
@@ -698,20 +696,9 @@ cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_medium_2>0.5 &&mva_ol
 if options.era == 'mssmsummer16': cats['tt_qcd_norm'] = '(mva_olddm_medium_1>0.5 && mva_olddm_loose_2>0.5 &&mva_olddm_medium_2<0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 if options.era in ['smsummer16','cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: cats['tt_qcd_norm'] = '(pt_1>40 && ((mva_olddm_loose_1>0.5 && mva_olddm_tight_1<0.5 && mva_olddm_medium_2>0.5) || (mva_olddm_loose_2>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_1>0.5))  && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto)&&trg_doubletau'
 # if options.era in ['cpsummer17','cp18']: cats['tt_qcd_norm'] = '(mva_olddm_tight_1>0.5 && mva_olddm_tight_2<0.5 && mva_olddm_medium_2>0.5 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto && trg_doubletau)'
-if options.tt_qcd_sel_num==0:
-  cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_vloose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-elif options.tt_qcd_sel_num==1:
-  cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-elif options.tt_qcd_sel_num==2:
-  cats['tt_qcd_norm'] = '(deepTauVsJets_vloose_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-elif options.tt_qcd_sel_num==3:
-  cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_vloose_1>0.5 && deepTauVsJets_medium_2<0.5 && deepTauVsJets_vloose_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-elif options.tt_qcd_sel_num==4:
-  cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_medium_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
-elif options.tt_qcd_sel_num==5:
-  cats['tt_qcd_norm'] = '(deepTauVsJets_vloose_1<0.5 && deepTauVsJets_vvvloose_1>0.5 && deepTauVsJets_vloose_2<0.5 && deepTauVsJets_vvvloose_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
 
-#medium vlose
+cats['tt_qcd_norm'] = '(deepTauVsJets_medium_1<0.5 && deepTauVsJets_vloose_1>0.5 && deepTauVsJets_medium_2>0.5 && leptonveto==0 && (trg_doubletau && pt_2>40) && deepTauVsEle_vvloose_1 && deepTauVsEle_vvloose_2 && deepTauVsMu_vloose_1 && deepTauVsMu_vloose_2)'
+
 
 # CR categories
 cats['ztt_control'] = '(m_sv>60&&m_sv<100)'
@@ -1585,29 +1572,25 @@ if options.era in ['UL_18']:
         data_samples = ['TauA','TauB','TauC','TauD']
 
 if options.era in ['22']:
-    # if (options.DY_NLO==False):
-    #     ztt_samples = ['DYJetsToLL-LO_summer_preEE']
-    # else:
-    #     ztt_samples = ['DYJetsToLL-LO_summer_preEE']#['DYJetsToLL-LO_postEE_postEE','DYJetsToLL-LO_summer_preEE']
-    ztt_samples = ['DYJetsToLL-LO_summer_preEE']#['DYJetsToLL-LO_summer_preEE','DYto2TautoMuTauh_M50_preEE']
 
-    top_samples = ['TTTo2L2Nu_preEE','TTto4Q_preEE','TTtoLNu2Q_preEE']#['TTTo2L2Nu_postEE','TTTo2L2Nu_preEE']
+    ztt_samples = ['DYJetsToLL-LO_summer_preEE','DYJetsToLL-LO_postEE']
+    top_samples = ['TTTo2L2Nu_preEE','TTto4Q_preEE','TTtoLNu2Q_preEE','TTTo2L2Nu_postEE','TTto4Q_postEE','TTtoLNu2Q_postEE']
     vv_samples = ['WW_preEE','WZ_preEE','ZZ_preEE','TWminusto2L2Nu_preEE',
     'TWminustoLNu2Q_preEE','TbarWplusto2L2Nu_preEE',
-    'TbarWplustoLNu2Q_preEE','TbarBQ_t-channel_4FS_preEE','TBbarQ_t-channel_4FS_preEE']#['WW_postEE_postEE','WZ_postEE_postEE','ZZ_postEE_postEE','WW_preEE','WZ_preEE','ZZ_preEE']#'ZZZ_preEE'
-    # if options.analysis in ['mssmrun2','vlq']:
-        # vv_samples = [
-              # 'T-tW', 'Tbar-tW','Tbar-t','T-t',
-              # 'WZTo3LNu','ZZTo4L']
+    'TbarWplustoLNu2Q_preEE','TbarBQ_t-channel_4FS_preEE','TBbarQ_t-channel_4FS_preEE','WW_postEE','WZ_postEE','ZZ_postEE','TWminusto2L2Nu_postEE',
+    'TWminustoLNu2Q_postEE','TbarWplusto2L2Nu_postEE',
+    'TbarWplustoLNu2Q_postEE','TbarBQ_t-channel_4FS_postEE','TBbarQ_t-channel_4FS_postEE']
     wjets_samples = ['W3JetsToLNu-LO_preEE',
-    'WJetsToLNu-LO_preEE']#['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','W3JetsToLNu-LO','W4JetsToLNu-LO','EWKWMinus2Jets_WToLNu','EWKWPlus2Jets_WToLNu']
-    wgam_samples = []#['WGToLNuG']
-    ewkz_samples = []#['EWKZ2Jets_ZToLL']
+    'WJetsToLNu-LO_preEE','W1JetsToLNu-LO_postEE','W2JetsToLNu-LO_postEE',
+    'WJetsToLNu-LO_postEE']
+    wgam_samples = []
+    ewkz_samples = []
     gghww_samples = []
     qqhww_samples = []   
  
     if options.channel in ['mt','zmm','mj']:
-        data_samples = ['SingleMuonB_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE']
+      data_samples = ['SingleMuonB_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE']
+        # data_samples = ['SingleMuonB_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE','MuonE_rereco_postEE','MuonF_postEE','MuonG_postEE']
         # if options.analysis in ['mssmrun2','vlq']  and options.channel == 'mt': data_samples += ['TauB_rereco_preEE','TauC_rereco_preEE','TauD_rereco_preEE']
     if options.channel == 'em':
         data_samples = ['MuonEGA','MuonEGB','MuonEGC','MuonEGD']
@@ -3487,19 +3470,14 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
         if method == 8:
           qcd_sdb_cat = cats[options.cat]+' && '+cats['tt_qcd_norm'] 
           qcd_sdb_cat_data = cats_unmodified[options.cat]+' && '+cats_unmodified['tt_qcd_norm']
-          # if options.no_qcd_subtract:
-          #   subtract_node =None       
-          # else:
-          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,False,True) 
+          
+          subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,False,True)        
           num_selection = BuildCutString(wt, sel, cat_data, '!os')
           num_node = SubtractNode('ratio_num',
                        ana.SummedFactory('data', data, plot_unmodified, num_selection),
                        subtract_node)
           if options.analysis == 'mssmsummer16': tau_id_wt = 'wt_tau2_id_loose'
           else: tau_id_wt = '1'
-          # if options.no_qcd_subtract:
-          #   subtract_node =None 
-          # else:
           subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,False,True)
           den_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, '!os')
           den_node = SubtractNode('ratio_den',
@@ -3507,9 +3485,6 @@ def GenerateQCD(ana, add_name='', data=[], plot='', plot_unmodified='', wt='', s
                        subtract_node)
           shape_node = None   
           full_selection = BuildCutString(wt, sel, qcd_sdb_cat_data, OSSS)
-          # if options.no_qcd_subtract:
-          #   subtract_node = None
-          # else:
           subtract_node = GetSubtractNode(ana,'',plot,plot_unmodified,wt+'*'+tau_id_wt,sel,qcd_sdb_cat,qcd_sdb_cat_data,method,qcd_os_ss_ratio,get_os,True)
   
           ana.nodes[nodename].AddNode(HttQCDNode('QCD'+add_name,
@@ -5213,8 +5188,8 @@ while len(systematics) > 0:
           do_data = False
       if options.scheme == "noTT":
           samples_to_skip.extend(["TTT","TTJ"])
-      if options.scheme == "noEWKZ":
-          samples_to_skip.extend(['EWKZ'])
+      if options.scheme == "signalQCD":
+          samples_to_skip.extend(['TTT','TTJ','VVT','VVJ','W','jetFakes','ZLL','ZTT','ZL','EWKZ','ggH_hww'])
       RunPlotting(ana, cats['cat'], cats_unmodified['cat'], sel, add_name, weight, do_data, samples_to_skip,outfile,ff_syst_weight)
       #if options.era == "tauid2016" and options.channel in ['et','mt']: 
       #    RunPlotting(ana, cats['pass']+'&&'+cats['baseline'], cats_unmodified['pass']+'&&'+cats_unmodified['baseline'], sel, "pass"+add_name, weight, False, samples_to_skip,outfile,ff_syst_weight)
@@ -5507,11 +5482,7 @@ if options.scale_by_bin:
   
   hist_den = QCDdirectory.Get("ratio_den")
   hist_scale = QCDdirectory.Get("ratio_num").Clone()
-  integralFactor = (hist_scale.Integral())/(hist_den.Integral())
   hist_scale.Divide(hist_den)
-  for i in range(0,hist_scale.GetNbinsX()):
-    if hist_scale.GetBinContent(i+1)>=1:
-      hist_scale.Fill(i+1,integralFactor)
 
   
   hist_QCD = QCDdirectory.Get("data").Clone()
@@ -5608,7 +5579,7 @@ if not options.no_plot:
     scheme = options.channel
     if compare_w_shapes: scheme = 'w_shape'
     if compare_qcd_shapes: scheme = 'qcd_shape'
-    if options.scheme != "" and options.scheme != "noEWKZ"and options.scheme != "noTT": scheme = options.scheme
+    if options.scheme != "" and options.scheme != "signalQCD"and options.scheme != "noTT": scheme = options.scheme
     FF = options.method in [17,18]
     if options.ml_ff:
       options.w_ff_closure = False

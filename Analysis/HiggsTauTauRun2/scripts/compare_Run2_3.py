@@ -325,11 +325,11 @@ def MyCompareHists(hists=[],
         o.IsA().Destructor(o)
     c1.Close()
 
+LUMI22 = 35.2
+LUMI18 = 59.8
 USEBYBIN = True
-LUMI22 = 38.2
-LUMI18 = 59.7
 DO_RATIO = True
-file18_dirname = "output_2018_all/"
+file18_dirname = "output_2018/"
 file22_dirname = "output_2022/"
 
 output_folder_name = "output_2018vs2022/"
@@ -338,16 +338,20 @@ output_folder_name = "output_2018vs2022/"
 variables = [
   
   ["n_jets","N_{jets}"],
-  # ["pt_1","p_{T}^{#tau_{1}}"],
-  # ["pt_2", "p_{T}^{#tau_{2}}"],
-  # ["mt_1", "m_{T}(p_{T}^{#tau_{1}},p_{T}^{miss})"],
-  # ["mt_2","m_{T}(p_{T}^{#tau_{2}},p_{T}^{miss})"],
+  ["pt_1","p_{T}^{#tau_{1}}"],
+  ["pt_2", "p_{T}^{#tau_{2}}"],
+  ["mt_1", "m_{T}(p_{T}^{#tau_{1}},p_{T}^{miss})"],
+  ["mt_2","m_{T}(p_{T}^{#tau_{2}},p_{T}^{miss})"],
   ["pt_tt", "p_{T}^{#tau#tau}"],
   ["m_vis","m_{#tau#tau}"]
 
 ]
 
+#Name of QCD selection e.g. medium_vloose_medium_vloose:
+#"deepTauVsJets_medium_1<0.5 && deepTauVsJets_vloose_1>0.5 && deepTauVsJets_medium_2<0.5 && deepTauVsJets_vloose_2>0.5"
 selname = "medium_vloose_medium_vloose"
+
+#"OppS" and/or "SS"
 types=["OppS","SS"]
 
 for var in variables:
@@ -450,16 +454,13 @@ for var in variables:
 #--------------------------------------------------------------------    
     for histtype in [[hists18Data,hists22Data,"Data",None],[hists18QCD,hists22QCD,"QCD",uncertQCD],
                  [hists18Diff,hists22Diff,"nonQCD",uncertDiff]]:
-      # legend_titles = ["2018 %s (%s)"%(histtype[2],chargetype)] + [
-      #   "#splitline{Scaled 2022 %s}{%s (%s)}"%(histtype[2],trig,chargetype) for trig in ["doubletau trig","all trigs"]
-      # ]
       legend_titles = ["2018 %s"%(ver) for ver in versions] + [
         "2022 %s"%(trig) for trig in ["doubletau","doubletau+jet"]
       ]      
       if var[0] == "n_jets":
         MyCompareHists(hists = histtype[0]+histtype[1],
                 legend_titles = legend_titles,
-                title="%s (%s) 59.7 fb^{-1}"%(histtype[2],("Same-Sign" if chargetype=="SS" else "Opposite-Sign")), extra_pad=0,ratio_range="0.5,1.5",
+                title="%s (%s) %.1f fb^{-1}"%(histtype[2],("Same-Sign" if chargetype=="SS" else "Opposite-Sign"),LUMI18), extra_pad=0,ratio_range="0.5,2",
                 x_title = var[1], y_title = "Events",plot_name =
                 var[0]+"_"+selname+"_"+chargetype+"_"+histtype[2], output_file = output, ratio = DO_RATIO,
                 outputfolder=output_folder_name,uncert_hist=histtype[3],
@@ -468,7 +469,7 @@ for var in variables:
       elif var[0] == "pt_tt":
         MyCompareHists(hists = histtype[0]+histtype[1],
                 legend_titles = legend_titles,
-                title="%s (%s) 59.7 fb^{-1}"%(histtype[2],("Same-Sign" if chargetype=="SS" else "Opposite-Sign")), extra_pad=0,ratio_range="0.3,1.5",
+                title="%s (%s) %.1f fb^{-1}"%(histtype[2],("Same-Sign" if chargetype=="SS" else "Opposite-Sign"),LUMI18), extra_pad=0,ratio_range="0.3,2",
                 x_title = var[1], y_title = "Events",plot_name =
                 var[0]+"_"+selname+"_"+chargetype+"_"+histtype[2], output_file = output, ratio = DO_RATIO,
                 outputfolder=output_folder_name, integral_with_lowerlimit=None,uncert_hist=histtype[3],uncert_title=
@@ -476,21 +477,36 @@ for var in variables:
       else:
         MyCompareHists(hists = histtype[0]+histtype[1],
                 legend_titles = legend_titles,
-                title="%s (%s) 59.7 fb^{-1}"%(histtype[2],("Same-Sign" if chargetype=="SS" else "Opposite-Sign")), extra_pad=0,ratio_range="0.5,1.5",
+                title="%s (%s) %.1f fb^{-1}"%(histtype[2],("Same-Sign" if chargetype=="SS" else "Opposite-Sign"),LUMI18), extra_pad=0,ratio_range="0.5,2",
                 x_title = var[1]+" (GeV)", y_title = "Events/GeV",plot_name =
                 var[0]+"_"+selname+"_"+chargetype+"_"+histtype[2], output_file = output, ratio = DO_RATIO,
                 outputfolder=output_folder_name,uncert_hist=histtype[3], uncert_title=
                 ("Systematic Error" if histtype[3] is not None else ''),integral_with_upperlimit=None)
-#title="59.7 fb^{-1} (13 TeV)"        
+      
+      print("\n ------------------------%s %s %s------------------------"%(var[0],histtype[2],chargetype))
+      counter=0
+      if var[0] == "m_vis":
+        upper_limit=80
+        for hist in histtype[0]+histtype[1]:
+          print("\n%s:"%(legend_titles[counter]))
+          print("Total: %d (%.1f%%)"%(hist.Integral(1,hist.GetNbinsX()),(hist.Integral(1,hist.GetNbinsX())/histtype[0][0].Integral(1,hist.GetNbinsX()))*100))
+          print("Up to %dGeV: %d (%.1f%%)"%(upper_limit,hist.Integral(1,hist.FindBin(upper_limit)),(hist.Integral(1,hist.FindBin(upper_limit))/histtype[0][0]. Integral(1,hist.FindBin(upper_limit)))*100))
+          counter+=1
+      if var[0] == "pt_tt":
+        lower_limit=100
+        for hist in histtype[0]+histtype[1]:
+          print("\n%s:"%(legend_titles[counter]))
+          print("Total: %d (%.1f%%)"%(hist.Integral(1,hist.GetNbinsX()),(hist.Integral(1,hist.GetNbinsX())/histtype[0][0].Integral(1,hist.GetNbinsX()))*100))
+          print("From %dGeV: %d (%.1f%%)"%(lower_limit,hist.Integral(hist.FindBin(lower_limit),hist.GetNbinsX()),(hist.Integral(hist.FindBin(lower_limit),hist.GetNbinsX())/histtype[0][0]. Integral(hist.FindBin(lower_limit),hist.GetNbinsX()))*100))
+          counter+=1
+        
+#legendstatslim.AddEntry(hist,"%i (%.1f%%)"%(hist.Integral(hist.FindBin(integral_with_lowerlimit),hist.GetNbinsX()),(hist.Integral(hist.FindBin(integral_with_lowerlimit),hist.GetNbinsX())/legend_hists[0].Integral(hist.FindBin(integral_with_lowerlimit),hist.GetNbinsX()))*100),"l")        
 #-------------------------------------------------------------------- 
-    # legend_titles = ["2018 S/#sqrt{B} (%s)"%chargetype] + [
-    #   "#splitline{2022 S/#sqrt{B} (%s)}{%s}"%(chargetype,trig) for trig in ["doubletau trig","all trigs"]
-    # ]
-    MyCompareHists(hists = SBstatHist18+SBstatHist22,
-                legend_titles = legend_titles,
-                title="S/#sqrt{B} %s (%s)"%(histtype[2],chargetype), extra_pad=0,ratio_range="0.5,2.5",
-                x_title = var[1]+" (GeV)", y_title = "Events/GeV",plot_name =
-                var[0]+"_"+selname+"_"+chargetype, output_file = output, ratio = True, outputfolder=output_folder_name)
+    # MyCompareHists(hists = SBstatHist18+SBstatHist22,
+    #             legend_titles = legend_titles,
+    #             title="S/#sqrt{B} %s (%s)"%(histtype[2],chargetype), extra_pad=0,ratio_range="0.5,2.5",
+    #             x_title = var[1]+" (GeV)", y_title = "Events/GeV",plot_name =
+    #             var[0]+"_"+selname+"_"+chargetype, output_file = output, ratio = True, outputfolder=output_folder_name)
 
         
 #--------------------------------------------------------------------        
