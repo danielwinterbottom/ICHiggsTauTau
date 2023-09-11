@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 #python scripts/makeDatacards_tauSF.py --systs --batch --years 2016_preVFP,2016_postVFP,2017,2018 --output_folder tau_SF_UL_220223_medium_PFMet_oldpTetacuts_v1
+#for y in 2018 2017 2016_preVFP 2016_postVFP; do cd ${y}/mt; hadd -f ztt.datacard.pt_2_vs_m_vis.mt.${y}.medium.PFMet.root datacard*.root; cd ../zmm/; hadd -f ztt.datacard.m_vis.zmm.${y}.medium.root datacard*.root; cd ../../; done
 
 # importing packages
 import sys
@@ -57,6 +58,7 @@ parser.add_option('--wp', help= 'Name of VsJet WP to use', default='medium')
 parser.add_option("--batch", dest="batch", action='store_true', default=False, help="Submit on batch.")
 parser.add_option("--systs", dest="systs", action='store_true', default=False, help="Add systematic variations.")
 parser.add_option("--v2p5", dest="v2p5", action='store_true', default=False, help="Use DeepTau v2p5")
+parser.add_option("--embedding", dest="embedding", action='store_true', default=False, help="Produce datacards for embedded samples")
 (options, args) = parser.parse_args()
 
 # initialising variables
@@ -115,7 +117,9 @@ for year in years:
         ' --syst_tquark=\'CMS_htt_ttbarShape\'', # Top pT re-weighting
         ' --syst_zwt=\'CMS_htt_dyShape\''
       ]
-  
+
+    if options.embedding:  
+      common_shape_systematics += [' --syst_embedding_tt="CMS_htt_emb_ttbar_%(year)s"' % vars()] # ttbar contamination in embedding
 
   if not os.path.isdir('%(output_folder)s/%(year)s' % vars()):
     os.system("mkdir %(output_folder)s/%(year)s" % vars())
@@ -147,23 +151,29 @@ for year in years:
            run_cmd_7=''
            run_cmd_8=''
 
-           extra=''
-           if ',' in var_used: extra = '--do_unrolling=0' 
+           extra_nosysts=''
+           if options.embedding: extra_nosysts+='--embedding '
+           if ',' in var_used: extra_nosysts += '--do_unrolling=0 ' 
 
-
-           if options.systs:
-             for s in common_shape_systematics: extra+=' %s' % s
- 
-           extra_mt = extra
 
            systs = ['']
            if ch == 'mt': systs+=mt_sep_shape_systematics
 
            for s in systs: 
+             extra = extra_nosysts
+             extra_mt = extra_nosysts
              if s !='':
-               extra_mt=' %s --no_default' % s 
- 
+               # remove nominal histograms and add systematic variations for systematics that come from different ROOT files
+               extra_mt+=' %s --no_default' % s 
+             else:
+               # the common shape systematics come from reweighting only, so we define these when we run the nominal histograms 
+               if options.systs: 
+                 for common_syst in common_shape_systematics: 
+                   extra+=' %s' % common_syst
+                   extra_mt+=' %s' % common_syst
+
              if ',' in var_used: extra_mt += ' --do_unrolling=0'       
+             var_name=var_used
 
              s_name=''
              if '--' in s and '=' in s: s_name='_'+s.split('--')[1].split('=')[0]
