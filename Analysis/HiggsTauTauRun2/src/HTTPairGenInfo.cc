@@ -116,21 +116,21 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
 
       // so called v3 of corrections where em has no applied correction and is used to "calibrate" other channels
       if(channel_==channel::tt) {
-        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) scale_str = "(x-y)*0.929 + y*(1.+0.005)";
-        if(era_ == era::data_2017 || era_ == era::data_2017UL) scale_str = "(x-y)*0.935 + y*(1.+-0.002)";
-        if(era_ == era::data_2018 || era_ == era::data_2018UL) scale_str = "(x-y)*0.885 + y*(1.+-0.004)";
+        if(era_ == era::data_2016) scale_str = "(x-y)*0.929 + y*(1.+0.005)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*0.935 + y*(1.+-0.002)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*0.885 + y*(1.+-0.004)";
       } else if (channel_==channel::et){
-        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) scale_str = "(x-y)*0.966 + y*(1.+-0.003)";
-        if(era_ == era::data_2017 || era_ == era::data_2017UL) scale_str = "(x-y)*0.984 + y*(1.+-0.002)";
-        if(era_ == era::data_2018 || era_ == era::data_2018UL) scale_str = "(x-y)*0.954 + y*(1.+-0.007)";
+        if(era_ == era::data_2016) scale_str = "(x-y)*0.966 + y*(1.+-0.003)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*0.984 + y*(1.+-0.002)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*0.954 + y*(1.+-0.007)";
       } else if (channel_==channel::mt){
-        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) scale_str = "(x-y)*0.967 + y*(1.+-0.007)";
-        if(era_ == era::data_2017 || era_ == era::data_2017UL) scale_str = "(x-y)*0.979 + y*(1.+-0.000)";
-        if(era_ == era::data_2018 || era_ == era::data_2018UL) scale_str = "(x-y)*0.952 + y*(1.+0.001)";
+        if(era_ == era::data_2016) scale_str = "(x-y)*0.967 + y*(1.+-0.007)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*0.979 + y*(1.+-0.000)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*0.952 + y*(1.+0.001)";
       } else if (channel_==channel::em){
-        if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
-        if(era_ == era::data_2017 || era_ == era::data_2017UL) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
-        if(era_ == era::data_2018 || era_ == era::data_2018UL) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
+        if(era_ == era::data_2016) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
+        if(era_ == era::data_2017) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
+        if(era_ == era::data_2018) scale_str = "(x-y)*1.000 + y*(1.+0.000)";
       }
     } //else {
       //no njets bins version
@@ -218,7 +218,7 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     event->Add("gen_met_vec",neutrinos);
 
 
-    if(is_embedded_&& (channel_==channel::em || channel_==channel::et || channel_==channel::mt || channel_==channel::tt) && (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)) {
+    if(is_embedded_&& (channel_==channel::em || channel_==channel::et || channel_==channel::mt || channel_==channel::tt) && (era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018)) {
       Met *old_met = new Met(*mets);
       // up uncertainty is uncorrected met so first copy this and add to the event
       event->Add("pfMET_up", old_met);

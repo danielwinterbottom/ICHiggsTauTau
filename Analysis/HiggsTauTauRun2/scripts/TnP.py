@@ -42,6 +42,8 @@ defaults = {
     "embedded": False,
     "embed_sel": False,
     "embed_dz": False,
+    "aiso": False,
+    "em_iso":False, 
     }
 
 if options.cfg:
@@ -77,7 +79,10 @@ parser.add_argument("--embed_dz", dest="embed_dz", action='store_true')
 parser.add_argument("--fine_dz_bins", dest="fine_dz_bins", action='store_true')
 parser.add_argument("--alt_dz_bins", dest="alt_dz_bins", action='store_true')
 parser.add_argument("--highpT", dest="highpT", action='store_true')
-
+parser.add_argument("--aiso", dest="aiso", action='store_true',
+    help="Compute scale-factors or anti-isolated region")
+parser.add_argument("--em_iso", dest="em_iso", action='store_true',
+    help="Use iso-cuts defined for emu channel.")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -95,6 +100,7 @@ print 'tight tag         =', options.tight_tag
 print 'embedded          =', options.embedded
 print 'embed sel         =', options.embed_sel
 print 'embed dz          =', options.embed_dz
+print 'aiso              =', options.aiso
 print '###############################################'
 print ''
 
@@ -167,6 +173,9 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
           #trg_eta_bins='[0,0.9,1.2,2.1,2.4]'
           trg_eta_bins='[0,2.4]'
           trg_dr_bins='[0.5,0.6,0.7,0.8,0.9,1.0,1.5,2.0,2.5,3.0,4.0,5.0]'
+      if options.em_iso:
+        trg_pt_bins = '[10,12,14,16,18,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
+
 
       if options.highpT:
         trg_eta_bins='[0,2.4]'
@@ -1064,6 +1073,17 @@ id_probe_2 = '(id_probe_2)'
 if options.channel == 'tpzmm':
   iso_cut_1='iso_1<0.15'
   iso_cut_2='iso_2<0.15'
+
+  if options.aiso:
+    iso_cut_1='iso_1>=0.15&&iso_1<0.5'
+    iso_cut_2='iso_2>=0.15&&iso_2<0.5'
+
+  if options.em_iso:
+    iso_cut_1='iso_1<0.2'
+    iso_cut_2='iso_2<0.2'
+    if options.aiso:
+      iso_cut_1='iso_1>0.2&&iso_1<0.5'
+      iso_cut_2='iso_2>0.2&&iso_2<0.5'
   
   if options.era in ['UL_17','UL_18']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'

@@ -284,7 +284,7 @@ if options.proc_embed or options.proc_all:
         JOB='%s_2016_postVFP' % (sa)
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(EMBEDFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/dwinterb/May25_EMB_124X_2016-postVFP/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_embedded\":true,%(jetuncert_string)s}}' "%vars());
         for FLATJSONPATCH in flatjsons:
-            nperjob = 20
+            nperjob = 1
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_j_hi^scale_j_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_cent_hi^scale_j_cent_lo','').replace('^scale_j_full_hi^scale_j_full_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_relsamp_hi^scale_j_relsamp_lo','').replace('^scale_j_relbal_hi^scale_j_relbal_lo','').replace('^scale_j_abs_hi^scale_j_abs_lo','').replace('^scale_j_abs_year_hi^scale_j_abs_year_lo','').replace('^scale_j_flav_hi^scale_j_flav_lo','').replace('^scale_j_bbec1_hi^scale_j_bbec1_lo','').replace('^scale_j_bbec1_year_hi^scale_j_bbec1_year_lo','').replace('^scale_j_ec2_hi^scale_j_ec2_lo','').replace('^scale_j_ec2_year_hi^scale_j_ec2_year_lo','').replace('^scale_j_hf_hi^scale_j_hf_lo','').replace('^scale_j_hf_year_hi^scale_j_hf_year_lo','').replace('^scale_j_relsamp_year_hi^scale_j_relsamp_year_lo','').replace('^res_j_hi^res_j_lo','')
 
             FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','').replace('^met_cl_hi^met_cl_lo','').replace('^met_uncl_hi^met_uncl_lo','').replace('^scale_met_hi^scale_met_lo','').replace('^res_met_hi^res_met_lo','').replace('^scale_met_njets0_hi^scale_met_njets0_lo','').replace('^res_met_njets0_hi^res_met_njets0_lo','').replace('^scale_met_njets1_hi^scale_met_njets1_lo','').replace('^res_met_njets1_hi^res_met_njets1_lo','').replace('^scale_met_njets2_hi^scale_met_njets2_lo','').replace('^res_met_njets2_hi^res_met_njets2_lo','')
@@ -298,8 +298,8 @@ if options.proc_embed or options.proc_all:
 
             if options.jetmetuncerts and 'default' in FLATJSONPATCH: n_scales +=2
 
-            if n_scales*n_channels>=24: nperjob = 10
-            if n_scales*n_channels>=48: nperjob=5
+            if n_scales*n_channels>=12: nperjob = 1
+            if n_scales*n_channels>=24: nperjob=1
 
             nfiles = sum(1 for line in open('%(EMBEDFILELIST)s_%(sa)s.dat' % vars()))
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -327,15 +327,15 @@ if options.proc_embed or options.proc_all:
 
 if options.proc_bkg or options.proc_all:
   central_samples = [
-   # # Drell-Yan LO
-   # 'DY1JetsToLL-LO',
-   # 'DY2JetsToLL-LO',
-   # 'DY3JetsToLL-LO',
-   # 'DY4JetsToLL-LO',
+    # Drell-Yan LO
+    'DY1JetsToLL-LO',
+    'DY2JetsToLL-LO',
+    'DY3JetsToLL-LO',
+    'DY4JetsToLL-LO',
     'DYJetsToLL-LO',
 
-   # # Low mass Drell Yan LO
-   # 'DYJetsToLL_M-10to50-LO',
+    # Low mass Drell Yan LO
+    'DYJetsToLL_M-10to50-LO',
 
    # # Drell-Yan NLO
    # 'DYJetsToLL_0J-NLO',
@@ -343,55 +343,55 @@ if options.proc_bkg or options.proc_all:
    # 'DYJetsToLL_2J-NLO',
    # 'DYJetsToLL-NLO',
 
-   # # Electroweak W and Z
-   # 'EWKWMinus2Jets_WToLNu',
-   # 'EWKWPlus2Jets_WToLNu',
-   # 'EWKZ2Jets_ZToLL',
+    # Electroweak W and Z
+    'EWKWMinus2Jets_WToLNu',
+    'EWKWPlus2Jets_WToLNu',
+    'EWKZ2Jets_ZToLL',
 
-   # # W + Jets L0
-   # 'WJetsToLNu-LO',
-   # 'W1JetsToLNu-LO',
-   # 'W2JetsToLNu-LO',
-   # 'W3JetsToLNu-LO',
-   # 'W4JetsToLNu-LO',
+    # W + Jets L0
+    'WJetsToLNu-LO',
+    'W1JetsToLNu-LO',
+    'W2JetsToLNu-LO',
+    'W3JetsToLNu-LO',
+    'W4JetsToLNu-LO',
 
-#  #  # W + Jets NLO
-#  #  'WJetsToLNu_0J-NLO',
-#  #  'WJetsToLNu_1J-NLO',
-#  #  'WJetsToLNu_2J-NLO',
-#  #  'WJetsToLNu-NLO',
+#    # W + Jets NLO
+#    'WJetsToLNu_0J-NLO',
+#    'WJetsToLNu_1J-NLO',
+#    'WJetsToLNu_2J-NLO',
+#    'WJetsToLNu-NLO',
 
-   # # ttbar
-   # 'TTTo2L2Nu',
-   # 'TTToHadronic',
-   # 'TTToSemiLeptonic',
+    # ttbar
+    'TTTo2L2Nu',
+    'TTToHadronic',
+    'TTToSemiLeptonic',
 
-   # # Split diboson (Missing Files: WZTo1L3Nu, WZTo1L1Nu2Q, WWTo1L1Nu2Q)
-   # 'WZTo2Q2L',
-   # 'WZTo3LNu',
-   # 'WWTo2L2Nu',
-   # 'ZZTo2L2Nu',
-   # 'ZZTo4L', 
-   # 'WZTo1L3Nu',
-   # 'WZTo1L1Nu2Q',
-   # 'WWTo1L1Nu2Q',
+    # Split diboson (Missing Files: WZTo1L3Nu, WZTo1L1Nu2Q, WWTo1L1Nu2Q)
+    'WZTo2Q2L',
+    'WZTo3LNu',
+    'WWTo2L2Nu',
+    'ZZTo2L2Nu',
+    'ZZTo4L', 
+    'WZTo1L3Nu',
+    'WZTo1L1Nu2Q',
+    'WWTo1L1Nu2Q',
 
-#  #  # Triboson
-#  #  'WWZ',
-#  #  'WWZ-ext1',
-#  #  'WZZ',
-#  #  'WZZ-ext1',
-#  #  'WWW',
-#  #  'WWW-ext1',
-#  #  'ZZZ',
-#  #  'ZZZ-ext1',
+#    # Triboson
+#    'WWZ',
+#    'WWZ-ext1',
+#    'WZZ',
+#    'WZZ-ext1',
+#    'WWW',
+#    'WWW-ext1',
+#    'ZZZ',
+#    'ZZZ-ext1',
 
-   # # Other backgrounds
-   # 'WGToLNuG',
-   # 'Tbar-t',
-   # 'Tbar-tW',
-   # 'T-t',
-   # 'T-tW',
+    # Other backgrounds
+    'WGToLNuG',
+    'Tbar-t',
+    'Tbar-tW',
+    'T-t',
+    'T-tW',
 
 #    # SM Higgs
 #    'GluGluHToTauTau_M125',

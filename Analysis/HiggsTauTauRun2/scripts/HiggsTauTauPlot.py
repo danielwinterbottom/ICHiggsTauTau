@@ -1962,16 +1962,16 @@ if options.syst_eff_t != '':
     systematics['syst_eff_t_up'] = ('' , '_'+options.syst_eff_t+'Up', 'wt*wt_tau_id_up', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
     systematics['syst_eff_t_down'] = ('' , '_'+options.syst_eff_t+'Down', 'wt*wt_tau_id_down', ['ZL','ZJ','VVJ','TTJ','QCD','W'], False)
 if options.syst_tquark != '':
-    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'Up', 'wt*wt_tquark_up', ['ZTT','ZL','ZJ','VVT','VVJ','QCD','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
-    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'Down', 'wt*wt_tquark_down', ['ZTT','ZL','ZJ','VVJ','VVT','QCD','W', 'signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)  
+    systematics['syst_tquark_up'] = ('' , '_'+options.syst_tquark+'Up', 'wt*wt_tquark_up', ['ZTT','ZL','ZJ','VVT','VVJ','QCD','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','EmbedZL'], False)
+    systematics['syst_tquark_down'] = ('' , '_'+options.syst_tquark+'Down', 'wt*wt_tquark_down', ['ZTT','ZL','ZJ','VVJ','VVT','QCD','W', 'signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT','EmbedZL'], False)  
 #    syst_alt_name='CMS_htt_ttbarShape_TheoryVsData'
 #    if 'ttbarShape' in options.syst_tquark:
 #      syst_alt_name = options.syst_tquark.replace('ttbarShape','ttbarShape_TheoryVsData') 
 #    systematics['syst_tquark_alt_up'] = ('' , '_'+syst_alt_name+'Up', 'wt*wt_tquark_alt', ['ZTT','ZL','ZJ','VVT','VVJ','QCD','W','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False)
 #    systematics['syst_tquark_alt_down'] = ('' , '_'+syst_alt_name+'Down', 'wt*(2.-wt_tquark_alt)', ['ZTT','ZL','ZJ','VVJ','VVT','QCD','W', 'signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT'], False) 
 if options.syst_zwt != '':
-    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'Up', 'wt*wt_zpt_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT'], False)
-    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT'], False)
+    systematics['syst_zwt_up'] = ('' , '_'+options.syst_zwt+'Up', 'wt*wt_zpt_up', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT','EmbedZL'], False)
+    systematics['syst_zwt_down'] = ('' , '_'+options.syst_zwt+'Down', 'wt*wt_zpt_down', ['VVT','VVJ','TTT','TTJ','QCD','W','signal','jetFakes','EmbedZTT','EmbedZL'], False)
 if options.syst_w_fake_rate != '':
     to_skip = ['ZTT','ZL','ZJ','VVT','VVJ','TTT','TTJ','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT']
     if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','tauid2016','tauid2017','mvadm2016']: to_skip = ['ZTT','ZL','VVT','TTT','QCD','signal','jetFakes','EWKZ','ggH_hww125','qqH_hww125','ggH_hww','qqH_hww','EmbedZTT']
@@ -2894,14 +2894,14 @@ def GetEmbeddedNode(ana, add_name='', samples=[], plot='', wt='', sel='', cat=''
     if get_os: OSSS = 'os'
     else: OSSS = '!os'
     wt_ = wt
-    if options.analysis in ['mssmrun2','vlq']:
-      if options.channel == 'tt': 
-        wt_+='*(pt_1/gen_match_1_pt<1.5&&pt_2/gen_match_2_pt<1.5)'
-        if options.year == "2016": wt_+='*1.008'
-        else: wt_+='*1.01'
-      if options.channel in ['et','mt']: wt_+='*(pt_2/gen_match_2_pt<1.5)*1.005'
+    #if options.analysis in ['mssmrun2','vlq']:
+      #if options.channel == 'tt': 
+      #  wt_+='*(pt_1/gen_match_1_pt<1.5&&pt_2/gen_match_2_pt<1.5)'
+      #  if options.year == "2016": wt_+='*1.008'
+      #  else: wt_+='*1.01'
+      #if options.channel in ['et','mt']: wt_+='*(pt_2/gen_match_2_pt<1.5)*1.005'
       #wt_+='*wt_emb_sel_kit/trackingweight_1'
-      wt_+='*1/trackingweight_1'
+      #wt_+='*1/trackingweight_1'
     if options.channel == 'em':
       #for em channel there are non-closures wrt data and MC which are corrected here with these additional correction factors
       if options.era in ['cpsummer16','cpdecay16',"legacy16",'UL_16_preVFP','UL_16_postVFP','mvadm2016']: wt_+='*1.106'
@@ -4102,7 +4102,9 @@ def NormEmbedToMC(ana,outfile='output.root'):
 
     
 def TTBarEmbeddingSyst(ana,outfile,template_name):
-    nominal_hist = outfile.Get(nodename+'/EmbedZTT')    
+    nominal_hist = outfile.Get(nodename+'/EmbedZTT')
+    if not nominal_hist:
+      nominal_hist = outfile.Get(nodename+'/EmbedZL') 
     shift_hist = outfile.Get(nodename+'/TTT_embed_syst')
     shift_hist_2 = outfile.Get(nodename+'/VVT_embed_syst')
     shift_hist.Add(shift_hist_2)
@@ -4111,8 +4113,8 @@ def TTBarEmbeddingSyst(ana,outfile,template_name):
     down_hist = nominal_hist.Clone()
     up_hist.Add(shift_hist)
     down_hist.Add(shift_hist,-1)
-    up_hist.SetName('EmbedZTT_'+template_name+'Up')
-    down_hist.SetName('EmbedZTT_'+template_name+'Down')
+    up_hist.SetName(nominal_hist.GetName()+'_'+template_name+'Up')
+    down_hist.SetName(nominal_hist.GetName()+'_'+template_name+'Down')
     outfile.cd(nodename)
     up_hist.Write()
     down_hist.Write()
@@ -4540,7 +4542,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
               cat_fail = '('+cats['fail']+')*('+cats['baseline']+')'
               GenerateEmbedded(ana, '_pass'+add_name, embed_samples, plot, wt, sel, cat_pass, z_sels, not options.do_ss)
               GenerateEmbedded(ana, '_fail'+add_name, embed_samples, plot, wt, sel, cat_fail, z_sels, not options.do_ss)
-        if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZLL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
+        if options.embedding and options.channel in ['zmm','zee'] and 'EmbedZL' not in samples_to_skip: GenerateZLEmbedded(ana, add_name, embed_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
         if not options.embedding or options.channel not in ['zmm','zee']:
           if 'ZTT' not in samples_to_skip and not options.embedding:
             GenerateZTT(ana, add_name, ztt_samples, plot, wt, sel, cat, z_sels, not options.do_ss)
@@ -5036,6 +5038,9 @@ while len(systematics) > 0:
       print("------------------")
       # Add embedded samples if using
       if options.embedding:
+        print("------------------")
+        print(embed_samples)
+        print("------------------")
         for sample_name in embed_samples:
           ana.AddSamples(embed_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
           
@@ -5669,7 +5674,7 @@ if options.era in ["smsummer16",'cpsummer16','cpdecay16',"legacy16",'UL_16_preVF
   for hist in hists_to_add: hist.Write()
 
 
-if options.analysis in ['mssmrun2','vlq']: #and options.era not in ['UL_16_preVFP','UL_16_postVFP','UL_17','UL_18']: //was failing before
+if options.analysis in ['mssmrun2','vlq'] and options.era not in ['UL_16_preVFP','UL_16_postVFP','UL_17','UL_18']:
    RenameMSSMrun2Datacards(outfile)
 
 

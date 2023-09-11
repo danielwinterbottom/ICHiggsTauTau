@@ -58,7 +58,9 @@ parser.add_option('--wp', help= 'Name of VsJet WP to use', default='medium')
 parser.add_option('--wpvsele', help= 'Name of VsEle WP to use', default='vvloose')
 parser.add_option('--sf_option', help= 'Select which SFs you want to apply', default='none')
 parser.add_option("--v2p5", dest="v2p5", action='store_true', default=False, help="Use DeepTau v2p5")
+parser.add_option("--embedding", dest="embedding", action='store_true', default=False, help="Produce datacards for embedded samples")
 (options, args) = parser.parse_args()
+
 
 # initialising variables
 output_folder = options.output_folder
@@ -149,7 +151,7 @@ var_mt = [
          ['pt_2', BINS(0,200,5,1)],
          ['pt_2_extended', '[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200,210,230,260,300]'],
        #  ['pt_2_highpT', '(400,100,500)'],
-         #['pt_1', BINS(0,200,5,1)],
+         ['pt_1', BINS(0,200,5,1)],
          #['tau_decay_mode_2,pt_2', '[0,1,10,11],[20,25,30,35,40,50,60,80,100,200]'],
          #['met', BINS(0,200,10,1)],
          #['pt_vis', BINS(0,300,10,1)],
@@ -169,7 +171,7 @@ var_et = [
          #['eta_2',BINS(-2.1,2.1,0.1,0.1)],
          ['tau_decay_mode_2',BINS(0,12,1,1)],
          ['pt_2', BINS(0,200,5,1)],
-         #['pt_1', BINS(0,200,5,1)],
+         ['pt_1', BINS(0,200,5,1)],
          #['tau_decay_mode_2,pt_2', '[0,1,10,11],[20,25,30,35,40,50,60,80,100,200]'],
          #['met', BINS(0,200,10,1)],
          #['pt_vis', BINS(0,300,10,1)],
@@ -181,7 +183,9 @@ var_et = [
 
 var_zmm = [
           ['pt_tt', '[0,10,20,30,40,60,80,100,120,160,200,280,320,400,600]'],
-          ['m_vis', BINS(0,300,10,1)],
+          ['m_vis', BINS(0,300,5,1)],
+          ['pt_1', BINS(0,200,5,1)],
+          ['pt_2', BINS(0,200,5,1)], 
           ]
 
 var_schemes = {'et' : var_et,
@@ -203,13 +207,17 @@ for year in years:
 
     if 'ptbinned' in options.sf_option or 'dmbinned' in options.sf_option or 'highpT' in options.sf_option:
       if 'dmbinned' in options.sf_option: 
-        # new ln fit
         json_name='/vols/cms/dw515/workareas/CH_tauSF/CMSSW_10_2_13/src/CombineHarvester/TauSF/outputs/tauSF_ESstudies_TauCQMJul31_vvlooseVSe_floatTES_v4/cmb/tau_SF_strings_dm_binned_mediumvsjet_vvloosevsele_pol-2.json'  
+        if options.embedding:
+          json_name='/vols/cms/dw515/workareas/CH_tauSF/CMSSW_10_2_13/src/CombineHarvester/TauSF/outputs/tauSF_EMB_medium_vvlooseVse_29Aug_v1/cmb/tau_SF_strings_dm_binned_mediumvsjet_vvloosevsele.json'  
 
         if ch == 'et':
           json_name='/vols/cms/dw515/workareas/CH_tauSF/CMSSW_10_2_13/src/CombineHarvester/TauSF/outputs/tauSF_ESstudies_TauCQMJul31_tightVSe_floatTES_v4/cmb/tau_SF_strings_dm_binned_mediumvsjet_tightvsele.json'  
+          if options.embedding:
+            json_name='/vols/cms/dw515/workareas/CH_tauSF/CMSSW_10_2_13/src/CombineHarvester/TauSF/outputs/tauSF_EMB_medium_tightVse_29Aug_v1/cmb/tau_SF_strings_dm_binned_mediumvsjet_tightvsele.json'
       elif 'highpT' in options.sf_option: json_name = '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/tau_SF_pt_binned_highpT_DeepTau2018v2p5VSjet.json' % vars()
       else: json_name= '%(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/input/tau_SF_pt_binned.json' % vars()
+
       with open(json_name) as json_file:
         sf_data = json.load(json_file) 
       if ch == 'et' or options.tightVSe:
@@ -275,6 +283,8 @@ for year in years:
            if '_highpT' in var_used: 
              var_used = var_used.replace('_highpT','')
              add_cond+=' --log_y'
+
+           if options.embedding: add_cond+=' --embedding '
         
  
            bin_used = item[1]
