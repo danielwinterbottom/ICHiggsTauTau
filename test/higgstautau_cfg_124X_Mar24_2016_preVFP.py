@@ -1026,7 +1026,13 @@ process.icEle23Mu8ObjectProducer = producers.icTriggerObjectProducer.clone(
       storeOnlyIfFired = cms.bool(False)
       )
 
-
+process.icEle24LooseTau30ObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle24LooseTau30"),
+      hltPath = cms.string("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
 
 process.icEle24LooseTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
@@ -1370,6 +1376,7 @@ process.icTriggerObjectSequence += cms.Sequence(
       process.icEle12Mu23ObjectProducer +
       process.icEle23Mu8ObjectProducer +
       process.icEle24LooseTau20ObjectProducer +
+      process.icEle24LooseTau30ObjectProducer +
       process.icEle24LooseTau20SingleL1ObjectProducer +
       process.icEle22LooseTau20SingleL1ObjectProducer +
       process.icEle25TightEta2p1GsfObjectProducer +
