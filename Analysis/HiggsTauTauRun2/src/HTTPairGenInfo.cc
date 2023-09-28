@@ -294,6 +294,12 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
 
    double gen_nu_p_1=-9999.;
    double gen_nu_p_2=-9999.;
+   double gen_nu_px_1=-9999.;
+   double gen_nu_px_2=-9999.;
+   double gen_nu_py_1=-9999.;
+   double gen_nu_py_2=-9999.;
+   double gen_nu_pz_1=-9999.;
+   double gen_nu_pz_2=-9999.;
    double gen_nu_phi_1=-9999.;
    double gen_nu_phi_2=-9999.;
    double gen_nu_eta_1=-9999.;
@@ -301,6 +307,13 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
 
    double gen_vis_p_1=-9999.;
    double gen_vis_p_2=-9999.;
+   double gen_vis_px_1=-9999.;
+   double gen_vis_px_2=-9999.;
+   double gen_vis_py_1=-9999.;
+   double gen_vis_py_2=-9999.;
+   double gen_vis_pz_1=-9999.;
+   double gen_vis_pz_2=-9999.;
+
    double gen_vis_phi_1=-9999.;
    double gen_vis_phi_2=-9999.;
    double gen_vis_eta_1=-9999.;
@@ -386,10 +399,16 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        gen_match_1 = mcorigin::tauHad;
        tauFlag1 = leading_tau_match.at(0).second->flavour();
        gen_nu_p_1=leading_tau_match.at(0).second->nu_vector().P();
+       gen_nu_px_1=leading_tau_match.at(0).second->nu_vector().Px();
+       gen_nu_py_1=leading_tau_match.at(0).second->nu_vector().Py();
+       gen_nu_pz_1=leading_tau_match.at(0).second->nu_vector().Pz();
        gen_nu_phi_1=leading_tau_match.at(0).second->nu_vector().Phi();
        gen_nu_eta_1=leading_tau_match.at(0).second->nu_vector().Rapidity();
 
        gen_vis_p_1=leading_tau_match.at(0).second->vector().P();
+       gen_vis_px_1=leading_tau_match.at(0).second->vector().Px();
+       gen_vis_py_1=leading_tau_match.at(0).second->vector().Py();
+       gen_vis_pz_1=leading_tau_match.at(0).second->vector().Pz();
        gen_vis_E_1=leading_tau_match.at(0).second->vector().E();
        gen_vis_phi_1=leading_tau_match.at(0).second->vector().Phi();
        gen_vis_eta_1=leading_tau_match.at(0).second->vector().Rapidity();
@@ -466,10 +485,16 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
        gen_match_2 = mcorigin::tauHad;
        tauFlag2 = subleading_tau_match.at(0).second->flavour(); 
        gen_nu_p_2=subleading_tau_match.at(0).second->nu_vector().P();
+       gen_nu_px_2=subleading_tau_match.at(0).second->nu_vector().Px();
+       gen_nu_py_2=subleading_tau_match.at(0).second->nu_vector().Py();
+       gen_nu_pz_2=subleading_tau_match.at(0).second->nu_vector().Pz();
        gen_nu_phi_2=subleading_tau_match.at(0).second->nu_vector().Phi();
        gen_nu_eta_2=subleading_tau_match.at(0).second->nu_vector().Rapidity();
 
        gen_vis_p_2=subleading_tau_match.at(0).second->vector().P();
+       gen_vis_px_2=subleading_tau_match.at(0).second->vector().Px();
+       gen_vis_py_2=subleading_tau_match.at(0).second->vector().Py();
+       gen_vis_pz_2=subleading_tau_match.at(0).second->vector().Pz();
        gen_vis_E_2=subleading_tau_match.at(0).second->vector().E();
        gen_vis_phi_2=subleading_tau_match.at(0).second->vector().Phi();
        gen_vis_eta_2=subleading_tau_match.at(0).second->vector().Rapidity();
@@ -517,18 +542,30 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    event->Add("gen_ip_2", gen_ip_2);
 
    event->Add("gen_nu_p_1",gen_nu_p_1);
+   event->Add("gen_nu_px_1",gen_nu_px_1);
+   event->Add("gen_nu_py_1",gen_nu_py_1);
+   event->Add("gen_nu_pz_1",gen_nu_pz_1);
    event->Add("gen_nu_phi_1",gen_nu_phi_1);
    event->Add("gen_nu_eta_1",gen_nu_eta_1);
 
    event->Add("gen_nu_p_2",gen_nu_p_2);
+   event->Add("gen_nu_px_2",gen_nu_px_2);
+   event->Add("gen_nu_py_2",gen_nu_py_2);
+   event->Add("gen_nu_pz_2",gen_nu_pz_2);
    event->Add("gen_nu_phi_2",gen_nu_phi_2);
    event->Add("gen_nu_eta_2",gen_nu_eta_2);
 
    event->Add("gen_vis_p_1",  gen_vis_p_1);
+   event->Add("gen_vis_px_1",  gen_vis_px_1);
+   event->Add("gen_vis_py_1",  gen_vis_py_1);
+   event->Add("gen_vis_pz_1",  gen_vis_pz_1);
    event->Add("gen_vis_E_1",  gen_vis_E_1);
    event->Add("gen_vis_phi_1",gen_vis_phi_1);
    event->Add("gen_vis_eta_1",gen_vis_eta_1);
    event->Add("gen_vis_p_2",  gen_vis_p_2);
+   event->Add("gen_vis_px_2",  gen_vis_px_2);
+   event->Add("gen_vis_py_2",  gen_vis_py_2);
+   event->Add("gen_vis_pz_2",  gen_vis_pz_2);
    event->Add("gen_vis_E_2",  gen_vis_E_2);
    event->Add("gen_vis_phi_2",gen_vis_phi_2);
    event->Add("gen_vis_eta_2",gen_vis_eta_2);

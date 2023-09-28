@@ -18,7 +18,7 @@
   },
   "sequence": {
     "usePFMET" : false,
-    "do_gen_analysis" : true,
+    "do_gen_analysis" : false,
     "make_mva_ntuple": true,
     "mc"            : "mc2018",
     "era"           : "data_2018",

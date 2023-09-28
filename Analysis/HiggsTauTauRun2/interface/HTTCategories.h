@@ -133,6 +133,8 @@ class HTTCategories : public ModuleBase {
   float isoweight_2_;
   float effweight_;
   bool os_;
+  int q1_;
+  int q2_;
   bool dilepton_veto_;
   bool extraelec_veto_;
   bool extramuon_veto_;
@@ -1220,6 +1222,12 @@ class HTTCategories : public ModuleBase {
 
   double gen_nu_p_1_;
   double gen_nu_p_2_;
+  double gen_nu_px_1_;
+  double gen_nu_px_2_;
+  double gen_nu_py_1_;
+  double gen_nu_py_2_;
+  double gen_nu_pz_1_;
+  double gen_nu_pz_2_;
   double gen_nu_phi_1_;
   double gen_nu_phi_2_;
   double gen_nu_eta_1_;
@@ -1237,6 +1245,12 @@ class HTTCategories : public ModuleBase {
   double tauIDScaleFactorWeight_highpt_deeptauid_2_;
   double gen_vis_p_1_;
   double gen_vis_p_2_;
+  double gen_vis_px_1_;
+  double gen_vis_px_2_;
+  double gen_vis_py_1_;
+  double gen_vis_py_2_;
+  double gen_vis_pz_1_;
+  double gen_vis_pz_2_;
   double gen_vis_E_1_;
   double gen_vis_E_2_;
   double gen_vis_phi_1_;

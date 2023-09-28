@@ -1688,6 +1688,12 @@ namespace ic {
       mvatree_->Branch("genpT", &gen_pt_);
       mvatree_->Branch("gen_nu_p_1",   &gen_nu_p_1_);
       mvatree_->Branch("gen_nu_p_2",   &gen_nu_p_2_);
+      mvatree_->Branch("gen_nu_px_1",   &gen_nu_px_1_);
+      mvatree_->Branch("gen_nu_px_2",   &gen_nu_px_2_);
+      mvatree_->Branch("gen_nu_py_1",   &gen_nu_py_1_);
+      mvatree_->Branch("gen_nu_py_2",   &gen_nu_py_2_);
+      mvatree_->Branch("gen_nu_pz_1",   &gen_nu_pz_1_);
+      mvatree_->Branch("gen_nu_pz_2",   &gen_nu_pz_2_);
       mvatree_->Branch("gen_nu_phi_1", &gen_nu_phi_1_);
       mvatree_->Branch("gen_nu_phi_2", &gen_nu_phi_2_);
       mvatree_->Branch("gen_nu_eta_1", &gen_nu_eta_1_);
@@ -1695,6 +1701,12 @@ namespace ic {
 
       mvatree_->Branch("gen_vis_p_1",   &gen_vis_p_1_);
       mvatree_->Branch("gen_vis_p_2",   &gen_vis_p_2_);
+      mvatree_->Branch("gen_vis_px_1",  &gen_vis_px_1_);
+      mvatree_->Branch("gen_vis_px_2",  &gen_vis_px_2_);
+      mvatree_->Branch("gen_vis_py_1",  &gen_vis_py_1_);
+      mvatree_->Branch("gen_vis_py_2",  &gen_vis_py_2_);
+      mvatree_->Branch("gen_vis_pz_1",  &gen_vis_pz_1_);
+      mvatree_->Branch("gen_vis_pz_2",  &gen_vis_pz_2_);
       mvatree_->Branch("gen_vis_E_1",   &gen_vis_E_1_);
       mvatree_->Branch("gen_vis_E_2",   &gen_vis_E_2_);
       mvatree_->Branch("gen_vis_phi_1", &gen_vis_phi_1_);
@@ -1933,6 +1945,8 @@ namespace ic {
       mvatree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
       mvatree_->Branch("wt",                &wt_.var_double);
       mvatree_->Branch("os",                &os_);
+      mvatree_->Branch("q1",                &q1_);
+      mvatree_->Branch("q2",                &q2_);
 
       mvatree_->Branch("event",             &event_);
       mvatree_->Branch("run",               &run_);
@@ -1949,6 +1963,7 @@ namespace ic {
       mvatree_->Branch("sc1_pz_2", &sc1_pz_2_);
       mvatree_->Branch("sc1_E_2", &sc1_E_2_);
       mvatree_->Branch("sc1_r9_2", &sc1_r9_2_);
+
       mvatree_->Branch("sc1_ietaieta_2", &sc1_ietaieta_2_);
 
       mvatree_->Branch("sc1_r9_5x5_1", &sc1_r9_5x5_1_);
@@ -2967,6 +2982,10 @@ namespace ic {
     } else {
       os_ = false;
     }
+
+    q1_ = ditau->At(0)->charge(); 
+    q2_ = ditau->At(1)->charge();
+
     //Fill extra lepton veto bools
     dilepton_veto_ = false;
     extraelec_veto_ = false;
@@ -3148,6 +3167,12 @@ namespace ic {
 
     gen_nu_p_1_=-9999.;
     gen_nu_p_2_=-9999.;
+    gen_nu_px_1_=-9999.;
+    gen_nu_px_2_=-9999.;
+    gen_nu_py_1_=-9999.;
+    gen_nu_py_2_=-9999.;
+    gen_nu_pz_1_=-9999.;
+    gen_nu_pz_2_=-9999.;
     gen_nu_phi_1_=-9999.;
     gen_nu_phi_2_=-9999.;
     gen_nu_eta_1_=-9999.;
@@ -3155,6 +3180,12 @@ namespace ic {
 
     gen_vis_p_1_=-9999.;
     gen_vis_p_2_=-9999.;
+    gen_vis_px_1_=-9999.;
+    gen_vis_px_2_=-9999.;
+    gen_vis_py_1_=-9999.;
+    gen_vis_py_2_=-9999.;
+    gen_vis_pz_1_=-9999.;
+    gen_vis_pz_2_=-9999.;
     gen_vis_E_1_=-9999.;
     gen_vis_E_2_=-9999.;
     gen_vis_phi_1_=-9999.;
@@ -3173,6 +3204,12 @@ namespace ic {
 
     event->Exists("gen_nu_p_1")   ? gen_nu_p_1_   = event->Get<double>("gen_nu_p_1")   : -9999.;  
     event->Exists("gen_nu_p_2")   ? gen_nu_p_2_   = event->Get<double>("gen_nu_p_2")   : -9999.; 
+    event->Exists("gen_nu_px_1")   ? gen_nu_px_1_   = event->Get<double>("gen_nu_px_1")   : -9999.;
+    event->Exists("gen_nu_px_2")   ? gen_nu_px_2_   = event->Get<double>("gen_nu_px_2")   : -9999.;
+    event->Exists("gen_nu_py_1")   ? gen_nu_py_1_   = event->Get<double>("gen_nu_py_1")   : -9999.;
+    event->Exists("gen_nu_py_2")   ? gen_nu_py_2_   = event->Get<double>("gen_nu_py_2")   : -9999.;
+    event->Exists("gen_nu_pz_1")   ? gen_nu_pz_1_   = event->Get<double>("gen_nu_pz_1")   : -9999.;
+    event->Exists("gen_nu_pz_2")   ? gen_nu_pz_2_   = event->Get<double>("gen_nu_pz_2")   : -9999.;
     event->Exists("gen_nu_phi_1") ? gen_nu_phi_1_ = event->Get<double>("gen_nu_phi_1") : -9999.; 
     event->Exists("gen_nu_phi_2") ? gen_nu_phi_2_ = event->Get<double>("gen_nu_phi_2") : -9999.; 
     event->Exists("gen_nu_eta_1") ? gen_nu_eta_1_ = event->Get<double>("gen_nu_eta_1") : -9999.; 
@@ -3180,6 +3217,12 @@ namespace ic {
 
     event->Exists("gen_vis_p_1")   ? gen_vis_p_1_   = event->Get<double>("gen_vis_p_1")   : -9999.;
     event->Exists("gen_vis_p_2")   ? gen_vis_p_2_   = event->Get<double>("gen_vis_p_2")   : -9999.;
+    event->Exists("gen_vis_px_1")   ? gen_vis_px_1_   = event->Get<double>("gen_vis_px_1")   : -9999.;
+    event->Exists("gen_vis_px_2")   ? gen_vis_px_2_   = event->Get<double>("gen_vis_px_2")   : -9999.;
+    event->Exists("gen_vis_py_1")   ? gen_vis_py_1_   = event->Get<double>("gen_vis_py_1")   : -9999.;
+    event->Exists("gen_vis_py_2")   ? gen_vis_py_2_   = event->Get<double>("gen_vis_py_2")   : -9999.;
+    event->Exists("gen_vis_pz_1")   ? gen_vis_pz_1_   = event->Get<double>("gen_vis_pz_1")   : -9999.;
+    event->Exists("gen_vis_pz_2")   ? gen_vis_pz_2_   = event->Get<double>("gen_vis_pz_2")   : -9999.;
     event->Exists("gen_vis_E_1")   ? gen_vis_E_1_   = event->Get<double>("gen_vis_E_1")   : -9999.;
     event->Exists("gen_vis_E_2")   ? gen_vis_E_2_   = event->Get<double>("gen_vis_E_2")   : -9999.;
     event->Exists("gen_vis_phi_1") ? gen_vis_phi_1_ = event->Get<double>("gen_vis_phi_1") : -9999.;
