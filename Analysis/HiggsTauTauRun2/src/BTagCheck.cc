@@ -322,7 +322,7 @@ namespace ic {
 	  if (wp_to_check_ == "tight") tight_wp = 0.2783; // medium deepJet wp
 	  else if (wp_to_check_ == "loose") tight_wp = 0.0490; // loose deepJet wp
         }
-	else if (era_ == era::data_2022_preEE) && use_deep_jet_) {
+	else if (era_ == era::data_2022_preEE && use_deep_jet_) {
 	  if (wp_to_check_ == "tight") tight_wp = 0.303; // medium deepJet wp
 	  else if (wp_to_check_ == "loose") tight_wp = 0.0474; // loose deepJet wp
         }
