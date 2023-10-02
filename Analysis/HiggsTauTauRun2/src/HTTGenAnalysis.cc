@@ -965,7 +965,8 @@ namespace ic {
 
       for(auto t : taus) {
         if(t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_hps.push_back(t);
-        if(t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p1.push_back(t);
+        //if(t->GetTauID("byMediumDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p1.push_back(t);
+        if(t->GetTauID("byLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p1.push_back(t);
         if(t->HasTauID("byMediumDeepTau2018v2p5VSjet")&&t->GetTauID("byMediumDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5 && t->GetTauID("decayModeFindingNewDMs") > 0.5 && fabs(t->charge()) == 1 && fabs(t->lead_dz_vertex()) < 0.2) taus_v2p5.push_back(t);
         
       }

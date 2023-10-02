@@ -4,7 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar31_MC_124X_2017/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["zmm"],
+    "channels":     ["mt"],
     //"channels":     ["mt","et","tt","zmm"],
     "sequences": {
       "all":  ["default"]
@@ -19,7 +19,7 @@
   },
   "sequence": {
     "usePFMET" : true,
-    "do_gen_analysis" : false,
+    "do_gen_analysis" : true,
     "era"           : "data_2017UL",
     "mc"            : "mc2017",
     "strategy"      : "cpdecays17",
@@ -61,7 +61,8 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2017_v2/",
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2017_v2_EMB_v3/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2017_v2_EMB_v3/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/TauTauGammaGammaChecks/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2017_tres1_v2_svfit/",

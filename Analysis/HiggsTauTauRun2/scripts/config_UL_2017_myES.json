@@ -1,0 +1,1075 @@
+{
+  "job": {
+    "filelist" : "filelists/Mar31_2017_MC_124X_DYJetsToLL-LO.dat",
+    "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/dwinterb/Mar31_MC_124X_2017/",
+    "max_events":   -1,
+    "timings":      true,
+    "channels":     ["tt"],
+    //"channels":     ["mt","et","tt","zmm"],
+    "sequences": {
+      "all":  ["default"]
+//,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
+//      "et":   ["scale_t_lo", "scale_t_hi"],
+//      "mt":   ["scale_t_lo", "scale_t_hi"],
+ //     "tt":   ["scale_t_lo", "scale_t_hi"],
+  //    "em":   ["scale_e_lo", "scale_e_hi"]
+    },
+    "output_postfix":"",
+    "sample": "VBF_HToTauTau_M-125"
+  },
+  "sequence": {
+    "usePFMET" : true,
+    "do_gen_analysis" : false,
+    "era"           : "data_2017UL",
+    "mc"            : "mc2017",
+    "strategy"      : "cpdecays17",
+    "is_data"       : false,
+    "is_embedded"   : false,
+    "save_output_jsons": false,
+    "make_sync_ntuple" : false,
+    "lumi_mask_only" : false,
+    "iso_study" : false,
+    "qcd_study" : false,
+    "tau_id_study":true,
+    "add_Hhh_variables" : false,
+    "get_effective" : false,
+    "do_btag_eff": false,
+    "trg_in_mc" : true,
+    "filter_trg" : false,
+    "do_leptonplustau" : false,
+    "do_singlelepton" :true,
+    "do_singletau"    :true,
+    "store_trigobjpt" :true,
+    "tt_trg_iso_mode" : 0,
+    "moriond_tau_scale" : true,
+    "recoil_corrector" : false,
+    "do_preselection" : true,
+    "force_old_effs" : false,
+    "electrons"     : "electrons",
+    "muons"         : "muons",
+    "taus"          : "taus",
+    "jets"          : "ak4PFJetsCHS",
+    "met"           : "pfMET",
+    "genTaus"       : "genParticles",
+    "genJets"       : "genJets",
+    "do_mt_tagandprobe"    : false,
+    "do_recoil"            : false,
+    "do_iso_eff"    : false,
+    "do_tau_eff"    : false,
+    "do_ff_weights" : false,
+    "do_ff_systematics": false,
+    "do_pdf_wts": false,
+    "do_qcd_scale_wts": false,
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2017_v2_myES_Val_1p5/",
+    //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2017_v2_EMB_v3/",
+    "svfit_from_grid" : true,
+    "read_all_svfit_files" : true,
+    "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2017_tres1_v2_svfit/",
+    // "svfit_folder"  : "./output/",
+    //"output_folder" : "./output/",
+    "svfit_from_grid" : true,
+    "read_all_svfit_files" : true,
+    "svfit_override" : "",
+    "mela_folder" : "/vols/cms/dw515/Offline/output/SM/Mar19_MELA/",
+    "mela_mode" : 0,
+    //"event_check_file":"checkfile.dat",
+    "pu_id_training": 4,
+    "bjet_regr_correction" : false,
+    "new_svfit_mode" : 0,
+    "kinfit_mode"   : 0,
+    "mva_met_mode"  : 0,
+    "do_met_filters" : 1,
+    "faked_tau_selector" : 0,
+    "hadronic_tau_selector" : 0,
+    "run_gen_info"  : false,
+    "do_pu_wt"      : true,
+    "data_pu_file"  : "input/pileup/2017UL/PileupHistogram-goldenJSON-13tev-2017-69200ub-99bins.root",
+    "mc_pu_file"    : "input/pileup/2017UL/pileup_2017_DYJetsToLL-LO.root",
+    "run_trg_filter": false,
+    "baseline": {
+      "tau_scale_mode"    : true,
+      "jes_mode"          : 0,
+      "jer_mode"          : 0,
+      "btag_mode"         : 0,
+      "do_reshape"        : false,
+      "use_deep_csv"      : false,
+      "use_deep_jet"      : true,	  
+      "wp_to_check"       : "tight",
+      "bfake_mode"        : 0,
+      "tau_es_shift"      : 1.0,
+      "muon_es_shift"      : 1.0,
+      "efaketau_0pi_es_shift": 1.00911,
+      "efaketau_0pi_es_shift_endcap": 0.97396,
+      "efaketau_1pi_es_shift": 1.01154,
+      "efaketau_1pi_es_shift_endcap": 1.015,
+      "mufaketau_0pi_es_shift": 1.0,
+      "mufaketau_1pi_es_shift": 1.0,
+      "tau_1prong0pi0_es_shift": 0.992,
+      "tau_1prong1pi0_es_shift": 0.993,
+      "tau_3prong0pi0_es_shift": 0.995,
+      "tau_3prong1pi0_es_shift" : 0.986,
+      "embedtau_1prong1pi0_es_shift": 0.988,  
+      "embedtau_1prong0pi0_es_shift": 0.986,
+      "embedtau_3prong0pi0_es_shift": 1.002,
+      "embedtau_3prong1pi0_es_shift" : 0.990,
+      "elec_es_shift"     : 1.0,
+      "elec_es_shift_barrel": 0.9995,
+      "elec_es_shift_endcap": 0.9887,
+      "muon_res_shift": 0.0,
+      "elec_res_shift": 0.0,
+      "tau_res_shift": 0.0,
+      "fakeJ_tau_shift": 1.0,
+      "metscale_mode"     : 0,
+      "metres_mode"       : 0,
+      "metcl_mode"        : 0,
+      "metuncl_mode"      : 0,
+      "mass_shift"        : 1.0,
+      "do_em_extras"      : true,
+      "di_elec_veto"      : false,
+      "extra_elec_veto"   : false,
+      "max_extra_elecs"   : 1,
+      "di_muon_veto"      : false,
+      "extra_muon_veto"   : false,
+      "max_extra_muons"   : 1,
+      "tau_es_corr"       : false,
+      "lep_iso"           : true,
+      "do_tau_anti_elec"  : false,
+      "tau_anti_elec"     : "",
+      "do_tau_anti_muon"  : false,
+      "tau_anti_muon"     : "",
+      "elec_id"           : "CutBased" 
+    }
+  },
+  "channels": {
+    "et": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "di_elec_veto"   :true,
+        "di_muon_veto"   :true,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 0,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_elec":true,
+        "do_ff_weights" : true, 
+        "do_ff_systematics": true,
+        "ff_categories" :"inclusive",
+        "ff_file" : "input/fake_factors/fakefactors_ws_et_lite_2017.root",
+        "ff_fracs_file" : ""
+          }
+    },
+ "tt": {
+      "baseline": {
+        "max_extra_elecs": 0,
+        "max_extra_muons": 0,
+        "di_muon_veto"   :true,
+        "di_elec_veto"   :true,
+        "extra_elec_veto" : true,
+        "extra_muon_veto" : true,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_elec":true,
+        "do_ff_weights" : true,
+        "do_ff_systematics": true,
+        "ff_categories" :"inclusive",
+        "ff_file" : "input/fake_factors/fakefactors_ws_tt_lite_2017.root",
+        "ff_fracs_file" : ""
+      }
+    },
+    "tpmt": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "di_muon_veto"   :true,
+        "di_elec_veto"   :true,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 1,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_elec":true
+      }
+    },
+    "mt": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "di_muon_veto"   :true,
+        "di_elec_veto"   :true,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 1,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_elec":true,
+        "do_ff_weights" : true,
+        "do_ff_systematics": true,
+        "ff_categories" :"inclusive",
+        "ff_file" : "input/fake_factors/fakefactors_ws_mt_lite_2017.root",
+        "ff_fracs_file" : ""
+      }
+    },
+    "em": {
+      "baseline": {
+        "pair_dr": 0.3,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 1
+      }
+    },
+    "zmm": {
+      "baseline": {
+        "pair_dr": 0.3,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 2
+      }
+    },
+    "zee": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 2,
+        "max_extra_muons": 0
+      }
+    }
+  },
+  "sequences": {
+    "scale_t_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN",
+        "tau_scale_mode": true,
+        "elec_es_shift_barrel": 0.99,
+        "elec_es_shift_endcap": 0.975,
+        "tau_es_shift": 0.97,
+        "muon_es_shift": 0.998
+      }
+    },
+    "scale_t_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP",
+        "tau_scale_mode": true,
+        "elec_es_shift_barrel": 1.01,
+        "elec_es_shift_endcap": 1.025,
+        "tau_es_shift": 1.03,
+        "muon_es_shift": 1.002
+      }
+    },
+    "scale_jfake_lo": {
+      "baseline": {
+        "addit_output_folder" : "JFAKE_DOWN",
+        "fakeJ_tau_shift": 0.97
+      }
+    },
+    "scale_jfake_hi": {
+      "baseline": {
+        "addit_output_folder": "JFAKE_UP",
+        "fakeJ_tau_shift": 1.03
+      }
+    },
+    "scale_t_0pi_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE0PI_UP",
+         "tau_shift_func_1prong0pi0": "0.992+0.015",
+         "embedtau_1prong0pi0_es_shift": 1.003
+      }
+    },
+    "scale_t_0pi_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE0PI_DOWN",
+         "tau_shift_func_1prong0pi0": "0.992-0.015",
+         "embedtau_1prong0pi0_es_shift": 0.973
+      }
+    },
+    "scale_t_1pi_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE1PI_UP",
+         "tau_shift_func_1prong1pi0": "0.993+0.015",
+         "embedtau_1prong1pi0_es_shift" : 1.001
+      }
+    },
+    "scale_t_1pi_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE1PI_DOWN",
+         "tau_shift_func_1prong1pi0": "0.993-0.015",
+         "embedtau_1prong1pi0_es_shift" : 0.971 
+      }
+    },
+    "scale_t_3prong_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG_UP",
+         "tau_shift_func_3prong0pi0": "0.995+0.015",
+         "embedtau_3prong0pi0_es_shift" : 1.017
+      }
+    },
+    "scale_t_3prong_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG_DOWN",
+         "tau_shift_func_3prong0pi0": "0.995-0.015",
+         "embedtau_3prong0pi0_es_shift" : 0.987
+      }
+    },
+    "scale_t_3prong1pi0_hi": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
+         "tau_shift_func_3prong1pi0": "0.986+0.02",
+         "embedtau_3prong1pi0_es_shift" : 1.010
+      }
+    },
+    "scale_t_3prong1pi0_lo": {
+      "baseline": {
+         "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
+         "tau_shift_func_3prong1pi0": "0.986-0.02",
+         "embedtau_3prong1pi0_es_shift" : 0.970
+      }
+    },
+    "scale_efake_0pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE0PI_DOWN",
+        "efaketau_0pi_es_shift": 1.00029,
+        "efaketau_0pi_es_shift_endcap": 0.95966
+      }
+    },
+    "scale_efake_0pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE0PI_UP",
+        "efaketau_0pi_es_shift": 1.02254,
+        "efaketau_0pi_es_shift_endcap": 0.99645
+      }
+    },
+    "scale_efake_1pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE1PI_DOWN",
+        "efaketau_1pi_es_shift": 1.00181,
+        "efaketau_1pi_es_shift_endcap": 0.96531
+      }
+    },
+    "scale_efake_1pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "EFAKE1PI_UP",
+        "efaketau_1pi_es_shift": 1.03316,
+        "efaketau_1pi_es_shift_endcap": 1.07961
+      }
+    },
+
+    "scale_mufake_0pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE0PI_DOWN",
+        "mufaketau_0pi_es_shift": 0.99
+      }
+    },
+    "scale_mufake_0pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE0PI_UP",
+        "mufaketau_0pi_es_shift": 1.01
+      }
+    },
+    "scale_mufake_1pi_lo": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE1PI_DOWN",
+        "mufaketau_1pi_es_shift": 0.99
+      }
+    },
+    "scale_mufake_1pi_hi": {
+      "baseline": {
+        "addit_output_folder" : "MUFAKE1PI_UP",
+        "mufaketau_1pi_es_shift": 1.01
+      }
+    },
+    "scale_e_lo": {
+      "baseline": {
+        "addit_output_folder" : "ESCALE_DOWN",
+        "e_scale_mode": true,
+        "elec_es_shift_barrel": 0.9879,
+        "elec_es_shift_endcap": 0.9762,
+        "e_unc_mode": 1
+      }
+    },
+    "scale_e_hi": {
+      "baseline": {
+        "addit_output_folder" : "ESCALE_UP",
+        "e_scale_mode": true,
+        "elec_es_shift_barrel": 0.9969,
+        "elec_es_shift_endcap": 1.0012,
+        "e_unc_mode": 2
+      }
+    },
+    "scale_mu_lo": {
+      "baseline": {
+        "addit_output_folder" : "MUSCALE_DOWN",
+        "mu_scale_mode": true,
+        //"muon_es_shift": 0.99,
+        //"muon_es_shift_barrel": 0.996,
+        //"muon_es_shift_nearendcap": 0.991,
+        //"muon_es_shift_farendcap": 0.983
+        "muon_es_shift": 0.9985,
+        "muon_es_shift_barrel": 0.9985,
+        "muon_es_shift_nearendcap": 0.9985,
+        "muon_es_shift_farendcap": 0.9985
+      }
+    },
+    "scale_mu_hi": {
+      "baseline": {
+        "addit_output_folder" : "MUSCALE_UP",
+        "mu_scale_mode": true,
+        //"muon_es_shift": 1.01,
+        //"muon_es_shift_barrel": 1.004,
+        //"muon_es_shift_nearendcap": 1.009,
+        //"muon_es_shift_farendcap": 1.017
+        "muon_es_shift": 1.0015,
+        "muon_es_shift_barrel": 1.0015,
+        "muon_es_shift_nearendcap": 1.0015,
+        "muon_es_shift_farendcap": 1.0015
+      }
+    },
+    "res_mu_hi": {
+      "baseline": {
+        "addit_output_folder" : "MURES_UP",
+        "muon_res_shift": 0.1
+      }
+    },
+    "res_mu_lo": {
+      "baseline": {
+        "addit_output_folder" : "MURES_DOWN",
+        "muon_res_shift": -0.1
+      }
+    },
+    "res_e_hi": {
+      "baseline": {
+        "addit_output_folder" : "ERES_UP",
+        "elec_res_shift": 0.1
+      }
+    },
+    "res_e_lo": {
+      "baseline": {
+        "addit_output_folder" : "ERES_DOWN",
+        "elec_res_shift": -0.1
+      }
+    },
+    "res_t_hi": {
+      "baseline": {
+        "addit_output_folder" : "TRES_UP",
+        "tau_res_shift": 0.01
+      }
+    },
+    "res_t_lo": {
+      "baseline": {
+        "addit_output_folder" : "TRES_DOWN",
+        "tau_res_shift": -0.01
+      }
+    },
+    "res_j_lo": {
+      "baseline": {
+        "addit_output_folder" : "JER_DOWN",
+        "jes_mode" : 1
+      }
+    },
+    "res_j_hi": {
+      "baseline": {
+        "addit_output_folder" : "JER_UP",
+        "jer_mode" : 2
+      }
+    },
+    "scale_j_lo": {
+      "baseline": {
+        "addit_output_folder" : "JES_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false
+//        "btag_mode" : 3
+      }
+    },
+    "scale_j_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false
+//        "btag_mode" : 4
+      }
+    },
+    "scale_j_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JES_CORR_DOWN",
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_CORR_UP",
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JES_UNCORR_DOWN",
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JES_UNCORR_UP",
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    "res_j_lo": {
+      "baseline": {
+        "addit_output_folder" : "JER_DOWN",
+        "jer_mode" : 1
+      }
+    },
+    "res_j_hi": {
+      "baseline": {
+        "addit_output_folder" : "JER_UP",
+        "jer_mode" : 2
+      }
+    },
+    // adding regrouped JECs (legacy/full run2 -- https://tinyurl.com/r976rmc)
+    "scale_j_relbal_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESRBAL_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeBal"
+      }
+    },
+    "scale_j_relbal_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESRBAL_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeBal"
+      }
+    },
+    "scale_j_abs_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute"
+      }
+    },
+    "scale_j_abs_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute"
+      }
+    },
+    "scale_j_abs_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute_2017"
+      }
+    },
+    "scale_j_abs_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESABS_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "Absolute_2017"
+      }
+    },
+    "scale_j_flav_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFLAV_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "FlavorQCD"
+      }
+    },
+    "scale_j_flav_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFLAV_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "FlavorQCD"
+      }
+    },
+    "scale_j_bbec1_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1"
+      }
+    },
+    "scale_j_bbec1_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1"
+      }
+    },
+    "scale_j_bbec1_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1_2017"
+      }
+    },
+    "scale_j_bbec1_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESBBEC1_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "BBEC1_2017"
+      }
+    },
+    "scale_j_ec2_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2"
+      }
+    },
+    "scale_j_ec2_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2"
+      }
+    },
+    "scale_j_ec2_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2_2017"
+      }
+    },
+    "scale_j_ec2_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESEC2_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "EC2_2017"
+      }
+    },
+    "scale_j_hf_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF"
+      }
+    },
+    "scale_j_hf_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF"
+      }
+    },
+    "scale_j_hf_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2017"
+      }
+    },
+    "scale_j_hf_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "HF_2017"
+      }
+    },
+    "scale_j_relsamp_year_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESRELSAMP_YEAR_DOWN",
+        "jes_mode" : 1,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample_2017"
+      }
+    },
+    "scale_j_relsamp_year_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESRELSAMP_YEAR_UP",
+        "jes_mode" : 2,
+        "split_by_source" : false,
+        "jes_input_set" : "RelativeSample_2017"
+      }
+    },
+    ////////
+    "scale_j_full_lo": {
+        "baseline": {
+          "addit_output_folder" : "JESFULL_DOWN",
+          "split_by_source" : false,
+          "split_by_region" : true,
+          "jec_region" : 0,
+          "jes_mode" : 1
+        }
+      },
+    "scale_j_full_hi": {
+        "baseline": {
+          "addit_output_folder" : "JESFULL_UP",
+          "split_by_source" : false,
+          "split_by_region" : true,
+          "jec_region" : 0,
+          "jes_mode" : 2
+        }
+      },
+      // adding correlations splitting for regional sources
+      // jes full detector
+    "scale_j_full_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_full_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_full_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_full_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESFULL_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 0,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
+    "scale_j_cent_lo": {
+        "baseline": {
+          "addit_output_folder" : "JESCENT_DOWN",
+          "split_by_source" : false,
+          "split_by_region" : true,
+          "jec_region" : 1,
+          "jes_mode" : 1
+       }
+      },
+      "scale_j_cent_hi": {
+        "baseline": {
+          "addit_output_folder" : "JESCENT_UP",
+          "split_by_source" : false,
+          "split_by_region" : true,
+          "jec_region" : 1,
+          "jes_mode" : 2
+        }
+      },      
+      // adding correlations splitting for regional sources
+      // jes central detector
+    "scale_j_cent_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_cent_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_cent_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_cent_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESCENT_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 1,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    //
+    //"scale_j_hf_lo": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_DOWN",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 1
+    //   }
+    //  },
+    //  "scale_j_hf_hi": {
+    //    "baseline": {
+    //      "addit_output_folder" : "JESHF_UP",
+    //      "split_by_source" : false,
+    //      "split_by_region" : true,
+    //      "jec_region" : 2,
+    //      "jes_mode" : 2
+    //    }
+    //  },
+      // adding correlations splitting for regional sources
+      // jes HF detector
+    "scale_j_hf_corr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_CORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_hf_corr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_CORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 1
+      }
+    },
+    "scale_j_hf_uncorr_lo": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UNCORR_DOWN",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 1,
+        "jes_corr_mode" : 2 
+      }
+    },
+    "scale_j_hf_uncorr_hi": {
+      "baseline": {
+        "addit_output_folder" : "JESHF_UNCORR_UP",
+        "split_by_source" : false,
+        "split_by_region" : true,
+        "jec_region" : 2,
+        "jes_mode" : 2,
+        "jes_corr_mode" : 2
+      }
+    },
+    "scale_embed_met_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_DOWN",
+        "embed_metscale_mode" : 1
+      }
+    },
+    "scale_embed_met_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_UP",
+        "embed_metscale_mode" : 2
+      }
+    },
+    "scale_met_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_DOWN",
+        "metscale_mode" : 1
+      }
+    },
+    "scale_met_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_SCALE_UP",
+        "metscale_mode" : 2
+      }
+    },
+    "res_met_lo": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_DOWN",
+        "metres_mode" : 1
+      }
+    },
+    "res_met_hi": {
+      "baseline": {
+        "addit_output_folder" : "MET_RES_UP",
+        "metres_mode" : 2
+      }
+    },
+    "met_cl_lo": {
+      "baseline": {
+        "addit_output_folder" : "METCL_DOWN",
+        "metcl_mode" : 1
+      }
+    },
+    "met_cl_hi": {
+      "baseline": {
+        "addit_output_folder" : "METCL_UP",
+        "metcl_mode" : 2
+      }
+    },
+    "met_uncl_lo": {
+      "baseline": {
+        "addit_output_folder" : "METUNCL_DOWN",
+        "metuncl_mode" : 1
+      }
+    },
+    "met_uncl_hi": {
+      "baseline": {
+        "addit_output_folder" : "METUNCL_UP",
+        "metuncl_mode" : 2
+      }
+    },
+    "scale_b_lo": {
+      "baseline": {
+        "addit_output_folder" : "BTAG_DOWN",
+        "btag_mode" : 1
+      }
+    },
+    "scale_b_hi": {
+      "baseline": {
+        "addit_output_folder" : "BTAG_UP",
+        "btag_mode" : 2
+      }
+    },
+    "scale_bfake_lo": {
+      "baseline": {
+        "addit_output_folder" : "BFAKE_DOWN",
+        "bfake_mode" : 1
+      }
+    },
+    "scale_bfake_hi": {
+      "baseline": {
+        "addit_output_folder" : "BFAKE_UP",
+        "bfake_mode" : 2
+      }
+    },
+    "scale_lf_lo": {
+      "baseline": {
+        "addit_output_folder" : "LF_DOWN",
+        "btag_mode" : 5
+      }
+    },
+    "scale_lf_hi": {
+      "baseline": {
+        "addit_output_folder" : "LF_UP",
+        "btag_mode" : 6
+      }
+    },
+    "scale_hf_lo": {
+      "baseline": {
+        "addit_output_folder" : "HF_DOWN",
+        "btag_mode" : 7
+      }
+    },
+    "scale_hf_hi": {
+      "baseline": {
+        "addit_output_folder" : "HF_UP",
+        "btag_mode" : 8
+      }
+    },
+    "scale_hfstats1_lo": {
+      "baseline": {
+        "addit_output_folder" : "HFSTATS1_DOWN",
+        "btag_mode" :9 
+      }
+    },
+    "scale_hfstats1_hi": {
+      "baseline": {
+        "addit_output_folder" : "HFSTATS1_UP",
+        "btag_mode" : 10 
+      }
+    },
+    "scale_hfstats2_lo": {
+      "baseline": {
+        "addit_output_folder" : "HFSTATS2_DOWN",
+        "btag_mode" :11 
+      }
+    },
+    "scale_hfstats2_hi": {
+      "baseline": {
+        "addit_output_folder" : "HFSTATS2_UP",
+        "btag_mode" : 12 
+      }
+    },
+    "scale_lfstats1_lo": {
+      "baseline": {
+        "addit_output_folder" : "LFSTATS1_DOWN",
+        "btag_mode" :13 
+      }
+    },
+    "scale_lfstats1_hi": {
+      "baseline": {
+        "addit_output_folder" : "LFSTATS1_UP",
+        "btag_mode" : 14 
+      }
+    },
+    "scale_lfstats2_lo": {
+      "baseline": {
+        "addit_output_folder" : "LFSTATS2_DOWN",
+        "btag_mode" :15 
+      }
+    },
+    "scale_lfstats2_hi": {
+      "baseline": {
+        "addit_output_folder" : "LFSTATS2_UP",
+        "btag_mode" : 16 
+      }
+    },
+    "scale_cferr1_lo": {
+      "baseline": {
+        "addit_output_folder" : "CFERR1_DOWN",
+        "btag_mode" :17 
+      }
+    },
+    "scale_cferr1_hi": {
+      "baseline": {
+        "addit_output_folder" : "CFERR1_UP",
+        "btag_mode" : 18 
+      }
+    },
+    "scale_cferr2_lo": {
+      "baseline": {
+        "addit_output_folder" : "CFERR2_DOWN",
+        "btag_mode" :19 
+      }
+    },
+    "scale_cferr2_hi": {
+      "baseline": {
+        "addit_output_folder" : "CFERR2_UP",
+        "btag_mode" : 20 
+      }
+    },
+    "default": {}
+  },
+  "samples": {
+
+  }
+}

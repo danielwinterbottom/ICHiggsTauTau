@@ -1795,6 +1795,22 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_probe_trg_objects("triggerObjectsEle25GsfTightEta2p1")
           .set_probe_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
           
+      );
+
+      BuildModule(TagAndProbe<Electron const*>("TagAndProbe_ET")
+          .set_is_embedded(is_embedded)
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsEle25GsfTightEta2p1")
+          .set_tag_trg_filters("hltEle25erWPTightGsfTrackIsoFilter")
+          .set_probe_id(elec_probe_id)
+          .set_tag_id(elec_tag_id)
+          .set_probe_trg_objects("triggerObjectsEle24LooseTau20SingleL1,triggerObjectsEle24LooseTau20") // for 2016
+          .set_probe_trg_filters("hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter,hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter") // for 2016
+          .set_do_extra(true)
+          .set_add_name("_ET")
       );  
     }
   } 

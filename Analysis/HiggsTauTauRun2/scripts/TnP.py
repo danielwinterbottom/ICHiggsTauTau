@@ -197,6 +197,9 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       #trg_pt_bins = '[27,32,35,40,45,50,55,60,70,80,100,200]'
       trg_pt_bins = '[20,24,26,28,33,36,40,44,48,50,55,60,70,80,100,200]'
 
+      if options.em_iso:
+        trg_pt_bins = '[10,12,14,16,18,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]' # low pt leg
+
       if options.highpT:
         trg_eta_bins='[0,2.5]'
         idiso_eta_bins='[0,2.5]'
@@ -1050,6 +1053,16 @@ if options.channel == "tpzmm":
     embed_samples = ["EmbeddingMuMu2016-HIPM_B_ver2","EmbeddingMuMu2016-HIPM_C","EmbeddingMuMu2016-HIPM_D","EmbeddingMuMu2016-HIPM_E","EmbeddingMuMu2016-HIPM_F"]
   if options.era == "UL_16postVFP":
     embed_samples = ["EmbeddingMuMu2016F","EmbeddingMuMu2016G","EmbeddingMuMu2016H"]
+
+if options.channel == "tpzee":
+  if options.era == "UL_18":
+    embed_samples = ["EmbeddingElEl2018A","EmbeddingElEl2018B","EmbeddingElEl2018C","EmbeddingElEl2018D"]
+  if options.era == "UL_17":
+    embed_samples = ["EmbeddingElEl2017B","EmbeddingElEl2017C","EmbeddingElEl2017D","EmbeddingElEl2017E","EmbeddingElEl2017F"]
+  if options.era == "UL_16preVFP":
+    embed_samples = ["EmbeddingElEl2016-HIPM_B_ver2","EmbeddingElEl2016-HIPM_C","EmbeddingElEl2016-HIPM_D","EmbeddingElEl2016-HIPM_E","EmbeddingElEl2016-HIPM_F"]
+  if options.era == "UL_16postVFP":
+    embed_samples = ["EmbeddingElEl2016F","EmbeddingElEl2016G","EmbeddingElEl2016H"]
 
 # Add MC sample names   
 if options.era == 'UL_16preVFP':  ztt_samples = ['DYJetsToLL-LO']

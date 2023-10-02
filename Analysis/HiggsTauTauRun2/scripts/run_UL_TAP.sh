@@ -11,6 +11,11 @@ elif [[ "$year" == "2018" ]]; then
   era="UL_18"
 fi
 
+mkdir -p TAP_UL_v7/${year}/SingleE
+mkdir -p TAP_UL_v7/${year}/ETau_ELeg
+mkdir -p TAP_UL_v7/${year}/EMu_E12Leg
+mkdir -p TAP_UL_v7/${year}/EMu_E23Leg
+
 mkdir -p TAP_UL_v7/${year}/SingleMu
 mkdir -p TAP_UL_v7/${year}/MuTau_MuLeg
 mkdir -p TAP_UL_v7/${year}/EMu_Mu8Leg
@@ -23,6 +28,28 @@ mkdir -p TAP_UL_v7/${year}/Mu8
 mkdir -p TAP_UL_v7/${year}/DZ
 mkdir -p TAP_UL_v7/${year}/DZ_binned
 mkdir -p TAP_UL_v7/${year}/DZ_dR_binned
+
+# single electron triggers
+if [[ "$year" == "2016-preVFP" || "$year" == "2016-postVFP" ]]; then
+  python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/SingleE --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_Single --embedded ${extra}
+  python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/SingleE --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_Single --embedded ${extra} --tight_tag
+else
+  python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/SingleE --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe --embedded ${extra}
+  python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/SingleE --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe --embedded ${extra} --tight_tag
+fi
+
+# electron legs of e+mu cross triggers:
+# Low pT leg 
+python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/EMu_E12Leg --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_emLow --embedded ${extra} --em_iso
+python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/EMu_E12Leg --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_emLow --embedded ${extra} --em_iso --tight_tag
+#High pT leg:
+python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/EMu_E23Leg --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_emHigh --embedded ${extra} --em_iso --trg_only
+python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/EMu_E23Leg --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_emHigh --embedded ${extra} --em_iso --tight_tag --trg_only
+
+# electron leg of e+tau cross trigger:
+python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/ETau_ELeg --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_ET --embedded ${extra} --em_iso --trg_only
+python scripts/TnP.py --channel tpzee --outputfolder=TAP_UL_v7/${year}/ETau_ELeg --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_ET --embedded ${extra} --em_iso --tight_tag --trg_only
+
 
 # single muon triggers:
 if [[ "$year" == "2016-preVFP" || "$year" == "2016-postVFP" ]]; then
@@ -84,7 +111,4 @@ python scripts/TnP.py --outputfolder=TAP_UL_v7/${year}/DZ --folder=/vols/cms/dw5
 python scripts/TnP.py --outputfolder=TAP_UL_v7/${year}/DZ_binned --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_dimu_dz --embed_dz ${extra} --trg_only --fine_dz_bins
 python scripts/TnP.py --outputfolder=TAP_UL_v7/${year}/DZ_binned --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_dimu_dz --embed_dz ${extra} --trg_only --tight_tag --fine_dz_bins
 
- test
-python scripts/TnP.py --outputfolder=TAP_UL_v7/${year}/DZ_dR_binned --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_dimu_dz --embed_dz ${extra} --trg_only --alt_dz_bins
-python scripts/TnP.py --outputfolder=TAP_UL_v7/${year}/DZ_dR_binned --folder=/vols/cms/dw515/outputs/MSSM/UL_Mar31_${year}_v2_TAP_v4/ --era=${era} --tree_name=tagandprobe_dimu_dz --embed_dz ${extra} --trg_only --tight_tag --alt_dz_bins
 

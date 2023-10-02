@@ -6,7 +6,7 @@
     "timings":      true,
    //"channels":     ["mt","et","tt","zmm","zee","em"],
    // "channels":     ["mt","zmm","tt","et"],
-    "channels":     ["tt"],
+    "channels":     ["mt"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -23,7 +23,7 @@
     // "do_mssm_higgspt" : true,
     // "mssm_higgspt_file" : "/vols/build/cms/gu18/CMSSW_8_0_25/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau2/input/mssm_higgspt/higgs_pt_v2_mssm_mode.root",
     "usePFMET" : true,
-    "do_gen_analysis" : false,
+    "do_gen_analysis" : true,
     "mc"            : "mc2018",
     "era"           : "data_2018UL",
     "strategy"      : "cpdecays18",
@@ -66,7 +66,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-//    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2/",
+    "output_folder" : "/vols/cms/dw515/outputs/MSSM/TauTauGammaGammaChecks/",
     //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2_EMB_v2_newntuple/",
     //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_ML_FF_2018/",
     //"output_folder" : "output_tmp/",

@@ -592,7 +592,7 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
         std::vector<ic::L1TObject*> sel_l1taus_1={};
         std::vector<ic::L1TObject*> sel_l1taus_2={};
         for(unsigned ta=0; ta<l1taus.size(); ++ta){
-          if(l1taus[ta]->vector().Pt()>26 && fabs(l1taus[ta]->eta())<2.1 && l1taus[ta]->isolation()>0)  {
+          if(l1taus[ta]->vector().Pt()>27 && fabs(l1taus[ta]->eta())<2.1 && l1taus[ta]->isolation()>0)  {
             //double dR_1 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep1->vector()));
             //double dR_2 = std::fabs(ROOT::Math::VectorUtil::DeltaR(l1taus[ta]->vector(),lep2->vector()));
             double deta_1 = std::fabs(l1taus[ta]->eta()-lep1->eta());
