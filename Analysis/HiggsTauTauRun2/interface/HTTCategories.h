@@ -833,6 +833,110 @@ class HTTCategories : public ModuleBase {
   double wt_ff_mssm_qcd_syst_dr_closure_up_1_;
   double wt_ff_mssm_qcd_syst_dr_closure_down_1_;
 
+  double tau_idisoweight_1_;
+  double tau_idisoweight_2_;
+  double tau_idisoweight_3_;
+  double tau_idisoweight_4_;
+
+  double tau_idisoweight_ratio_1_up_;
+  double tau_idisoweight_ratio_2_up_;
+  double tau_idisoweight_ratio_3_up_;
+  double tau_idisoweight_ratio_4_up_;
+  double tau_idisoweight_ratio_1_down_;
+  double tau_idisoweight_ratio_2_down_;
+  double tau_idisoweight_ratio_3_down_;
+  double tau_idisoweight_ratio_4_down_;
+
+  double tau_idisoweight_ratio_1_uncert0_up_;
+  double tau_idisoweight_ratio_2_uncert0_up_;
+  double tau_idisoweight_ratio_3_uncert0_up_;
+  double tau_idisoweight_ratio_4_uncert0_up_;
+
+  double tau_idisoweight_ratio_1_uncert0_down_; 
+  double tau_idisoweight_ratio_2_uncert0_down_; 
+  double tau_idisoweight_ratio_3_uncert0_down_; 
+  double tau_idisoweight_ratio_4_uncert0_down_; 
+
+  double tau_idisoweight_ratio_1_uncert1_up_; 
+  double tau_idisoweight_ratio_2_uncert1_up_;
+  double tau_idisoweight_ratio_3_uncert1_up_;
+  double tau_idisoweight_ratio_4_uncert1_up_;
+
+  double tau_idisoweight_ratio_1_uncert1_down_; 
+  double tau_idisoweight_ratio_2_uncert1_down_; 
+  double tau_idisoweight_ratio_3_uncert1_down_; 
+  double tau_idisoweight_ratio_4_uncert1_down_; 
+
+  double tau_idisoweight_ratio_1_syst_all_eras_up_; 
+  double tau_idisoweight_ratio_2_syst_all_eras_up_; 
+  double tau_idisoweight_ratio_3_syst_all_eras_up_; 
+  double tau_idisoweight_ratio_4_syst_all_eras_up_; 
+
+  double tau_idisoweight_ratio_1_syst_all_eras_down_; 
+  double tau_idisoweight_ratio_2_syst_all_eras_down_; 
+  double tau_idisoweight_ratio_3_syst_all_eras_down_; 
+  double tau_idisoweight_ratio_4_syst_all_eras_down_; 
+
+  double tau_idisoweight_ratio_1_syst_year_up_; 
+  double tau_idisoweight_ratio_2_syst_year_up_; 
+  double tau_idisoweight_ratio_3_syst_year_up_; 
+  double tau_idisoweight_ratio_4_syst_year_up_; 
+
+  double tau_idisoweight_ratio_1_syst_year_down_; 
+  double tau_idisoweight_ratio_2_syst_year_down_; 
+  double tau_idisoweight_ratio_3_syst_year_down_; 
+  double tau_idisoweight_ratio_4_syst_year_down_; 
+
+  double tau_idisoweight_ratio_1_syst_dm_year_up_; 
+  double tau_idisoweight_ratio_2_syst_dm_year_up_; 
+  double tau_idisoweight_ratio_3_syst_dm_year_up_; 
+  double tau_idisoweight_ratio_4_syst_dm_year_up_; 
+
+  double tau_idisoweight_ratio_1_syst_dm_year_down_; 
+  double tau_idisoweight_ratio_2_syst_dm_year_down_; 
+  double tau_idisoweight_ratio_3_syst_dm_year_down_; 
+  double tau_idisoweight_ratio_4_syst_dm_year_down_; 
+
+  double tau_idisoweight_ratio_1_highpt_up_; 
+  double tau_idisoweight_ratio_2_highpt_up_; 
+  double tau_idisoweight_ratio_3_highpt_up_; 
+  double tau_idisoweight_ratio_4_highpt_up_; 
+
+  double tau_idisoweight_ratio_1_highpt_down_; 
+  double tau_idisoweight_ratio_2_highpt_down_; 
+  double tau_idisoweight_ratio_3_highpt_down_; 
+  double tau_idisoweight_ratio_4_highpt_down_; 
+
+  double tau_idisoweight_vvvloose_1_;
+  double tau_idisoweight_vvvloose_2_;
+  double tau_idisoweight_vvvloose_3_;
+  double tau_idisoweight_vvvloose_4_;
+
+  double tau_idisoweight_vvloose_1_;
+  double tau_idisoweight_vvloose_2_;
+  double tau_idisoweight_vvloose_3_;
+  double tau_idisoweight_vvloose_4_;
+
+  double tau_idisoweight_vloose_1_;
+  double tau_idisoweight_vloose_2_;
+  double tau_idisoweight_vloose_3_;
+  double tau_idisoweight_vloose_4_;
+
+  double tau_idisoweight_loose_1_;
+  double tau_idisoweight_loose_2_;
+  double tau_idisoweight_loose_3_;
+  double tau_idisoweight_loose_4_;
+
+  double tau_idisoweight_medium_1_;
+  double tau_idisoweight_medium_2_;
+  double tau_idisoweight_medium_3_;
+  double tau_idisoweight_medium_4_;
+
+  double tau_idisoweight_tight_1_;
+  double tau_idisoweight_tight_2_;
+  double tau_idisoweight_tight_3_;
+  double tau_idisoweight_tight_4_;
+
   bool trg_singleelectron_;
   bool trg_singlemuon_;
   bool trg_singlemuon24_;
