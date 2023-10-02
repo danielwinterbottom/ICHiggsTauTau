@@ -205,7 +205,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_data or options.proc_all or options.calc_lumi:
 
-    data_samples = ["SingleMuonB_rereco","MuonC_rereco","MuonD_rereco"]
+    data_samples = ["SingleMuonB_rereco","SingleMuonC_rereco","MuonC_rereco","MuonD_rereco"] # added SingleMuonC as I think it should exist
     data_eras = []
     for chn in channels:
         for era in data_eras:

@@ -123,8 +123,8 @@ struct era_def {
 	data_2017UL,
         data_2018,
 	data_2018UL,
-  data_2022_preEE,
-  data_2022_postEE
+        data_2022_preEE,
+        data_2022_postEE
 	};
 };
 typedef safe_enum<era_def> era;
@@ -141,8 +141,8 @@ inline std::string Era2String(era const& in) {
 	(era::data_2017UL,	"data_2017UL")
         (era::data_2018,        "data_2018")
 	(era::data_2018UL,	"data_2018UL")
-  (era::data_2022_preEE, "data_2022_preEE")
-  (era::data_2022_postEE, "data_2022_postEE");
+        (era::data_2022_preEE, "data_2022_preEE")
+        (era::data_2022_postEE, "data_2022_postEE");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {

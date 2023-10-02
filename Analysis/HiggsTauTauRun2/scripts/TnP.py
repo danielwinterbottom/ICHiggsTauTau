@@ -974,7 +974,7 @@ if options.channel == 'tpzmm':
     elif options.era == 'UL_18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     elif options.era == '22_preEE':
-        data_samples = ['SingleMuonB_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE'] 
+        data_samples = ['SingleMuonB_rereco_preEE','SingleMuonC_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE'] # check this as Endre's code did not have single muon for Run C but I think it exists 
     elif options.era == '22_postEE':
         data_samples = ['MuonE_rereco_postEE','MuonF_postEE','MuonG_postEE']       
     

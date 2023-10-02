@@ -1589,7 +1589,7 @@ if options.era in ['22']:
     qqhww_samples = []   
  
     if options.channel in ['mt','zmm','mj']:
-      data_samples = ['SingleMuonB_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE']
+      data_samples = ['SingleMuonB_rereco_preEE','SingleMuonC_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE'] # check this as SingleMuonC_rereco was missing from Endre's list
         # data_samples = ['SingleMuonB_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE','MuonE_rereco_postEE','MuonF_postEE','MuonG_postEE']
         # if options.analysis in ['mssmrun2','vlq']  and options.channel == 'mt': data_samples += ['TauB_rereco_preEE','TauC_rereco_preEE','TauD_rereco_preEE']
     if options.channel == 'em':
@@ -4992,12 +4992,8 @@ if options.extra_name != "":
 #  output_name = options.outputfolder+'/datacard_'+options.extra_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
   datacard_name+='_'+options.extra_name
 #else: 
-if options.do_ss:
-  output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'_ss.root'
-  outfile = ROOT.TFile(output_name, 'RECREATE')
-else:
-  output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
-  outfile = ROOT.TFile(output_name, 'RECREATE')
+output_name = options.outputfolder+'/datacard_'+var_name+'_'+datacard_name+'_'+options.channel+'_'+options.year+'.root'
+outfile = ROOT.TFile(output_name, 'RECREATE')
     
 cats['cat'] = '('+cats[options.cat]+')*('+cats['baseline']+')'
 if options.channel=="em": cats['em_shape_cat'] = '('+cats[options.cat]+')*('+cats['loose_baseline']+')'
@@ -5547,9 +5543,8 @@ elif options.custom_uncerts_up_name != '':
 
 
 if not options.no_plot:
-    #if options.extra_name != '': vname = options.extra_name
-    #else: vname = var_name
-    vname = var_name + '_' +options.extra_name
+    if options.extra_name != '': vname = options.extra_name
+    else: vname = var_name
 
 
     if options.datacard != "": plot_name = options.outputfolder+'/'+vname+'_'+options.datacard+'_'+options.channel+'_'+options.year
