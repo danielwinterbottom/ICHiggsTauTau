@@ -73,7 +73,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
          MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
          MVADM2017 = "MVADM2017v2";
     } else {
          MVADM2017 = " ";
@@ -1206,6 +1207,10 @@ namespace ic {
       outtree_->Branch("trg_singlemuon24",    &trg_singlemuon24_);
       outtree_->Branch("trg_singlemuon27",    &trg_singlemuon27_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
+      outtree_->Branch("trg_doubletau_plusjet60",    &trg_doubletau_plusjet60_);
+      outtree_->Branch("trg_doubletau_plusjet75",    &trg_doubletau_plusjet75_);
+      outtree_->Branch("trg60jet_pt",    &trg60jet_pt_);
+      outtree_->Branch("trg75jet_pt",    &trg75jet_pt_);
       outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
 
       outtree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
@@ -1594,6 +1599,8 @@ namespace ic {
       synctree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       synctree_->Branch("trg_doubletau",    &trg_doubletau_);
+      synctree_->Branch("trg_doubletau_plusjet60",    &trg_doubletau_plusjet60_);
+      synctree_->Branch("trg_doubletau_plusjet75",    &trg_doubletau_plusjet75_);
 
       synctree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
       synctree_->Branch("trg_tt_monitoring_2",    &trg_tt_monitoring_2_);
@@ -1656,6 +1663,8 @@ namespace ic {
       mvatree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       mvatree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       mvatree_->Branch("trg_doubletau",    &trg_doubletau_);
+      mvatree_->Branch("trg_doubletau_plusjet60",    &trg_doubletau_plusjet60_);
+      mvatree_->Branch("trg_doubletau_plusjet75",    &trg_doubletau_plusjet75_);
       mvatree_->Branch("deepTauVsJets_medium_1",   &deepTauVsJets_medium_1_);
       mvatree_->Branch("deepTauVsJets_medium_2",   &deepTauVsJets_medium_2_);
       mvatree_->Branch("deepTauVsEle_vvloose_1",   &deepTauVsEle_vvloose_1_);
@@ -1819,6 +1828,10 @@ namespace ic {
     if (event->Exists("trg_singlemuon27"))     trg_singlemuon27_     = event->Get<bool>("trg_singlemuon27");
     else trg_singlemuon27_ = false;
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+    if (event->Exists("trg_doubletau_plusjet60"))      trg_doubletau_plusjet60_      = event->Get<bool>("trg_doubletau_plusjet60");
+    if (event->Exists("trg_doubletau_plusjet75"))      trg_doubletau_plusjet75_      = event->Get<bool>("trg_doubletau_plusjet75");
+    if (event->Exists("trg60jet_pt"))      trg60jet_pt_      = event->Get<double>("trg60jet_pt");
+    if (event->Exists("trg75jet_pt"))      trg75jet_pt_     = event->Get<double>("trg75jet_pt");
 
     if (event->Exists("trg_tt_monitoring_1"))trg_tt_monitoring_1_ = event->Get<bool>("trg_tt_monitoring_1");
     if (event->Exists("trg_tt_monitoring_2"))trg_tt_monitoring_2_ = event->Get<bool>("trg_tt_monitoring_2");
@@ -1840,6 +1853,8 @@ namespace ic {
       trg_singleelectron_ = true;
       trg_singlemuon_     = true;
       trg_doubletau_      = true;
+      trg_doubletau_plusjet60_ = true;
+      trg_doubletau_plusjet75_ = true;
       trg_tt_monitoring_1_ = true;
       trg_tt_monitoring_2_ = true;
       trg_tt_monitoring_3_ = true;
@@ -1859,7 +1874,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
          MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
          MVADM2017 = "MVADM2017v2";
     } else {
          MVADM2017 = " ";
@@ -2780,7 +2796,8 @@ namespace ic {
     std::vector<PFJet*> prebjets = lowpt_jets;
 
     double eta_cut = 2.4;
-    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) eta_cut = 2.5;
+    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) eta_cut = 2.5;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     n_prebjets_ = prebjets.size();
     std::vector<PFJet*> bjets = prebjets;
@@ -2819,6 +2836,22 @@ namespace ic {
 
       deepjet_wp = 0.2783;
     }
+    if (era_ == era::data_2022_preEE) {
+      btag_wp = 0.4184;
+      loose_btag_wp = 0.1241;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.303;
+    }   
+    if (era_ == era::data_2022_postEE) {
+      btag_wp = 0.4184;
+      loose_btag_wp = 0.1241;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.3179;
+    } 
     if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       btag_wp = 0.6321;
       loose_btag_wp = 0.2217;

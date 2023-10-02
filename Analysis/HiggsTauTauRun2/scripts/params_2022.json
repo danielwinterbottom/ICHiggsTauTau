@@ -1,0 +1,168 @@
+{
+  "DYJetsToLL-LO_postEE": {
+    "xs": 6241.39,
+    "evt": 96294972
+  },
+  "DYJetsToLL-LO_summer_preEE": {
+    "xs": 6241.39,
+    "evt": 27309719
+  },
+  "DYto2TautoMuTauh_M50_postEE": {
+    "xs": 53.28,
+    "evt": 10086123
+  },
+  "DYto2TautoMuTauh_M50_preEE": {
+    "xs": 53.28,
+    "evt": 2930689
+  },
+  "GluGluHToTauTau_M125_preEE": {
+    "xs": 3.26,
+    "evt": 297099
+  },
+  "GluGluHToTauTau_M125_v2_postEE": {
+    "xs": 3.26,
+    "evt": 290966
+  },
+  "GluGluHToTauTau_M125_v3_postEE": {
+    "xs": 3.26,
+    "evt": 287979
+  },
+  "TBbarQ_t-channel_4FS_postEE": {
+    "xs": 148.49,
+    "evt": 9575678
+  },
+  "TBbarQ_t-channel_4FS_preEE": {
+    "xs": 148.49,
+    "evt": 2737406
+  },
+  "TTTo2L2Nu_postEE": {
+    "xs": 97.93,
+    "evt": 84351063
+  },
+  "TTTo2L2Nu_preEE": {
+    "xs": 97.93,
+    "evt": 23607463
+  },
+  "TTto4Q_postEE": {
+    "xs": 419.22,
+    "evt": 181209002
+  },
+  "TTto4Q_preEE": {
+    "xs": 419.22,
+    "evt": 53403019
+  },
+  "TTtoLNu2Q_postEE": {
+    "xs": 405.22,
+    "evt": 268316441
+  },
+  "TTtoLNu2Q_preEE": {
+    "xs": 405.22,
+    "evt": 79262483
+  },
+  "TWminusto2L2Nu_postEE": {
+    "xs": 3.24,
+    "evt": 8326120
+  },
+  "TWminusto2L2Nu_preEE": {
+    "xs": 3.24,
+    "evt": 2435393
+  },
+  "TWminustoLNu2Q_postEE": {
+    "xs": 15.12,
+    "evt": 17031091
+  },
+  "TWminustoLNu2Q_preEE": {
+    "xs": 15.12,
+    "evt": 4755067
+  },
+  "TbarBQ_t-channel_4FS_postEE": {
+    "xs": 89.94,
+    "evt": 4818392
+  },
+  "TbarBQ_t-channel_4FS_preEE": {
+    "xs": 89.94,
+    "evt": 1376684
+  },
+  "TbarWplusto2L2Nu_postEE": {
+    "xs": 3.24,
+    "evt": 8548776
+  },
+  "TbarWplusto2L2Nu_preEE": {
+    "xs": 3.24,
+    "evt": 2401387
+  },
+  "TbarWplustoLNu2Q_postEE": {
+    "xs": 15.12,
+    "evt": 16922083
+  },
+  "TbarWplustoLNu2Q_preEE": {
+    "xs": 15.12,
+    "evt": 4490535
+  },
+  "VBFHToTauTau_M125_Poisson60KeepRAW_postEE": {
+    "xs": 0.2567,
+    "evt": 297607
+  },
+  "VBFHToTauTau_M125_preEE": {
+    "xs": 0.2567,
+    "evt": 298942
+  },
+  "VBFHToTauTau_M125_v2_Poisson70KeepRAW_postEE": {
+    "xs": 0.2567,
+    "evt": 295621
+  },
+  "W1JetsToLNu-LO_postEE": {
+    "xs": 62243.04,
+    "evt": 348456687
+  },
+  "W2JetsToLNu-LO_postEE": {
+    "xs": 62243.04,
+    "evt": 348456687
+  },
+  "W3JetsToLNu-LO_preEE": {
+    "xs": 62243.04,
+    "evt": 87900584
+  },
+  "WJetsToLNu-LO_postEE": {
+    "xs": 62243.04,
+    "evt": 348456687
+  },
+  "WJetsToLNu-LO_preEE": {
+    "xs": 62243.04,
+    "evt": 87900584
+  },
+  "WW_postEE": {
+    "xs": 80.23,
+    "evt": 53507682
+  },
+  "WW_preEE": {
+    "xs": 80.23,
+    "evt": 15641372
+  },
+  "WZ_postEE": {
+    "xs": 29.1,
+    "evt": 26987194
+  },
+  "WZ_preEE": {
+    "xs": 29.1,
+    "evt": 7530526
+  },
+  "ZZZ_preEE": {
+    "xs": 0.01591,
+    "evt": 1751542
+  },
+  "ZZ_postEE": {
+    "xs": 12.75,
+    "evt": 4096926
+  },
+  "ZZ_preEE": {
+    "xs": 12.75,
+    "evt": 1186822
+  },
+  "Muon": {
+    "lumi": 33989
+  },
+  "Tau": {
+    "lumi": 35181
+  }
+}

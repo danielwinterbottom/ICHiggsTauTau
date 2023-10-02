@@ -943,6 +943,10 @@ class HTTCategories : public ModuleBase {
   bool trg_singlemuon27_;
   bool trg_muonelectron_;
   bool trg_doubletau_;
+  bool trg_doubletau_plusjet60_;
+  bool trg_doubletau_plusjet75_;
+  double trg60jet_pt_;
+  double trg75jet_pt_;
   bool trg_tt_monitoring_1_;
   bool trg_tt_monitoring_2_;
   bool trg_tt_monitoring_3_;

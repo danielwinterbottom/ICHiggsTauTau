@@ -318,7 +318,9 @@ class SubtractNode(BaseNode):
         self.subtract_node = subtract
 
     def RunSelf(self):
-        self.shape = self.initial_node.shape - self.subtract_node.shape
+        if self.subtract_node is not None:
+            self.shape = self.initial_node.shape - self.subtract_node.shape
+        else: self.shape = self.initial_node.shape
 
     def Objects(self):
         return {self.name: self.shape.hist}
@@ -327,7 +329,10 @@ class SubtractNode(BaseNode):
         return self.name + '.subnodes'
 
     def SubNodes(self):
-        return [self.initial_node, self.subtract_node]
+        subnodes = [self.initial_node]
+        if self.subtract_node is not None:
+            subnodes.append(self.subtract_node)
+        return subnodes
 
     def AddRequests(self, manifest):
         for node in self.SubNodes():
@@ -345,7 +350,10 @@ class HttQCDNode(BaseNode):
         self.qcd_shape = qcd_shape
 
     def RunSelf(self):
-        self.shape = self.factor * (self.data_node.shape - self.subtract_node.shape)
+        if self.subtract_node is not None:
+            self.shape = self.factor * (self.data_node.shape - self.subtract_node.shape)
+        else:
+            self.shape = self.factor * self.data_node.shape
         if self.ratio_num_node is not None and self.ratio_den_node is not None:
             self.shape *= self.ratio_num_node.shape.rate / self.ratio_den_node.shape.rate
         if self.qcd_shape is not None:
@@ -358,7 +366,9 @@ class HttQCDNode(BaseNode):
         return self.name + '.subnodes'
 
     def SubNodes(self):
-        subnodes = [self.data_node, self.subtract_node]
+        subnodes = [self.data_node]
+        if self.subtract_node is not None:
+            subnodes.append(self.subtract_node)
         if self.ratio_num_node is not None and self.ratio_den_node is not None:
             subnodes.append(self.ratio_num_node)
             subnodes.append(self.ratio_den_node)

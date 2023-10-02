@@ -2217,7 +2217,8 @@ def HTTPlot(nodename,
             qcd_ff_closure=False,
             w_ff_closure=False,
             bkg_comp = False,
-            plot_signals=[]
+            plot_signals=[],
+            qcdname="QCD" #Only used with tt for specific analysis, not implemented fully
             ):
 
     R.gROOT.SetBatch(R.kTRUE)
@@ -2270,7 +2271,7 @@ def HTTPlot(nodename,
     }
 
     ModTDRStyle(r=0.04, l=0.14)
-    R.TGaxis.SetExponentOffset(-0.06, 0.01, "y");
+    R.TGaxis.SetExponentOffset(-0.06, 0.01, "y")
 
     if ("sm" in signal_scheme and "mssm" not in signal_scheme) or True:
         background_schemes = {
@@ -2290,7 +2291,7 @@ def HTTPlot(nodename,
                 ],
             'tt':[
                 backgroundComp("t#bar{t}",["TTT","TTJ"],R.TColor.GetColor(155,152,204)),
-                backgroundComp("QCD", ["QCD"], R.TColor.GetColor(250,202,255)),
+                backgroundComp("QCD", [qcdname], R.TColor.GetColor(250,202,255)),
                 backgroundComp("Electroweak",["VVT","VVJ","W","ZL","ZJ"],R.TColor.GetColor(222,90,106)),
                 backgroundComp("Z#rightarrow#tau#tau",["ZTT","EWKZ"],R.TColor.GetColor(248,206,104)),
                 ],
@@ -3186,6 +3187,7 @@ def HTTPlot(nodename,
     
     c1.SaveAs(plot_name+'.pdf')
     c1.SaveAs(plot_name+'.png')
+    c1.Close()
 
 def CompareSysts(hists=[],
              plot_name="plot",
@@ -3363,7 +3365,8 @@ def CompareHists(hists=[],
              norm_bins=True,
              uncert_hist=None,
              uncert_title='',
-             ReweightPlot=False):
+             ReweightPlot=False,
+             output_file = None):
    
     objects=[]
     R.gROOT.SetBatch(R.kTRUE)
@@ -3520,9 +3523,9 @@ def CompareHists(hists=[],
     tot = len(hists)
     if isinstance(uncert_hist,list): tot+=len(uncert_hist)
     if tot > 4: legend = PositionedLegend(0.35,0.3,3,0.03)
-    else: legend = PositionedLegend(0.35,0.2,3,0.03)
+    else: legend = PositionedLegend(0.3,0.15,3,0.03)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.040)
+    legend.SetTextSize(0.025)
     legend.SetFillColor(0)
     
 
@@ -3607,10 +3610,12 @@ def CompareHists(hists=[],
     pads[0].RedrawAxis()
     
     c1.SaveAs(plot_name+'.pdf')
-    #c1.SaveAs(plot_name+'.png')
-
+    c1.SaveAs(plot_name+'.png')
+    if output_file is not None:
+        output_file.WriteObject(c1, plot_name)
     for o in objects:
-      o.IsA().Destructor(o)
+        o.IsA().Destructor(o)
+    c1.Close()
     
 def HTTPlotSignal(nodename, 
             infile=None, 
@@ -3995,8 +4000,9 @@ def TagAndProbePlot(graphs=[],
     pads[0].RedrawAxis()
     
     c1.SaveAs(plot_name+'.pdf')
-    #c1.SaveAs(plot_name+'.png')    
-    del c1    
+    c1.SaveAs(plot_name+'.png')    
+    #del c1    
+    c1.Close()
 def HTTPlotUnrolled(nodename, 
             infile=None, 
             signal_scale=1, 

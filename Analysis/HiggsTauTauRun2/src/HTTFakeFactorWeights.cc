@@ -34,7 +34,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
          MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
         MVADM2017 = "MVADM2017v2";
     } else {
         MVADM2017 = " ";
@@ -107,6 +108,10 @@ namespace ic {
         if(era_ == era::data_2018) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2018_v3.root";
         if(era_ == era::data_2018UL) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_UL_PFMET_2018.root";
       }
+      if(strategy_==strategy::cpdecays18) { //temporary
+        if(era_ == era::data_2022_preEE) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_mssm_2018_v3.root";
+        if(era_ == era::data_2022_postEE) mssm_file_ = "input/fake_factors/fakefactors_ws_tt_UL_PFMET_2018.root";
+      }      
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -221,6 +226,10 @@ namespace ic {
         if(era_ == era::data_2018) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018_v6.root";
         if(era_ == era::data_2018UL) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_UL_2018.root";
       }
+      if(strategy_==strategy::cpdecays18) { //temporary
+        if(era_ == era::data_2022_preEE) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_mssm_2018_v6.root";
+        if(era_ == era::data_2022_postEE) mssm_file_ = "input/fake_factors/fakefactors_ws_mt_UL_2018.root";
+      }      
 
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
@@ -350,6 +359,10 @@ namespace ic {
         if(era_ == era::data_2018) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v6.root";
         if(era_ == era::data_2018UL) mssm_file_ = "input/fake_factors/fakefactors_ws_et_UL_2018.root";
       }
+      if(strategy_==strategy::cpdecays18) { //temporary
+        if(era_ == era::data_2022_preEE) mssm_file_ = "input/fake_factors/fakefactors_ws_et_mssm_2018_v6.root";
+        if(era_ == era::data_2022_postEE) mssm_file_ = "input/fake_factors/fakefactors_ws_et_UL_2018.root";
+      }      
       TFile f_mssm((baseDir+"UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/"+mssm_file_).c_str());
 
       ff_ws_mssm_ = std::shared_ptr<RooWorkspace>((RooWorkspace*)gDirectory->Get("w"));
@@ -524,7 +537,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){
 	 MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL 
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
        	MVADM2017 = "MVADM2017v2";
     } else { 
 	MVADM2017 = " ";
@@ -554,11 +568,22 @@ namespace ic {
       btag_label       = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
     } 
+    if (era_ == era::data_2022_preEE) {
+      btag_wp          = 0.303;
+      btag_label       = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    }    
+    if (era_ == era::data_2022_postEE) {
+      btag_wp          = 0.3179;
+      btag_label       = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    } 
 
     auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;
     };
-    if (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) {
+    if (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL
+        || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
       if (event->Exists("retag_result")) {
         auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
         ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
@@ -585,6 +610,9 @@ namespace ic {
     if (era_ == era::data_2018 || era_ == era::data_2018UL) {
       deepjet_wp = 0.2770;
     }
+    if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+      deepjet_wp = 0.2770;
+    }    
     if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       deepjet_wp = 0.3093;
     }
@@ -873,6 +901,9 @@ namespace ic {
             if(era_ == era::data_2017 || era_ == era::data_2017UL) {
               if(pt_1_<28) pass_single=0.;
             } else if(era_ == era::data_2018 || era_ == era::data_2018UL) {
+              if(pt_1_<33) pass_single=0.;
+            }
+            else if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
               if(pt_1_<33) pass_single=0.;
             }
             if(era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) pass_single=1.;

@@ -2,6 +2,7 @@ import ROOT
 import UserCode.ICHiggsTauTau.plotting as plotting
 import argparse
 import os
+import ConfigParser
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 conf_parser = argparse.ArgumentParser(
@@ -16,9 +17,9 @@ options, remaining_argv = conf_parser.parse_known_args()
 defaults = {
     "channel":"tpzmm" ,
     "year":"2018",
-    "input_folder":"",
-    "embed": False,
-    "run_systs" : False,
+    "input_folder":"/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/TnP_Plots",
+    "embed":False,
+    "run_systs":False,
     }
 
 if options.cfg:
@@ -29,9 +30,10 @@ if options.cfg:
 parser = argparse.ArgumentParser(
     parents=[conf_parser]
     )
-parser.add_argument('--channel',type = str, help= 'Name of channel')
+parser.set_defaults(**defaults)
+parser.add_argument('--channel',dest="channel",type = str, help= 'Name of channel')
 parser.add_argument("--year", dest="year", type=str, help="Year input")
-parser.add_argument("--input_folder", help = 'Name of the input folder')
+parser.add_argument("--input_folder",dest="input_folder",type = str, help = 'Name of the input folder')
 parser.add_argument("--embed", dest="embed", action='store_true')
 parser.add_argument("--run_systs", dest="run_systs", action='store_true')
 options = parser.parse_args(remaining_argv)
@@ -43,13 +45,15 @@ file_name = "muon"
 if channel == "tpzee": file_name = "electron"
 
 # Open the source and destination root files
-f_nom = ROOT.TFile.Open("{}/{}/{}/{}_nom.root".format(input_folder,year,channel,file_name))
+f_nom = ROOT.TFile.Open("{}/{}_nom.root".format(input_folder,file_name,channel))
 if options.run_systs:
-   f_sig = ROOT.TFile.Open("{}/{}/{}/{}_sig.root".format(input_folder,year,channel,file_name))
-   f_bkg = ROOT.TFile.Open("{}/{}/{}/{}_bkg.root".format(input_folder,year,channel,file_name))
-   f_tag = ROOT.TFile.Open("{}/{}/{}/{}_tightTag.root".format(input_folder,year,channel,file_name))
+   f_sig = ROOT.TFile.Open("{}/{}_sig.root".format(input_folder,file_name,channel))
+   f_bkg = ROOT.TFile.Open("{}/{}_bkg.root".format(input_folder,file_name,channel))
+   f_tag = ROOT.TFile.Open("{}/{}_tightTag.root".format(input_folder,file_name,channel))
+if not f_nom or f_nom.IsZombie():
+    print("Error opening file f_nom")
 
-output_folder = "{}/{}/{}/correction/".format(input_folder,year,channel)
+output_folder = "{}/correction/".format(input_folder)
 
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
@@ -141,6 +145,13 @@ for name in types:
           else:
             content_nom_data = h_nom_data.GetBinContent(xbin,ybin)
             content_nom_ZLL = 0 if num_only else h_nom_ZLL.GetBinContent(xbin,ybin)
+            error_data = stat_error_data
+            error = stat_error
+            error_mc = stat_error_ZLL
+            if content_nom_ZLL == 0:
+              ratio = 0
+            else:
+              ratio = content_nom_data/content_nom_ZLL
             if options.embed: 
               content_nom_EMB = h_nom_EMB.GetBinContent(xbin,ybin)
             if options.run_systs:
@@ -221,7 +232,7 @@ if options.run_systs:
    f_tag.Close()
 destination_file.Close()
 
-destination_file = ROOT.TFile.Open("{}/{}_SF.root".format(output_folder,file_name), "READ")
+destination_file = ROOT.TFile.Open("{}/{}_SFs.root".format(output_folder,file_name), "READ")
 
 plots_folder = "{}/plots/".format(output_folder)
 
@@ -231,37 +242,37 @@ if not os.path.exists(plots_folder):
 
 types = ["id","iso","trg"]
 for name in types:
-   h_SF = destination_file.Get("ScaleFactor_{}".format(name))
-   if not isinstance(h_SF, ROOT.TGraphAsymmErrors): continue
-   if options.embed:
-     h_SF_EMB = destination_file.Get("ScaleFactor_EMB_{}".format(name))
+  h_SF = destination_file.Get("ScaleFactor_{}".format(name))
+  #if not isinstance(h_SF, ROOT.TGraphAsymmErrors): continue
+  if options.embed:
+    h_SF_EMB = destination_file.Get("ScaleFactor_EMB_{}".format(name))
 
-   for j in range(1, h_SF.GetNbinsY()+1):
-     histo1 = ROOT.TH1D('ScaleFactor_{}_1D'.format(name), '', h_SF.GetNbinsX(), h_SF.GetXaxis().GetXbins().GetArray())
-     if options.embed: 
-       histo2 = ROOT.TH1D('ScaleFactor_EMB_{}_1D'.format(name), '', h_SF_EMB.GetNbinsX(), h_SF_EMB.GetXaxis().GetXbins().GetArray())
-     bin_contents = []
-     bin_contents_emb = []
-     for i in range(1, h_SF.GetNbinsX()+1):
-        bin_content = h_SF.GetBinContent(i,j)
-        if bin_content!=0: bin_contents.append(bin_content)
-        bin_error = h_SF.GetBinError(i,j)
-        histo1.SetBinContent(i,bin_content)
-        histo1.SetBinError(i, bin_error)
-        if options.embed:
-          bin_content_emb = h_SF_EMB.GetBinContent(i,j)
-          if bin_content_emb!=0: bin_contents_emb.append(bin_content)
-          bin_error_emb = h_SF_EMB.GetBinError(i,j)
-          histo2.SetBinContent(i,bin_content_emb)
-          histo2.SetBinError(i, bin_error_emb)
+  for j in range(1, h_SF.GetNbinsY()+1):
+    histo1 = ROOT.TH1D('ScaleFactor_{}_1D'.format(name), '', h_SF.GetNbinsX(), h_SF.GetXaxis().GetXbins().GetArray())
+    if options.embed: 
+      histo2 = ROOT.TH1D('ScaleFactor_EMB_{}_1D'.format(name), '', h_SF_EMB.GetNbinsX(), h_SF_EMB.GetXaxis().GetXbins().GetArray())
+    bin_contents = []
+    bin_contents_emb = []
+    for i in range(1, h_SF.GetNbinsX()+1):
+      bin_content = h_SF.GetBinContent(i,j)
+      if bin_content!=0: bin_contents.append(bin_content)
+      bin_error = h_SF.GetBinError(i,j)
+      histo1.SetBinContent(i,bin_content)
+      histo1.SetBinError(i, bin_error)
+      if options.embed:
+        bin_content_emb = h_SF_EMB.GetBinContent(i,j)
+        if bin_content_emb!=0: bin_contents_emb.append(bin_content)
+        bin_error_emb = h_SF_EMB.GetBinError(i,j)
+        histo2.SetBinContent(i,bin_content_emb)
+        histo2.SetBinError(i, bin_error_emb)
 
-        # Set the titles and axis labels for the new histograms
-        if name == "id": histo1.SetTitle('ID Scale Factor {} < |#eta| < {}'.format(h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j))) 
-        if name == "iso": histo1.SetTitle('Isolation Scale Factor {} < |#eta| < {}'.format(h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
-        if name == "trg": histo1.SetTitle('Trigger Scale Factor {} < |#eta| < {}'.format(h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
-        histo1.GetXaxis().SetTitle('pT [GeV]')
-        histo1.GetYaxis().SetTitle('Correction')
-     if i == h_SF.GetNbinsX(): 
+      # Set the titles and axis labels for the new histograms
+      if name == "id": histo1.SetTitle('ID Scale Factor {} < |#eta| < {}'.format(h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j))) 
+      if name == "iso": histo1.SetTitle('Isolation Scale Factor {} < |#eta| < {}'.format(h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
+      if name == "trg": histo1.SetTitle('Trigger Scale Factor {} < |#eta| < {}'.format(h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
+      histo1.GetXaxis().SetTitle('pT [GeV]')
+      histo1.GetYaxis().SetTitle('Correction')
+      if i == h_SF.GetNbinsX(): 
         # Draw the new histograms
         canvas = ROOT.TCanvas('canvas', 'canvas', 800, 600)
         histo1.GetYaxis().SetRangeUser(0.9*min(bin_contents+bin_contents_emb),1.1*histo1.GetMaximum())
@@ -273,10 +284,10 @@ for name in types:
           histo2.Draw('same')
         canvas.SaveAs("{}/{}_SF_{}_{}_{}.pdf".format(plots_folder,file_name,name,h_SF.GetYaxis().GetBinLowEdge(j),h_SF.GetYaxis().GetBinUpEdge(j)))
         canvas.Update()
+        canvas.Close()
         del canvas
         del histo1
         if options.embed: del histo2
-   del h_SF
-   if options.embed: del h_SF_EMB 
-
+  del h_SF
+  if options.embed: del h_SF_EMB 
 
