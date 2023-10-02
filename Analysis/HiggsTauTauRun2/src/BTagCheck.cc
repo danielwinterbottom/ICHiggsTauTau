@@ -322,9 +322,13 @@ namespace ic {
 	  if (wp_to_check_ == "tight") tight_wp = 0.2783; // medium deepJet wp
 	  else if (wp_to_check_ == "loose") tight_wp = 0.0490; // loose deepJet wp
         }
-	else if ((era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) && use_deep_jet_) {
-	  if (wp_to_check_ == "tight") tight_wp = 0.2783; // medium deepJet wp
-	  else if (wp_to_check_ == "loose") tight_wp = 0.0490; // loose deepJet wp
+	else if (era_ == era::data_2022_preEE) && use_deep_jet_) {
+	  if (wp_to_check_ == "tight") tight_wp = 0.303; // medium deepJet wp
+	  else if (wp_to_check_ == "loose") tight_wp = 0.0474; // loose deepJet wp
+        }
+        else if (era_ == era::data_2022_postEE && use_deep_jet_) {
+          if (wp_to_check_ == "tight") tight_wp = 0.3179; // medium deepJet wp
+          else if (wp_to_check_ == "loose") tight_wp = 0.0492; // loose deepJet wp
         }
         if(jet_flavour == 5){
           if((era_ != era::data_2016 && era_ != era::data_2017 && era_ != era::data_2018) || ((era_ != era::data_2016 || era_ != era::data_2016UL_preVFP || era_ != era::data_2016UL_preVFP) && era_ != era::data_2017UL && era_ != era::data_2018UL && era_ != era::data_2022_preEE && era_ != era::data_2022_postEE)){

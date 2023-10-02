@@ -568,11 +568,16 @@ namespace ic {
       btag_label       = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
     } 
-    if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
-      btag_wp          = 0.4184;
+    if (era_ == era::data_2022_preEE) {
+      btag_wp          = 0.303;
       btag_label       = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
-    }     
+    }    
+    if (era_ == era::data_2022_postEE) {
+      btag_wp          = 0.3179;
+      btag_label       = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+    } 
 
     auto filterBTagSumTight = [btag_label, btag_label_extra, btag_wp] (PFJet* s1) -> bool {
       return s1->GetBDiscriminator(btag_label) + s1->GetBDiscriminator(btag_label_extra) > btag_wp;

@@ -218,9 +218,13 @@ namespace ic {
         tight_wp = 0.2783; // medium deepJet wp
         loose_wp = 0.0490; // loose deepJet wp
       }
-      else if ((era_ == era::data_2022_preEE || era_ == era::data_2022_postEE )&& use_deep_jet_){
-        tight_wp = 0.2783; // medium deepJet wp
-        loose_wp = 0.0490; // loose deepJet wp
+      else if (era_ == era::data_2022_preEE  && use_deep_jet_) {
+        tight_wp          = 0.303;
+        loose_wp = 0.0474; // loose deepJet wp
+      }
+      else if (era_ == era::data_2022_postEE  && use_deep_jet_) {
+        tight_wp          = 0.3179;
+        loose_wp = 0.0492; // loose deepJet wp
       }      
       for (unsigned j = 0; j < sf_tight.size(); j++) {
         double p_mc = 1.;

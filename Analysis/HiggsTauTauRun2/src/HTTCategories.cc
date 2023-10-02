@@ -2709,14 +2709,22 @@ namespace ic {
 
       deepjet_wp = 0.2783;
     }
-    if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+    if (era_ == era::data_2022_preEE) {
       btag_wp = 0.4184;
       loose_btag_wp = 0.1241;
       btag_label = "pfDeepCSVJetTags:probb";
       btag_label_extra = "pfDeepCSVJetTags:probbb";
 
-      deepjet_wp = 0.2783;
-    }    
+      deepjet_wp = 0.303;
+    }   
+    if (era_ == era::data_2022_postEE) {
+      btag_wp = 0.4184;
+      loose_btag_wp = 0.1241;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.3179;
+    } 
     if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       btag_wp = 0.6321;
       loose_btag_wp = 0.2217;
