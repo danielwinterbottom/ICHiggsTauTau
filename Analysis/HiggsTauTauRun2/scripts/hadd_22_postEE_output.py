@@ -43,46 +43,36 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=3:0:0"'
 sample_list = [
 
           # Tau
-         'TauA_preEE',
-         'TauB_preEE',
-         'TauB_rereco_preEE',
-         'TauC_preEE',
-         'TauC_rereco_preEE',
-         'TauD_preEE',
-         'TauD_rereco_preEE',
-         'TauE_postEE',
-         'TauE_rereco_postEE',
-         'TauF_postEE',
-         'TauG_postEE',
-         'MuonE_rereco_postEE',
-         'MuonE_postEE',
-         'MuonF_postEE',
-         'MuonG_postEE',
+         'TauE_rereco',
+         'TauF',
+         'TauG',
+
+         'MuonE_rereco',
+         'MuonF',
+         'MuonG',
          
          #MC postEE
-
-          'DYJetsToLL-LO_postEE',
-          'DYto2TautoMuTauh_M50_postEE',
-          'GluGluHToTauTau_M125_v2_postEE',
-          'GluGluHToTauTau_M125_v3_postEE',
-          'TBbarQ_t-channel_4FS_postEE',
-          'TTTo2L2Nu_postEE',
-          'TTto4Q_postEE',
-          'TTtoLNu2Q_postEE',
-          'TWminusto2L2Nu_postEE',
-          'TWminustoLNu2Q_postEE',
-          'TbarBQ_t-channel_4FS_postEE',
-          'TbarWplusto2L2Nu_postEE',
-          'TbarWplustoLNu2Q_postEE',
-          'VBFHToTauTau_M125_Poisson60KeepRAW_postEE',
-          'VBFHToTauTau_M125_v2_Poisson70KeepRAW_postEE',
-          'W1JetsToLNu-LO_postEE',
-          'W2JetsToLNu-LO_postEE',
-          'WJetsToLNu-LO_postEE',
-          'WW_postEE',
-          'WZ_postEE',
-          'ZZ_postEE',
-                  
+                 
+         'DYJetsToLL-LO',
+         # missing exclusive jet samples
+         'DYto2TautoMuTauh_M50',
+         'TTTo2L2Nu',
+         'TTto4Q',
+         'TTtoLNu2Q',
+         'TBbarQ_t-channel_4FS',
+         'TWminusto2L2Nu',
+         'TWminustoLNu2Q',
+         'TbarBQ_t-channel_4FS',
+         'TbarWplusto2L2Nu',
+         'TbarWplustoLNu2Q',
+         'WW',
+         'WZ',
+         'ZZ',
+         'W1JetsToLNu-LO',
+         'W2JetsToLNu-LO',
+         'WJetsToLNu-LO',
+         #missing W+jets 3 and 4 samples
+ 
 	]
 
 
