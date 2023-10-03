@@ -73,7 +73,7 @@ for dm in dml:
     else: 
       cfgParams.append('isData=0')
     if dm == "Signal": 
-       config.Data.inputDBS = 'phys03'
+       config.Data.inputDBS = 'global'
        cfgParams.append('tauSpinner=True')
 
     config.JobType.allowUndistributedCMSSW = True

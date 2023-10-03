@@ -2550,7 +2550,7 @@ def HTTPlot(nodename,
         h.SetMarkerSize(0)
     
         if norm_bins:
-            print "Normalising bins to bin width"
+            print("Normalising bins to bin width")
             h.Scale(1.0,"width")
         if h.GetName() == '': continue     
         bkg_histos.append(h)

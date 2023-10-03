@@ -4,11 +4,12 @@ import os
 #python3 crab_4tau_12_4.py --data --mc --output_folder Dec22 --year 2018
 #cmsRun test/higgstautau_cfg_124X_Dec22_2018.py isData=0 globalTag=106X_upgrade2018_realistic_v15_L1v1 isEmbed=0
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Apr20')
+parser.add_argument('--output_folder','-o', help= 'Name of output directory', default='Jun05')
 parser.add_argument('--year','-y', help= 'Name of input year', choices=["2016-preVFP","2016-postVFP","2017","2018","all"], default='all')
 parser.add_argument('--data', help= 'Run data samples',  action='store_true')
 parser.add_argument('--mc', help= 'Run mc samples',  action='store_true')
 parser.add_argument('--signal', help= 'Run signal samples',  action='store_true')
+parser.add_argument('--embed', help= 'Run embedded samples',  action='store_true')
 parser.add_argument('--recovery', help= 'Do recovery jobs, make sure you run crab report on the samples you want to recover first',  action='store_true')
 parser.add_argument('--only_run', help= 'Only run this file', default=None)
 args = parser.parse_args()
@@ -17,6 +18,7 @@ dml = []
 if args.data: dml.append("Data")
 if args.mc: dml.append("MC")
 if args.signal: dml.append("Signal")
+if args.embed: dml.append("EMB")
 
 if args.year == "all": yl = ["2016-preVFP","2016-postVFP","2017","2018"]
 else: yl = [args.year]
@@ -43,7 +45,13 @@ gt = {
               "2016-postVFP":"106X_dataRun2_v37",
               "2017":"106X_dataRun2_v37",
               "2018":"106X_dataRun2_v37"
-              }
+              },
+      "EMB":{"2016-preVFP":"106X_dataRun2_v37",
+             "2016-postVFP":"106X_dataRun2_v37",
+             "2017":"106X_dataRun2_v37",
+             "2018":"106X_dataRun2_v37"
+              },
+
       }
 
 for dm in dml:
@@ -63,6 +71,7 @@ for dm in dml:
     else:
       config.General.workArea='{}_{}_124X_{}_recovery'.format(args.output_folder,dm,yr)
 
+    #config.General.transferLogs = True
     config.JobType.psetName = cfg[yr]
     config.JobType.pluginName = 'Analysis'
     config.JobType.outputFiles = ['EventTree.root']
@@ -73,14 +82,17 @@ for dm in dml:
     else: 
       cfgParams.append('isData=0')
     if dm == "Signal": config.Data.inputDBS = 'phys03'
+    if dm == "EMB":
+      cfgParams.append("isEmbed=1")
+      config.Data.inputDBS = 'phys03'
 
     config.JobType.allowUndistributedCMSSW = True
     config.Data.outLFNDirBase='/store/user/{}/{}/'.format(getUsernameFromCRIC(), config.General.workArea)
     config.Data.publication = False
     config.Data.allowNonValidInputDataset = True
     #config.Data.ignoreLocality = True # don't use this!
-    
-    config.Site.whitelist   = ['T2_*','T1_*','T3_*']
+    #config.Site.whitelist   = ['T2_*','T1_*','T3_*']
+
     config.Site.storageSite = 'T2_UK_London_IC'
     
     if __name__ == '__main__':
@@ -335,6 +347,21 @@ for dm in dml:
             tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
             tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
 
+            # QCD
+            tasks.append(('QCD_Pt-20_MuEnrichedPt15','/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'))
+
+            tasks.append(('QCD_Pt-15To20_MuEnrichedPt5','/QCD_Pt-15To20_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-20To30_MuEnrichedPt5','/QCD_Pt-20To30_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-30To50_MuEnrichedPt5','/QCD_Pt-30To50_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-50To80_MuEnrichedPt5','/QCD_Pt-50To80_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-80To120_MuEnrichedPt5','/QCD_Pt-80To120_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-120To170_MuEnrichedPt5','/QCD_Pt-120To170_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-170To300_MuEnrichedPt5','/QCD_Pt-170To300_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-300To470_MuEnrichedPt5','/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-470To600_MuEnrichedPt5','/QCD_Pt-470To600_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-600To800_MuEnrichedPt5','/QCD_Pt-600To800_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-800To1000_MuEnrichedPt5','/QCD_Pt-800To1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-1000_MuEnrichedPt5','/QCD_Pt-1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v2/MINIAODSIM'))
 
           elif yr == "2016-postVFP":
             # Spit MC into preVFP and postVFP (HIP fix)
@@ -426,6 +453,22 @@ for dm in dml:
             tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
             tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
 
+            # QCD
+            tasks.append(('QCD_Pt-20_MuEnrichedPt15','/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+
+            tasks.append(('QCD_Pt-15To20_MuEnrichedPt5','/QCD_Pt-15To20_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-20To30_MuEnrichedPt5','/QCD_Pt-20To30_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-30To50_MuEnrichedPt5','/QCD_Pt-30To50_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-50To80_MuEnrichedPt5','/QCD_Pt-50To80_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-80To120_MuEnrichedPt5','/QCD_Pt-80To120_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-120To170_MuEnrichedPt5','/QCD_Pt-120To170_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-170To300_MuEnrichedPt5','/QCD_Pt-170To300_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-300To470_MuEnrichedPt5','/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-470To600_MuEnrichedPt5','/QCD_Pt-470To600_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-600To800_MuEnrichedPt5','/QCD_Pt-600To800_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-800To1000_MuEnrichedPt5','/QCD_Pt-800To1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+            tasks.append(('QCD_Pt-1000_MuEnrichedPt5','/QCD_Pt-1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'))
+
           elif yr == "2017":
 
             # Drell-Yan LO
@@ -516,6 +559,22 @@ for dm in dml:
             tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
             tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
 
+            # QCD
+            tasks.append(('QCD_Pt-20_MuEnrichedPt15','/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+
+            tasks.append(('QCD_Pt-15To20_MuEnrichedPt5','/QCD_Pt-15To20_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-20To30_MuEnrichedPt5','/QCD_Pt-20To30_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-30To50_MuEnrichedPt5','/QCD_Pt-30To50_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-50To80_MuEnrichedPt5','/QCD_Pt-50To80_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-80To120_MuEnrichedPt5','/QCD_Pt-80To120_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-120To170_MuEnrichedPt5','/QCD_Pt-120To170_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-170To300_MuEnrichedPt5','/QCD_Pt-170To300_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-300To470_MuEnrichedPt5','/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-470To600_MuEnrichedPt5','/QCD_Pt-470To600_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-600To800_MuEnrichedPt5','/QCD_Pt-600To800_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-800To1000_MuEnrichedPt5','/QCD_Pt-800To1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-1000_MuEnrichedPt5','/QCD_Pt-1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+
           elif yr == "2018":
 
             # Drell-Yan LO
@@ -605,6 +664,22 @@ for dm in dml:
             tasks.append(('GluGluToContinToZZTo4e','/GluGluToContinToZZTo4e_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
             tasks.append(('GluGluToContinToZZTo4mu','/GluGluToContinToZZTo4mu_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
             tasks.append(('GluGluToContinToZZTo4tau','/GluGluToContinToZZTo4tau_TuneCP5_13TeV-mcfm701-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+
+            # QCD
+            tasks.append(('QCD_Pt-20_MuEnrichedPt15','/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'))
+
+            tasks.append(('QCD_Pt-15To20_MuEnrichedPt5','/QCD_Pt-15To20_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-20To30_MuEnrichedPt5','/QCD_Pt-20To30_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-30To50_MuEnrichedPt5','/QCD_Pt-30To50_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-50To80_MuEnrichedPt5','/QCD_Pt-50To80_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-80To120_MuEnrichedPt5','/QCD_Pt-80To120_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-120To170_MuEnrichedPt5','/QCD_Pt-120To170_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-170To300_MuEnrichedPt5','/QCD_Pt-170To300_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-300To470_MuEnrichedPt5','/QCD_Pt-300To470_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-470To600_MuEnrichedPt5','/QCD_Pt-470To600_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-600To800_MuEnrichedPt5','/QCD_Pt-600To800_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-800To1000_MuEnrichedPt5','/QCD_Pt-800To1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
+            tasks.append(('QCD_Pt-1000_MuEnrichedPt5','/QCD_Pt-1000_MuEnrichedPt5_TuneCP5_13TeV-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'))
 
         if dm == "Signal":
           if yr == "2016-preVFP":
@@ -902,6 +977,124 @@ for dm in dml:
             tasks.append(('ZstarTophi300A70To4Tau', '/ZstarTophi300A70To4Tau/guttley-ZstarTophi300A70To4Tau_2018_MiniAODv2-07bb2832fd9cf08ee8da01c42829422a/USER'))
             tasks.append(('ZstarTophi300A80To4Tau', '/ZstarTophi300A80To4Tau/guttley-ZstarTophi300A80To4Tau_2018_MiniAODv2-07bb2832fd9cf08ee8da01c42829422a/USER'))
             tasks.append(('ZstarTophi300A90To4Tau', '/ZstarTophi300A90To4Tau/guttley-ZstarTophi300A90To4Tau_2018_MiniAODv2-07bb2832fd9cf08ee8da01c42829422a/USER'))
+
+        if dm == "EMB":
+          if yr == "2016-preVFP":
+            tasks.append(('EmbeddingMuTau2016-HIPM_B_ver1','/EmbeddingRun2016-HIPM_B_ver1/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2016-HIPM_B_ver2','/EmbeddingRun2016-HIPM_B_ver2/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2016-HIPM_C','/EmbeddingRun2016-HIPM_C/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2016-HIPM_D','/EmbeddingRun2016-HIPM_D/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2016-HIPM_E','/EmbeddingRun2016-HIPM_E/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2016-HIPM_F','/EmbeddingRun2016-HIPM_F/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016-HIPM_B_ver1','/EmbeddingRun2016-HIPM_B_ver1/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016-HIPM_B_ver2','/EmbeddingRun2016-HIPM_B_ver2/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016-HIPM_C','/EmbeddingRun2016-HIPM_C/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016-HIPM_D','/EmbeddingRun2016-HIPM_D/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016-HIPM_E','/EmbeddingRun2016-HIPM_E/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016-HIPM_F','/EmbeddingRun2016-HIPM_F/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016-HIPM_B_ver1','/EmbeddingRun2016-HIPM_B_ver1/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016-HIPM_B_ver2','/EmbeddingRun2016-HIPM_B_ver2/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016-HIPM_C','/EmbeddingRun2016-HIPM_C/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016-HIPM_D','/EmbeddingRun2016-HIPM_D/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016-HIPM_E','/EmbeddingRun2016-HIPM_E/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016-HIPM_F','/EmbeddingRun2016-HIPM_F/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016-HIPM_B_ver1','/EmbeddingRun2016-HIPM_B_ver1/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016-HIPM_B_ver2','/EmbeddingRun2016-HIPM_B_ver2/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016-HIPM_C','/EmbeddingRun2016-HIPM_C/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016-HIPM_D','/EmbeddingRun2016-HIPM_D/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016-HIPM_E','/EmbeddingRun2016-HIPM_E/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016-HIPM_F','/EmbeddingRun2016-HIPM_F/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+
+            tasks.append(('EmbeddingMuMu2016-HIPM_B_ver1','/EmbeddingRun2016-HIPM_B_ver1/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2016-HIPM_B_ver2','/EmbeddingRun2016-HIPM_B_ver2/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2016-HIPM_C','/EmbeddingRun2016-HIPM_C/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2016-HIPM_D','/EmbeddingRun2016-HIPM_D/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2016-HIPM_E','/EmbeddingRun2016-HIPM_E/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2016-HIPM_F','/EmbeddingRun2016-HIPM_F/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016-HIPM_B_ver1','/EmbeddingRun2016-HIPM_B_ver1/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016-HIPM_B_ver2','/EmbeddingRun2016-HIPM_B_ver2/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016-HIPM_C','/EmbeddingRun2016-HIPM_C/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016-HIPM_D','/EmbeddingRun2016-HIPM_D/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016-HIPM_E','/EmbeddingRun2016-HIPM_E/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016-HIPM_F','/EmbeddingRun2016-HIPM_F/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+          if yr == "2016-postVFP":
+            tasks.append(('EmbeddingMuTau2016F','/EmbeddingRun2016_F/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2016G','/EmbeddingRun2016_G/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2016H','/EmbeddingRun2016_H/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016F','/EmbeddingRun2016_F/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016G','/EmbeddingRun2016_G/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2016H','/EmbeddingRun2016_H/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016F','/EmbeddingRun2016_F/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016G','/EmbeddingRun2016_G/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2016H','/EmbeddingRun2016_H/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016F','/EmbeddingRun2016_F/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016G','/EmbeddingRun2016_G/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2016H','/EmbeddingRun2016_H/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+
+            tasks.append(('EmbeddingMuMu2016F','/EmbeddingRun2016_F/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2016G','/EmbeddingRun2016_G/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2016H','/EmbeddingRun2016_H/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016F','/EmbeddingRun2016_F/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016G','/EmbeddingRun2016_G/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2016H','/EmbeddingRun2016_H/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+          if yr == "2017":
+            tasks.append(('EmbeddingMuTau2017B','/EmbeddingRun2017B/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2017C','/EmbeddingRun2017C/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2017D','/EmbeddingRun2017D/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2017E','/EmbeddingRun2017E/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2017F','/EmbeddingRun2017F/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2017B','/EmbeddingRun2017B/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2017C','/EmbeddingRun2017C/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2017D','/EmbeddingRun2017D/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2017E','/EmbeddingRun2017E/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2017F','/EmbeddingRun2017F/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2017B','/EmbeddingRun2017B/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2017C','/EmbeddingRun2017C/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2017D','/EmbeddingRun2017D/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2017E','/EmbeddingRun2017E/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2017F','/EmbeddingRun2017F/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2017B','/EmbeddingRun2017B/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2017C','/EmbeddingRun2017C/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2017D','/EmbeddingRun2017D/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2017E','/EmbeddingRun2017E/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2017F','/EmbeddingRun2017F/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+
+            tasks.append(('EmbeddingMuMu2017B','/EmbeddingRun2017B/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2017C','/EmbeddingRun2017C/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2017D','/EmbeddingRun2017D/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2017E','/EmbeddingRun2017E/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2017F','/EmbeddingRun2017F/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2017B','/EmbeddingRun2017B/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2017C','/EmbeddingRun2017C/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2017D','/EmbeddingRun2017D/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2017E','/EmbeddingRun2017E/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2017F','/EmbeddingRun2017F/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+          if yr == "2018":
+            tasks.append(('EmbeddingMuTau2018A','/EmbeddingRun2018A/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2018B','/EmbeddingRun2018B/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2018C','/EmbeddingRun2018C/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuTau2018D','/EmbeddingRun2018D/MuTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2018A','/EmbeddingRun2018A/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2018B','/EmbeddingRun2018B/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2018C','/EmbeddingRun2018C/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElTau2018D','/EmbeddingRun2018D/ElTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2018A','/EmbeddingRun2018A/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2018B','/EmbeddingRun2018B/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2018C','/EmbeddingRun2018C/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElMu2018D','/EmbeddingRun2018D/ElMuFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2018A','/EmbeddingRun2018A/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2018B','/EmbeddingRun2018B/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2018C','/EmbeddingRun2018C/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingTauTau2018D','/EmbeddingRun2018D/TauTauFinalState-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+
+            tasks.append(('EmbeddingMuMu2018A', '/EmbeddingRun2018A/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2018B', '/EmbeddingRun2018B/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2018C', '/EmbeddingRun2018C/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingMuMu2018D', '/EmbeddingRun2018D/MuonEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2018A', '/EmbeddingRun2018A/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2018B', '/EmbeddingRun2018B/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2018C', '/EmbeddingRun2018C/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
+            tasks.append(('EmbeddingElEl2018D', '/EmbeddingRun2018D/ElectronEmbedding-inputDoubleMu_106X_ULegacy_miniAOD-v1/USER'))
  
         for task in tasks:
 
@@ -909,8 +1102,14 @@ for dm in dml:
 
             print(task[0])
             config.General.requestName = task[0]
-            config.Data.inputDataset = task[1]
-
+            if not "EmbeddingMuMu2016G" in task[0]: config.Data.inputDataset = task[1]
+            if "includenpNLO=True" not in cfgParams and (task[0] == "DYJetsToLL_0J-NLO" or task[0] == "DYJetsToLL_1J-NLO" or task[0]=="DYJetsToLL_2J-NLO" or task[0]== "DYJetsToLL-NLO"):
+              cfgParams.append("includenpNLO=True")
+            if "includenpNLO=True" in cfgParams: 
+              if (task[0] == "DYJetsToLL_0J-NLO" or task[0] == "DYJetsToLL_1J-NLO" or task[0] == "DYJetsToLL_2J-NLO" or task[0] == "DYJetsToLL-NLO"):
+                pass
+              else:
+                cfgParams.remove("includenpNLO=True")
             if args.recovery:
               os.system("crab kill {}_{}_124X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
               os.system("crab report {}_{}_124X_{}/crab_{}".format(args.output_folder,dm,yr,task[0]))
@@ -919,6 +1118,9 @@ for dm in dml:
     
             config.Data.userInputFiles = None
             if task[0] == 'DYJetsToLL-LO' and yr == "2017":
+              config.Data.splitting = 'FileBased'
+              config.Data.unitsPerJob = 4
+            elif dm == 'EMB':
               config.Data.splitting = 'FileBased'
               config.Data.unitsPerJob = 4
             elif dm == "Signal":
@@ -933,6 +1135,19 @@ for dm in dml:
             else:
               config.Data.splitting = 'EventAwareLumiBased'
               config.Data.unitsPerJob = 50000
+
+            if "EmbeddingMuMu2016G" in task[0]:
+                        
+              # inputDataset doesn;t work for this sample for some reason so need to pass the filelist by hand
+              filelist='EmbeddingRun2016_G_filelist.txt'
+              with open(filelist) as f:
+                lfnList = f.read().splitlines()
+
+              config.Data.userInputFiles = lfnList
+              config.Data.splitting = 'FileBased'
+              config.Data.unitsPerJob = 1
+              config.Site.whitelist   = ['T1_DE_KIT']
+
 
             if args.recovery: config.Data.unitsPerJob = 10000
 
