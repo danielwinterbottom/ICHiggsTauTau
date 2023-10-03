@@ -9,8 +9,9 @@ import sys
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 
-opts.register('file',
-'root://xrootd.unl.edu//store/mc/Run3Summer22EEMiniAODv3/DYToLL_M-50_TuneCP5_13p6TeV-pythia8/MINIAODSIM/Poisson70KeepRAW_124X_mcRun3_2022_realistic_postEE_v1-v1/2820000/013791f8-e0a8-4d38-979a-0e34eab54030.root',
+
+# if you get a file open disallowed it is because no // before store; just / probably!!! can implement in code
+opts.register('file','root://cms-xrd-global.cern.ch//store/data/Run2022E/Tau/MINIAOD/PromptReco-v1/000/359/037/00000/c3fac9f0-6413-4331-8c2d-1f46192e6bc4.root',
 parser.VarParsing.multiplicity.singleton,
 parser.VarParsing.varType.string, "input file")
 opts.register('globalTag', '124X_mcRun3_2022_realistic_postEE_v1', parser.VarParsing.multiplicity.singleton,
@@ -1615,6 +1616,18 @@ process.icEle16Ele12Ele8 = producers.icTriggerObjectProducer.clone(
       storeOnlyIfFired = cms.bool(False)
 )
 
+# Matt Knight:
+# paths = []
+# for attr_name in vars(process):
+#   attr = getattr(process, attr_name)
+#   if hasattr(attr, "input") and isinstance(attr.input, cms.InputTag):
+#     if attr.input == cms.InputTag("selectedPatTrigger"):
+#       paths.append(attr)
+
+
+# for path in paths:
+#    process.icTriggerObjectSequence += cms.Sequence(path)
+
 process.icTriggerObjectSequence += cms.Sequence(
     process.icIsoMu20ObjectProducer+
     process.icIsoMu24ObjectProducer+
@@ -1683,6 +1696,11 @@ process.icTriggerObjectSequence += cms.Sequence(
     process.icMu24LooseDeepTauHPS30ObjectProducer+ #run3
     process.icEle24LooseDeepTauHPS30ObjectProducer+ #run3 
     process.icLooseDeepTauPFTauHPS180ObjectProducer+ #run3
+    process.icDoublePFJets40Mass500MediumDeepTauPFTauHPS45HPS20ObjectProducer+ #run3
+    process.icDoubleMediumIsoDisplacedTauHPS32ObjectProducer+ #run3
+    process.icDoubleMediumDeepPFTauHPS30PFJets60ObjectProducer+ #run3
+    process.icDoubleMediumDeepPFTauHPS30PFJets75ObjectProducer+ #run3
+    process.icDoubleMediumDeepPFTauHPS35ObjectProducer+ #run3
     process.icMu24MediumDeepTauHPS35ObjectProducer+ #run3
     process.icMu24MediumDeepTauHPS20ObjectProducer+ #run3
     process.icMu24MediumDeepTauHPS45ObjectProducer+ #run3
