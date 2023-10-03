@@ -974,15 +974,23 @@ if options.channel == 'tpzmm':
     elif options.era == 'UL_18':
         data_samples = ['SingleMuonA','SingleMuonB','SingleMuonC','SingleMuonD']
     elif options.era == '22_preEE':
-        data_samples = ['SingleMuonB_rereco_preEE','SingleMuonC_rereco_preEE','MuonC_rereco_preEE','MuonD_rereco_preEE'] # check this as Endre's code did not have single muon for Run C but I think it exists 
+        data_samples = ['SingleMuonC_rereco','MuonC_rereco','MuonD_rereco']
     elif options.era == '22_postEE':
-        data_samples = ['MuonE_rereco_postEE','MuonF_postEE','MuonG_postEE']       
+        data_samples = ['MuonE_rereco','MuonF','MuonG']       
     
 if  options.channel == 'tpzee': 
     if options.era == 'UL_16preVFP': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'UL_16postVFP': data_samples = ['SingleElectronF','SingleElectronG','SingleElectronH']    
     elif options.era == 'UL_17': data_samples = ['SingleElectronB','SingleElectronC','SingleElectronD','SingleElectronE','SingleElectronF']
     elif options.era == 'UL_18': data_samples = ['EGammaA','EGammaB','EGammaC','EGammaD']
+   # elif options.era == '22_preEE':
+   #     data_samples = ['EGammaC_rereco','EGammaD_rereco']
+   # elif options.era == '22_postEE':
+   #     data_samples = ['EGammaE_rereco','EGammaF','EGammaG']
+    elif options.era == '22_preEE':
+        data_samples = ['EGammaC_rereco'] # change to above after ntuples have finished
+    elif options.era == '22_postEE':
+        data_samples = ['EGammaE_rereco']
 
 embed_samples = []
 if options.channel == "tpzmm":
@@ -1000,8 +1008,8 @@ if options.era == 'UL_16preVFP':  ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_16postVFP': ztt_samples = ['DYJetsToLL-LO']
 elif options.era == 'UL_17':  ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
 elif options.era == 'UL_18': ztt_samples = ['DYJetsToLL-LO','DYJetsToLL-LO-ext1']
-elif options.era == '22_preEE': ztt_samples = ['DYJetsToLL-LO_summer_preEE']
-elif options.era == '22_postEE': ztt_samples = ['DYJetsToLL-LO_postEE']
+elif options.era == '22_preEE': ztt_samples = ['DYJetsToLL-LO']
+elif options.era == '22_postEE': ztt_samples = ['DYJetsToLL-LO']
 
 #Formula:  abs(eta_2),pt_2,m_vis[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4],[10,15,17,19,21,23,24,25,26,27,28,31,34,37,40,45,50,60,70,100,1000],(40,70,110) (wt)*((m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)*(1&&id_probe_1))*(os)*(1)*(!(trg_probe_2))
 ROOT.TH1.SetDefaultSumw2(True)
@@ -1021,7 +1029,7 @@ if options.channel == 'tpzmm':
   iso_cut_1='iso_1<0.15'
   iso_cut_2='iso_2<0.15'
   
-  if options.era in ['UL_17','UL_18']:
+  if options.era in ['UL_17','UL_18','22_preEE','22_postEE']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
   else:
@@ -1033,11 +1041,11 @@ if options.channel == 'tpzmm':
     iso_cut_2="1"
      
 if options.channel == 'tpzee':
-  if options.era in ['UL_16preVFP','UL_16postVFP','UL_17','UL_18']:
+  if options.era in ['UL_16preVFP','UL_16postVFP','UL_17','UL_18','22_preEE','22_postEE']:
     iso_cut_1='iso_1<0.15'
     iso_cut_2='iso_2<0.15'
   
-  if options.era in ['UL_17','UL_18']:
+  if options.era in ['UL_17','UL_18','22_preEE','22_postEE']:
     if options.tree_name == 'tagandprobe_ET':
       baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>36&&abs(eta_1)<2.1&&iso_1<0.1&&id_tag_1&&trg_tag_1&&trg_tag_extra_1&&os)'
       baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>36&&abs(eta_2)<2.1&&iso_2<0.1&&id_tag_2&&trg_tag_2&&trg_tag_extra_2&&os)'
@@ -1101,7 +1109,7 @@ if options.draw_hists == 1:
     ana.remaps = {}
     if options.channel =='tpzmm': ana.remaps['SingleMuon'] = 'data_obs'
     elif options.channel == 'tpzee':
-        if options.era in ['UL_18']: ana.remaps['EGamma'] = 'data_obs'
+        if options.era in ['UL_18','22_preEE','22_postEE']: ana.remaps['EGamma'] = 'data_obs'
         else: ana.remaps['SingleElectron'] = 'data_obs'
     
     # Add all data files
@@ -1178,7 +1186,7 @@ for i in variations:
                if "iso" in name: sig_model = "DoubleVUncorr_elec_TwoPeaks"
                if "trg" in name: sig_model = "DoubleVUncorr_elec"
             
-         if options.era in ["UL_18"]:
+         if options.era in ["UL_18",'22_preEE','22_postEE']:
             if i == "signal": sig_model = "BWCBConvCorr"
             else:
                if "id" in name: sig_model = "DoubleVUncorr_elec_18"
@@ -1244,7 +1252,7 @@ for i in variations:
          if 'trg' in sf: label = 'Electron Trigger, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
          elif 'iso' in sf: label = 'Electron Iso, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
          elif 'id' in sf: label = 'Electron ID, %s, %.1f < |#eta| < %.1f' % (options.era,ymin,ymax)
-       plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era=='UL_18',ratio_range,True,200,10,False,0,1.5,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+sf+'_eta_%.1f_to_%.1f_%s'%(ymin,ymax,i),label)
+       plotting.TagAndProbePlot(graphs,leg_labels,"",True,False,options.era in ['UL_18','22_preEE','22_postEE'],ratio_range,True,200,10,False,0,1.5,x_title, "Efficiency",0,options.outputfolder+'/'+plot_name+sf+'_eta_%.1f_to_%.1f_%s'%(ymin,ymax,i),label)
 
    sffile.Close()
 
