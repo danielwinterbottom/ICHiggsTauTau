@@ -171,6 +171,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
      tau_pt = 20.;
      lead_tau_pt = 20;
    }
+   if(era_type == era::data_2022_preEE || era_type == era::data_2022_preEE){
+    tau_pt=35;
+    lead_tau_pt=35;
+   }
    tau_eta = 2.1;
    min_taus = 2;
    lead_min_taus = 1;
@@ -178,11 +182,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(channel_str == "zee"){
     if(era_type == era::data_2017 || era_type == era::data_2017UL) elec_pt = 28.;
     if(era_type == era::data_2018 || era_type == era::data_2018UL) elec_pt = 33.;
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) elec_pt = 33.;
     else elec_pt = 25.;
     elec_eta = 2.1;
   }
   if(channel_str == "zmm"){
     if(era_type == era::data_2017 || era_type == era::data_2017UL  || era_type == era::data_2018 || era_type == era::data_2018UL) muon_pt = 25.;
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) muon_pt = 25.;
     else muon_pt = 23.;
     muon_eta = 2.1; 
   }
@@ -376,6 +382,8 @@ void HTTSequence::BuildSequence(){
       data_json = "input/json/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt";
   if ((era_type == era::data_2018 || era_type == era::data_2018UL))
       data_json = "input/json/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt";
+  if ((era_type == era::data_2022_preEE || era_type == era::data_2022_postEE))
+      data_json = "input/json/Cert_Collisions2022_355100_362760_Golden_lumicorr.json"; //359571 and 359661 removed https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun3  
 
  if(js["get_effective"].asBool() && js["make_sync_ntuple"].asBool()){
    std::cerr<< "Error: cannot run effective number of event module in make_syncntuple mode"<<std::endl;
@@ -398,7 +406,7 @@ void HTTSequence::BuildSequence(){
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015 || era_type==era::data_2016  
-          || era_type == era::data_2017 || era_type == era::data_2018 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || era_type == era::data_2017UL || era_type == era::data_2018UL){
+          || era_type == era::data_2017 || era_type == era::data_2018 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || era_type == era::data_2017UL || era_type == era::data_2018UL || era_type == era::data_2022_preEE || era_type == era::data_2022_postEE){
     httPrint.set_muon_label(js["muons"].asString());
     httPrint.set_jet_label(jets_label);
   }
@@ -458,6 +466,14 @@ if(!is_data && js["do_gen_analysis"].asBool()){
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
     }
+    if(era_type == era::data_2022_preEE ) {
+      httStitching.SetDYInputCrossSections(1.0,1.0,1.0,1.0,1.0);
+      httStitching.SetDYInputYields(27309719,0,0,0,0);
+    }
+    if(era_type == era::data_2022_postEE) {
+      httStitching.SetDYInputCrossSections(1.0,1.0,1.0,1.0,1.0);
+      httStitching.SetDYInputYields(96294972,0,0,0,0);
+    }  
 
 
   }
@@ -559,21 +575,7 @@ httPairSelector.set_gen_taus_label("genParticles");
 
 BuildModule(httPairSelector);
  
-if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_in_mc"].asBool())){
 
-  bool tau_dataset = output_name.find("Tau") != output_name.npos && is_data; 
-  BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-      .set_channel(channel)
-      .set_mc(mc_type)
-      .set_era(era_type)
-      .set_strategy(strategy_type)
-      .set_is_data(is_data)
-      .set_tau_dataset(tau_dataset)
-      .set_is_embedded(is_embedded)
-      .set_do_singletau(js["do_singletau"].asBool())
-      .set_do_filter(false)
-      .set_pair_label("ditau"));
-}
 
 // Lepton Vetoes
 if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
@@ -646,6 +648,18 @@ if(do_met_filters){
 	//met_filters.push_back("Flag_BadPFMuonDzFilter");
 	met_filters.push_back("Flag_ecalBadCalibFilter");
       }
+      if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) 
+      {
+        met_filters.push_back("Flag_goodVertices");
+        met_filters.push_back("Flag_globalSuperTightHalo2016Filter");
+        met_filters.push_back("Flag_HBHENoiseFilter");
+        met_filters.push_back("Flag_HBHENoiseIsoFilter");
+        met_filters.push_back("Flag_EcalDeadCellTriggerPrimitiveFilter");
+        met_filters.push_back("Flag_BadPFMuonFilter");
+        //disabled (missing filter)
+	//met_filters.push_back("Flag_BadPFMuonDzFilter");
+	met_filters.push_back("Flag_ecalBadCalibFilter");
+      }      
       bool pass_filters = true;
       for(unsigned i=0;i<met_filters.size();++i){
        pass_filters = pass_filters&& eventInfo->filter_result(met_filters.at(i));
@@ -675,6 +689,9 @@ if (era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_typ
 } else if (era_type == era::data_2017 || era_type == era::data_2017UL) {
   jetIDFilter.set_predicate(bind(PFJetID2017, _1));
 } else if (era_type == era::data_2018 || era_type == era::data_2018UL) {
+  jetIDFilter.set_predicate(bind(PFJetID2018, _1));
+}
+else if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
   jetIDFilter.set_predicate(bind(PFJetID2018, _1));
 }
 BuildModule(jetIDFilter);
@@ -760,6 +777,16 @@ if(era_type == era::data_2018UL) {
    scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
    scalefactor_file_UL = "input/scale_factors/htt_scalefactors_UL_2018.root";
 }
+if(era_type == era::data_2022_preEE) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_2022preEE.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
+   scalefactor_file_UL = "";
+}
+if(era_type == era::data_2022_postEE) {
+   scalefactor_file = "input/scale_factors/htt_scalefactors_2022postEE.root";
+   scalefactor_file_ggh = "input/ggh_weights/htt_scalefactors_2017_MGggh.root";
+   scalefactor_file_UL = "";
+}
 
 
 TH2F embed_pt_weights_ic;
@@ -767,13 +794,13 @@ TH2F embed_pt_weights_ic;
 if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2016");
 if(era_type == era::data_2017 || era_type == era::data_2017UL) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2017");
 if(era_type == era::data_2018 || era_type == era::data_2018UL) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
+if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) embed_pt_weights_ic = GetFromTFile<TH2F>("input/scale_factors/embed_zmm_shifts_v2.root","/","shifts_2018");
 
 HTTWeights httWeights = HTTWeights("HTTWeights")   
  .set_channel(channel)
  .set_era(era_type)
  .set_mc(mc_type)
  .set_do_tau_id_weights(!is_data)
- .set_do_tau_id_sf(!is_data)
  .set_do_em_qcd_weights(true)
  .set_ditau_label("ditau")
  .set_jets_label(jets_label)
@@ -788,11 +815,15 @@ httWeights.set_scalefactor_file_UL(scalefactor_file_UL);
 httWeights.set_is_embedded(is_embedded);
 if (!is_data ) {
   httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
-  if(channel == channel::et || channel == channel::mt || channel==channel::tt) httWeights.set_do_etau_fakerate(true);
-  if(channel == channel::mt || channel == channel::et ||channel == channel::tt) httWeights.set_do_mtau_fakerate(true);
-  if((channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee)) httWeights.set_do_tracking_eff(true);
+  if(era_type != era::data_2022_preEE && era_type != era::data_2022_postEE){
+  httWeights.set_do_tau_id_sf(true);
+  if(channel == channel::et || channel == channel::mt || channel==channel::tt) {
+  httWeights.set_do_etau_fakerate(true);
+  httWeights.set_do_mtau_fakerate(true);
+    }
+  if(channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee) httWeights.set_do_tracking_eff(true);
+  }
 }
-
 if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
   httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
 }
@@ -854,6 +885,14 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,0.0184,0.0103);
       httStitching.SetWInputYields(82360950, 47850048, 27411802, 18297679, 9130068);
     }
+    if(era_type == era::data_2022_preEE){
+      httStitching.SetWInputCrossSections(1.0,1.0,1.0,0.0184,1.0);
+      httStitching.SetWInputYields(87900584, 0, 0, 8214147, 0);
+    }
+    if(era_type == era::data_2022_postEE){
+      httStitching.SetWInputCrossSections(1.0,0.1522,0.0515,1.0,1.0);
+      httStitching.SetWInputYields(348456687, 42838501, 36384428, 0, 0);
+    }      
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
     httStitching.set_do_dy_soup(true);
@@ -885,6 +924,14 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetDYInputCrossSections(1.0, 0.1641, 0.0571, 0.0208, 0.0118); //Target fractions are xs_n-jet/xs_inclusive
       httStitching.SetDYInputYields(96055748+101373493, 60368985, 27494377, 20466041, 8885353);
     }
+    if(era_type == era::data_2022_preEE ) {
+      httStitching.SetDYInputCrossSections(1.0,1.0,1.0,1.0,1.0);
+      httStitching.SetDYInputYields(27309719,0,0,0,0);
+    }
+    if(era_type == era::data_2022_postEE) {
+      httStitching.SetDYInputCrossSections(1.0,1.0,1.0,1.0,1.0);
+      httStitching.SetDYInputYields(96294972,0,0,0,0);
+    }  
   }
 
   if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
@@ -905,6 +952,10 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
       httStitching.SetDYInputYields_NLO(132321936, 69493624, 43156627, 13793541);
     }
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+      httStitching.SetDYInputCrossSections_NLO(6404.0,5129.0,951.5,361.4);
+      httStitching.SetDYInputYields_NLO(132321936, 69493624, 43156627, 13793541);
+    }    
   }
   BuildModule(httStitching);   
 }
@@ -1048,6 +1099,10 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       jes_input_file = "input/jec/RegroupedV2_Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
       jes_input_set  = "Total";
     }
+    if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+      jes_input_file = "input/jec/RegroupedV2_Summer19UL18_V5_MC_UncertaintySources_AK4PFchs.txt";
+      jes_input_set  = "Total";
+    }    
 
     
     if(alt_jes_input_set!="") jes_input_set = alt_jes_input_set;
@@ -1179,6 +1234,15 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
       cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_c");
       othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_oth");
 	  
+    } else if (era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) {
+      bbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_b");
+      cbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_c");
+      othbtag_eff = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_medium.root","/","btag_eff_oth");
+  
+      bbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_b");
+      cbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_c");
+      othbtag_eff_alt = GetFromTFile<TH2F>("input/btag_sf/tagging_efficiencies_deepJet_2018UL_loose.root","/","btag_eff_oth");
+	  
     }
 
     BTagWeightLegacyRun2 BTagWeight = BTagWeightLegacyRun2("BTagWeightLegacyRun2")
@@ -1293,6 +1357,22 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   
   BuildModule(svFitTest);
   
+  if(channel != channel::tpzmm &&channel !=channel::tpzee && (is_data || js["trg_in_mc"].asBool())){
+
+    bool tau_dataset = output_name.find("Tau") != output_name.npos && is_data; 
+    BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+        .set_channel(channel)
+        .set_mc(mc_type)
+        .set_era(era_type)
+        .set_strategy(strategy_type)
+        .set_is_data(is_data)
+        .set_tau_dataset(tau_dataset)
+        .set_is_embedded(is_embedded)
+        .set_do_singletau(js["do_singletau"].asBool())
+        .set_do_filter(false)
+        .set_pair_label("ditau"));
+  }
+  
   
   bool do_mssm_higgspt = output_name.find("SUSYGluGluToHToTauTau_M") != output_name.npos;
   BuildModule(HTTCategories("HTTCategories")
@@ -1335,7 +1415,7 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   
 } // end of loop over jet met uncertainties
 
-  if(channel == channel::tpzmm){  
+  if(channel == channel::tpzmm){   
     std::function<bool(Muon const*)> muon_probe_id;
     
     if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
@@ -1470,6 +1550,139 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
           .set_do_dzmass(true)
         );
          
+    }else if(era_type == era::data_2022_postEE || era_type == era::data_2022_preEE){
+        std::string isoMu24FilterName = (era_type == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+        muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
+        std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); }; 
+        // low pT mu leg of e+mu trigger
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_EMLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id) 
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_extra_l1_probe_pt(5.)
+          .set_add_name("_em_low")
+        );
+        // high pT mu leg of e+mu trigger
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_EMHigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(23.)
+          .set_extra_l1_probe_pt(20.)
+          .set_add_name("_em_high")
+        );
+        // mu leg of mu+tau cross trigger for runs C-F
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_MT_CtoF")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsDoubleMu20")
+          .set_probe_trg_filters("hltL3crIsoL1sDoubleMu18erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          .set_add_name("_mt_c_to_f")
+        );
+        // mu leg of mu+tau cross trigger for run B
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_MT_B")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu20Tau27")
+          .set_probe_trg_filters("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")
+          .set_do_extra(true)
+          .set_add_name("_mt_b")
+        );
+        // single muons trigger measurment
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_single")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")                
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(muon_probe_id)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)  
+        );
+        // low pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuLow")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)
+          .set_add_name("_dimu_low")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+
+        );
+        // high pT leg of dimuon trigger used for embedded selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuhigh")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(muon_probe_id)
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)
+          .set_add_name("_dimu_high")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(17.)
+        );
+        // use to measure DZ filter efficiency for embedded selection selection
+        BuildModule(TagAndProbe<Muon const*>("TagAndProbe_DiMuDZ")
+          .set_fs(fs.get())
+          .set_channel(channel)
+          .set_strategy(strategy_type)
+          .set_ditau_label("ditau")
+          .set_tag_trg_objects("triggerObjectsIsoMu24")
+          .set_tag_trg_filters(isoMu24FilterName)
+          .set_probe_id(MuonLooseID)
+          .set_tag_id(MuonLooseID)
+          .set_probe_trg_objects("triggerObjectsIsoMu24")
+          .set_probe_trg_filters(isoMu24FilterName)
+          .set_add_name("_dimu_dz")
+          .set_probe_trg_objects("triggerObjectsMu17Mu8DZ,triggerObjectsMu17Mu8DZmass8,triggerObjectsMu17Mu8")
+          .set_probe_trg_filters("hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4,hltDiMuon178RelTrkIsoFiltered0p4")
+          .set_extra_hlt_probe_pt(8.)
+          .set_do_dzmass(true)
+        );
+         
     } else {
       muon_probe_id = [](Muon const* m) {return MuonMedium(m); };
       std::function<bool(Muon const*)> MuonLooseID = [](Muon const* m) { return MuonLoose(m) && m->is_global(); };
@@ -1594,7 +1807,8 @@ for (unsigned i=0; i<jet_met_uncerts.size(); ++i) {
   } 
 
   if(channel == channel::tpzee){
-    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL){
+    if(era_type == era::data_2017 || era_type == era::data_2017UL || era_type == era::data_2018 || era_type == era::data_2018UL
+    || era_type == era::data_2022_preEE || era_type == era::data_2022_postEE){
       std::function<bool(Electron const*)> elec_probe_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, true); };
       std::function<bool(Electron const*)> elec_tag_id = [](Electron const* e) { return ElectronHTTIdFall17V2(e, false); };
 

@@ -45,11 +45,13 @@ namespace ic {
 	  // not properly set up yet
 	  //else if (era_==era::data_2017UL && use_deep_jet_) csv_file_path = "./input/btag_sf/DeepCSV_94XSF_V4_B_F.csv";
       else if (era_==era::data_2018 && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
+      else if ((era_ == era::data_2022_preEE || era_ == era::data_2022_postEE ) && use_deep_csv_) csv_file_path = "./input/btag_sf/DeepCSV_102XSF_V1.csv";
 
       else if (era_ == era::data_2016UL_preVFP && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL16preVFP_v2.csv";
       else if (era_ == era::data_2016UL_postVFP && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL16postVFP_v3.csv";
       else if (era_ == era::data_2017UL && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL17_v3.csv";
       else if (era_ == era::data_2018UL && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv"; 
+      else if ((era_ == era::data_2022_preEE || era_ == era::data_2022_postEE ) && use_deep_jet_) csv_file_path = "./input/btag_sf/wp_deepJet_106XUL18_v2.csv";
       
 	  if (!use_deep_csv_) calib  = new const BTagCalibration("csvv2",csv_file_path);
       else if (use_deep_csv_) calib  = new const BTagCalibration("deepcsv",csv_file_path);
@@ -75,7 +77,8 @@ namespace ic {
   int BTagWeightLegacyRun2::Execute(TreeEvent *event) {
     std::vector<PFJet*> embed_jets = event->GetPtrVec<PFJet>(jet_label_);
     double eta_cut = 2.4;
-    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) eta_cut = 2.5;
+    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL 
+    || era_==era::data_2022_preEE || era_== era::data_2022_postEE) eta_cut = 2.5;
     ic::erase_if(embed_jets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     std::vector<double> btag_evt_weight = EventReweighting(embed_jets);
     event->ForceAdd("btag_evt_weight"+add_name_, btag_evt_weight[0]);
@@ -215,6 +218,14 @@ namespace ic {
         tight_wp = 0.2783; // medium deepJet wp
         loose_wp = 0.0490; // loose deepJet wp
       }
+      else if (era_ == era::data_2022_preEE  && use_deep_jet_) {
+        tight_wp          = 0.303;
+        loose_wp = 0.0474; // loose deepJet wp
+      }
+      else if (era_ == era::data_2022_postEE  && use_deep_jet_) {
+        tight_wp          = 0.3179;
+        loose_wp = 0.0492; // loose deepJet wp
+      }      
       for (unsigned j = 0; j < sf_tight.size(); j++) {
         double p_mc = 1.;
         double p_data = 1.;

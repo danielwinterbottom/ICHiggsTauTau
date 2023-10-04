@@ -46,6 +46,9 @@ namespace ic {
     std::string alt_er_trk_trig_obj_label;
     std::string alt_trig_obj_label_2;
     std::string alt_trig_obj_label_3;
+    std::string trig_ttpj_obj_label1="";
+    std::string trig_ttpj_obj_label2="";
+
     std::string leg1_filter;
     std::string leg2_filter;
     std::string extra_leg2_filter;
@@ -71,6 +74,14 @@ namespace ic {
     std::string alt_cross_leg1_filter;
     std::string alt_cross_leg2_filter;
     std::string alt_cross_extra_leg2_filter;
+
+
+    std::string ttplusjet_leg1_filter_1 = "";
+    std::string ttplusjet_leg2_filter_1 = "";
+    std::string ttplusjet_leg1_filter_2 = "";
+    std::string ttplusjet_leg2_filter_2 = "";
+    std::string ttplusjet_jet_filter_1 = "";
+    std::string ttplusjet_jet_filter_2 = "";
 
     std::string monitoring_16_trig_obj_label;
     std::string monitoring_16_leg1_filter;
@@ -250,7 +261,7 @@ namespace ic {
           leg2_filter = "hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
-        if (run >= 317509) { //2018 post hps
+        if (run >= 317509 && run < 355100) { //2018 post hps
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           alt_trk_trig_obj_label = "triggerObjectsIsoMu27";
@@ -260,6 +271,20 @@ namespace ic {
           leg1_filter = "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07";
           leg2_filter = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
+        }
+        if (run >= 355100) {
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+          alt_trk_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_trk_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+          high_leg_pt = 21.;
+        trig_obj_label = "triggerObjectsMu24LooseDeepTauHPS27"; //https://twiki.cern.ch/twiki/bin/view/CMS/TauTrigger
+         leg1_filter =(era_ == era::data_2022_postEE) ?
+         "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered" : "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p08";
+         leg2_filter = "hltHpsSelectedPFTau27LooseMuTauWPDeepTauVsJetsAgainstMuonL1HLTMatched";
+         extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseMuTauWPDeepTauPFTau27L1Seeded";
         }
         // --------------------------
         // Monitoring paths for checks
@@ -383,7 +408,7 @@ namespace ic {
           //subleading from following (but contains leading as well)
           alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleLooseChargedIsoPFTau20"; 
         }
-        if (run >= 317509) {
+        if (run >= 317509 && run < 355100) {
           trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35";
           leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
           leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
@@ -394,6 +419,28 @@ namespace ic {
           //subleading from following (but contains leading as well)
           alt_jetleg2_filter = "hltMatchedVBFTwoPFJets2CrossCleanedFromDoubleLooseChargedIsoPFTauHPS20"; 
         }
+        if (run >= 355100) {
+          trig_obj_label = "triggerObjectsDoubleMediumDeepPFTauHPS35";
+          leg1_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
+          leg2_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
+
+          trig_ttpj_obj_label1 = "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets60";
+          ttplusjet_leg1_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_1 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60";
+
+          trig_ttpj_obj_label2= "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets75";
+          ttplusjet_leg1_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_2 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75";          
+
+          // alt_trig_obj_label_3 = "triggerObjectsDoubleMediumDeepPFTauHPS35";
+          // alt_leg1_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          // alt_leg2_filter_3 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          // alt_jetleg1_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75"; // leading 
+          // //subleading from following (but contains leading as well)
+          // alt_jetleg2_filter = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60"; 
+        }// only leading jet 75 and 60 two variables
       }
       
       //single tau trigger  
@@ -406,11 +453,15 @@ namespace ic {
           singletau_trg_obj_alt_label = "triggerObjectsSingleTau140";
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_alt_filter = "hltPFTau140TrackPt50LooseAbsOrRelVLooseIso";
-        } else if(run >= 294927) {
+        } else if(run < 355100 && run >= 294927) {
           singletau_trg_obj_label = "triggerObjectsMediumChargedIsoPFTau180HighPtRelaxedIso";
           min_online_singletau_pt=0; // don't know what this would be at the moment so just keep as 0 for now
           singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
           singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
+        } else if(run >= 355100) {
+          singletau_trg_obj_label = "triggerObjectsLooseDeepTauPFTauHPS180";
+          singletau_leg1_filter = "hltSelectedPFTau180LooseSingleTauWPDeepTauL1HLTMatched";
+          singletau_leg1_filter_2 = "";
         }
       }  
     } else {
@@ -437,7 +488,11 @@ namespace ic {
             singletau_leg1_filter = "hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso";
             singletau_leg1_filter_2 = "hltSelectedPFTau180MediumChargedIsolationL1HLTMatched";
           }
-        }
+        }else if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+          singletau_trg_obj_label = "triggerObjectsLooseDeepTauPFTauHPS180";
+          singletau_leg1_filter = "hltSelectedPFTau180LooseSingleTauWPDeepTauL1HLTMatched";
+          singletau_leg1_filter_2 = "";
+          }
       }
         
       if (channel_ == channel::et || channel_ == channel::zee || channel_ ==  channel::tpzee) {
@@ -578,6 +633,19 @@ namespace ic {
           monitoring_18_trig_obj_label = "triggerObjectsMu24MediumIsoTauHPS35";
           monitoring_18_leg1_filter = "hltL3crIsoL1sBigOrMuXXerIsoTauYYerL1f0L2f10QL3f24QL3trkIsoFiltered0p07";
           monitoring_18_leg2_filter = "hltHpsSelectedPFTau35TrackPt1MediumChargedIsolationL1HLTMatchedReg";
+        } else if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+          alt_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+          alt_trk_trig_obj_label = "triggerObjectsIsoMu24";
+          alt_trk_leg1_filter =  (era_ == era::data_2022_postEE) ?
+         "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
+        trig_obj_label = "triggerObjectsMu24LooseDeepTauHPS27";
+         leg1_filter =(era_ == era::data_2022_postEE) ?
+         "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered" : "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p08";
+         leg2_filter = "hltHpsSelectedPFTau27LooseMuTauWPDeepTauVsJetsAgainstMuonL1HLTMatched";
+         extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseMuTauWPDeepTauPFTau27L1Seeded";
+          high_leg_pt = 21.;
         }
 
       } else if (channel_ == channel::em) {
@@ -632,7 +700,7 @@ namespace ic {
              alt_leg1_filter_2=leg1_filter;
              alt_leg2_filter_2=leg1_filter;
           }
-        } else if (era_ == era::data_2018 || era_ == era::data_2018UL) {
+        } else if (era_ == era::data_2018 || era_ == era::data_2018UL ) {
             trig_obj_label = "triggerObjectsDoubleMediumIsoTauHPS35"; //HPS only
             leg1_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
             leg2_filter = "hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg";
@@ -650,6 +718,20 @@ namespace ic {
                alt_leg1_filter_2=leg1_filter;
                alt_leg2_filter_2=leg1_filter;
             }
+        } else if ( era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+          trig_obj_label = "triggerObjectsDoubleMediumDeepPFTauHPS35";
+          leg1_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
+          leg2_filter = "hltHpsDoublePFTau35MediumDitauWPDeepTauL1HLTMatched";
+
+          trig_ttpj_obj_label1 = "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets60";
+          ttplusjet_leg1_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_1 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_1 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet60";
+
+          trig_ttpj_obj_label2= "triggerObjectsDoubleMediumDeepPFTauHPS30PFJets75";
+          ttplusjet_leg1_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_leg2_filter_2 = "hltHpsDoublePFTau30MediumDitauWPDeepTauL1HLTMatchedDoubleTauJet";
+          ttplusjet_jet_filter_2 = "hltHpsOverlapFilterDeepTauDoublePFTau30PFJet75";  
         }
       }
     }
@@ -693,7 +775,7 @@ namespace ic {
 
            leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_objs, alt_er_leg1_filter, 0.5).first) || (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_er_trk_objs, alt_er_trk_leg1_filter, 0.5).first); 
         } else if((channel_==channel::mt || channel_==channel::zmm || channel_ == channel::tpzmm) 
-                && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL)) {
+                && (era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE)) {
            std::vector<TriggerObject *> alt_trk_objs = event->GetPtrVec<TriggerObject>(alt_trk_trig_obj_label);
            leg1_match = (IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5).first || IsFilterMatchedWithIndex(dileptons[i]->At(0),alt_trk_objs, alt_trk_leg1_filter, 0.5).first);
         }
@@ -975,6 +1057,11 @@ namespace ic {
    bool match_l1_parts = false;
    bool jetleg1_match = false;
    bool jetleg2_match = false;
+   bool passed_doubletau_plusjet_1 = false;
+   bool passed_doubletau_plusjet_2 = false;
+   double trg1_jet_pt = -9999;
+   double trg2_jet_pt = -9999;
+
    if (channel_ == channel::tt){
      for(unsigned i = 0; i < dileptons.size(); ++i){
        bool leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), objs, leg1_filter, 0.5).first;
@@ -1043,6 +1130,41 @@ namespace ic {
           match_l1_parts = (MatchByDR(match_taus,passed_l1_taus,0.5,true,true)).size() == 2;
           passed_doubletau = passed_doubletau && match_l1_parts;
         }
+        if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
+          std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+          if(jets.size()>0){
+            std::vector<TriggerObject *> ttplusjet_objs_1 = event->GetPtrVec<TriggerObject>(trig_ttpj_obj_label1);
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), ttplusjet_objs_1,ttplusjet_leg1_filter_1, 0.5).first;
+            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), ttplusjet_objs_1,ttplusjet_leg2_filter_1, 0.5).first;
+            if(leg1_match && leg2_match){             
+              for(unsigned int ijet = 0; ijet < jets.size(); ++ijet){
+                jetleg1_match = IsFilterMatchedWithIndex(jets[ijet], ttplusjet_objs_1, ttplusjet_jet_filter_1, 0.5).first;
+                if(jetleg1_match){
+                  trg1_jet_pt = jets[ijet]->pt();               
+                  passed_doubletau_plusjet_1 = true;
+                  break; 
+                }
+              }
+            }
+
+            std::vector<TriggerObject *> ttplusjet_objs_2 = event->GetPtrVec<TriggerObject>(trig_ttpj_obj_label2);
+            leg1_match = IsFilterMatchedWithIndex(dileptons[i]->At(0), ttplusjet_objs_2,ttplusjet_leg1_filter_2, 0.5).first;
+            leg2_match = IsFilterMatchedWithIndex(dileptons[i]->At(1), ttplusjet_objs_2,ttplusjet_leg2_filter_2, 0.5).first;
+            if(leg1_match && leg2_match){
+              for(unsigned int ijet = 0; ijet < jets.size(); ++ijet){
+                jetleg1_match = IsFilterMatchedWithIndex(jets[ijet], ttplusjet_objs_2, ttplusjet_jet_filter_2, 0.5).first;
+                if(jetleg1_match){
+                  trg2_jet_pt = jets[ijet]->pt();               
+                  passed_doubletau_plusjet_2 = true;
+                  break; 
+                }
+              }
+            }            
+            if(!passed_doubletau && (passed_doubletau_plusjet_2 || passed_doubletau_plusjet_1)){
+              dileptons_pass.push_back(dileptons[i]);
+            }
+          }
+        }
       }
 
       // 2018 vbf trg jet matching after double tau trg part
@@ -1074,10 +1196,42 @@ namespace ic {
           else passed_vbfdoubletau = false;
         }
       }
+      // if ((era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) && passed_vbfdoubletau && alt_trig_obj_label_3 != "") {
+      //   std::vector<TriggerObject *> alt_objs_3 = event->GetPtrVec<TriggerObject>(alt_trig_obj_label_3);  
+      //   std::vector<PFJet *> jets = event->GetPtrVec<PFJet>("ak4PFJetsCHS");
+      //   // first need to find jets with maximum mjj and cross clean from taus?
+      //   if (jets.size() >= 2) {
+      //     unsigned int i1 = 0;
+      //     unsigned int j1 = 0;
+      //     double mjj_max = 0;
+          
+      //     for (unsigned int ijet = 0; ijet < jets.size()-1; ++ijet){
+      //       for (unsigned int jjet = ijet+1; jjet < jets.size(); ++jjet){
+      //         double mjj_test = (jets[ijet]->vector()+jets[jjet]->vector()).M();
+
+      //         if (mjj_test > mjj_max){
+      //           mjj_max = mjj_test;
+      //           i1 = ijet;
+      //           j1 = jjet;
+      //         }
+      //       } 
+      //     }
+
+      //     // add VBF trig here, need to do jet matching
+      //     jetleg1_match = IsFilterMatchedWithIndex(jets[i1], alt_objs_3, alt_jetleg1_filter, 0.5).first;
+      //     jetleg2_match = IsFilterMatchedWithIndex(jets[j1], alt_objs_3, alt_jetleg2_filter, 0.5).first;
+      //     if (jetleg1_match && jetleg2_match) passed_vbfdoubletau = true;
+      //     else passed_vbfdoubletau = false;
+      //   }
+      // }
     }
     event->Add("trg_doubletau", passed_doubletau);
+    event->Add("trg_doubletau_plusjet60", passed_doubletau_plusjet_1);
+    event->Add("trg_doubletau_plusjet75", passed_doubletau_plusjet_2);
     event->Add("trg_doubletau_mssm", (passed_doubletau&&passed_doubletau_extra));
     event->Add("trg_vbfdoubletau", passed_vbfdoubletau);
+    event->Add("trg60jet_pt", trg1_jet_pt);
+    event->Add("trg75jet_pt", trg2_jet_pt);
     
     bool passed_singletau_1 = false;
     bool passed_singletau_2 = false;

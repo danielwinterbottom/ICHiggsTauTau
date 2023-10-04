@@ -10,7 +10,7 @@ for i in "${targets[@]}"; do
   for j in "${names[@]}"; do
     name=$(echo $j | cut -d"/" -f6-| cut -d"_" -f2-)
     type="MC"
-    if [[ $name == "Tau"* || "$name" == "MuonEG"* || "$name" == "SingleElectron"* || "$name" == "SingleMuon"* || "$name" == "EGamma"* ]]; then
+    if [[ $name == "Tau"* || "$name" == "MuonEG"* || "$name" == "SingleElectron"* || "$name" == "SingleMuon"* || "$name" == "Muon"* || "$name" == "DoubleMuon"* || "$name" == "EGamma"* ]]; then
       type="Data"
     fi
     if [ "$samples" ]; then 
@@ -18,7 +18,7 @@ for i in "${targets[@]}"; do
     fi
     echo "Getting filelist for : " $name
 
-    file_name=$output_prefix"_"$type"_102X_"$name".dat"
+    file_name=$output_prefix"_"$type"_124X_"$name".dat"
     date_names=($(xrdfs gfe02.grid.hep.ph.ic.ac.uk:1097 ls $j )) # | cut -d"/" -f2-))
     export most_recent=0
     for k in "${date_names[@]}"; do

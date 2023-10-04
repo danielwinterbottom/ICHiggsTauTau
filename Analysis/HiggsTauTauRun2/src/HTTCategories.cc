@@ -73,7 +73,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
          MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
          MVADM2017 = "MVADM2017v2";
     } else {
          MVADM2017 = " ";
@@ -234,6 +235,68 @@ namespace ic {
       outtree_->Branch("wt_tau_id_dm",    &wt_tau_sf_id_dm_);
       outtree_->Branch("wt_tau_id_pt",    &wt_tau_sf_id_pt_);
 
+      outtree_->Branch("tau_idisoweight_1", &tau_idisoweight_1_);
+      outtree_->Branch("tau_idisoweight_2", &tau_idisoweight_2_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_up", &tau_idisoweight_ratio_1_up_);
+      outtree_->Branch("tau_idisoweight_ratio_2_up", &tau_idisoweight_ratio_2_up_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_down", &tau_idisoweight_ratio_1_down_);
+      outtree_->Branch("tau_idisoweight_ratio_2_down", &tau_idisoweight_ratio_2_down_);
+
+      outtree_->Branch("tau_idisoweight_vvvloose_1", &tau_idisoweight_vvvloose_1_);
+      outtree_->Branch("tau_idisoweight_vvvloose_2", &tau_idisoweight_vvvloose_2_);
+
+      outtree_->Branch("tau_idisoweight_vvloose_1", &tau_idisoweight_vvloose_1_);
+      outtree_->Branch("tau_idisoweight_vvloose_2", &tau_idisoweight_vvloose_2_);
+
+      outtree_->Branch("tau_idisoweight_vloose_1", &tau_idisoweight_vloose_1_);
+      outtree_->Branch("tau_idisoweight_vloose_2", &tau_idisoweight_vloose_2_);
+
+      outtree_->Branch("tau_idisoweight_loose_1", &tau_idisoweight_loose_1_);
+      outtree_->Branch("tau_idisoweight_loose_2", &tau_idisoweight_loose_2_);
+
+      outtree_->Branch("tau_idisoweight_medium_1", &tau_idisoweight_medium_1_);
+      outtree_->Branch("tau_idisoweight_medium_2", &tau_idisoweight_medium_2_);
+
+      outtree_->Branch("tau_idisoweight_tight_1", &tau_idisoweight_tight_1_);
+      outtree_->Branch("tau_idisoweight_tight_2", &tau_idisoweight_tight_2_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_uncert0_up", &tau_idisoweight_ratio_1_uncert0_up_);
+      outtree_->Branch("tau_idisoweight_ratio_2_uncert0_up", &tau_idisoweight_ratio_2_uncert0_up_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_uncert0_down", &tau_idisoweight_ratio_1_uncert0_down_);
+      outtree_->Branch("tau_idisoweight_ratio_2_uncert0_down", &tau_idisoweight_ratio_2_uncert0_down_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_uncert1_up", &tau_idisoweight_ratio_1_uncert1_up_);
+      outtree_->Branch("tau_idisoweight_ratio_2_uncert1_up", &tau_idisoweight_ratio_2_uncert1_up_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_uncert1_down", &tau_idisoweight_ratio_1_uncert1_down_);
+      outtree_->Branch("tau_idisoweight_ratio_2_uncert1_down", &tau_idisoweight_ratio_2_uncert1_down_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_syst_all_eras_up", &tau_idisoweight_ratio_1_syst_all_eras_up_);
+      outtree_->Branch("tau_idisoweight_ratio_2_syst_all_eras_up", &tau_idisoweight_ratio_2_syst_all_eras_up_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_syst_all_eras_down", &tau_idisoweight_ratio_1_syst_all_eras_down_);
+      outtree_->Branch("tau_idisoweight_ratio_2_syst_all_eras_down", &tau_idisoweight_ratio_2_syst_all_eras_down_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_syst_year_up", &tau_idisoweight_ratio_1_syst_year_up_);
+      outtree_->Branch("tau_idisoweight_ratio_2_syst_year_up", &tau_idisoweight_ratio_2_syst_year_up_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_syst_year_down", &tau_idisoweight_ratio_1_syst_year_down_);
+      outtree_->Branch("tau_idisoweight_ratio_2_syst_year_down", &tau_idisoweight_ratio_2_syst_year_down_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_syst_dm_year_up", &tau_idisoweight_ratio_1_syst_dm_year_up_);
+      outtree_->Branch("tau_idisoweight_ratio_2_syst_dm_year_up", &tau_idisoweight_ratio_2_syst_dm_year_up_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_syst_dm_year_down", &tau_idisoweight_ratio_1_syst_dm_year_down_);
+      outtree_->Branch("tau_idisoweight_ratio_2_syst_dm_year_down", &tau_idisoweight_ratio_2_syst_dm_year_down_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_highpt_up", &tau_idisoweight_ratio_1_highpt_up_);
+      outtree_->Branch("tau_idisoweight_ratio_2_highpt_up", &tau_idisoweight_ratio_2_highpt_up_);
+
+      outtree_->Branch("tau_idisoweight_ratio_1_highpt_down", &tau_idisoweight_ratio_1_highpt_down_);
+      outtree_->Branch("tau_idisoweight_ratio_2_highpt_down", &tau_idisoweight_ratio_2_highpt_down_);
 
       outtree_->Branch("wt_mg_nnlops", & wt_mg_nnlops_);
       outtree_->Branch("wt_ph_nnlops", & wt_ph_nnlops_);
@@ -1144,6 +1207,10 @@ namespace ic {
       outtree_->Branch("trg_singlemuon24",    &trg_singlemuon24_);
       outtree_->Branch("trg_singlemuon27",    &trg_singlemuon27_);
       outtree_->Branch("trg_doubletau",    &trg_doubletau_);
+      outtree_->Branch("trg_doubletau_plusjet60",    &trg_doubletau_plusjet60_);
+      outtree_->Branch("trg_doubletau_plusjet75",    &trg_doubletau_plusjet75_);
+      outtree_->Branch("trg60jet_pt",    &trg60jet_pt_);
+      outtree_->Branch("trg75jet_pt",    &trg75jet_pt_);
       outtree_->Branch("trg_doubletau_mssm",    &trg_doubletau_mssm_);
 
       outtree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
@@ -1532,6 +1599,8 @@ namespace ic {
       synctree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       synctree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       synctree_->Branch("trg_doubletau",    &trg_doubletau_);
+      synctree_->Branch("trg_doubletau_plusjet60",    &trg_doubletau_plusjet60_);
+      synctree_->Branch("trg_doubletau_plusjet75",    &trg_doubletau_plusjet75_);
 
       synctree_->Branch("trg_tt_monitoring_1",    &trg_tt_monitoring_1_);
       synctree_->Branch("trg_tt_monitoring_2",    &trg_tt_monitoring_2_);
@@ -1566,7 +1635,6 @@ namespace ic {
       synctree_->Branch("wt_ggA_b", &wt_ggA_b_);
       synctree_->Branch("wt_ggA_i", &wt_ggA_i_);
 
-
     }
 
     if(make_mva_ntuple_) {
@@ -1595,6 +1663,8 @@ namespace ic {
       mvatree_->Branch("trg_singleelectron",    &trg_singleelectron_);
       mvatree_->Branch("trg_singlemuon",    &trg_singlemuon_);
       mvatree_->Branch("trg_doubletau",    &trg_doubletau_);
+      mvatree_->Branch("trg_doubletau_plusjet60",    &trg_doubletau_plusjet60_);
+      mvatree_->Branch("trg_doubletau_plusjet75",    &trg_doubletau_plusjet75_);
       mvatree_->Branch("deepTauVsJets_medium_1",   &deepTauVsJets_medium_1_);
       mvatree_->Branch("deepTauVsJets_medium_2",   &deepTauVsJets_medium_2_);
       mvatree_->Branch("deepTauVsEle_vvloose_1",   &deepTauVsEle_vvloose_1_);
@@ -1758,6 +1828,10 @@ namespace ic {
     if (event->Exists("trg_singlemuon27"))     trg_singlemuon27_     = event->Get<bool>("trg_singlemuon27");
     else trg_singlemuon27_ = false;
     if (event->Exists("trg_doubletau"))      trg_doubletau_      = event->Get<bool>("trg_doubletau");
+    if (event->Exists("trg_doubletau_plusjet60"))      trg_doubletau_plusjet60_      = event->Get<bool>("trg_doubletau_plusjet60");
+    if (event->Exists("trg_doubletau_plusjet75"))      trg_doubletau_plusjet75_      = event->Get<bool>("trg_doubletau_plusjet75");
+    if (event->Exists("trg60jet_pt"))      trg60jet_pt_      = event->Get<double>("trg60jet_pt");
+    if (event->Exists("trg75jet_pt"))      trg75jet_pt_     = event->Get<double>("trg75jet_pt");
 
     if (event->Exists("trg_tt_monitoring_1"))trg_tt_monitoring_1_ = event->Get<bool>("trg_tt_monitoring_1");
     if (event->Exists("trg_tt_monitoring_2"))trg_tt_monitoring_2_ = event->Get<bool>("trg_tt_monitoring_2");
@@ -1779,6 +1853,8 @@ namespace ic {
       trg_singleelectron_ = true;
       trg_singlemuon_     = true;
       trg_doubletau_      = true;
+      trg_doubletau_plusjet60_ = true;
+      trg_doubletau_plusjet75_ = true;
       trg_tt_monitoring_1_ = true;
       trg_tt_monitoring_2_ = true;
       trg_tt_monitoring_3_ = true;
@@ -1798,7 +1874,8 @@ namespace ic {
     if(era_ == era::data_2016 || era_ == era::data_2017 || era_ == era::data_2018){ 
          MVADM2017 = "MVADM2017v1";
 
-    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL){ 
+    } else if(era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP || era_ == era::data_2017UL || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
          MVADM2017 = "MVADM2017v2";
     } else {
          MVADM2017 = " ";
@@ -1822,6 +1899,72 @@ namespace ic {
     //std::cout << (unsigned long long) eventInfo->event() << std::endl; 
     //eventInfo->print_weights();
     //eventInfo->print_all_weights();
+   
+    tau_idisoweight_1_ = event->Exists("tau_idisoweight_1") ? event->Get<double>("tau_idisoweight_1") : 1.0;
+    tau_idisoweight_2_ = event->Exists("tau_idisoweight_2") ? event->Get<double>("tau_idisoweight_2") : 1.0;
+
+    tau_idisoweight_ratio_1_up_ = event->Exists("tau_idisoweight_ratio_1_up") ? event->Get<double>("tau_idisoweight_ratio_1_up") : 1.0;
+    tau_idisoweight_ratio_2_up_ = event->Exists("tau_idisoweight_ratio_2_up") ? event->Get<double>("tau_idisoweight_ratio_2_up") : 1.0;
+
+    tau_idisoweight_ratio_1_down_ = event->Exists("tau_idisoweight_ratio_1_down") ? event->Get<double>("tau_idisoweight_ratio_1_down") : 1.0;
+    tau_idisoweight_ratio_2_down_ = event->Exists("tau_idisoweight_ratio_2_down") ? event->Get<double>("tau_idisoweight_ratio_2_down") : 1.0;
+
+    tau_idisoweight_ratio_1_uncert0_up_ = event->Exists("tau_idisoweight_ratio_1_uncert0_up") ? event->Get<double>("tau_idisoweight_ratio_1_uncert0_up") : 1.0;
+    tau_idisoweight_ratio_2_uncert0_up_ = event->Exists("tau_idisoweight_ratio_2_uncert0_up") ? event->Get<double>("tau_idisoweight_ratio_2_uncert0_up") : 1.0;
+
+    tau_idisoweight_ratio_1_uncert0_down_ = event->Exists("tau_idisoweight_ratio_1_uncert0_down") ? event->Get<double>("tau_idisoweight_ratio_1_uncert0_down") : 1.0;
+    tau_idisoweight_ratio_2_uncert0_down_ = event->Exists("tau_idisoweight_ratio_2_uncert0_down") ? event->Get<double>("tau_idisoweight_ratio_2_uncert0_down") : 1.0;
+
+    tau_idisoweight_ratio_1_uncert1_up_ = event->Exists("tau_idisoweight_ratio_1_uncert1_up") ? event->Get<double>("tau_idisoweight_ratio_1_uncert1_up") : 1.0;
+    tau_idisoweight_ratio_2_uncert1_up_ = event->Exists("tau_idisoweight_ratio_2_uncert1_up") ? event->Get<double>("tau_idisoweight_ratio_2_uncert1_up") : 1.0;
+
+    tau_idisoweight_ratio_1_uncert1_down_ = event->Exists("tau_idisoweight_ratio_1_uncert1_down") ? event->Get<double>("tau_idisoweight_ratio_1_uncert1_down") : 1.0;
+    tau_idisoweight_ratio_2_uncert1_down_ = event->Exists("tau_idisoweight_ratio_2_uncert1_down") ? event->Get<double>("tau_idisoweight_ratio_2_uncert1_down") : 1.0;
+
+    tau_idisoweight_ratio_1_syst_all_eras_up_ = event->Exists("tau_idisoweight_ratio_1_syst_all_eras_up") ? event->Get<double>("tau_idisoweight_ratio_1_syst_all_eras_up") : 1.0;
+    tau_idisoweight_ratio_2_syst_all_eras_up_ = event->Exists("tau_idisoweight_ratio_2_syst_all_eras_up") ? event->Get<double>("tau_idisoweight_ratio_2_syst_all_eras_up") : 1.0;
+
+    tau_idisoweight_ratio_1_syst_all_eras_down_ = event->Exists("tau_idisoweight_ratio_1_syst_all_eras_down") ? event->Get<double>("tau_idisoweight_ratio_1_syst_all_eras_down") : 1.0;
+    tau_idisoweight_ratio_2_syst_all_eras_down_ = event->Exists("tau_idisoweight_ratio_2_syst_all_eras_down") ? event->Get<double>("tau_idisoweight_ratio_2_syst_all_eras_down") : 1.0;
+
+    tau_idisoweight_ratio_1_syst_year_up_ = event->Exists("tau_idisoweight_ratio_1_syst_year_up") ? event->Get<double>("tau_idisoweight_ratio_1_syst_year_up") : 1.0;
+    tau_idisoweight_ratio_2_syst_year_up_ = event->Exists("tau_idisoweight_ratio_2_syst_year_up") ? event->Get<double>("tau_idisoweight_ratio_2_syst_year_up") : 1.0;
+
+    tau_idisoweight_ratio_1_syst_year_down_ = event->Exists("tau_idisoweight_ratio_1_syst_year_down") ? event->Get<double>("tau_idisoweight_ratio_1_syst_year_down") : 1.0;
+    tau_idisoweight_ratio_2_syst_year_down_ = event->Exists("tau_idisoweight_ratio_2_syst_year_down") ? event->Get<double>("tau_idisoweight_ratio_2_syst_year_down") : 1.0;
+
+    tau_idisoweight_ratio_1_syst_dm_year_up_ = event->Exists("tau_idisoweight_ratio_1_syst_dm_year_up") ? event->Get<double>("tau_idisoweight_ratio_1_syst_dm_year_up") : 1.0;
+    tau_idisoweight_ratio_2_syst_dm_year_up_ = event->Exists("tau_idisoweight_ratio_2_syst_dm_year_up") ? event->Get<double>("tau_idisoweight_ratio_2_syst_dm_year_up") : 1.0;
+
+    tau_idisoweight_ratio_1_syst_dm_year_down_ = event->Exists("tau_idisoweight_ratio_1_syst_dm_year_down") ? event->Get<double>("tau_idisoweight_ratio_1_syst_dm_year_down") : 1.0;
+    tau_idisoweight_ratio_2_syst_dm_year_down_ = event->Exists("tau_idisoweight_ratio_2_syst_dm_year_down") ? event->Get<double>("tau_idisoweight_ratio_2_syst_dm_year_down") : 1.0;
+
+    tau_idisoweight_ratio_1_highpt_up_ = event->Exists("tau_idisoweight_ratio_1_highpt_up") ? event->Get<double>("tau_idisoweight_ratio_1_highpt_up") : 1.0;
+    tau_idisoweight_ratio_2_highpt_up_ = event->Exists("tau_idisoweight_ratio_2_highpt_up") ? event->Get<double>("tau_idisoweight_ratio_2_highpt_up") : 1.0;
+    
+    tau_idisoweight_ratio_1_highpt_down_ = event->Exists("tau_idisoweight_ratio_1_highpt_down") ? event->Get<double>("tau_idisoweight_ratio_1_highpt_down") : 1.0;
+    tau_idisoweight_ratio_2_highpt_down_ = event->Exists("tau_idisoweight_ratio_2_highpt_down") ? event->Get<double>("tau_idisoweight_ratio_2_highpt_down") : 1.0;
+
+    tau_idisoweight_ratio_1_down_ = event->Exists("tau_idisoweight_ratio_1_down") ? event->Get<double>("tau_idisoweight_ratio_1_down") : 1.0;
+    tau_idisoweight_ratio_2_down_ = event->Exists("tau_idisoweight_ratio_2_down") ? event->Get<double>("tau_idisoweight_ratio_2_down") : 1.0;
+
+    tau_idisoweight_vvvloose_1_ = event->Exists("tau_idisoweight_vvvloose_1") ? event->Get<double>("tau_idisoweight_vvvloose_1") : 1.0;
+    tau_idisoweight_vvvloose_2_ = event->Exists("tau_idisoweight_vvvloose_2") ? event->Get<double>("tau_idisoweight_vvvloose_2") : 1.0;
+
+    tau_idisoweight_vvloose_1_ = event->Exists("tau_idisoweight_vvloose_1") ? event->Get<double>("tau_idisoweight_vvloose_1") : 1.0;
+    tau_idisoweight_vvloose_2_ = event->Exists("tau_idisoweight_vvloose_2") ? event->Get<double>("tau_idisoweight_vvloose_2") : 1.0;
+
+    tau_idisoweight_vloose_1_ = event->Exists("tau_idisoweight_vloose_1") ? event->Get<double>("tau_idisoweight_vloose_1") : 1.0;
+    tau_idisoweight_vloose_2_ = event->Exists("tau_idisoweight_vloose_2") ? event->Get<double>("tau_idisoweight_vloose_2") : 1.0;
+
+    tau_idisoweight_loose_1_ = event->Exists("tau_idisoweight_loose_1") ? event->Get<double>("tau_idisoweight_loose_1") : 1.0;
+    tau_idisoweight_loose_2_ = event->Exists("tau_idisoweight_loose_2") ? event->Get<double>("tau_idisoweight_loose_2") : 1.0;
+
+    tau_idisoweight_medium_1_ = event->Exists("tau_idisoweight_medium_1") ? event->Get<double>("tau_idisoweight_medium_1") : 1.0;
+    tau_idisoweight_medium_2_ = event->Exists("tau_idisoweight_medium_2") ? event->Get<double>("tau_idisoweight_medium_2") : 1.0;
+
+    tau_idisoweight_tight_1_ = event->Exists("tau_idisoweight_tight_1") ? event->Get<double>("tau_idisoweight_tight_1") : 1.0;
+    tau_idisoweight_tight_2_ = event->Exists("tau_idisoweight_tight_2") ? event->Get<double>("tau_idisoweight_tight_2") : 1.0;
    
     wt_tau_id_dm0_up_ =  (event->Exists("wt_tau_id_dm0_up")) ? event->Get<double>("wt_tau_id_dm0_up") : 1.;
     wt_tau_id_dm1_up_ =  (event->Exists("wt_tau_id_dm1_up")) ? event->Get<double>("wt_tau_id_dm1_up") : 1.;
@@ -2653,7 +2796,8 @@ namespace ic {
     std::vector<PFJet*> prebjets = lowpt_jets;
 
     double eta_cut = 2.4;
-    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL) eta_cut = 2.5;
+    if(era_ == era::data_2017 || era_ == era::data_2017UL || era_ == era::data_2018 || era_ == era::data_2018UL
+    || era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) eta_cut = 2.5;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, eta_cut));
     n_prebjets_ = prebjets.size();
     std::vector<PFJet*> bjets = prebjets;
@@ -2692,6 +2836,22 @@ namespace ic {
 
       deepjet_wp = 0.2783;
     }
+    if (era_ == era::data_2022_preEE) {
+      btag_wp = 0.4184;
+      loose_btag_wp = 0.1241;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.303;
+    }   
+    if (era_ == era::data_2022_postEE) {
+      btag_wp = 0.4184;
+      loose_btag_wp = 0.1241;
+      btag_label = "pfDeepCSVJetTags:probb";
+      btag_label_extra = "pfDeepCSVJetTags:probbb";
+
+      deepjet_wp = 0.3179;
+    } 
     if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP) {
       btag_wp = 0.6321;
       loose_btag_wp = 0.2217;
