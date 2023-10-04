@@ -43,65 +43,48 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=3:0:0"'
 sample_list = [
 
           # Tau
-         'TauA_preEE',
-         'TauB_preEE',
-         'TauB_rereco_preEE',
-         'TauC_preEE',
-         'TauC_rereco_preEE',
-         'TauD_preEE',
-         'TauD_rereco_preEE',
-         'TauE_postEE',
-         'TauE_rereco_postEE',
-         'TauF_postEE',
-         'TauG_postEE',
+         'TauB_rereco',
+         'TauC_rereco',
+         'TauD_rereco',
          
          #Muon
          
-         'SingleMuonA_rereco_preEE',
-         'SingleMuonB_rereco_preEE',
-         'SingleMuonC_rereco_preEE',
-         'SingleMuonA_preEE',
-         'SingleMuonB_preEE',
-         'SingleMuonC_preEE',
-         'MuonD_rereco_preEE',
-         'MuonD_preEE',
-         'MuonC_preEE',
-         'MuonC_rereco_preEE',
-         
-         
-         #MC postEE
-         
-         'DYJetsToLL-LO_postEE_postEE',
-         'GluGluHToTauTau_M125_postEE_v2_postEE',
-         'GluGluHToTauTau_M125_postEE_v3_postEE',
-         'TTTo2L2Nu_postEE',
-         'VBFHToTauTau_M125_Poisson60KeepRAW_postEE',
-         'VBFHToTauTau_M125_v2_Poisson70KeepRAW_postEE',
-         'WW_postEE_postEE',
-         'WZ_postEE_postEE',
-         'ZZ_postEE_postEE',
-         
+         'SingleMuonB_rereco',
+         'SingleMuonC_rereco',
+         'MuonC_rereco',
+         'MuonD_rereco',
+       
+         #MuonEG
+ 
+         'MuonEGB_rereco',
+         'MuonEGC_rereco',
+         'MuonEGD_rereco', 
+        
+         #EGamma
+         'EGammaB_rereco',
+         'EGammaC_rereco',
+         'EGammaD_rereco',
+ 
          #MC preEE
-         
-        'DYJetsToLL-LO_summer_preEE',
-        'DYto2TautoMuTauh_M50_preEE',
-        'GluGluHToTauTau_M125_preEE',
-        'TBbarQ_t-channel_4FS_preEE',
-        'TTTo2L2Nu_preEE',
-        'TTto4Q_preEE',
-        'TTtoLNu2Q_preEE',
-        'TWminusto2L2Nu_preEE',
-        'TWminustoLNu2Q_preEE',
-        'TbarBQ_t-channel_4FS_preEE',
-        'TbarWplusto2L2Nu_preEE',
-        'TbarWplustoLNu2Q_preEE',
-        'VBFHToTauTau_M125_preEE',
-        'W3JetsToLNu-LO_preEE',
-        'WJetsToLNu-LO_preEE',
-        'WW_preEE',
-        'WZ_preEE',
-        'ZZ_preEE',
-        'ZZZ_preEE',
+        
+         'DYJetsToLL-LO',
+         'DYto2TautoMuTauh_M50',
+         'GluGluHToTauTau_M125',
+         'TTTo2L2Nu',
+         'TTto4Q',
+         'TTtoLNu2Q',
+         'TBbarQ_t-channel_4FS',
+         'TWminusto2L2Nu',
+         'TWminustoLNu2Q',
+         'TbarBQ_t-channel_4FS',
+         'TbarWplusto2L2Nu',
+         'TbarWplustoLNu2Q',
+         'WW',
+         'WZ',
+         'ZZ',
+         'W3JetsToLNu-LO',
+         'WJetsToLNu-LO',
+ 
 	]
 
 
@@ -132,14 +115,14 @@ nfiles={}
 
 
 def FindMissingFiles(outf, d, samp, chan, infiles):
-  files=fnmatch.filter(infiles,'%(samp)s_2022_%(chan)s_*'%vars())
+  files=fnmatch.filter(infiles,'%(samp)s_2022_preEE_%(chan)s_*'%vars())
   nums = [int(x.split('_')[-1].replace('.root','')) for x in files]
   nums.sort()
   res = [ele for ele in range(max(nums)+1) if ele not in nums]
 
   if len(res) !=0:
-    print "Some files are missing for sample %(samp)s_2022_%(chan)s! in %(d)s:"%vars()
-    for x in res: print '%(samp)s_2022_%(chan)s_%(x)i.root' % vars()
+    print "Some files are missing for sample %(samp)s_2022_preEE_%(chan)s! in %(d)s:"%vars()
+    for x in res: print '%(samp)s_2022_preEE_%(chan)s_%(x)i.root' % vars()
     return False
   else:
     return True
@@ -152,21 +135,21 @@ for sa in sample_list:
   hadd_dirs=[]
   command=''
   if batch:
-    JOB='jobs/hadd_%s_2022.sh' % sa
+    JOB='jobs/hadd_%s_2022_preEE.sh' % sa
     os.system('%(JOBWRAPPER)s "" %(JOB)s' %vars())
   for ch in channel:
     for jsdir in subdirs:
       sdir = jsdir[0]
       infiles=jsdir[1]
-      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2022_%(ch)s_0.root'%vars()):
-        if "%(sa)s_2022"%vars() in nfiles or ignore==True:
-#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2022_%(ch)s_*.root'%vars())
+      if os.path.isfile('%(outputf)s/%(sdir)s/%(sa)s_2022_preEE_%(ch)s_0.root'%vars()):
+        if "%(sa)s_2022_preEE"%vars() in nfiles or ignore==True:
+#          files=glob.glob('%(outputf)s/%(sdir)s/%(sa)s_2022_preEE_%(ch)s_*.root'%vars())
           no_missing_files = FindMissingFiles(outputf, sdir, sa, ch,infiles) 
-          if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2022_%(ch)s_*'%vars())) == nfiles["%(sa)s_2022"%vars()]):
+          if no_missing_files and (ignore ==True or len(fnmatch.filter(infiles,'%(sa)s_2022_preEE_%(ch)s_*'%vars())) == nfiles["%(sa)s_2022_preEE"%vars()]):
             if not batch:  
               print "Hadding in subdir %(sdir)s"%vars()
               print "Hadding %(sa)s_%(ch)s in %(sdir)s"%vars()
-              os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2022.root %(outputf)s/%(sdir)s/%(sa)s_2022_%(ch)s_* &> ./haddout.txt'% vars()) 
+              os.system('hadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2022_preEE.root %(outputf)s/%(sdir)s/%(sa)s_2022_preEE_%(ch)s_* &> ./haddout.txt'% vars()) 
               os.system("sed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./haddout.txt")
               filetext = open("./haddout.txt").read()
               if 'Warning' in filetext or 'Error' in filetext:
@@ -174,13 +157,13 @@ for sa in sample_list:
                 print filetext 
                 remove=False
               else :
-                to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2022_%(ch)s_*' %vars())
+                to_remove.append('rm %(outputf)s/%(sdir)s/%(sa)s_2022_preEE_%(ch)s_*' %vars())
             else:
               haddout='haddout_%s_%s_%s.txt' % (sa,ch,sdir)  
-              hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2022_%(ch)s_*' %vars())) 
-              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2022.root %(outputf)s/%(sdir)s/%(sa)s_2022_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
+              hadd_dirs.append((haddout, 'rm %(outputf)s/%(sdir)s/%(sa)s_2022_preEE_%(ch)s_*' %vars())) 
+              command+="echo \"Hadding %(sa)s_%(ch)s in %(sdir)s\"\necho \"Hadding %(sa)s_%(ch)s\"\nhadd -f %(outputf)s/%(sdir)s/%(sa)s_%(ch)s_2022_preEE.root %(outputf)s/%(sdir)s/%(sa)s_2022_preEE_%(ch)s_* &> ./%(haddout)s\nsed -i '/Warning in <TInterpreter::ReadRootmapFile>/d' ./%(haddout)s\n" % vars()     
           else :
-            print "Incorrect number of files for sample %(sa)s_2022_%(ch)s! in %(sdir)s"%vars()
+            print "Incorrect number of files for sample %(sa)s_2022_preEE_%(ch)s! in %(sdir)s"%vars()
             remove=False
 
   if not batch and remove:

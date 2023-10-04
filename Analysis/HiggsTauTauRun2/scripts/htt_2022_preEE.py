@@ -174,7 +174,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
-FILELIST='filelists/Aug1123_2022-preEE_MC_102X'
+FILELIST='filelists/Aug1123_2022-preEE_MC_124X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -205,13 +205,15 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_data or options.proc_all or options.calc_lumi:
 
-    data_samples = ["SingleMuonB_rereco","SingleMuonC_rereco","MuonC_rereco","MuonD_rereco"] # added SingleMuonC as I think it should exist
-    data_eras = []
+    data_samples = []
+    data_eras = ['C_rereco','D_rereco']
     for chn in channels:
         for era in data_eras:
             if 'mt' in chn or 'zmm' in chn:
-                if 'SingleMuon'+era not in data_samples: data_samples+=['SingleMuon'+era]
+                if 'SingleMuon'+era not in data_samples and era!='D_rereco': data_samples+=['SingleMuon'+era]
+                if 'Muon'+era not in data_samples and era!='B_rereco': data_samples+=['Muon'+era]
             if 'et' in chn or 'zee' in chn:
+                if era=='D_rereco': continue # delete this line after samples are available
                 if 'EGamma'+era not in data_samples: data_samples+=['EGamma'+era]
             if 'em' in chn:
                 data_samples+=['MuonEG'+era]
@@ -224,13 +226,14 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     if options.effective_events: # this is just used for the effective events case
         for era in data_eras:
-          if 'SingleMuon'+era not in data_samples: data_samples+=['SingleMuon'+era]
+          if 'SingleMuon'+era not in data_samples and era !='D': data_samples+=['SingleMuon'+era]
+          if 'Muon'+era not in data_samples and era!='B': data_samples+=['Muon'+era]
           if 'EGamma'+era not in data_samples: data_samples+=['EGamma'+era]
           if 'Tau'+era not in data_samples: data_samples+=['Tau'+era]
           if 'MuonEG'+era not in data_samples: data_samples+=['MuonEG'+era]
           if 'DoubleMuon'+era not in data_samples: data_samples+=['DoubleMuon'+era]
 
-    DATAFILELIST="./filelists/Aug0223_2022-preEE_Data_102X"
+    DATAFILELIST="./filelists/Aug0223_2022-preEE_Data_124X"
 
     if options.calc_lumi:
         for sa in data_samples:
@@ -254,16 +257,13 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     else:
         for sa in data_samples:
-            JOB='%s_preEE_2022' % (sa)
+            JOB='%s_2022_preEE' % (sa)
             user='irandreo'
             prefix='Aug0223_Data_124X_2022-preEE'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[],\"zmm\":[],\"zee\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true}}' "%vars());
             nfiles = sum(1 for line in open('%(DATAFILELIST)s_%(sa)s.dat' % vars()))
             nperjob = 30
       
-            if "EGammaD" in sa: nperjob = 50
-            # elif "TauD" in sa: nperjob = 45
-            
             for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :  
                 os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
                 if not parajobs and not options.condor:
@@ -289,26 +289,25 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-    'DYJetsToLL-LO_summer',
+     
+    'DYJetsToLL-LO',
     'DYto2TautoMuTauh_M50',
     'GluGluHToTauTau_M125',
-    'TBbarQ_t-channel_4FS',
     'TTTo2L2Nu',
     'TTto4Q',
     'TTtoLNu2Q',
+    'TBbarQ_t-channel_4FS',
     'TWminusto2L2Nu',
     'TWminustoLNu2Q',
     'TbarBQ_t-channel_4FS',
     'TbarWplusto2L2Nu',
     'TbarWplustoLNu2Q',
-    'VBFHToTauTau_M125',
-    'W3JetsToLNu-LO',
-    'WJetsToLNu-LO',
     'WW',
     'WZ',
     'ZZ',
-    'ZZZ'
-        
+    'W3JetsToLNu-LO',
+    'WJetsToLNu-LO',
+   
     
     ]
 
@@ -333,7 +332,6 @@ if options.proc_bkg or options.proc_all:
         
         job_num=0
         for FLATJSONPATCH in flatjsons:
-            #nperjob = 40
             nperjob=20
             if 'DY' not in sa and 'EWKZ' not in sa:
                 FLATJSONPATCH = FLATJSONPATCH.replace('^scale_efake_0pi_hi^scale_efake_0pi_lo','').replace('^scale_efake_1pi_hi^scale_efake_1pi_lo','').replace('^scale_mufake_0pi_hi^scale_mufake_0pi_lo','').replace('^scale_mufake_1pi_hi^scale_mufake_1pi_lo','')

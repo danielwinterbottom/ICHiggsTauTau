@@ -1573,7 +1573,7 @@ if options.era in ['UL_18']:
 
 if options.era in ['22']:
 
-    ztt_samples = ['DYJetsToLL-LO_summer_preEE','DYJetsToLL-LO_postEE']
+    ztt_samples = ['DYJetsToLL-LO_preEE','DYJetsToLL-LO_postEE']
     top_samples = ['TTTo2L2Nu_preEE','TTto4Q_preEE','TTtoLNu2Q_preEE','TTTo2L2Nu_postEE','TTto4Q_postEE','TTtoLNu2Q_postEE']
     vv_samples = ['WW_preEE','WZ_preEE','ZZ_preEE','TWminusto2L2Nu_preEE',
     'TWminustoLNu2Q_preEE','TbarWplusto2L2Nu_preEE',

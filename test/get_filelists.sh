@@ -18,7 +18,7 @@ for i in "${targets[@]}"; do
     fi
     echo "Getting filelist for : " $name
 
-    file_name=$output_prefix"_"$type"_102X_"$name".dat"
+    file_name=$output_prefix"_"$type"_124X_"$name".dat"
     date_names=($(xrdfs gfe02.grid.hep.ph.ic.ac.uk:1097 ls $j )) # | cut -d"/" -f2-))
     export most_recent=0
     for k in "${date_names[@]}"; do
