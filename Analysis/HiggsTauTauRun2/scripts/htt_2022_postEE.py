@@ -236,7 +236,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
     if options.calc_lumi:
         for sa in data_samples:
-            JOB='%s_postEE_2022' % (sa)
+            JOB='%s_2022_postEE' % (sa)
             user='irandreo'
             prefix='Aug0223_Data_124X_2022-postEE'
             JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(DATAFILELIST)s_%(sa)s.dat\",\"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(prefix)s/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"is_data\":true,\"lumi_mask_only\":true}}' "%vars());
@@ -325,7 +325,7 @@ if options.proc_bkg or options.proc_all:
 
 
     for sa in central_samples:
-        JOB='%s_postEE_2022' % (sa)
+        JOB='%s_2022_postEE' % (sa)
         user='irandreo'
         PREFIX='Aug1123_MC_124X_2022-postEE'
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
