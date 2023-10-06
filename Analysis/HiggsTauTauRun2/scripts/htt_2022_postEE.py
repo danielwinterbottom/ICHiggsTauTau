@@ -359,7 +359,7 @@ if options.proc_bkg or options.proc_all:
     for sa in central_samples:
         JOB='%s_2022_postEE' % (sa)
         user='irandreo'
-        PREFIX='Oct0323_Data_124X_2022-postEE'
+        PREFIX='Oct0323_MC_124X_2022-postEE'
         JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\", \"file_prefix\":\"root://gfe02.grid.hep.ph.ic.ac.uk:1097//store/user/%(user)s/%(PREFIX)s/\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",%(jetuncert_string)s}}' "%vars());
         
         job_num=0
