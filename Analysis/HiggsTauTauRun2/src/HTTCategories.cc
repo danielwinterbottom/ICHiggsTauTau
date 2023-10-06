@@ -3131,7 +3131,8 @@ namespace ic {
       d0_2_ = tau->lead_dxy_vertex();
       dz_2_ = tau->lead_dz_vertex();
      
-      iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+      else iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
       // add deepTau ID v2
       // Raw DNN scores
       iso_2_      = tau->HasTauID("byDeepTau2017v2p1VSjetraw")      ? tau->GetTauID("byDeepTau2017v2p1VSjetraw"):      0.;
@@ -3243,7 +3244,8 @@ namespace ic {
     if (channel_ == channel::em) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Muon const* muon = dynamic_cast<Muon const*>(lep2);
-      iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+      else iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
       iso_2_ = PF04IsolationVal(muon, 0.5, 0);
       d0_1_ = elec->dxy_vertex();
       dz_1_ = elec->dz_vertex();
@@ -3355,8 +3357,14 @@ namespace ic {
     if (channel_ == channel::zee || channel_ == channel::tpzee) {
       Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //should be lepton_rho
-      iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 
+      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){ 
+        iso_1_ = PF03EAIsolationValRun3(elec1, eventInfo->jet_rho());
+        iso_2_ = PF03EAIsolationValRun3(elec2, eventInfo->jet_rho());
+      }
+      else {
+        iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
+        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 
+      }
       d0_1_ = elec1->dxy_vertex();
       dz_1_ = elec1->dz_vertex();
       d0_2_ = elec2->dxy_vertex();

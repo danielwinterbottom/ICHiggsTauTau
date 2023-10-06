@@ -13,6 +13,7 @@ namespace ic {
 class PreselectionFilter : public ModuleBase {
  private:
 
+  CLASS_MEMBER(PreselectionFilter, ic::era, era)
   CLASS_MEMBER(PreselectionFilter, ic::channel, channel)
   CLASS_MEMBER(PreselectionFilter, bool, do_preselection)
   CLASS_MEMBER(PreselectionFilter, std::string, dilepton_label)

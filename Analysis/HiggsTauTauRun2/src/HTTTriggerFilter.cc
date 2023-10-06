@@ -129,8 +129,9 @@ namespace ic {
        if (run >= 294927 && run < 314472  && (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v") != name.npos || name.find("HLT_Ele27_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos)) path_found = true;
        if (run >= 314472 && run < 317509  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos || //consider adding Ele28 when available in ic miniaod
                    name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
-       if (run >= 317509 /*&& run < xxx*/  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos 
+       if (run >= 317509 && run < 355100  && (name.find("HLT_Ele32_WPTight_Gsf_v") != name.npos || name.find("HLT_Ele35_WPTight_Gsf_v") != name.npos 
                    || name.find("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTauHPS30_eta2p1_CrossL1_v") != name.npos)) path_found = true;
+       if (run >= 355100 /*&& run < xxx*/  && name.find("HLT_Ele30_WPTight_Gsf_v") != name.npos) path_found = true;
         }
         if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
           if (run >= 271036  /*&& run <= xxxxx*/ && (name.find("HLT_IsoMu22_v") != name.npos || name.find("HLT_IsoTkMu22_v")!=name.npos || name.find("HLT_IsoMu22_eta2p1_v") || name.find("HLT_IsoTkMu22_eta2p1_v")!=name.npos) ) path_found = true;
@@ -205,7 +206,7 @@ namespace ic {
           alt_leg1_filter_2 = "hltEle35noerWPTightGsfTrackIsoFilter";
           high_leg_pt = 25.;
         }
-        if(run >= 317509){ //2018 post hps
+        if(run >= 317509 && run < 355100){ //2018 post hps
           trig_obj_label = "triggerObjectsEle24TauHPS30";
           leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
           leg2_filter = "hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched";
@@ -216,8 +217,16 @@ namespace ic {
           alt_leg1_filter_2 = "hltEle35noerWPTightGsfTrackIsoFilter";
           high_leg_pt = 25.;
         }
-
-
+        if(run>=355100) { //2022
+          // need to update names for Run-3 e+tauh triggers
+          trig_obj_label = "triggerObjectsEle24TauHPS30";
+          leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
+          leg2_filter = "hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched";
+          extra_leg2_filter = "hltHpsOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30";
+          alt_trig_obj_label = "triggerObjectsEle30";
+          alt_leg1_filter = "hltEle30WPTightGsfTrackIsoFilter";
+          high_leg_pt = 25.;
+        }
       }
       if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
         if (run >= 271036 && run <= 284044 ) {
@@ -272,7 +281,7 @@ namespace ic {
           leg2_filter = "hltHpsSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched";
           extra_leg2_filter = "hltHpsOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded";
         }
-        if (run >= 355100) {
+        if (run >= 355100) { //2022
           alt_trig_obj_label = "triggerObjectsIsoMu24";
           alt_leg1_filter =  (era_ == era::data_2022_postEE) ?
          "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered" : "hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p08";
@@ -535,6 +544,15 @@ namespace ic {
             extra_leg2_filter="";
           }
 
+          } else if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+          // need to update strings to e+tauh triggers in Run-3
+          trig_obj_label = "triggerObjectsEle24TauHPS30";
+          leg1_filter = "hltEle24erWPTightGsfTrackIsoFilterForTau";
+          leg2_filter = "hltHpsSelectedPFTau30LooseChargedIsolationL1HLTMatched";
+          extra_leg2_filter = "hltHpsOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30";
+          alt_trig_obj_label = "triggerObjectsEle30";
+          alt_leg1_filter = "hltEle30WPTightGsfTrackIsoFilter";
+          high_leg_pt = 25.;
           }
       } else if (channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::tpzmm) {
         if (era_ == era::data_2016 || era_ == era::data_2016UL_preVFP || era_ == era::data_2016UL_postVFP){

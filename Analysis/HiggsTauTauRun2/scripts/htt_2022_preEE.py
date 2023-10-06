@@ -174,7 +174,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
-FILELIST='filelists/Oct0323_MC_124X_2022-preEE_MC_124X'
+FILELIST='filelists/Oct0323_2022-preEE_MC_124X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -213,7 +213,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
                 if 'SingleMuon'+era not in data_samples and era!='D_rereco': data_samples+=['SingleMuon'+era]
                 if 'Muon'+era not in data_samples and era!='B_rereco': data_samples+=['Muon'+era]
             if 'et' in chn or 'zee' in chn:
-                if era=='D_rereco': continue # delete this line after samples are available
                 if 'EGamma'+era not in data_samples: data_samples+=['EGamma'+era]
             if 'em' in chn:
                 data_samples+=['MuonEG'+era]
@@ -233,7 +232,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
           if 'MuonEG'+era not in data_samples: data_samples+=['MuonEG'+era]
           if 'DoubleMuon'+era not in data_samples: data_samples+=['DoubleMuon'+era]
 
-    DATAFILELIST="./filelists/Oct0323_Data_124X_2022-preEE_Data_124X"
+    DATAFILELIST="./filelists/Oct0323_2022-preEE_Data_124X"
 
     if options.calc_lumi:
         for sa in data_samples:
@@ -298,7 +297,7 @@ if options.proc_bkg or options.proc_all:
     'DYto2L-4Jets_MLL-50_4J',
     'DYto2L-4Jets_MLL-50',
     'DYto2TautoMuTauh_M50',
-    'GluGluHToTauTau_M125',
+    #'GluGluHToTauTau_M125',
     'TBbarQ_t-channel_4FS',
     'TT',
     'TT_ext1',
@@ -310,17 +309,17 @@ if options.proc_bkg or options.proc_all:
     'TbarBQ_t-channel_4FS',
     'TbarWplusto2L2Nu',
     'TbarWplustoLNu2Q',
-    'VBFHToTauTau_M125',
-    'WWW_4F',
-    'WWZ_4F',
+    #'VBFHToTauTau_M125',
+    #'WWW_4F',
+    #'WWZ_4F',
     'WW',
-    'WZZ',
+    #'WZZ',
     'WZ',
-    'WJetsToLNu-2Jets',
+    #'WJetsToLNu-2Jets',
     'W3JetsToLNu-LO',
     'WJetsToLNu-4Jets_4J',
     'WJetsToLNu-LO',
-    'ZZZ',
+    #'ZZZ',
     'ZZ',
    
     

@@ -8,7 +8,7 @@
 
 namespace ic {
 
-  PreselectionFilter::PreselectionFilter(std::string const& name) : ModuleBase(name), channel_(channel::et) {
+  PreselectionFilter::PreselectionFilter(std::string const& name) : ModuleBase(name), era_(era::data_2022_postEE), channel_(channel::et) {
     do_preselection_ = false;
   }
 
@@ -48,7 +48,8 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
-      iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      if (era_==era::data_2022_preEE || era_==era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+      else iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
       pass_presel = (((tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet")) || (tau->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSe") && tau->GetTauID("byVLooseDeepTau2018v2p5VSmu"))) && iso_1_<0.5); 
   }
   if(channel_ == channel::mt) { 
@@ -65,7 +66,8 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
       Muon const* muon = dynamic_cast<Muon const*>(lep2);
-      iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      if (era_==era::data_2022_preEE || era_==era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+      else iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
       iso_2_ = PF04IsolationVal(muon, 0.5, 0);
       if(iso_2_<0.5 && iso_1_<0.5) pass_presel = true;
   } 
@@ -90,8 +92,13 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Electron  const* elec1  = dynamic_cast<Electron const*>(lep1);
       Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-      iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
-      iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
+      if (era_==era::data_2022_preEE || era_==era::data_2022_postEE) {
+        iso_1_ = PF03EAIsolationValRun3(elec1, eventInfo->jet_rho());
+        iso_2_ = PF03EAIsolationValRun3(elec2, eventInfo->jet_rho());
+      } else {
+        iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
+        iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
+      }
       if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
   }
     
