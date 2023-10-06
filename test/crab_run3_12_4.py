@@ -131,31 +131,30 @@ for dm in dml:
            elif yr == "2022-postEE":
               # EGamma
               tasks.append(('EGammaF','/EGamma/Run2022F-PromptReco-v1/MINIAOD'))
-              tasks.append(('EGammaG','/EGamma/Run2022G-PromptReco-v1/MINIAOD'))
+              #tasks.append(('EGammaG','/EGamma/Run2022G-PromptReco-v1/MINIAOD'))
 
               # # Tau
-              tasks.append(('TauF','/Tau/Run2022F-PromptReco-v1/MINIAOD'))
-              tasks.append(('TauG','/Tau/Run2022G-PromptReco-v1/MINIAOD'))
+              #tasks.append(('TauF','/Tau/Run2022F-PromptReco-v1/MINIAOD'))
+              #tasks.append(('TauG','/Tau/Run2022G-PromptReco-v1/MINIAOD'))
 
               # MuonEG
-              tasks.append(('MuonEGF','/MuonEG/Run2022F-PromptReco-v1/MINIAOD'))
-              tasks.append(('MuonEGG','/MuonEG/Run2022G-PromptReco-v1/MINIAOD'))
+              #tasks.append(('MuonEGF','/MuonEG/Run2022F-PromptReco-v1/MINIAOD'))
+              #tasks.append(('MuonEGG','/MuonEG/Run2022G-PromptReco-v1/MINIAOD'))
 
               # Muon
-              tasks.append(('MuonF','/Muon/Run2022F-PromptReco-v1/MINIAOD'))
-              tasks.append(('MuonG','/Muon/Run2022G-PromptReco-v1/MINIAOD'))
+              #tasks.append(('MuonF','/Muon/Run2022F-PromptReco-v1/MINIAOD'))
+              #tasks.append(('MuonG','/Muon/Run2022G-PromptReco-v1/MINIAOD'))
 
         if dm == "MC":
            if yr == "2022-preEE":
               # Drell-Yan
-              tasks.append(('DYJetsToLL_M-50',' /DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Summer22MiniAODv3-forPOG_124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
-              tasks.append(('DYTo2L_MLL-4to50',' /DYTo2L_MLL-4to50_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('DYTo2L_MLL-50',' /DYTo2L_MLL-50_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('DYto2TautoMuTauh_M-50',' /DYto2TautoMuTauh_M-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('DYto2L-4Jets_MLL-50_2J',' /DYto2L-4Jets_MLL-50_2J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('DYto2L-4Jets_MLL-50_3J',' /DYto2L-4Jets_MLL-50_3J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('DYto2L-4Jets_MLL-50_4J',' /DYto2L-4Jets_MLL-50_4J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v1/MINIAODSIM'))
-              tasks.append(('DYto2L-4Jets_MLL-50',' /DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              tasks.append(('DYJetsToLL_M-50','/DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Summer22MiniAODv3-forPOG_124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
+              tasks.append(('DYTo2L_MLL-4to50','/DYTo2L_MLL-4to50_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              tasks.append(('DYTo2L_MLL-50','/DYTo2L_MLL-50_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              tasks.append(('DYto2L-4Jets_MLL-50_2J','/DYto2L-4Jets_MLL-50_2J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              tasks.append(('DYto2L-4Jets_MLL-50_3J','/DYto2L-4Jets_MLL-50_3J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              tasks.append(('DYto2L-4Jets_MLL-50_4J','/DYto2L-4Jets_MLL-50_4J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v1/MINIAODSIM'))
+              tasks.append(('DYto2L-4Jets_MLL-50','/DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
               
               
               # Drell-Yan LO
@@ -176,10 +175,10 @@ for dm in dml:
               #/EWKZ2Jets_ZToLL*/Run3*/MINIAODSIM -not prepared yet
 
               # W + Jets LO
-              tasks.append(('WJetsToLNu-LO','/WtoLNu-4Jets_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('W3JetsToLNu-LO','/WtoLNu-4Jets_3J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('WJetsToLNu-2Jets','/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
-              tasks.append(('WJetsToLNu-4Jets_4J','/WtoLNu-4Jets_4J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('WJetsToLNu-LO','/WtoLNu-4Jets_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('W3JetsToLNu-LO','/WtoLNu-4Jets_3J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('WJetsToLNu-2Jets','/WtoLNu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
+              # tasks.append(('WJetsToLNu-4Jets_4J','/WtoLNu-4Jets_4J_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
               # tasks.append(('W1JetsToLNu-LO','/W1JetsToLNu_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Winter22MiniAOD-122X_mcRun3_2021_realistic_v9-v2/MINIAODSIM'))
               # tasks.append(('W2JetsToLNu-LO','/W2JetsToLNu_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Winter22MiniAOD-122X_mcRun3_2021_realistic_v9-v2/MINIAODSIM'))
               # tasks.append(('W4JetsToLNu-LO','/W4JetsToLNu_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Winter22MiniAOD-122X_mcRun3_2021_realistic_v9-v2/MINIAODSIM'))
@@ -192,11 +191,11 @@ for dm in dml:
               #/WJetsToLNu_TuneCP5_13p6TeV-amcatnloFXFX-*/Run3*/MINIAODSIM -not prepared yet
 
               # ttbar
-              tasks.append(('TTTo2L2Nu','/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
-              tasks.append(('TTtoLNu2Q','/TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v5/MINIAODSIM'))
-              tasks.append(('TTto4Q','/TTto4Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
-              tasks.append(('TT_ext1','/TT_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12_ext1-v3/MINIAODSIM'))
-              tasks.append(('TT','/TT_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
+              # tasks.append(('TTTo2L2Nu','/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
+              # tasks.append(('TTtoLNu2Q','/TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v5/MINIAODSIM'))
+              # tasks.append(('TTto4Q','/TTto4Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
+              # tasks.append(('TT_ext1','/TT_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12_ext1-v3/MINIAODSIM'))
+              # tasks.append(('TT','/TT_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
               #/TTToHadronic_TuneCP5_13p6TeV*/Run3*/MINIAODSIM -not prepared yet
               #/TTToSemiLeptonic*/Run3*/MINIAODSIM -not prepared yet
              
@@ -215,33 +214,33 @@ for dm in dml:
               #/ZZTo4L*/Run3*/MINIAODSIM -not prepared yet
 
               # Inclusive diboson
-              tasks.append(('WW','/WW_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('WZ','/WZ_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('ZZ','/ZZ_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('WW','/WW_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('WZ','/WZ_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('ZZ','/ZZ_TuneCP5_13p6TeV_pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
  
               # Triboson
-              tasks.append(('ZZZ','/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('WWW_4F','/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('WWZ_4F','/WWZ_4F_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('WZZ','/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('ZZZ','/ZZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('WWW_4F','/WWW_4F_TuneCP5_13p6TeV_amcatnlo-madspin-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('WWZ_4F','/WWZ_4F_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('WZZ','/WZZ_TuneCP5_13p6TeV_amcatnlo-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
 
               # Other backgrounds
-              tasks.append(('TbarWplusto2L2Nu','/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('TbarWplustoLNu2Q','/TbarWplustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('TWminustoLNu2Q','/TWminustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('TWminusto2L2Nu','/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
-              tasks.append(('TbarBQ_t-channel_4FS','/TbarBQ_t-channel_4FS_TuneCP5_13p6TeV_powheg-madspin-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
-              tasks.append(('TBbarQ_t-channel_4FS','/TBbarQ_t-channel_4FS_TuneCP5_13p6TeV_powheg-madspin-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
-              #/WGToLNuG*/Run3*/MINIAODSIM -not prepared yet
+              # tasks.append(('TbarWplusto2L2Nu','/TbarWplusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('TbarWplustoLNu2Q','/TbarWplustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('TWminustoLNu2Q','/TWminustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('TWminusto2L2Nu','/TWminusto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('TbarBQ_t-channel_4FS','/TbarBQ_t-channel_4FS_TuneCP5_13p6TeV_powheg-madspin-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
+              # tasks.append(('TBbarQ_t-channel_4FS','/TBbarQ_t-channel_4FS_TuneCP5_13p6TeV_powheg-madspin-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4/MINIAODSIM'))
+              # #/WGToLNuG*/Run3*/MINIAODSIM -not prepared yet
               #/ST_t-channel_antitop_4f_InclusiveDecays*/Run3*/MINIAODSIM -not prepared yet
               #/ST_tW_antitop_5f_inclusiveDecays*/Run3*/MINIAODSIM -not prepared yet
               #/ST_t-channel_top_4f_InclusiveDecays*/Run3*/MINIAODSIM -not prepared yet
               #/ST_tW_top_5f_inclusiveDecays*/Run3*/MINIAODSIM -not prepared yet
 
               # SM Higgs
-              tasks.append(('GluGluHToTauTau_M125','/GluGluHToTauTau_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
-              tasks.append(('VBFHToTauTau_M125','/VBFHToTauTau_M125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
-              tasks.append(('DYto2TautoMuTauh_M50','/DYto2TautoMuTauh_M-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
+              # tasks.append(('GluGluHToTauTau_M125','/GluGluHToTauTau_M-125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
+              # tasks.append(('VBFHToTauTau_M125','/VBFHToTauTau_M125_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v3/MINIAODSIM'))
+              # tasks.append(('DYto2TautoMuTauh_M50','/DYto2TautoMuTauh_M-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v2/MINIAODSIM'))
               #/WminusHToTauTau_M125*/Run3*/MINIAODSIM -not prepared yet
               #/WplusHToTauTau_M125*/Run3*/MINIAODSIM -not prepared yet
               #/ttHToTauTau_M125*/Run3*/MINIAODSIM -not prepared yet
@@ -400,7 +399,7 @@ for dm in dml:
             elif dm == "Signal":
               config.Data.splitting = 'EventAwareLumiBased'
               config.Data.unitsPerJob = 5000
-            elif (task[0] == 'MuonF') and yr == "2022-postEE":
+            elif (task[0] == 'MuonF' or task[0] == 'EGammaF') and yr == "2022-postEE":
               config.Data.splitting = 'EventAwareLumiBased'
               config.Data.unitsPerJob = 100000
             elif (((task[0] == "DYJetsToLL_0J-NLO" or task[0] == "DYJetsToLL_1J-NLO") and yr == "2016-postVFP") or ((task[0] == "DYJetsToLL-NLO" or task[0] == "DYJetsToLL_1J-NLO") and yr == "2017") or (task[0] == "DYJetsToLL-NLO" and yr == "2018")):

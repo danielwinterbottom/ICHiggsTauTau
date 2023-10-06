@@ -24,7 +24,7 @@ opts.register('LHEWeights', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Produce LHE weights for sample")
 opts.register('LHETag', 'externalLHEProducer', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Input tag for LHE weights")
-opts.register('doHT', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('doHT', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Store HT and number of outgoing partons?")
 opts.register('includenpNLO', False, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.bool, "Store npNLO for sample (number of partons for NLO sample)")
