@@ -30,10 +30,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.source = cms.Source(
     "PoolSource",
     fileNames  = cms.untracked.vstring(
-	"root://xrootd.unl.edu//store/mc/RunIISummer20UL16MiniAODAPVv2/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/140000/BD2A7B20-ED6D-6B4B-B826-903A1BB85555.root",
-       # "root://xrootd.unl.edu//store/mc/RunIIAutumn18MiniAOD/JJH0MToTauTauPlusZeroJets_Filtered_M125_TuneCP5_13TeV-mcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/240000/2AAA5301-1123-9F42-9468-FC8C78F5FCF5.root",
-       # "root://xrootd.unl.edu//store/mc/RunIIAutumn18MiniAOD/JJH0MToTauTauPlusZeroJets_Filtered_M125_TuneCP5_13TeV-mcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/240000/44F3B1F2-42F8-B441-8AE4-BB7FF6D889C2.root",
-       # "root://xrootd.unl.edu//store/mc/RunIIAutumn18MiniAOD/JJH0MToTauTauPlusZeroJets_Filtered_M125_TuneCP5_13TeV-mcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/240000/298C01FF-9C5C-2748-9594-E5F869F6E414.root",
+#root://xrootd.unl.edu/
+        "/store/mc/Run3Summer22MiniAODv3/DYto2L-4Jets_MLL-50_2J_TuneCP5_13p6TeV_madgraphMLM-pythia8/MINIAODSIM/124X_mcRun3_2022_realistic_v12-v2/50000/99aa30d5-989c-4890-87be-d991cf02e24e.root",
+        "/store/mc/Run3Summer22MiniAODv3/DYto2L-4Jets_MLL-50_2J_TuneCP5_13p6TeV_madgraphMLM-pythia8/MINIAODSIM/124X_mcRun3_2022_realistic_v12-v2/50000/fd790dbf-0207-4054-96d2-fc82856a4c17.root",
+        "/store/mc/Run3Summer22MiniAODv3/DYto2L-4Jets_MLL-50_2J_TuneCP5_13p6TeV_madgraphMLM-pythia8/MINIAODSIM/124X_mcRun3_2022_realistic_v12-v2/50000/b5d73fb1-fcaa-47d3-a9bf-3067921383c2.root",
 
     ),
     duplicateCheckMode = cms.untracked.string('noDuplicateCheck')

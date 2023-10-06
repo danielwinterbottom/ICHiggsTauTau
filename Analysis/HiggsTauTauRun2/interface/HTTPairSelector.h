@@ -13,9 +13,9 @@
 namespace ic {
   
   bool SortBySumPt(CompositeCandidate const* c1, CompositeCandidate const* c2);
-  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo, std::string tau_idiso_name);
+  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::era era, ic::strategy strategy, EventInfo const* eventInfo, std::string tau_idiso_name);
   bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, std::string tau_idiso_name);
-  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::strategy strategy, EventInfo const* eventInfo);
+  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2, ic::era era, ic::strategy strategy, EventInfo const* eventInfo);
   bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2, std::string tau_idiso_name);
 
 
@@ -24,6 +24,7 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, ic::channel, channel)
   CLASS_MEMBER(HTTPairSelector, std::string, pair_label)
   CLASS_MEMBER(HTTPairSelector, std::string, met_label)
+  CLASS_MEMBER(HTTPairSelector, ic::era, era)
   CLASS_MEMBER(HTTPairSelector, ic::strategy, strategy) 
   CLASS_MEMBER(HTTPairSelector, bool, mva_met_from_vector)
   CLASS_MEMBER(HTTPairSelector, bool, use_most_isolated)

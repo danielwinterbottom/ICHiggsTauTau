@@ -50,6 +50,14 @@ sample_list = [
          'MuonE_rereco',
          'MuonF',
          'MuonG',
+
+         'EGammaE_rereco',
+         'EGammaF',
+         'EGammaG',
+
+         'MuonEGE_rereco',
+         'MuonEGF',
+         'MuonEGG',
          
          #MC postEE
                  

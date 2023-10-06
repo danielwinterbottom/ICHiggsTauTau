@@ -166,7 +166,12 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
 
       trg_eta_bins = '[0, 0.8, 1.444, 1.566, 2.0, 2.5]'
       #trg_pt_bins = '[27,32,35,40,45,50,55,60,70,80,100,200]'
-      trg_pt_bins = '[20,24,26,28,33,36,40,44,48,50,55,60,70,80,100,200]'
+   
+      if 'UL_16' in options.era: trg_pt_bins = '[20,22,23,24,25,26,27,28,30,32,34,36,40,44,48,50,55,60,70,80,100,200]' 
+      elif 'UL_17' in options.era: trg_pt_bins = '[20,23,25,26,27,28,29,30,31,32,33,34,35,36,38,40,44,48,50,55,60,70,80,100,200]' 
+      elif 'UL_18' in options.era: trg_pt_bins = '[20,28,30,31,32,33,34,35,36,38,40,44,48,50,55,60,70,80,100,200]' 
+      elif '22' in options.era: trg_pt_bins = '[20,26,28,29,30,31,32,33,34,36,38,40,44,48,50,55,60,70,80,100,200]' 
+      else: trg_pt_bins = '[20,24,26,28,33,36,40,44,48,50,55,60,70,80,100,200]'
 
 
           
@@ -1042,8 +1047,13 @@ if options.channel == 'tpzmm':
      
 if options.channel == 'tpzee':
   if options.era in ['UL_16preVFP','UL_16postVFP','UL_17','UL_18','22_preEE','22_postEE']:
-    iso_cut_1='iso_1<0.15'
-    iso_cut_2='iso_2<0.15'
+    if options.era in ['22_preEE','22_postEE']:
+      # for 2022 we use TauPOG definition of isolation cuts for now 
+      iso_cut_1='iso_1<0.1'
+      iso_cut_2='iso_2<0.1'    
+    else:
+      iso_cut_1='iso_1<0.15'
+      iso_cut_2='iso_2<0.15'
   
   if options.era in ['UL_17','UL_18','22_preEE','22_postEE']:
     if options.tree_name == 'tagandprobe_ET':

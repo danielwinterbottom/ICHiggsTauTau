@@ -102,6 +102,7 @@ class SVFitTest : public ModuleBase {
   CLASS_MEMBER(SVFitTest, bool, verbose)
   CLASS_MEMBER(SVFitTest, bool, do_light)
   CLASS_MEMBER(SVFitTest, ic::mc, mc)
+  CLASS_MEMBER(SVFitTest, ic::era, era)
 
   unsigned file_counter_;
   unsigned event_counter_;

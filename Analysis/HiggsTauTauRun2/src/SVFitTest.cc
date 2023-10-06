@@ -12,7 +12,7 @@
 
 namespace ic {
 
-  SVFitTest::SVFitTest(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::spring15), mc_(mc::summer12_53X) {
+  SVFitTest::SVFitTest(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::spring15), mc_(mc::summer12_53X), era_(era::data_2022_postEE) {
   
     out_file_ = NULL;
     out_tree_ = NULL;
@@ -220,7 +220,9 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         Tau const* tau = dynamic_cast<Tau const*>(lep2);
-        if (strategy_ == strategy::legacy16)
+        if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE)
+            iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+        else if (strategy_ == strategy::legacy16)
             iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
         else
             iso_1_ = PF03IsolationVal(elec, 0.5, 0);
@@ -233,7 +235,8 @@ int SVFitTest::Execute(TreeEvent *event) {
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2v1DBoldDMwLT");
         }
         if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
-          iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+          if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+          else iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
           iso_discr_2_ = tau->GetTauID("byLooseIsolationMVArun2017v2DBoldDMwLT2017") || tau->GetTauID("byLooseIsolationMVArun2017v2DBnewDMwLT2017");
         }
         if(strategy_==strategy::fall15){
@@ -323,11 +326,15 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec  = dynamic_cast<Electron const*>(lep1);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
-        if (strategy_ == strategy::legacy16)
+        if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+        else if (strategy_ == strategy::legacy16)
             iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
         else
             iso_1_ = PF03IsolationVal(elec, 0.5, 0);
-        if(strategy_==strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+        if(strategy_==strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18) {
+          if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+          else iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+        }
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         if(strategy_==strategy::mssmspring16 || strategy_==strategy::smspring16 || strategy_==strategy::mssmsummer16 || strategy_ == strategy::smsummer16 || strategy_ == strategy::cpsummer16 ||  strategy_ == strategy::legacy16 || strategy_ == strategy::cpdecays16 || strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || mc_ == mc::mc2018 || mc_ == mc::mc2017 || mc_ == mc::mcleg2016) iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         if(iso_2_<0.5 && iso_1_<0.5) pass_presel = true;
@@ -400,7 +407,11 @@ int SVFitTest::Execute(TreeEvent *event) {
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
         Electron  const* elec1  = dynamic_cast<Electron const*>(lep1);
         Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
-        if(strategy_ == strategy::legacy16){
+        if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+          iso_1_ = PF03EAIsolationValRun3(elec1, eventInfo->jet_rho());
+          iso_2_ = PF03EAIsolationValRun3(elec2, eventInfo->jet_rho());
+        }
+        else if(strategy_ == strategy::legacy16){
             iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
             iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
         }
@@ -409,8 +420,14 @@ int SVFitTest::Execute(TreeEvent *event) {
             iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
         }
         if(strategy_==strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18){
-          iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
-          iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 
+          if (era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+            iso_1_ = PF03EAIsolationValRun3(elec1, eventInfo->jet_rho());
+            iso_2_ = PF03EAIsolationValRun3(elec2, eventInfo->jet_rho());
+          }
+          else {
+            iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
+            iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho()); 
+          }
         }
         if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
     }

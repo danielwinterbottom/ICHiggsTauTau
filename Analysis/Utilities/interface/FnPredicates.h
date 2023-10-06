@@ -552,6 +552,21 @@ namespace ic {
     return 0;
   }
 
+  template<class T> 
+  double GetEffectiveAreaWinter22V1(T const* cand){
+    double cand_eta = cand->eta();
+    using std::abs;
+    //From https://github.com/cms-sw/cmssw/blob/master/RecoEgamma/ElectronIdentification/data/Run3_Winter22/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_122X.txt  
+    if(abs(cand_eta)<1.) return 0.1243;
+    else if(abs(cand_eta)<1.479) return 0.1458;
+    else if(abs(cand_eta)<2.) return 0.0992;
+    else if(abs(cand_eta)<2.2) return 0.0794;
+    else if(abs(cand_eta)<2.3) return 0.0762;
+    else if(abs(cand_eta)<2.4) return 0.0766;
+    else if(abs(cand_eta)<5.) return 0.1003;
+    return 0;
+  }
+
   template<class T>
   double PF03EAIsolationVal(T const* cand, double const rho){
   double charged_iso = cand->dr03_pfiso_charged();
@@ -562,6 +577,15 @@ namespace ic {
     return iso;
    }
 
+  template<class T>
+  double PF03EAIsolationValRun3(T const* cand, double const rho){
+  double charged_iso = cand->dr03_pfiso_charged();
+    double eff_area = GetEffectiveAreaWinter22V1(cand);
+    double iso =  charged_iso
+                  + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - rho*eff_area, 0.0);
+    iso = iso / cand->pt();
+    return iso;
+   }
 
   template<class T>
   bool PF03EAIsolation(T const* cand, double const rho, double const& cut) {

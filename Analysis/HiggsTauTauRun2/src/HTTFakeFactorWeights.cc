@@ -690,7 +690,8 @@ namespace ic {
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
-      iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      if (era_==era::data_2022_preEE || era_==era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+      else iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
     } else if (channel_ == channel::mt){
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);

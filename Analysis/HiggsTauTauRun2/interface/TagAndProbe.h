@@ -22,6 +22,7 @@ class TagAndProbe : public ModuleBase {
  private:
   CLASS_MEMBER(TagAndProbe, std::string, ditau_label)
   CLASS_MEMBER(TagAndProbe, ic::channel, channel)
+  CLASS_MEMBER(TagAndProbe, ic::era, era)
   CLASS_MEMBER(TagAndProbe, ic::strategy, strategy)
   CLASS_MEMBER(TagAndProbe, fwlite::TFileService*, fs)
   CLASS_MEMBER(TagAndProbe, std::string, tag_trg_objects)
@@ -147,6 +148,7 @@ class TagAndProbe : public ModuleBase {
 template <class T> 
 TagAndProbe<T>::TagAndProbe(std::string const& name) : ModuleBase(name),
   channel_(channel::tpzmm), 
+  era_(era::data_2022_postEE),
   strategy_(strategy::mssmsummer16) {
   ditau_label_ = "ditau";
   fs_ = NULL;
@@ -546,7 +548,11 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       dphi_sc_tk_at_vtx_1_ = dynamic_cast<Electron const*>(lep1)->dphi_sc_tk_at_vtx();
       dphi_sc_tk_at_vtx_2_ = dynamic_cast<Electron const*>(lep2)->dphi_sc_tk_at_vtx();
 
-      if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) {
+      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+        iso_1_ = PF03EAIsolationValRun3(elec1, eventInfo->jet_rho());
+        iso_2_ = PF03EAIsolationValRun3(elec2, eventInfo->jet_rho());
+      }
+      else if(strategy_ == strategy::cpsummer17 || strategy_ == strategy::cpdecays17 || strategy_ == strategy::cpdecays18 || strategy_ == strategy::legacy16) {
         iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho()); //lepton_rho
         iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
       } else {
@@ -769,7 +775,8 @@ int TagAndProbe<T>::Execute(TreeEvent *event){
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       //Muon const* muon = dynamic_cast<Muon const*>(lep2);
       T muon = dynamic_cast<T>(lep2);
-      if(strategy_ == strategy::legacy16)
+      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) iso_1_ = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+      else if(strategy_ == strategy::legacy16)
         iso_1_ = PF03EAIsolationVal(elec, eventInfo->jet_rho());
       else
         iso_1_ = PF03IsolationVal(elec, 0.5, 0);      
