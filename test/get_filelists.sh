@@ -15,7 +15,7 @@ for fle in $(seq 1 $num); do
     for j in "${names[@]}"; do
       name=$(echo $j | cut -d"/" -f6-| cut -d"_" -f2-)
       type="MC"
-      if [[ $name == "Tau"* || "$name" == "MuonEG"* || "$name" == "SingleElectron"* || "$name" == "SingleMuon"* || "$name" == "EGamma"* || "$name" == "DoubleMuon"* ]]; then
+      if [[ $name == "Tau"* || "$name" == "MuonEG"* || "$name" == "SingleElectron"* || "$name" == "SingleMuon"* || "$name" == "EGamma"* || "$name" == "DoubleMuon"* || "$name" == "Muon"* ]]; then
         type="Data"
       fi
       if [ "$samples" ]; then 
