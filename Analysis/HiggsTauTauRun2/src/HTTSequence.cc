@@ -803,7 +803,7 @@ HTTWeights httWeights = HTTWeights("HTTWeights")
  .set_channel(channel)
  .set_era(era_type)
  .set_mc(mc_type)
- .set_do_tau_id_weights(!is_data)
+ .set_do_tau_id_weights(!is_data && !(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE)) // tau ID corrections not derived yet for Run-3
  .set_do_em_qcd_weights(true)
  .set_ditau_label("ditau")
  .set_jets_label(jets_label)
@@ -818,13 +818,13 @@ httWeights.set_scalefactor_file_UL(scalefactor_file_UL);
 httWeights.set_is_embedded(is_embedded);
 if (!is_data ) {
   httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(js["trg_in_mc"].asBool()).set_do_idiso_weights(true);
-  if(era_type != era::data_2022_preEE && era_type != era::data_2022_postEE){
-  httWeights.set_do_tau_id_sf(true);
-  if(channel == channel::et || channel == channel::mt || channel==channel::tt) {
-  httWeights.set_do_etau_fakerate(true);
-  httWeights.set_do_mtau_fakerate(true);
+  if(era_type != era::data_2022_preEE && era_type != era::data_2022_postEE){ //these weights don't exist yet for Run-3
+    httWeights.set_do_tau_id_sf(true);
+    if(channel == channel::et || channel == channel::mt || channel==channel::tt) {
+      httWeights.set_do_etau_fakerate(true);
+      httWeights.set_do_mtau_fakerate(true);
     }
-  if(channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee) httWeights.set_do_tracking_eff(true);
+    if(channel == channel::et || channel==channel::em || channel==channel::mt || channel==channel::zmm || channel==channel::zee) httWeights.set_do_tracking_eff(true);
   }
 }
 if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
