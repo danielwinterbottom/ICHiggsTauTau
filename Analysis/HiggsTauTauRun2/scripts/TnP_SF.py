@@ -130,7 +130,7 @@ for name in types:
             if options.embed and EMB_y_val != 0:
               stat_error_embed_sf = ((stat_error_data/data_y_val)**2+(stat_error_EMB/EMB_y_val)**2)**.5*data_y_val/EMB_y_val
 
-          if name == 'trg' and data_y_val<0.1:
+          if name == 'trg' and data_y_val<0.01:
              # for the trigger SF we have to remove the low pT SFs where the SFs don;t make sense as the efficiencies are very small. 
              # at the moment to avoid having to use seperate pT cuts depending on the era/channel/trigger we just zero all SF where the efficiencies are < 10% 
              # need to be careful with this bit method incase efficiencies are low for another reason!
