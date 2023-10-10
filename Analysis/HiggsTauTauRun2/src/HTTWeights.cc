@@ -2317,7 +2317,8 @@ int HTTWeights::Execute(TreeEvent *event) {
      double tau_trg_mc=1.;
      double ele_trg_mc = 1.0;
       // add here for e tau cross trg
-      e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) e_iso = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+      else e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
       auto args_1 = std::vector<double>{e_pt,e_eta,e_iso};
       auto args_1_noiso = std::vector<double>{e_pt,e_eta};
       ele_trg = fns_["e_trg_binned_data"]->eval(args_1_noiso.data());
@@ -2843,7 +2844,9 @@ int HTTWeights::Execute(TreeEvent *event) {
      double e_trg_12 = 1.0;
      double e_trg_12_mc = 1.0;
      double e_trg=1.;
-     double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+     double e_iso=0.;
+     if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) e_iso = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+     else e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
 
      auto args_1_2 = std::vector<double>{e_pt,e_eta,e_iso};
      auto args_2_2 = std::vector<double>{m_pt,m_eta,m_iso};
@@ -3090,7 +3093,9 @@ int HTTWeights::Execute(TreeEvent *event) {
      Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
      double e1_pt = elec->pt();
      double e1_eta = fabs(elec->sc_eta());
-     double e_iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho());
+     double e_iso_1 = 0.;
+     if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) e_iso_1 = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+     else e_iso_1 = PF03EAIsolationVal(elec, eventInfo->jet_rho());
      double ele1_trg = 1.0;
      double ele2_trg = 1.0;
      double ele1_trg_mc = 1.0;
@@ -3158,7 +3163,9 @@ int HTTWeights::Execute(TreeEvent *event) {
    if (channel_ == channel::et) {
      Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
      double pt = elec->pt();
-     double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); 
+     double e_iso=0.;
+     if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) e_iso = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+     else e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
      double e_sceta = elec->sc_eta();
      auto args_1 = std::vector<double>{pt,e_sceta,e_iso};
      auto args_1_noiso = std::vector<double>{pt,e_sceta};
@@ -3198,7 +3205,9 @@ int HTTWeights::Execute(TreeEvent *event) {
      double m_idiso = 1.0;
      double e_idiso = 1.0;
      double m_iso = PF04IsolationVal(muon, 0.5, 0); 
-     double e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho()); //lepton_rho
+     double e_iso=0.;
+     if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) e_iso = PF03EAIsolationValRun3(elec, eventInfo->jet_rho());
+     else e_iso = PF03EAIsolationVal(elec, eventInfo->jet_rho());
      double e_sceta = elec->sc_eta(); 
      auto args_1 = std::vector<double>{e_pt,e_sceta,e_iso};  
      auto args_1_noiso = std::vector<double>{e_pt, e_sceta};
@@ -3253,8 +3262,17 @@ int HTTWeights::Execute(TreeEvent *event) {
        double e_2_pt = ele_2->pt();
        double e_1_idiso = 1.0;
        double e_2_idiso = 1.0;
-       double e_1_iso = PF03EAIsolationVal(ele_1, eventInfo->jet_rho());
-       double e_2_iso = PF03EAIsolationVal(ele_2, eventInfo->jet_rho());
+
+       double e_1_iso=0., e_2_iso=0.;
+       if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE) {
+         e_1_iso = PF03EAIsolationValRun3(ele_1, eventInfo->jet_rho());
+         e_2_iso = PF03EAIsolationValRun3(ele_2, eventInfo->jet_rho());
+       }
+       else {
+         e_1_iso = PF03EAIsolationVal(ele_1, eventInfo->jet_rho());
+         e_2_iso = PF03EAIsolationVal(ele_2, eventInfo->jet_rho());
+       }
+
        double e_1_sceta = ele_1->sc_eta();   
        double e_2_sceta = ele_2->sc_eta();
 
