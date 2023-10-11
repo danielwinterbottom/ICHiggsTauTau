@@ -4,7 +4,7 @@ import os
 
 file_names = {}
 channels = ['mt']
-years = ['2016','2017','2018']
+years = ['2016','2017','2018','2022_preEE','2022_postEE']
 for file_name in os.listdir(sys.argv[1]):
     if '.root' not in file_name:
         continue
@@ -15,7 +15,7 @@ for file_name in os.listdir(sys.argv[1]):
                 file_names[key] = file_name
 
 for f in file_names:
-    if "SingleMuon" in f or "SingleElectron" in f or "EGamma" in f or f in "MuonEG" or\
+    if "Muon" in f or "SingleElectron" in f or "EGamma" in f or f in "MuonEG" or\
             "\bTau" in f: 
         continue
         input_file = ROOT.TFile(sys.argv[1]+'/'+file_names[f])

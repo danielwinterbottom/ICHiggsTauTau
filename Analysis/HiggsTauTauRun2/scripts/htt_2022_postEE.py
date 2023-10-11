@@ -219,9 +219,9 @@ if options.proc_data or options.proc_all or options.calc_lumi:
             if 'tt' in chn:
                 data_samples+=['Tau'+era]
 
-    if ('mt' in channels or 'et' in channels) and 'tt' not in channels:
-      for era in data_eras:
-        data_samples+=['Tau'+era]
+    #if ('mt' in channels or 'et' in channels) and 'tt' not in channels:
+    #  for era in data_eras:
+    #    data_samples+=['Tau'+era]
 
     if options.effective_events: # this is just used for the effective events case
         for era in data_eras:

@@ -4,10 +4,7 @@
     "file_prefix" : "root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/user/irandreo/July0623_Data_124X_2022-postEE/",
     "max_events":   -1,
     "timings":      true,
-   //"channels":     ["mt","et","tt","zmm","zee","em"],
-   // "channels":     ["mt","zmm","tt","et"],
-    "channels":     ["tpzee","tpzmm"],
-//   "channels":     ["tt","mt","et","em","zmm","zee"],
+    "channels":     ["mt","zmm","et","zee"],
     "sequences": {
       "all":  ["default"]
 //,"scale_met_high,""scale_met_lo","res_met_high","res_met_lo"]
@@ -66,7 +63,11 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
+<<<<<<< HEAD
     "output_folder" : "/vols/cms/ia2318/outputs/MSSM/2022-postEE_031023/",
+=======
+    "output_folder" : "output/",
+>>>>>>> 8e54988160336cdee8492af0af8b1b94d4d2441d
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -85,8 +86,8 @@
     "hadronic_tau_selector" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
-    "data_pu_file"  : "input/pileup/2022/pu_2022_postEE.root",
-    "mc_pu_file"    : "input/pileup/2022/pileup_2022_DYJetsToLL-LO_postEE_postEE.root",
+    "data_pu_file"  : "input/pileup/2022/pu_data_2022_postEE.root",
+    "mc_pu_file"    : "input/pileup/2022/pu_mc_2022.root",
     "run_trg_filter": false,
     "baseline": {
       "tau_scale_mode"    : true,
