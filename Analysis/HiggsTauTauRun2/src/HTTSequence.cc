@@ -858,7 +858,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       .set_era(era_type)
       .set_fs(fs.get());
   if (output_name.find("WJetsToLNu-LO") != output_name.npos || output_name.find("W1JetsToLNu-LO") != output_name.npos || output_name.find("W2JetsToLNu-LO") != output_name.npos ||
-      output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos){
+      output_name.find("W3JetsToLNu-LO") != output_name.npos || output_name.find("W4JetsToLNu-LO") != output_name.npos || output_name.find("WtoLNu-4Jets") != output_name.npos || output_name.find("WJetsToLNu-4Jets") != output_name.npos){
     httStitching.set_do_w_soup(true);
     if(era_type == era::data_2016) {
      httStitching.SetWInputCrossSections(50380,9644.5,3144.5,954.8,485.6); 
@@ -897,7 +897,7 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
       httStitching.SetWInputYields(347877593, 42788888, 36334573, 0, 4860871);
     }      
   }
-  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))){
+  if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))||output_name.find("DYto2L-4Jets_MLL-50") != output_name.npos){
     httStitching.set_do_dy_soup(true);
     if(era_type == era::data_2016) {
       httStitching.SetDYInputCrossSections(4954, 1012.5, 332.8, 101.8,54.8);
