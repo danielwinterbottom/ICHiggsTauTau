@@ -66,7 +66,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/2022-preEE_061023_v1/",
+    "output_folder" : "/vols/cms/ia2318/outputs/MSSM/2022-preEE_031023/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",

@@ -174,7 +174,7 @@ for i in range(0,scale):
    temp='job:sequences:all:'+temp
    flatjsons.append(temp)
 
-FILELIST='./filelists/Oct0323_2022-postEE_MC_124X'
+FILELIST='./filelists/Oct0323_MC_124X_2022-postEE_MC_124X'
 
 signal_mc = [ ]
 signal_vh = [ ]
@@ -231,7 +231,7 @@ if options.proc_data or options.proc_all or options.calc_lumi:
           if 'MuonEG'+era not in data_samples: data_samples+=['MuonEG'+era]
           if 'DoubleMuon'+era not in data_samples: data_samples+=['DoubleMuon'+era]
 
-    DATAFILELIST="./filelists/Oct0323_2022-postEE_Data_124X"
+    DATAFILELIST="./filelists/Oct0323_Data_124X_2022-postEE_Data_124X"
 
     if options.calc_lumi:
         for sa in data_samples:

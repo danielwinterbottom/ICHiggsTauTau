@@ -43,25 +43,22 @@ JOBSUBMIT       = './scripts/submit_ic_batch_job.sh "hep.q -l h_rt=3:0:0"'
 sample_list = [
 
           # Tau
-         'TauB_rereco',
+         #'TauB_rereco',
          'TauC_rereco',
          'TauD_rereco',
          
          #Muon
          
-         'SingleMuonB_rereco',
+         #'SingleMuonB_rereco',
          'SingleMuonC_rereco',
          'MuonC_rereco',
          'MuonD_rereco',
        
          #MuonEG
- 
-         'MuonEGB_rereco',
          'MuonEGC_rereco',
          'MuonEGD_rereco', 
         
          #EGamma
-         'EGammaB_rereco',
          'EGammaC_rereco',
          'EGammaD_rereco',
  
