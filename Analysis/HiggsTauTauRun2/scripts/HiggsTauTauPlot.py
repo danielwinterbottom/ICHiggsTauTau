@@ -1577,7 +1577,7 @@ if options.era in ['22_preEE']:
     top_samples = ['TTTo2L2Nu','TTto4Q','TTtoLNu2Q']
     vv_samples = ['WW','WZ','ZZ',
                   'TBbarQ_t-channel_4FS','TbarBQ_t-channel_4FS',
-                  'TWminusto2L2Nu','WminustoLNu2Q',
+                  'TWminusto2L2Nu','TWminustoLNu2Q',
                   'TbarWplusto2L2Nu','TbarWplustoLNu2Q']
 
     wjets_samples = ['WJetsToLNu-LO','W3JetsToLNu-LO','WJetsToLNu-4Jets_4J']
@@ -1603,7 +1603,7 @@ if options.era in ['22_postEE']:
     top_samples = ['TTTo2L2Nu','TTto4Q','TTtoLNu2Q']
     vv_samples = ['WW','WZ','ZZ',
                   'TBbarQ_t-channel_4FS','TbarBQ_t-channel_4FS',
-                  'TWminusto2L2Nu','WminustoLNu2Q',
+                  'TWminusto2L2Nu','TWminustoLNu2Q',
                   'TbarWplusto2L2Nu','TbarWplustoLNu2Q']
 
     wjets_samples = ['WJetsToLNu-LO','W1JetsToLNu-LO','W2JetsToLNu-LO','WtoLNu-4Jets_4J']
