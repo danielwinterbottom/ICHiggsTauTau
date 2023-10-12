@@ -1,0 +1,101 @@
+{
+  "DYJetsToLL_M-50": {
+    "xs": 6282.6,
+    "evt": 27309722
+  },
+  "DYto2L-4Jets_MLL-50": {
+    "xs": 6282.6,
+    "evt": 74730817
+  },
+  "DYto2L-4Jets_MLL-50_1J": {
+    "xs": 6282.6,
+    "evt": 74730817
+  },
+  "DYto2L-4Jets_MLL-50_2J": {
+    "xs": 6282.6,
+    "evt": 74730817
+  },
+  "DYto2L-4Jets_MLL-50_3J": {
+    "xs": 6282.6,
+    "evt": 74730817
+  },
+  "DYto2L-4Jets_MLL-50_4J": {
+    "xs": 6282.6,
+    "evt": 74730817
+  },
+  "TBbarQ_t-channel_4FS": {
+    "xs": 123.8,
+    "evt": 2737414
+  },
+  "TTTo2L2Nu": {
+    "xs": 98.0,
+    "evt": 23655581
+  },
+  "TTto4Q": {
+    "xs": 419.8,
+    "evt": 52967713
+  },
+  "TTtoLNu2Q": {
+    "xs": 405.7,
+    "evt": 76710941
+  },
+  "TWminusto2L2Nu": {
+    "xs": 3.8,
+    "evt": 2435394
+  },
+  "TWminustoLNu2Q": {
+    "xs": 15.8,
+    "evt": 4755063
+  },
+  "TbarBQ_t-channel_4FS": {
+    "xs": 75.47,
+    "evt": 1376691
+  },
+  "TbarWplusto2L2Nu": {
+    "xs": 15.9,
+    "evt": 2401387
+  },
+  "TbarWplustoLNu2Q": {
+    "xs": 3.8,
+    "evt": 4490535
+  },
+  "W3JetsToLNu-LO": {
+    "xs": 63425.1,
+    "evt": 87790626
+  },
+  "WJetsToLNu-4Jets_4J": {
+    "xs": 63425.1,
+    "evt": 87790626
+  },
+  "WJetsToLNu-LO": {
+    "xs": 63425.1,
+    "evt": 87790626
+  },
+  "WW": {
+    "xs": 122.3,
+    "evt": 15641382
+  },
+  "WZ": {
+    "xs": 41.1,
+    "evt": 7480825
+  },
+  "ZZ": {
+    "xs": 19.4,
+    "evt": 1186823
+  },
+  "EGamma": {
+    "lumi": 8077
+  },
+  "SingleMuon": {
+    "lumi": 8077
+  },
+  "Muon": {
+    "lumi": 8077
+  },
+  "Tau": {
+    "lumi": 8077
+  },
+  "MuonEG": {
+    "lumi": 8077
+  }
+}

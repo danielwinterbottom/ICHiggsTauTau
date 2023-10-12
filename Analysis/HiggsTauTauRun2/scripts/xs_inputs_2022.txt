@@ -5,13 +5,13 @@ DYto2L-4Jets_MLL-50_1J 6282.6
 DYto2L-4Jets_MLL-50_2J 6282.6
 DYto2L-4Jets_MLL-50_3J 6282.6
 DYto2L-4Jets_MLL-50_4J 6282.6
-TBbarQ_t-channel_4FS
+TBbarQ_t-channel_4FS 123.8
 TTTo2L2Nu 98.0
 TTto4Q 419.8
 TTtoLNu2Q 405.7
 TWminusto2L2Nu 3.8
 TWminustoLNu2Q 15.8
-TbarBQ_t-channel_4FS
+TbarBQ_t-channel_4FS 75.47
 TbarWplusto2L2Nu 15.9
 TbarWplustoLNu2Q 3.8
 W1JetsToLNu-LO 63425.1
