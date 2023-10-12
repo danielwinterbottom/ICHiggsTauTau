@@ -288,8 +288,6 @@ if options.proc_data or options.proc_all or options.calc_lumi:
 
 if options.proc_bkg or options.proc_all:
     central_samples = [
-     
-<<<<<<< HEAD
          'DYJetsToLL_M-50',
          'DYTo2L_MLL-4to50',
          'DYTo2L_MLL-50',
@@ -321,41 +319,7 @@ if options.proc_bkg or options.proc_all:
          'WJetsToLNu-4Jets_4J',
          'WJetsToLNu-LO',
          'ZZZ',
-         'ZZ', 
-=======
-    'DYJetsToLL_M-50',
-   # 'DYTo2L_MLL-4to50',
-   # 'DYTo2L_MLL-50',
-    'DYto2L-4Jets_MLL-50_2J',
-    'DYto2L-4Jets_MLL-50_3J',
-    'DYto2L-4Jets_MLL-50_4J',
-    'DYto2L-4Jets_MLL-50',
-    'DYto2TautoMuTauh_M50',
-    #'GluGluHToTauTau_M125',
-    'TBbarQ_t-channel_4FS',
-    'TT',
-    'TT_ext1',
-    'TTTo2L2Nu',
-    'TTto4Q',
-    'TTtoLNu2Q',
-    'TWminusto2L2Nu',
-    'TWminustoLNu2Q',
-    'TbarBQ_t-channel_4FS',
-    'TbarWplusto2L2Nu',
-    'TbarWplustoLNu2Q',
-    #'VBFHToTauTau_M125',
-    #'WWW_4F',
-    #'WWZ_4F',
-    'WW',
-    #'WZZ',
-    'WZ',
-    #'WJetsToLNu-2Jets',
-    'W3JetsToLNu-LO',
-    'WJetsToLNu-4Jets_4J',
-    'WJetsToLNu-LO',
-    #'ZZZ',
-    'ZZ',
->>>>>>> 8e54988160336cdee8492af0af8b1b94d4d2441d
+         'ZZ',
    
     
     ]

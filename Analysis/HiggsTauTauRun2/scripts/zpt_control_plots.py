@@ -2,12 +2,12 @@ import os
 import json
 import numpy as np
 
-DO_ZPT_CONTROL = True
+DO_ZPT_CONTROL = False
 DO_CONTROL = False
 DO_SS = False
 
-FOLDER = "/vols/cms/eb921/test_output/output_zmm_2022/"
-ZPTFOLDER = "/vols/cms/eb921/test_output/output_zmm_Zpt_2022/"
+FOLDER = "/vols/cms/ia2318/outputs/MSSM/2022-preEE_031023_zmm"
+#ZPTFOLDER = "/vols/cms/eb921/test_output/output_zmm_Zpt_2022/"
 
 if DO_ZPT_CONTROL or DO_CONTROL:
   variables = [
