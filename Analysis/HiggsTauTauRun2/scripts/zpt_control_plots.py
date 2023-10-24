@@ -1,12 +1,22 @@
+#python scripts/zpt_control_plots.py --era 2022_preEE
+
 import os
 import json
 import numpy as np
+import argparse
 
 DO_ZPT_CONTROL = False
 DO_CONTROL = False
 DO_SS = False
 
-FOLDER = "/vols/cms/ia2318/outputs/MSSM/2022-preEE_031023_zmm"
+parser = argparse.ArgumentParser()
+parser.add_argument("--era", dest="era", type=str,
+    help="Era")
+args = parser.parse_args()
+
+era = args.era
+
+FOLDER = "/vols/cms/ia2318/outputs/MSSM/%(era)s_031023_zmm" % vars()
 #ZPTFOLDER = "/vols/cms/eb921/test_output/output_zmm_Zpt_2022/"
 
 if DO_ZPT_CONTROL or DO_CONTROL:
@@ -40,7 +50,7 @@ for v in variables:
     extra=' --ratio_range=\"0.6,1.4\" '
     extra += ' --v2p5'
     #Factor out wt_dysoup if it is wrongly not 1
-    #extra+=' --add_wt="1/wt_dysoup"'
+    extra+=' --add_wt="1/wt_zpt"'
     if DO_ZPT_CONTROL:
       extra+= ' --folder="%s"'%ZPTFOLDER
       extra+= ' --extra_name=mvis50_Zpt'
@@ -56,7 +66,7 @@ for v in variables:
           extra += ' --sel="(m_vis>%s)"'%(sel[0])
         else:
           extra += ' --sel="(m_vis>%s && m_vis<%s)"'%(sel[0], sel[1])
-    os.system('python scripts/HiggsTauTauPlot_Run3.py %(extra)s --cfg scripts/zpt_plot_2022.cfg --var=\"%(v_tt)s\"' % vars() )
+    os.system('python scripts/HiggsTauTauPlot.py %(extra)s --cfg scripts/zpt_plot_%(era)s.cfg --var=\"%(v_tt)s\"' % vars() )
     if DO_SS:
-      os.system('python scripts/HiggsTauTauPlot_Run3.py %(extra)s --do_ss --cfg scripts/zpt_plot_2022.cfg --var=\"%(v_tt)s\"' % vars() )            
+      os.system('python scripts/HiggsTauTauPlot.py %(extra)s --do_ss --cfg scripts/zpt_plot_%(era)s.cfg --var=\"%(v_tt)s\"' % vars() )            
     

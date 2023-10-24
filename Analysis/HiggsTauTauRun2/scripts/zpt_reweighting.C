@@ -1,6 +1,6 @@
 void zpt_reweighting(){
   // initialising binning
-  std::string outfile="/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/zpt_reweighting_LO.root";
+  std::string outfile="/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/zpt_reweighting_LO.root";
   double x_bins[17] = {0,50,60,70,80,90,100,120,140,160,180,200,300,400,600,800,1000};
   double y_bins[15] = {0,10,20,30,40,60,80,100,120,160,200,280,320,400,600};
   int n_xbins = 16;
@@ -8,21 +8,21 @@ void zpt_reweighting(){
   TFile *fout = new TFile(outfile.c_str(),"RECREATE");
   // datacards (var pt_tt with mvis cuts)
   std::vector<std::string> file_names = {
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis50to60_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis60to70_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis70to80_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis80to90_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis90to100_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis100to120_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis120to140_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis140to160_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis160to180_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis180to200_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis200to300_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis300to400_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis400to600_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis600to800_zmm_2022.root",
-    "/vols/cms/eb921/DiTau/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/zpt_plots/datacard_pt_tt_inclusive_mvis800toinf_zmm_2022.root"
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis50to60_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis60to70_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis70to80_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis80to90_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis90to100_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis100to120_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis120to140_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis140to160_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis160to180_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis180to200_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis200to300_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis300to400_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis400to600_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis600to800_zmm_2022.root",
+    "/vols/cms/ia2318/CMSSW_10_2_19/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/output_2022/datacard_pt_tt_inclusive_mvis800toinf_zmm_2022.root"
   };
   
   std::vector<TH1D*> data_hist_vector;
