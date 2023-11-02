@@ -469,11 +469,11 @@ if(!is_data && js["do_gen_analysis"].asBool()){
     }
     if(era_type == era::data_2022_preEE ) {
       httStitching.SetDYInputCrossSections(5455.0,978.3,315.1,93.7,45.4);
-      httStitching.SetDYInputYields(74730817,0,14777357,8599338,3267376);
+      httStitching.SetDYInputYields(74978096,0,14777357,8699442,3267376);
     }
     if(era_type == era::data_2022_postEE) {
       httStitching.SetDYInputCrossSections(5455.0,978.3,315.1,93.7,45.4);
-      httStitching.SetDYInputYields(146338963,50224518,50437675,28833220,9405785);
+      httStitching.SetDYInputYields(244244756,50224518,50586120,28833220,9405785);
     }  
 
 
@@ -890,11 +890,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2022_preEE){
       httStitching.SetWInputCrossSections(55300.,9128.,2922.,861.3,415.4);
-      httStitching.SetWInputYields(87790626, 0, 0, 8164649, 1460716);
+      httStitching.SetWInputYields(87890414, 0, 0, 8214152, 1460716);
     }
     if(era_type == era::data_2022_postEE){
       httStitching.SetWInputCrossSections(55300.,9128.,2922.,861.3,415.4);
-      httStitching.SetWInputYields(347877593, 42788888, 36334573, 0, 4860871);
+      httStitching.SetWInputYields(348372911, 42838500, 36384403, 0, 4860871);
     }      
   }
   if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos))||output_name.find("DYto2L-4Jets_MLL-50") != output_name.npos){
@@ -929,11 +929,11 @@ if(channel!=channel::tpzee&&channel!=channel::tpzmm){
     }
     if(era_type == era::data_2022_preEE ) {
       httStitching.SetDYInputCrossSections(5455.0,978.3,315.1,93.7,45.4);
-      httStitching.SetDYInputYields(74730817,0,14777357,8599338,3267376);
+      httStitching.SetDYInputYields(74978096,0,14777357,8699442,3267376);
     }
     if(era_type == era::data_2022_postEE) {
       httStitching.SetDYInputCrossSections(5455.0,978.3,315.1,93.7,45.4);
-      httStitching.SetDYInputYields(146338963,50224518,50437675,28833220,9405785);
+      httStitching.SetDYInputYields(244244756,50224518,50586120,28833220,9405785);
     } 
   }
 
