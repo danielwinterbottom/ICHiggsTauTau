@@ -1,27 +1,31 @@
 {
+  "DYJetsToLL-LO": {
+    "xs": 6282.6,
+    "evt": 7530532
+  },
   "DYJetsToLL_M-50": {
     "xs": 6282.6,
     "evt": 27309722
   },
   "DYto2L-4Jets_MLL-50": {
     "xs": 6282.6,
-    "evt": 74730817
+    "evt": 74978096
   },
   "DYto2L-4Jets_MLL-50_1J": {
     "xs": 6282.6,
-    "evt": 74730817
+    "evt": 74978096
   },
   "DYto2L-4Jets_MLL-50_2J": {
     "xs": 6282.6,
-    "evt": 74730817
+    "evt": 74978096
   },
   "DYto2L-4Jets_MLL-50_3J": {
     "xs": 6282.6,
-    "evt": 74730817
+    "evt": 74978096
   },
   "DYto2L-4Jets_MLL-50_4J": {
     "xs": 6282.6,
-    "evt": 74730817
+    "evt": 74978096
   },
   "TBbarQ_t-channel_4FS": {
     "xs": 123.8,
@@ -33,11 +37,11 @@
   },
   "TTto4Q": {
     "xs": 419.8,
-    "evt": 52967713
+    "evt": 53462055
   },
   "TTtoLNu2Q": {
     "xs": 405.7,
-    "evt": 76710941
+    "evt": 79254549
   },
   "TWminusto2L2Nu": {
     "xs": 3.8,
@@ -59,17 +63,45 @@
     "xs": 3.8,
     "evt": 4490535
   },
+  "W1JetsToLNu-LO": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "W2JetsToLNu-LO": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
   "W3JetsToLNu-LO": {
     "xs": 63425.1,
-    "evt": 87790626
+    "evt": 87890414
+  },
+  "W4JetsToLNu-LO": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WJetsToLNu-4Jets": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WJetsToLNu-4Jets_1J": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WJetsToLNu-4Jets_2J": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WJetsToLNu-4Jets_3J": {
+    "xs": 63425.1,
+    "evt": 87890414
   },
   "WJetsToLNu-4Jets_4J": {
     "xs": 63425.1,
-    "evt": 87790626
+    "evt": 87890414
   },
   "WJetsToLNu-LO": {
     "xs": 63425.1,
-    "evt": 87790626
+    "evt": 87890414
   },
   "WW": {
     "xs": 122.3,
@@ -77,11 +109,31 @@
   },
   "WZ": {
     "xs": 41.1,
-    "evt": 7480825
+    "evt": 7530532
+  },
+  "WtoLNu-4Jets": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WtoLNu-4Jets_1J": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WtoLNu-4Jets_2J": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WtoLNu-4Jets_3J": {
+    "xs": 63425.1,
+    "evt": 87890414
+  },
+  "WtoLNu-4Jets_4J": {
+    "xs": 63425.1,
+    "evt": 87890414
   },
   "ZZ": {
     "xs": 19.4,
-    "evt": 1186823
+    "evt": 87890414
   },
   "EGamma": {
     "lumi": 8077
