@@ -1144,7 +1144,9 @@ for i in options.set_alias:
         cats[cat_to_overwrite] = overwrite_with
 if options.v2p5 == True:
    for key in cats:
-      cats[key] = cats[key].replace('deepTauVsJets','deepTauVsJetsV2p5').replace('deepTauVsEle','deepTauVsEleV2p5').replace('deepTauVsMu','deepTauVsMuV2p5').replace('iso_2','iso_2_V2p5')
+      cats[key] = cats[key].replace('deepTauVsJets','deepTauVsJetsV2p5').replace('deepTauVsEle','deepTauVsEleV2p5').replace('deepTauVsMu','deepTauVsMuV2p5')
+      if not options.channel in ['zmm','zee']:
+          cats[key] = cats[key].replace('iso_2','iso_2_V2p5')
 
 if options.do_aiso:
   # overwrite electron/muon isolation cut in baseline
