@@ -567,6 +567,13 @@ elif options.analysis in ['mssmrun2','vlq']:
         else: 
           cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_tight_2>0.5 && deepTauVsMu_vloose_2>0.5 && pt_2>30 && ((trg_etaucross&&pt_2>%(t_lowpt_et)s&&fabs(eta_2)<2.1&&pt_1<%(e_lowpt)s)||(trg_singleelectron&&pt_1>=%(e_lowpt)s)))' % vars()
         
+    # use only single lepton trigger for 2022 for now
+    if options.era in ['22_preEE','22_postEE']:
+        if options.channel == 'mt':
+            cats['baseline'] = '(iso_1<0.15 && deepTauVsJets_%(wp)s_2>0.5 && deepTauVsEle_vvloose_2>0.5 && deepTauVsMu_tight_2>0.5 && !leptonveto && trg_singlemuon&&pt_1>=25)' % vars()
+
+
+
 elif options.analysis == 'mssm':
     if options.channel == 'mt':        
         cats['baseline'] = '(iso_1<0.15 && mva_olddm_medium_2>0.5 && antiele_2 && antimu_2 && !leptonveto)'
@@ -3379,7 +3386,7 @@ def GenerateW(ana, add_name='', samples=[], data=[], wg_samples=[], plot='', plo
 
 def GetSubtractNode(ana,add_name,plot,plot_unmodified,wt,sel,cat,cat_data,method,qcd_os_ss_ratio,OSSS,includeW=False,w_shift=None):
   subtract_node = SummedNode('total_bkg'+add_name)
-  if includeW and not options.era in ['22_preEE','22_postEE']:
+  if includeW:
       if w_shift is not None: w_wt = '%s*%f' %(wt,w_shift)
       else: w_wt = wt
       w_node = GetWNode(ana, 'W', wjets_samples, data_samples, plot, plot_unmodified, w_wt, sel, cat, cat_data,method, qcd_os_ss_ratio, OSSS)
