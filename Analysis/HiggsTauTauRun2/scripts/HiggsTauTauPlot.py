@@ -1149,7 +1149,7 @@ for i in options.set_alias:
         options.sel = overwrite_with
     else:
         cats[cat_to_overwrite] = overwrite_with
-if options.v2p5 == True:
+if options.v2p5 == True or options.era in ['22_preEE','22_postEE']:
    for key in cats:
       cats[key] = cats[key].replace('deepTauVsJets','deepTauVsJetsV2p5').replace('deepTauVsEle','deepTauVsEleV2p5').replace('deepTauVsMu','deepTauVsMuV2p5')
       if not options.channel in ['zmm','zee']:

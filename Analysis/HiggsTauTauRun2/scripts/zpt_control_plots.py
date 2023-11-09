@@ -50,7 +50,8 @@ for v in variables:
     extra=' --ratio_range=\"0.6,1.4\" '
     extra += ' --v2p5'
     #Factor out wt_dysoup if it is wrongly not 1
-    extra+=' --add_wt="1/wt_zpt"'
+    if not DO_ZPT_CONTROL and not DO_CONTROL and not DO_SS:
+      extra+=' --add_wt="1/wt_zpt"'
     if DO_ZPT_CONTROL:
       extra+= ' --folder="%s"'%ZPTFOLDER
       extra+= ' --extra_name=mvis50_Zpt'
