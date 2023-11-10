@@ -104,20 +104,16 @@ for year in years:
   if options.systs:
     mt_sep_shape_systematics = [
         ' --syst_tau_scale_grouped=\'CMS_scale_t_*group_%(year)s\'' % vars(), # Tau energy scale
+        ' --syst_jfake_scale="CMS_scale_jfake"',
+        ' --syst_scale_met_unclustered=\'CMS_scale_met_unclustered_%(year)s\'' % vars(), # MET unclustered energy uncertainty
+        ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
+        ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
+        ' --syst_qcd_bkg="CMS_QCD_BackgroundSubtraction"',
+        #' --syst_scale_j=\'CMS_scale_j_%(year)s\'' % vars(), # Jet energy scale (grouped)
         if year == "2022_preEE" or year == "2022_postEE":
-           ' --syst_scale_met_unclustered=\'CMS_scale_met_unclustered_%(year)s\'' % vars(), # MET unclustered energy uncertainty
            ' --syst_scale_met_culstered=\'CMS_scale_met_clustered_%(year)s\'' % vars(),
-           ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
-           ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
-           ' --syst_qcd_bkg="CMS_QCD_BackgroundSubtraction"',
         else:
            ' --syst_res_j=\'CMS_res_j_%(year)s\'' % vars(), # Jet energy resolution
-           ' --syst_scale_met_unclustered=\'CMS_scale_met_unclustered_%(year)s\'' % vars(), # MET unclustered energy uncertainty
-           #' --syst_scale_j=\'CMS_scale_j_%(year)s\'' % vars(), # Jet energy scale (grouped)
-           ' --syst_mufake_0pi_scale="CMS_ZLShape_mt_1prong_%(year)s"' % vars(), # l to tau h fake energy scale
-           ' --syst_mufake_1pi_scale="CMS_ZLShape_mt_1prong1pizero_%(year)s"' % vars(), # l to tau h fake energy scale
-           ' --syst_qcd_bkg="CMS_QCD_BackgroundSubtraction"',
-           ' --syst_jfake_scale="CMS_scale_jfake"',
            ' --syst_scale_j_regrouped="CMS_scale_j_*group"', # Jet energy scale (grouped)
       ]
     common_shape_systematics = [
