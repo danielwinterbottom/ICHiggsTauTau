@@ -112,7 +112,7 @@ for year in years:
         #' --syst_scale_j=\'CMS_scale_j_%(year)s\'' % vars(), # Jet energy scale (grouped)
     if year == "2022_preEE" or year == "2022_postEE":
            mt_sep_shape_systematics.extend([
-              ' --syst_scale_met_clustered=\'CMS_scale_met_clustered_%(year)s\'' % vars(),])
+              ' --syst_scale_met_clustered=\'CMS_scale_met_clustered_%(year)s\'' % vars(),]) # MET clustered energy uncertainty
     else:
            mt_sep_shape_systematics.extend([
               ' --syst_res_j=\'CMS_res_j_%(year)s\'' % vars(), # Jet energy resolution
