@@ -63,7 +63,7 @@
     "do_ff_systematics": false,
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/Oct0323_2022-preEE/",
+    "output_folder" : "/vols/cms/ia2318/outputs/MSSM/Oct0323_2022_preEE_TES/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",
@@ -103,10 +103,10 @@
       "efaketau_1pi_es_shift_endcap": 0.985,
       "mufaketau_0pi_es_shift": 1.0,
       "mufaketau_1pi_es_shift": 1.0,
-      "tau_1prong0pi0_es_shift": 1.0,
-      "tau_1prong1pi0_es_shift": 1.0,
-      "tau_3prong0pi0_es_shift": 1.0,
-      "tau_3prong1pi0_es_shift": 1.0,
+      "tau_1prong0pi0_es_shift": 0.9640,
+      "tau_1prong1pi0_es_shift": 0.9930,
+      "tau_3prong0pi0_es_shift": 1.009,
+      "tau_3prong1pi0_es_shift": 1.025,
       "embedtau_1prong1pi0_es_shift": 1.0, 
       "embedtau_1prong0pi0_es_shift": 1.0,
       "embedtau_3prong0pi0_es_shift": 1.0,
@@ -258,56 +258,56 @@
     "scale_t_0pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_UP",
-         "tau_shift_func_1prong0pi0": "1.0+0.015",
+         "tau_shift_func_1prong0pi0": "0.964+0.015",
          "embedtau_1prong0pi0_es_shift": 1.015
       }
     },
     "scale_t_0pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE0PI_DOWN",
-         "tau_shift_func_1prong0pi0": "1.0-0.015",
+         "tau_shift_func_1prong0pi0": "0.964-0.015",
          "embedtau_1prong0pi0_es_shift": 0.985
       }
     },
     "scale_t_1pi_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_UP",
-         "tau_shift_func_1prong1pi0": "1.0+0.015",
+         "tau_shift_func_1prong1pi0": "0.993+0.015",
          "embedtau_1prong1pi0_es_shift" : 1.015
       }
     },
     "scale_t_1pi_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE1PI_DOWN",
-         "tau_shift_func_1prong1pi0": "1.0-0.015",
+         "tau_shift_func_1prong1pi0": "0.993-0.015",
          "embedtau_1prong1pi0_es_shift" : 0.985
       }
     },
     "scale_t_3prong_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_UP",
-         "tau_shift_func_3prong0pi0": "1.0+0.015",
+         "tau_shift_func_3prong0pi0": "1.0009+0.015",
          "embedtau_3prong0pi0_es_shift" : 1.015
       }
     },
     "scale_t_3prong_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG_DOWN",
-         "tau_shift_func_3prong0pi0": "1.0-0.015",
+         "tau_shift_func_3prong0pi0": "1.0009-0.015",
          "embedtau_3prong0pi0_es_shift" : 0.985
       }
     },
     "scale_t_3prong1pi0_hi": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_UP",
-         "tau_shift_func_3prong1pi0": "1.0+0.02",
+         "tau_shift_func_3prong1pi0": "1.025+0.02",
          "embedtau_3prong1pi0_es_shift" : 1.02
       }
     },
     "scale_t_3prong1pi0_lo": {
       "baseline": {
          "addit_output_folder" : "TSCALE3PRONG1PI0_DOWN",
-         "tau_shift_func_3prong1pi0": "1.0-0.02",
+         "tau_shift_func_3prong1pi0": "1.025-0.02",
          "embedtau_3prong1pi0_es_shift" : 0.98
       }
     },

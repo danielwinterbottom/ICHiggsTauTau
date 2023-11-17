@@ -13,7 +13,9 @@ config_files = {'2016_preVFP':'scripts/plot_UL_2016_preVFP.cfg',
                 '2017preUL':'scripts/plot_mssm_2017.cfg',
                 '2017':'scripts/plot_UL_2017.cfg',
                 '2018':'scripts/plot_UL_2018.cfg',
-                '2018preUL':'scripts/plot_mssm_2018.cfg'}
+                '2018preUL':'scripts/plot_mssm_2018.cfg',
+                '2022_preEE':'scripts/plot_2022_preEE.cfg',
+                '2022_postEE':'scripts/plot_2022_postEE.cfg'}
                
 def split_callback(option, opt, value, parser):
   setattr(parser.values, option.dest, value.split(','))
@@ -197,7 +199,7 @@ for year in years:
     sf='1.'
 
     if 'ptbinned' in options.sf_option or 'dmbinned' in options.sf_option:
-      if 'dmbinned' in options.sf_option: json_name = '/vols/cms/ia2318/CMSSW_10_2_13/src/CombineHarvester/TauSF/jsons/tau_SF_strings_dm_binned_%(wp)svsjet_%(wpvsele)svsele.json' % vars()
+      if 'dmbinned' in options.sf_option: json_name = '/vols/cms/ia2318/CMSSW_10_2_13/src/CombineHarvester/TauSF/jsons/tau_SF_strings_dm_binned_%(wp)svsjet_%(wpvsele)svsele_2022.json' % vars()
       #'/vols/cms/ia2318/CMSSW_10_2_13/src/CombineHarvester/TauSF/outputs/tauSF_ESstudies_TauCQMJul31_vvlooseVSe_floatTES_v3/cmb/tau_SF_strings_dm_binned_mediumvsjet_vvloosevsele.json'
       #'/vols/cms/ia2318/CMSSW_10_2_13/src/CombineHarvester/TauSF/outputs/tauSF_ESstudies_TauCQMJul31_vvlooseVSe_floatTES_v3/cmb/tau_SF_strings_dm_binned_medium_split_fit.json'
       #'/vols/cms/dw515/workareas/CH_tauSF/CMSSW_10_2_13/src/CombineHarvester/TauSF/tau_SF_strings_dm_binned_mediumvsjet_vvloosevsele_externalTES.json'
