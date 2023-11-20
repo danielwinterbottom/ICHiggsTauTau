@@ -42,6 +42,7 @@ defaults = {
     "embedded": False,
     "embed_sel": False,
     "embed_dz": False,
+    "aiso":False, 
     }
 
 if options.cfg:
@@ -74,7 +75,8 @@ parser.add_argument("--tight_tag", dest="tight_tag", action='store_true')
 parser.add_argument("--embedded", dest="embedded", action='store_true')
 parser.add_argument("--embed_sel", dest="embed_sel", action='store_true')
 parser.add_argument("--embed_dz", dest="embed_dz", action='store_true')
-
+parser.add_argument("--aiso", dest="aiso", action='store_true',
+    help="Compute scale-factors in anti-isolated region")
 
 options = parser.parse_args(remaining_argv)   
 
@@ -147,6 +149,12 @@ def Produce3DHistograms(ana, wt='wt', outfile=None):
       trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
       trg_pt_bins = '[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,35,40,50,60,80,100,200]'
       iso_pt_bins = '[10,15,20,25,30,35,40,45,50,55,60,70,80,100,200]'
+      if options.aiso:
+        idiso_eta_bins = '[0,0.9,1.2,2.1,2.4]'
+        idiso_pt_bins = '[10,20,30,40,50,60,200]'
+        trg_eta_bins = '[0,0.9,1.2,2.1,2.4]'
+        trg_pt_bins = '[24,26,28,30,40,50,60,200]'
+        iso_pt_bins = '[10,20,30,40,50,60,200]'
       if options.embed_sel:
         trg_eta_bins   = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
         idiso_eta_bins = '[0,0.1,0.3,0.8,1.0,1.2,1.6,1.8,2.1,2.4]' #mu8
@@ -1029,7 +1037,11 @@ id_probe_2 = '(id_probe_2)'
 if options.channel == 'tpzmm':
   iso_cut_1='iso_1<0.15'
   iso_cut_2='iso_2<0.15'
-  
+ 
+  if options.aiso: 
+    iso_cut_1='iso_1>0.15&&iso_1<0.5'
+    iso_cut_2='iso_2>0.15&&iso_2<0.5'
+ 
   if options.era in ['UL_17','UL_18','22_preEE','22_postEE']:
     baseline_tag1 = '(m_vis>50&&m_vis<150&&pt_1>28&&abs(eta_1)<2.1&&iso_1<0.15&&id_tag_1&&trg_tag_1&&os)'
     baseline_tag2 = '(m_vis>50&&m_vis<150&&pt_2>28&&abs(eta_2)<2.1&&iso_2<0.15&&id_tag_2&&trg_tag_2&&os)'
@@ -1046,10 +1058,16 @@ if options.channel == 'tpzee':
     if options.era in ['22_preEE','22_postEE']:
       # for 2022 we use TauPOG definition of isolation cuts for now 
       iso_cut_1='iso_1<0.1'
-      iso_cut_2='iso_2<0.1'    
+      iso_cut_2='iso_2<0.1'
+      if options.aiso:
+        iso_cut_1='iso_1>0.1&&iso_1<0.5'
+        iso_cut_2='iso_2>0.1&&iso_2<0.5'    
     else:
       iso_cut_1='iso_1<0.15'
       iso_cut_2='iso_2<0.15'
+      if options.aiso:
+        iso_cut_1='iso_1>0.15&&iso_1<0.5'
+        iso_cut_2='iso_2>0.15&&iso_2<0.5'
   
   if options.era in ['UL_17','UL_18','22_preEE','22_postEE']:
     if options.tree_name == 'tagandprobe_ET':

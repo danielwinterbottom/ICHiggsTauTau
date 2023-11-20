@@ -963,9 +963,9 @@ int HTTWeights::PreAnalysis() {
     if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
       // specify all Run-3 SF here
       fns_["m_trg_ratio"] = std::shared_ptr<RooFunctor>(
-        w_->function("m_trg_ic_ratio")->functor(w_->argSet("m_pt,m_eta")));
+        w_->function("m_trg_binned_ic_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
       fns_["m_iso_ratio"] = std::shared_ptr<RooFunctor>(
-        w_->function("m_iso_ic_ratio")->functor(w_->argSet("m_pt,m_eta")));
+        w_->function("m_iso_binned_ic_ratio")->functor(w_->argSet("m_pt,m_eta,m_iso")));
       fns_["m_id_ratio"] = std::shared_ptr<RooFunctor>(
         w_->function("m_id_ic_ratio")->functor(w_->argSet("m_pt,m_eta")));
 
@@ -2620,9 +2620,10 @@ int HTTWeights::Execute(TreeEvent *event) {
      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
      double pt = muon->pt();
      double m_eta = fabs(muon->eta());
+     double m_iso = PF04IsolationVal(muon, 0.5, 0);
      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
        // specify all Run-3 SF here
-       auto args_1 = std::vector<double>{pt,m_eta};
+       auto args_1 = std::vector<double>{pt,m_eta,m_iso};
        double mu_trg_sf = fns_["m_trg_ratio"]->eval(args_1.data());
        eventInfo->set_weight("trigger", mu_trg_sf);
        event->Add("trigweight_1", mu_trg_sf);
@@ -2630,7 +2631,6 @@ int HTTWeights::Execute(TreeEvent *event) {
      } else {
 
        double m_signed_eta = muon->eta();
-       double m_iso = PF04IsolationVal(muon, 0.5, 0);
        Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
        double t_pt = tau->pt();
        double t_signed_eta = tau->eta();
@@ -3155,16 +3155,16 @@ int HTTWeights::Execute(TreeEvent *event) {
      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
      double pt1 = muon->pt();
      double m1_eta = fabs(muon->eta());
+     double m_iso_1 = PF04IsolationVal(muon, 0.5, 0);
      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
       // specify all Run-3 SF here
-       auto args_1 = std::vector<double>{pt1,m1_eta};
+       auto args_1 = std::vector<double>{pt1,m1_eta,m_iso_1};
        double mu_trg_sf = fns_["m_trg_ratio"]->eval(args_1.data());
        eventInfo->set_weight("trigger", mu_trg_sf);
        event->Add("trigweight_1", mu_trg_sf);
        event->Add("trigweight_2", double(1.0));
      } else {
        double m1_signed_eta = muon->eta();
-       double m_iso_1 = PF04IsolationVal(muon, 0.5, 0);
        double mu1_trg = 1.0;
        double mu2_trg = 1.0;
        double mu1_trg_mc = 1.0;
@@ -3225,18 +3225,19 @@ int HTTWeights::Execute(TreeEvent *event) {
      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
      double pt = muon->pt();
      double m_eta = fabs(muon->eta());
+     double m_iso = PF04IsolationVal(muon, 0.5, 0);
      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
        // specify all Run-3 SF here
        auto args_1 = std::vector<double>{pt,m_eta};
+       auto args_2 = std::vector<double>{pt,m_eta,m_iso};
        double mu_id_sf = fns_["m_id_ratio"]->eval(args_1.data());
-       double mu_iso_sf = fns_["m_iso_ratio"]->eval(args_1.data());
+       double mu_iso_sf = fns_["m_iso_ratio"]->eval(args_2.data());
        event->Add("idisoweight_1",mu_id_sf*mu_iso_sf);
        eventInfo->set_weight("muon_id", mu_id_sf);
        eventInfo->set_weight("muon_iso", mu_iso_sf);
      } else {
 
        double m_signed_eta = muon->eta();
-       double m_iso = PF04IsolationVal(muon, 0.5, 0);
        double mu_idiso=1.0;
        auto args_1 = std::vector<double>{pt,m_signed_eta,m_iso};  
        auto args_1_noiso = std::vector<double>{pt,m_signed_eta};
@@ -3289,15 +3290,19 @@ int HTTWeights::Execute(TreeEvent *event) {
      double m_2_pt = muon_2->pt();
      double m_1_eta = fabs(muon_1->eta());
      double m_2_eta = fabs(muon_2->eta());
+     double m_1_iso = PF04IsolationVal(muon_1,0.5,0);
+     double m_2_iso = PF04IsolationVal(muon_2,0.5,0);
 
      if(era_ == era::data_2022_preEE || era_ == era::data_2022_postEE){
        // specify all Run-3 SF here
        auto args_1 = std::vector<double>{m_1_pt,m_1_eta};
+       auto args_1_2 = std::vector<double>{m_1_pt,m_1_eta,m_1_iso};
        auto args_2 = std::vector<double>{m_2_pt,m_2_eta};
+       auto args_2_2 = std::vector<double>{m_2_pt,m_2_eta,m_2_iso};
        double mu_1_id_sf = fns_["m_id_ratio"]->eval(args_1.data());
-       double mu_1_iso_sf = fns_["m_iso_ratio"]->eval(args_1.data());
+       double mu_1_iso_sf = fns_["m_iso_ratio"]->eval(args_1_2.data());
        double mu_2_id_sf = fns_["m_id_ratio"]->eval(args_2.data());
-       double mu_2_iso_sf = fns_["m_iso_ratio"]->eval(args_2.data());
+       double mu_2_iso_sf = fns_["m_iso_ratio"]->eval(args_2_2.data());
 
        event->Add("idisoweight_1", mu_1_id_sf*mu_1_iso_sf);
        event->Add("idisoweight_2", mu_2_id_sf*mu_1_iso_sf);
@@ -3309,8 +3314,6 @@ int HTTWeights::Execute(TreeEvent *event) {
      } else {
        double m_1_signed_eta = muon_1->eta();
        double m_2_signed_eta = muon_2->eta();
-       double m_1_iso = PF04IsolationVal(muon_1,0.5,0);
-       double m_2_iso = PF04IsolationVal(muon_2,0.5,0);
        double m_1_idiso = 1.0;
        double m_2_idiso = 1.0; 
        auto args1_2_noiso = std::vector<double>{m_1_pt,m_1_signed_eta};
