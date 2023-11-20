@@ -89,7 +89,7 @@ var_mt = [
          ['pt_2,m_vis', '(180,20,200),(16,40,200)'],
          ]        
 var_zmm = [
-         ['m_vis',BINS(0,300,5,1)], 
+         ['m_vis',BINS(50,150,5,1)], 
           ]
 
 var_schemes = {
@@ -211,7 +211,8 @@ for year in years:
              elif ch == 'zmm':
                 run_cmd = 'python %(cmssw_base)s/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTauRun2/scripts/HiggsTauTauPlot.py --cfg=%(CFG)s --channel=%(ch)s --set_alias=\'%(cat)s:({%(cat)s}&&m_vis>50&&pt_1>25&&fabs(eta_1)<2.1&&trg_singlemuon)\' --method=%(method)s --cat=%(cat)s --outputfolder=%(output_folder)s/%(year)s/%(ch)s --ggh_masses_powheg='' --bbh_masses_powheg='' --var=\'%(var_used)s%(bin_used)s\' %(add_cond)s --ratio_range="0.5,1.5" %(extra)s ' % vars()
                 commands = [run_cmd]
-                
+                var_name = var_used
+                 
                 for i in range(0,len(commands)):
                   if commands[i] is '': continue
                   job_file = '%(output_folder)s/jobs/%(var_name)s_%(cat)s_%(ch)s_%(year)s%(s_name)s_%(i)i.sh' % vars()
