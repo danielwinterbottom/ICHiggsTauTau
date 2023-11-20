@@ -19,7 +19,7 @@ era = args.era
 #FOLDER = "/vols/cms/ia2318/outputs/MSSM/%(era)s_031023_zmm_new" % vars()
 ZPTFOLDER = "/vols/cms/ia2318/outputs/MSSM/%(era)s_031023_withweights/" % vars()
 
-if DO_ZPT_CONTROL or DO_CONTROL:withweights
+if DO_ZPT_CONTROL or DO_CONTROL:
   variables = [
       'pt_tt[0,10,20,30,40,60,80,100,120,160,200,280,320,400,600]',
       'm_vis(20,0,200)',
