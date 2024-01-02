@@ -498,9 +498,14 @@ def ReformatSignals(signals,do_format):
 sig_samples=[]
 grid_phi = ["100","110","125","140","160","180","200","250","300"]
 grid_A = ["60","70","80","90","100","125","140","160"]
+
+grid_phi = ["100"]
+grid_A = ["140"]
 for mp in grid_phi:
   for mA in grid_A:
        sig_samples.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
+#       sig_samples.append("ZstarTophi{}A{}To4Tau_central".format(mp,mA))
+
 
 if options.year == "2018":
     if options.campaign == "ReReco":
@@ -526,8 +531,10 @@ if options.year == "2018":
       qqzz_samples = ['ZZTo4L']
       higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125','ZHToTauTau_M125-ext1']
       hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-      #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
-      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
+      if options.channel == "mmmm":
+        ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+      else:
+        ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
       #signal_samples = ["phi200A100To4Tau","phi200A20To4Tau","phi300A20To4Tau","phi100A150To4Tau","phi300A150To4Tau","phi300A60To4Tau","phi100A100To4Tau","phi200A60To4Tau","phi300A100To4Tau","phi100A60To4Tau","phi200A150To4Tau"]
       signal_samples = sig_samples
       signal_samples = ReformatSignals(signal_samples,True)
@@ -555,9 +562,11 @@ if options.year == "2017":
     qqzz_samples = ['ZZTo4L']
     #hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125','ZHToTauTau_M125']
     hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-    higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
-    #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
-    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
+    higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']      
+    if options.channel == "mmmm":
+      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+    else:
+      ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
     signal_samples = sig_samples
     signal_samples = ReformatSignals(signal_samples,True)
 
@@ -572,8 +581,10 @@ if options.year == "2016_postVFP":
   qqzz_samples = ['ZZTo4L']
   higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-  #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
-  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
+  if options.channel == "mmmm":
+    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  else:
+    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
   signal_samples = ReformatSignals(signal_samples,True)
@@ -588,8 +599,10 @@ if options.year == "2016_preVFP":
   qqzz_samples = ['ZZTo4L']
   higgs_samples = ['GluGluHToTauTau_M125','VBFHToTauTau_M125','WminusHToTauTau_M125','WplusHToTauTau_M125','ZHToTauTau_M125']
   hzz_samples = ['VBF_HToZZTo4L_M125','GluGlu_HToZZTo4L_M125']
-  #ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
-  ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
+  if options.channel == "mmmm":
+    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4e','GluGluToContinToZZTo4mu','GluGluToContinToZZTo4tau']
+  else:
+    ggzz_samples = ['GluGluToContinToZZTo2e2mu','GluGluToContinToZZTo2e2tau','GluGluToContinToZZTo2mu2tau','GluGluToContinToZZTo4tau']
   wgam_samples = ['WGToLNuG']
   ewkz_samples = ['EWKZ2Jets_ZToLL']
   signal_samples = sig_samples
@@ -1084,7 +1097,7 @@ def RunPlotting(ana, cat='',cat_data='', sel='', add_name='', wt='wt', do_data=T
     mc_samples = ztt_samples + vv_samples + vvv_samples + wgam_samples + top_samples + wjets_samples + ewkz_samples + ggzz_samples + qqzz_samples + higgs_samples
 
     if options.method == 1:
-      if "QCD" not in samples_to_skip:
+      if "QCD" not in samples_to_skip and not options.channel == "mmmm":
           GenerateQCD(ana, add_name, data_samples, mc_samples, plot, wt, sel, cat, options.charges_non_zero, data_veto=cats["data_veto"], nominal_charge=False)
           if options.get_qcd_extrap:
             ncat = copy.deepcopy(cat)
