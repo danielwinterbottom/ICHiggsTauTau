@@ -6,7 +6,7 @@
     "timings":      true,
    //"channels":     ["mt","et","tt","zmm","zee","em"],
    // "channels":     ["mt","zmm","tt","et"],
-    "channels":     ["mt","zmm"],
+    "channels":     ["mt","zmm","zee"],
 //   "channels":     ["tt","mt","et","em","zmm","zee"],
     "sequences": {
       "all":  ["default"]
@@ -59,7 +59,7 @@
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
     "do_mt_tagandprobe"    : false,
-    "do_recoil"            : false,
+    "do_recoil"            : true,
     "do_iso_eff"    : false,
     "do_tau_eff"    : false,
     "do_ff_weights" : false,
@@ -67,7 +67,7 @@
     "do_pdf_wts": false,
     "do_qcd_scale_wts": false,
     //"output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_sync_v2/",
-    "output_folder" : "/vols/cms/dw515/outputs/MSSM/UL_Mar31_2018_v2/",
+    "output_folder" : "/vols/cms/dw515/outputs/MRes/MRes_2024_Run2018/",
     "svfit_from_grid" : true,
     "read_all_svfit_files" : true,
     "svfit_folder"  : "/vols/cms/dw515/outputs/MSSM/mssm_2018_tres1_v2_svfit/",

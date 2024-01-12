@@ -163,10 +163,12 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     std::vector<GenParticle *> sel_particles;
     std::vector<GenParticle *> undecayed_taus;
     
-    double gen_match_undecayed_1_pt = -1;
-    double gen_match_undecayed_2_pt = -1;
-    double gen_match_undecayed_1_eta = -1;
-    double gen_match_undecayed_2_eta = -1;
+    double gen_match_undecayed_1_pt = 0.;
+    double gen_match_undecayed_2_pt = 0.;
+    double gen_match_undecayed_1_eta = 0.;
+    double gen_match_undecayed_2_eta = 0.;
+    double gen_match_undecayed_1_phi = 0.;
+    double gen_match_undecayed_2_phi = 0.;
     double gen_met=0.;
     GenParticle *gen_match_undecayed_1_;
     GenParticle *gen_match_undecayed_2_;
@@ -266,12 +268,14 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
     if(undecayed_taus.size()>0){
       gen_match_undecayed_1_pt = undecayed_taus[0]->pt();
       gen_match_undecayed_1_eta = undecayed_taus[0]->eta();
+      gen_match_undecayed_1_phi = undecayed_taus[0]->eta();
       gen_match_undecayed_1_=undecayed_taus[0];
       event->Add("gen_match_undecayed_1", gen_match_undecayed_1_);
     }
     if(undecayed_taus.size()>1){
       gen_match_undecayed_2_pt = undecayed_taus[1]->pt();
       gen_match_undecayed_2_eta = undecayed_taus[1]->eta();
+      gen_match_undecayed_2_phi = undecayed_taus[1]->phi();
       gen_match_undecayed_2_=undecayed_taus[1];
       event->Add("gen_match_undecayed_2", gen_match_undecayed_2_);
     }
@@ -465,6 +469,8 @@ TVector3 GenIP (ic::GenParticle *h, ic::GenParticle *t) {
    event->Add("gen_match_undecayed_2_pt", gen_match_undecayed_2_pt);
    event->Add("gen_match_undecayed_1_eta", gen_match_undecayed_1_eta);
    event->Add("gen_match_undecayed_2_eta", gen_match_undecayed_2_eta);
+   event->Add("gen_match_undecayed_1_phi", gen_match_undecayed_1_phi);
+   event->Add("gen_match_undecayed_2_phi", gen_match_undecayed_2_phi);
    event->Add("tauFlag1", tauFlag1);
    event->Add("tauFlag2", tauFlag2);
 

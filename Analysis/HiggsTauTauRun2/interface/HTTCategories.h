@@ -134,6 +134,7 @@ class HTTCategories : public ModuleBase {
   float idisoweight_2_;
   float trackingweight_1_;
   float trackingweight_2_;
+  float wt_embed_sel_;
   float wt_emb_sel_kit_;
   float wt_emb_sel_trg_kit_;
   float wt_embedding_yield_;
@@ -156,6 +157,8 @@ class HTTCategories : public ModuleBase {
   branch_var pt_tt_;
   double pt_tt_inc_met_;
   branch_var pt_vis_;
+  branch_var Zeta_;
+  branch_var Zphi_;
   branch_var mt_1_;
   float pf_mt_1_;
   branch_var mt_lep_;
@@ -266,10 +269,16 @@ class HTTCategories : public ModuleBase {
 
   branch_var jpt_1_;     // Defined if n_jets >= 1
   branch_var jpt_2_;     // Defined if n_jets >= 2
+  branch_var jpt_3_;     // Defined if n_jets >= 2
   branch_var jeta_1_;    // Defined if n_jets >= 1
   branch_var jeta_2_;    // Defined if n_jets >= 2
+  branch_var jeta_3_;    // Defined if n_jets >= 2
   float jphi_1_;    // Defined if n_jets >= 1
   float jphi_2_;    // Defined if n_jets >= 2
+  float jphi_3_;    // Defined if n_jets >= 2
+  float jbscore_1_;
+  float jbscore_2_;
+  float jbscore_3_;
   float dijetpt_;
   float jmva_1_; 
   float jmva_2_; 
@@ -296,8 +305,17 @@ class HTTCategories : public ModuleBase {
   double gen_match_2_pt_;
   double gen_match_undecayed_1_pt_;
   double gen_match_undecayed_2_pt_;
+
+  double gen_match_undecayed_1_eta_;
+  double gen_match_undecayed_2_eta_;
+
+  double gen_match_undecayed_1_phi_;
+  double gen_match_undecayed_2_phi_;
+
   double gen_m_;
   double gen_pt_;
+  double gen_eta_;
+  double gen_phi_;
   int tauFlag_1_;
   int tauFlag_2_;
 
@@ -1287,6 +1305,9 @@ class HTTCategories : public ModuleBase {
   double mt_triggerweight_ic_;
   double tauIDScaleFactorWeight_medium_DeepTau2017v2p1VSjet_2_;
   double tauIDScaleFactorWeight_highpt_deeptauid_2_;
+
+  float U1_;
+  float U2_;
 
  public:
   HTTCategories(std::string const& name);

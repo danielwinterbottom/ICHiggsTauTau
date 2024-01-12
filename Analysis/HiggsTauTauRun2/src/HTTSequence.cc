@@ -151,18 +151,25 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   }
   if (channel_str == "et"){
     min_taus = 1;
-    elec_pt = 25;
-    elec_eta = 2.1;
     tau_pt  = 20;
     tau_eta = 2.3;
+    if(era_type == era::data_2017 || era_type == era::data_2017UL) elec_pt = 28.;
+    if(era_type == era::data_2018 || era_type == era::data_2018UL) elec_pt = 33.;
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) elec_pt = 33.;
+    else elec_pt = 25.;
+    elec_eta = 2.5;
   } 
   if (channel_str == "mt"){
-   muon_eta = 2.1; 
+   //muon_eta = 2.1; 
    tau_pt = 20;
    tau_eta = 2.3;
    min_taus = 1;
-   if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || json["make_sync_ntuple"].asBool()) muon_pt = 20.0; 
-   else  muon_pt = 21.0;
+   //if(era_type == era::data_2016 || era_type == era::data_2016UL_preVFP || era_type == era::data_2016UL_postVFP || json["make_sync_ntuple"].asBool()) muon_pt = 20.0; 
+   //else  muon_pt = 21.0;
+    if(era_type == era::data_2017 || era_type == era::data_2017UL  || era_type == era::data_2018 || era_type == era::data_2018UL) muon_pt = 25.;
+    if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) muon_pt = 25.;
+    else muon_pt = 23.;
+    muon_eta = 2.4;
   }
   if (channel_str == "tt"){
    tau_pt=40;
@@ -184,13 +191,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
     if(era_type == era::data_2018 || era_type == era::data_2018UL) elec_pt = 33.;
     if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) elec_pt = 33.;
     else elec_pt = 25.;
-    elec_eta = 2.1;
+    elec_eta = 2.5;
   }
   if(channel_str == "zmm"){
     if(era_type == era::data_2017 || era_type == era::data_2017UL  || era_type == era::data_2018 || era_type == era::data_2018UL) muon_pt = 25.;
     if(era_type == era::data_2022_preEE || era_type == era::data_2022_postEE) muon_pt = 25.;
     else muon_pt = 23.;
-    muon_eta = 2.1; 
+    muon_eta = 2.4; 
   }
   if(channel_str == "tpzmm"){
     muon_pt = 10;
@@ -829,10 +836,12 @@ if (!is_data ) {
 }
 if ((output_name.find("DY") != output_name.npos && output_name.find("JetsToLL-LO") != output_name.npos && !(output_name.find("JetsToLL-LO-10-50") != output_name.npos)) || output_name.find("DYto2L-4Jets") != output_name.npos){
   httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+  httWeights.set_do_zpt_weight_NLO(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
 }
 
 if ((output_name.find("DYJetsToLL-NLO") != output_name.npos || output_name.find("DYJetstoLL-NLO") != output_name.npos || output_name.find("DYJetsToLL_0J-NLO") != output_name.npos|| output_name.find("DYJetsToLL_1J-NLO") != output_name.npos || output_name.find("DYJetsToLL_2J-NLO") != output_name.npos )){
   httWeights.set_do_zpt_weight_NLO(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
+  httWeights.set_do_zpt_weight(true&&channel!=channel::tpzee&&channel!=channel::tpzmm&&channel!=channel::tpmt&&channel != channel::tpem);
 }
 
 
@@ -2387,7 +2396,7 @@ void HTTSequence::BuildZEEPairs() {
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(2)
       .set_predicate([=](Electron const* e) {
-        return  e->pt()                 > 13.        &&
+        return  e->pt()                 > 20.        &&
                 fabs(e->eta())          < 2.4        &&
                 fabs(e->dxy_vertex())   < elec_dxy   &&
                 fabs(e->dz_vertex())    < elec_dz ;
@@ -2503,7 +2512,7 @@ void HTTSequence::BuildZMMPairs() {
   BuildModule(SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(2)
       .set_predicate([=](Muon const* m) {
-        return  m->pt()                 > 10.        &&
+        return  m->pt()                 > 20.        &&
                 fabs(m->eta())          < 2.4   &&
                 fabs(m->dxy_vertex())   < muon_dxy   &&
                 fabs(m->dz_vertex())    < muon_dz   &&
@@ -2660,8 +2669,9 @@ void HTTSequence::BuildTauSelection(){
                fabs(t->lead_dz_vertex())   <  tau_dz     &&
                fabs(t->charge())           == 1          &&
                t->GetTauID("decayModeFindingNewDMs") > 0.5 && (t->decay_mode()<3 || t->decay_mode()>9) &&
-               ((t->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") && t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5) || 
-               (t->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && t->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5));
+               //((t->HasTauID("byVVVLooseDeepTau2017v2p1VSjet") && t->GetTauID("byVVVLooseDeepTau2017v2p1VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2017v2p1VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2017v2p1VSmu") > 0.5) || 
+               //(t->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && t->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byVLooseDeepTau2018v2p5VSmu") > 0.5));
+               (t->HasTauID("byMediumDeepTau2018v2p5VSjet") && t->GetTauID("byMediumDeepTau2018v2p5VSjet") > 0.5 && t->GetTauID("byVVLooseDeepTau2018v2p5VSe") > 0.5 && t->GetTauID("byTightDeepTau2018v2p5VSmu") > 0.5);
      }));
  
  if (tau_scale_mode > 0 && !is_data){

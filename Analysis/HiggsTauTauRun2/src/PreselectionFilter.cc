@@ -59,7 +59,7 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       Muon const* muon  = dynamic_cast<Muon const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
       iso_1_ = PF04IsolationVal(muon, 0.5, 0);
-      pass_presel = (((tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet")) || (tau->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSe") && tau->GetTauID("byVLooseDeepTau2018v2p5VSmu"))) && iso_1_<0.5);
+      pass_presel = (((tau->GetTauID("byVVVLooseDeepTau2017v2p1VSe") && tau->GetTauID("byVLooseDeepTau2017v2p1VSmu") && tau->GetTauID("byVVVLooseDeepTau2017v2p1VSjet")) || (tau->HasTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSjet") && tau->GetTauID("byVVVLooseDeepTau2018v2p5VSe") && tau->GetTauID("byVLooseDeepTau2018v2p5VSmu"))) && iso_1_<0.15);
   }
   if(channel_ == channel::em) { 
       if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -83,9 +83,9 @@ int PreselectionFilter::Execute(TreeEvent *event) {
       if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
       Muon const* muon1  = dynamic_cast<Muon const*>(lep1);
       Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
-      iso_1_ = PF04IsolationVal(muon1, 0.5, 0);
-      iso_2_ = PF04IsolationVal(muon2, 0.5, 0);
-      if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
+      iso_1_ = PF04IsolationVal(muon1, 0.15, 0);
+      iso_2_ = PF04IsolationVal(muon2, 0.15, 0);
+      if(iso_2_<0.15 && iso_1_<0.15) pass_presel = true;
   }
   if(channel_ == channel::zee || channel_ == channel::tpzee) { 
       if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
@@ -99,14 +99,14 @@ int PreselectionFilter::Execute(TreeEvent *event) {
         iso_1_ = PF03EAIsolationVal(elec1, eventInfo->jet_rho());
         iso_2_ = PF03EAIsolationVal(elec2, eventInfo->jet_rho());
       }
-      if(iso_2_<0.2 && iso_1_<0.2) pass_presel = true;
+      if(iso_2_<0.15 && iso_1_<0.15) pass_presel = true;
   }
     
-  if((channel_ == channel::zmm || channel_ == channel::zee) && do_preselection_) pass_presel = true;
+  //if((channel_ == channel::zmm || channel_ == channel::zee) && do_preselection_) pass_presel = true;
     
   bool lepton_veto_ = extraelec_veto_ || extramuon_veto_;
   if ( channel_ == channel::zmm || channel_ == channel::zee ) lepton_veto_ = false;
-  lepton_veto_=false; // remove lepton vetos from preselection
+  //lepton_veto_=false; // remove lepton vetos from preselection
 
   bool preselect_evt = pass_presel&&!lepton_veto_;
 

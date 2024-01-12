@@ -111,6 +111,8 @@ namespace ic {
     double genpY=0;
     double genM=0;
     double genpT=0;
+    double genEta=0;
+    double genPhi=0;
     double vispX=0;
     double vispY=0;
     
@@ -131,6 +133,8 @@ namespace ic {
    }
     genpT = gen_boson.pt();
     genM = gen_boson.M();
+    genEta = gen_boson.Rapidity();
+    genPhi = gen_boson.Phi();
 
 
    for( unsigned i = 0; i < sel_vis_parts.size() ; ++i){
@@ -147,17 +151,41 @@ namespace ic {
 
   if(!event->ExistsInEvent("genpT")) event->Add("genpT", genpT);
   if(!event->ExistsInEvent("genM")) event->Add("genM", genM);
+  if(!event->ExistsInEvent("genEta")) event->Add("genEta", genEta);
+  if(!event->ExistsInEvent("genPhi")) event->Add("genPhi", genPhi);
+
+  float U1=0., U2=0., metU1=0., metU2=0.;
 
 
-  if (disable_recoil_corrs && disable_met_sys) return 0;
-  
+  double Metx = met->vector().px();
+  double Mety = met->vector().py();
+
+  corrector_->CalculateU1U2FromMet(Metx,
+                       Mety,
+                       genpX,
+                       genpY,
+                       vispX,
+                       vispY,
+                       U1,
+                       U2,
+                       metU1,
+                       metU2);
+
+
+  if(!event->ExistsInEvent("U1")) event->Add("U1", (double)U1);
+  if(!event->ExistsInEvent("U2")) event->Add("U2", (double)U2);
+
+
+  //if (disable_recoil_corrs && disable_met_sys) return 0;
+  return 0; // do not actually apply recoil corrections for ML project 
+ 
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   unsigned njets = jets.size();
   if(is_wjets) njets+=1;
 
-  double Metx = met->vector().px();
-  double Mety = met->vector().py();
+  //double Metx = met->vector().px();
+  //double Mety = met->vector().py();
   double Mete = met->energy();
   double MetPt = met->vector().Pt();
   double MetPhi = met->vector().Phi();

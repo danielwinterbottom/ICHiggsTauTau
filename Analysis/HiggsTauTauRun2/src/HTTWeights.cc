@@ -1282,7 +1282,7 @@ int HTTWeights::Execute(TreeEvent *event) {
 
     if (eventInfo->weight("wt_embedding") > 1) wt_embedding_yield = 0.; // values > 1 are un-physical so set yield to 0
     if (eventInfo->weight("wt_embedding") > 1) wt_embedding_yield_kit = 0.; // values > 1 are un-physical so set yield to 0
-    eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
+    //eventInfo->set_weight("wt_embedding_yield", wt_embedding_yield);
     event->Add("wt_embedding_yield", wt_embedding_yield);
     wt_embedding_yield_kit = wt_embedding_yield > 0 ? wt_embedding_yield_kit/wt_embedding_yield : 0.;
     double wt_embedding_yield_trg_kit = wt_embedding_yield > 0 ? fns_["m_sel_trg_kit_ratio"]->eval(args_4.data())/fns_["m_sel_trg_ratio"]->eval(args_4.data()) : 0.;
@@ -2107,7 +2107,7 @@ int HTTWeights::Execute(TreeEvent *event) {
       double wtzpt = fns_["zpt_weight_nom"]->eval(args.data());
       double wtzpt_down=1.0;
       double wtzpt_up = wtzpt*wtzpt;
-      eventInfo->set_weight("wt_zpt",wtzpt);
+      //eventInfo->set_weight("wt_zpt",wtzpt);
       event->Add("zpt_sf",wtzpt);
       event->Add("wt_zpt_up",wtzpt_up/wtzpt);
       event->Add("wt_zpt_down",wtzpt_down/wtzpt);

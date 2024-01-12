@@ -32,6 +32,17 @@ class RecoilCorrectorRun2 {
 			       float & MetCorrPx,
 			       float & MetCorrPy);
 
+
+  void CalculateU1U2FromMet(float MetPx,
+                            float MetPy,
+                            float genZPx,
+                            float genZPy,
+                            float diLepPx,
+                            float diLepPy,
+                            float & U1,
+                            float & U2,
+                            float & metU1,
+                            float & metU2);
   
  private:
 
@@ -76,16 +87,16 @@ class RecoilCorrectorRun2 {
 		      const std::vector<std::string>& _ZPtStr,
 		      const std::vector<std::string>& _nJetsStr);
 
-  void CalculateU1U2FromMet(float MetPx,
-			    float MetPy,
-			    float genZPx,
-			    float genZPy,
-			    float diLepPx,
-			    float diLepPy,
-			    float & U1,
-			    float & U2,
-			    float & metU1,
-			    float & metU2);
+//  void CalculateU1U2FromMet(float MetPx,
+//			    float MetPy,
+//			    float genZPx,
+//			    float genZPy,
+//			    float diLepPx,
+//			    float diLepPy,
+//			    float & U1,
+//			    float & U2,
+//			    float & metU1,
+//			    float & metU2);
 
   void CalculateMetFromU1U2(float U1,
 			    float U2,
