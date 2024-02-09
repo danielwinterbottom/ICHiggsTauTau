@@ -495,15 +495,13 @@ def ReformatSignals(signals,do_format):
       rf_signals.append([signal,signal])
   return rf_signals
 
-sig_samples=[]
-grid_phi = ["100","110","125","140","160","180","200","250","300"]
-grid_A = ["60","70","80","90","100","125","140","160"]
+sig_samples=["ZstarTophi140A80To4Tau","ZstarTophi90A250To4Tau","ZstarTophi250A160To4Tau","ZstarTophi90A125To4Tau","ZstarTophi110A250To4Tau","ZstarTophi400A140To4Tau","ZstarTophi110A60To4Tau","ZstarTophi300A100To4Tau","ZstarTophi60A250To4Tau","ZstarTophi90A70To4Tau","ZstarTophi70A200To4Tau","ZstarTophi140A400To4Tau","ZstarTophi140A70To4Tau","ZstarTophi80A200To4Tau","ZstarTophi200A300To4Tau","ZstarTophi110A140To4Tau","ZstarTophi200A90To4Tau","ZstarTophi160A40To4Tau","ZstarTophi125A50To4Tau","ZstarTophi110A160To4Tau","ZstarTophi60A60To4Tau","ZstarTophi100A90To4Tau","ZstarTophi200A125To4Tau","ZstarTophi140A50To4Tau","ZstarTophi400A250To4Tau","ZstarTophi400A600To4Tau","ZstarTophi250A200To4Tau","ZstarTophi70A90To4Tau","ZstarTophi60A100To4Tau","ZstarTophi180A50To4Tau","ZstarTophi110A50To4Tau","ZstarTophi100A400To4Tau","ZstarTophi100A100To4Tau","ZstarTophi100A300To4Tau","ZstarTophi90A40To4Tau","ZstarTophi200A40To4Tau","ZstarTophi90A50To4Tau","ZstarTophi60A40To4Tau","ZstarTophi70A300To4Tau","ZstarTophi70A125To4Tau","ZstarTophi125A300To4Tau","ZstarTophi300A70To4Tau","ZstarTophi160A200To4Tau","ZstarTophi250A125To4Tau","ZstarTophi160A125To4Tau","ZstarTophi80A250To4Tau","ZstarTophi140A200To4Tau","ZstarTophi600A400To4Tau","ZstarTophi180A200To4Tau","ZstarTophi100A125To4Tau","ZstarTophi400A125To4Tau","ZstarTophi125A140To4Tau","ZstarTophi110A80To4Tau","ZstarTophi70A160To4Tau","ZstarTophi60A90To4Tau","ZstarTophi400A160To4Tau","ZstarTophi400A400To4Tau","ZstarTophi80A40To4Tau","ZstarTophi300A250To4Tau","ZstarTophi400A100To4Tau","ZstarTophi100A60To4Tau","ZstarTophi200A160To4Tau","ZstarTophi125A200To4Tau","ZstarTophi100A160To4Tau","ZstarTophi180A90To4Tau","ZstarTophi110A90To4Tau","ZstarTophi110A70To4Tau","ZstarTophi70A140To4Tau","ZstarTophi125A70To4Tau","ZstarTophi300A80To4Tau","ZstarTophi100A250To4Tau","ZstarTophi60A300To4Tau","ZstarTophi70A60To4Tau","ZstarTophi160A160To4Tau","ZstarTophi160A300To4Tau","ZstarTophi180A125To4Tau","ZstarTophi80A140To4Tau","ZstarTophi300A40To4Tau","ZstarTophi70A100To4Tau","ZstarTophi100A40To4Tau","ZstarTophi80A100To4Tau","ZstarTophi200A60To4Tau","ZstarTophi60A140To4Tau","ZstarTophi90A300To4Tau","ZstarTophi90A60To4Tau","ZstarTophi90A80To4Tau","ZstarTophi250A100To4Tau","ZstarTophi60A200To4Tau","ZstarTophi400A300To4Tau","ZstarTophi200A70To4Tau","ZstarTophi80A80To4Tau","ZstarTophi300A50To4Tau","ZstarTophi70A40To4Tau","ZstarTophi140A160To4Tau","ZstarTophi90A100To4Tau","ZstarTophi125A250To4Tau","ZstarTophi80A60To4Tau","ZstarTophi300A125To4Tau","ZstarTophi160A90To4Tau","ZstarTophi200A400To4Tau","ZstarTophi90A200To4Tau","ZstarTophi125A400To4Tau","ZstarTophi250A80To4Tau","ZstarTophi140A125To4Tau","ZstarTophi60A50To4Tau","ZstarTophi160A60To4Tau","ZstarTophi250A250To4Tau","ZstarTophi90A160To4Tau","ZstarTophi60A80To4Tau","ZstarTophi140A100To4Tau","ZstarTophi200A100To4Tau","ZstarTophi180A100To4Tau","ZstarTophi300A60To4Tau","ZstarTophi80A50To4Tau","ZstarTophi125A100To4Tau","ZstarTophi250A400To4Tau","ZstarTophi180A300To4Tau","ZstarTophi200A200To4Tau","ZstarTophi250A50To4Tau","ZstarTophi110A40To4Tau","ZstarTophi100A80To4Tau","ZstarTophi800A600To4Tau","ZstarTophi180A400To4Tau","ZstarTophi160A70To4Tau","ZstarTophi70A70To4Tau","ZstarTophi180A80To4Tau","ZstarTophi300A160To4Tau","ZstarTophi125A80To4Tau","ZstarTophi140A250To4Tau","ZstarTophi110A200To4Tau","ZstarTophi300A400To4Tau","ZstarTophi110A300To4Tau","ZstarTophi250A300To4Tau","ZstarTophi300A200To4Tau","ZstarTophi125A90To4Tau","ZstarTophi200A250To4Tau","ZstarTophi140A300To4Tau","ZstarTophi200A50To4Tau","ZstarTophi60A70To4Tau","ZstarTophi600A300To4Tau","ZstarTophi70A80To4Tau","ZstarTophi180A70To4Tau","ZstarTophi140A40To4Tau","ZstarTophi250A140To4Tau","ZstarTophi80A90To4Tau","ZstarTophi160A100To4Tau","ZstarTophi400A200To4Tau","ZstarTophi180A250To4Tau","ZstarTophi125A60To4Tau","ZstarTophi160A80To4Tau","ZstarTophi300A90To4Tau","ZstarTophi160A400To4Tau","ZstarTophi300A300To4Tau","ZstarTophi600A600To4Tau","ZstarTophi250A60To4Tau","ZstarTophi160A50To4Tau","ZstarTophi100A70To4Tau","ZstarTophi250A70To4Tau","ZstarTophi180A140To4Tau","ZstarTophi125A125To4Tau","ZstarTophi160A140To4Tau","ZstarTophi70A250To4Tau","ZstarTophi90A140To4Tau","ZstarTophi140A60To4Tau","ZstarTophi125A40To4Tau","ZstarTophi80A300To4Tau","ZstarTophi110A125To4Tau","ZstarTophi100A140To4Tau","ZstarTophi100A50To4Tau","ZstarTophi110A400To4Tau","ZstarTophi90A90To4Tau","ZstarTophi110A100To4Tau","ZstarTophi200A80To4Tau","ZstarTophi140A140To4Tau","ZstarTophi180A60To4Tau","ZstarTophi100A200To4Tau","ZstarTophi80A160To4Tau","ZstarTophi80A70To4Tau","ZstarTophi160A250To4Tau","ZstarTophi80A125To4Tau","ZstarTophi60A125To4Tau","ZstarTophi250A40To4Tau","ZstarTophi60A160To4Tau","ZstarTophi300A600To4Tau","ZstarTophi180A40To4Tau","ZstarTophi250A90To4Tau","ZstarTophi125A160To4Tau","ZstarTophi200A140To4Tau","ZstarTophi140A90To4Tau","ZstarTophi180A160To4Tau","ZstarTophi70A50To4Tau","ZstarTophi300A140To4Tau"]
+#grid_phi = ["100","110","125","140","160","180","200","250","300"]
+#grid_A = ["60","70","80","90","100","125","140","160"]
 
-grid_phi = ["100"]
-grid_A = ["140"]
-for mp in grid_phi:
-  for mA in grid_A:
-       sig_samples.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
+#for mp in grid_phi:
+#  for mA in grid_A:
+#     sig_samples.append("ZstarTophi{}A{}To4Tau".format(mp,mA))
 #       sig_samples.append("ZstarTophi{}A{}To4Tau_central".format(mp,mA))
 
 
@@ -1655,6 +1653,27 @@ if options.syst_k_factor:
     #  systematics['syst_ggZZ_k_factor_{}_up'.format(k)] = ('', '_syst_ggZZ_k_factor_{}Up'.format(k), 'wt*wt_ggZZ_{}Up'.format(k), ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
     #  systematics['syst_ggZZ_k_factor_{}_down'.format(k)] = ('', '_syst_ggZZ_k_factor_{}Down'.format(k), 'wt*wt_ggZZ_{}Dn'.format(k), ['jetFakes','VVV','ZTT','TT','MC_jetFakes','signal'], False)
 
+def find_file_or_reverse(search_directory, original_filename):
+    # Find all numeric sequences in the filename
+    numbers = re.findall(r'\d+', original_filename)
+
+    # Split the original filename into parts to isolate numeric sections
+    parts = re.split(r'(\d+)', original_filename)
+    
+    # Swap the first and second numeric parts
+    parts[1], parts[3] = parts[3], parts[1]
+    reversed_filename = ''.join(parts)
+
+    # Attempt to find the original or reversed filename in the directory
+    found_filenames = [filename for filename in os.listdir(search_directory)
+                       if filename == original_filename or filename == reversed_filename]
+    
+    if found_filenames:
+        print(f"Found file: {found_filenames[0]}")
+        return found_filenames[0]
+    else:
+        print(f"No file found for {original_filename} or its reverse.")
+        return None
 
 if options.plot_from_dc == "":
   max_systs_per_pass = 500 # code uses too much memory if we try and process too many systematics at once so set the maximum number of systematics processed per loop here
@@ -1711,7 +1730,8 @@ if options.plot_from_dc == "":
             ana.AddSamples(mc_input_folder_name+'/'+sample_name+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name)
         #print(ana.trees)
         for sample_name in signal_samples:
-            ana.AddSamples(signal_mc_input_folder_name+'/'+sample_name[0]+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name[0])         
+            available_sample = find_file_or_reverse(signal_mc_input_folder_name, f"{sample_name[0]}_{options.channel}_{options.year}.root")
+            ana.AddSamples(signal_mc_input_folder_name+'/'+available_sample+'_'+options.channel+'_{}.root'.format(options.year), 'ntuple', None, sample_name[0])         
  
         ana.AddInfo(options.paramfile, scaleTo='data_obs')
     
